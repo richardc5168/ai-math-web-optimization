@@ -35,6 +35,24 @@
     .sol{border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:12px; margin-top:10px; white-space:pre-wrap}
     a{color:var(--accent)}
     .small{font-size:12px}
+
+    /* teacher-mode pacing + unlock visuals */
+    .stepInput{min-width:240px}
+    .stepInput:disabled{opacity:.55; cursor:not-allowed; border-color:rgba(255,255,255,.08)}
+    .stepInput.current{border-color:rgba(88,166,255,.8); box-shadow:0 0 0 3px rgba(88,166,255,.12)}
+    .stepInput.done{border-color:rgba(46,160,67,.65)}
+    #btnDiagnose:disabled{opacity:.55; cursor:not-allowed}
+
+    .stepper{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    .pill{padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.16); font-size:12px; color:var(--muted)}
+    .pill.current{border-color:rgba(88,166,255,.65); color:var(--text); background:rgba(88,166,255,.10)}
+    .pill.done{border-color:rgba(46,160,67,.65); color:#b7f5c9; background:rgba(46,160,67,.10)}
+    .pill.locked{opacity:.70}
+
+    .cooldown{display:none; margin-top:10px}
+    .cooldown.show{display:block}
+    .cooldown .title{font-weight:700}
+    .cooldown .meta{color:var(--muted); font-size:12px; margin-top:6px; line-height:1.6}
   </style>
 </head>
 <body>
@@ -100,11 +118,11 @@
 
           <div class="row" style="margin-top:10px">
             <label>Step 1</label>
-            <input id="step1" placeholder="左邊換成假分數（例如 7/4）" />
+            <input id="step1" class="stepInput" data-step="1" placeholder="左邊換成假分數（例如 7/4）" />
             <label>Step 2</label>
-            <input id="step2" placeholder="相乘結果（可未約分，例如 28/12）" />
+            <input id="step2" class="stepInput" data-step="2" placeholder="相乘結果（可未約分，例如 28/12）" />
             <label>Step 3</label>
-            <input id="step3" placeholder="化簡後答案（例如 7/3 或 2 1/3）" />
+            <input id="step3" class="stepInput" data-step="3" placeholder="化簡後答案（例如 7/3 或 2 1/3）" />
             <button class="btn" id="btnDiagnose">診斷我的步驟</button>
           </div>
           <div class="row" style="margin-top:8px">
@@ -113,6 +131,17 @@
               <input type="checkbox" id="showTeacherAnswers" /> 顯示老師參考答案（必要時）
             </label>
             <button class="btn" id="btnResetSteps">重新開始這三步</button>
+          </div>
+
+          <div id="teacherPills" class="stepper" aria-label="進度"></div>
+
+          <div id="cooldownBox" class="banner bad cooldown" role="status" aria-live="polite">
+            <div class="title">先停一下：看完再回來</div>
+            <div id="cooldownText" class="meta"></div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn primary" id="btnCooldownDone" disabled>我看完了，回來繼續</button>
+              <div id="cooldownCountdown" class="small" style="color:var(--muted)"></div>
+            </div>
           </div>
           <div id="diagnose" class="banner muted" style="margin-top:10px">（尚未診斷）</div>
         </details>
@@ -413,6 +442,12 @@
     diagnose: document.getElementById('diagnose'),
     teacherStage: document.getElementById('teacherStage'),
     showTeacherAnswers: document.getElementById('showTeacherAnswers'),
+
+    teacherPills: document.getElementById('teacherPills'),
+    cooldownBox: document.getElementById('cooldownBox'),
+    cooldownText: document.getElementById('cooldownText'),
+    cooldownCountdown: document.getElementById('cooldownCountdown'),
+    btnCooldownDone: document.getElementById('btnCooldownDone'),
   };
 
   const state = {
@@ -422,6 +457,11 @@
     diagnoseFailByWeakId: {},
     diagnoseFailTotal: 0,
     teacherStage: 1,
+
+    cooldownUntil: 0,
+    cooldownNeedsAck: false,
+    cooldownResourceUrl: null,
+    _cooldownInterval: null,
   };
 
   function loadShowTeacherAnswers(){
@@ -436,18 +476,117 @@
     try{ localStorage.setItem('aimath_mixedmul_show_teacher_answers', v ? '1' : '0'); }catch(_){ /* ignore */ }
   }
 
+  function isInCooldown(){
+    if (state.cooldownNeedsAck) return true;
+    return (state.cooldownUntil || 0) > Date.now();
+  }
+
+  function updateTeacherVisuals(){
+    const stage = Number(state.teacherStage || 1);
+    const inCooldown = isInCooldown();
+
+    // step pills
+    if (els.teacherPills){
+      const defs = [
+        {id: 1, label: 'Step 1：換成假分數'},
+        {id: 2, label: 'Step 2：相乘'},
+        {id: 3, label: 'Step 3：約分最簡'},
+      ];
+
+      els.teacherPills.innerHTML = '';
+      for (const d of defs){
+        const div = document.createElement('div');
+        const isDone = (stage >= 4) || (stage > d.id);
+        const isCurrent = (stage === d.id);
+        const isLocked = (stage < d.id) || inCooldown;
+        div.className = 'pill' + (isCurrent ? ' current' : '') + (isDone ? ' done' : '') + (isLocked ? ' locked' : '');
+        div.textContent = d.label + (isDone ? '（完成）' : isCurrent ? '（現在）' : '（鎖定）');
+        els.teacherPills.appendChild(div);
+      }
+    }
+
+    // input borders
+    const steps = [els.step1, els.step2, els.step3];
+    for (let i=0;i<steps.length;i++){
+      const el = steps[i];
+      if (!el) continue;
+      el.classList.remove('current','done');
+      const stepId = i + 1;
+      if (stage === stepId) el.classList.add('current');
+      if ((stage >= 4) || (stage > stepId)) el.classList.add('done');
+    }
+  }
+
+  function applyTeacherLocks(){
+    const stage = Number(state.teacherStage || 1);
+    const inCooldown = isInCooldown();
+    if (els.step1) els.step1.disabled = inCooldown ? true : false;
+    if (els.step2) els.step2.disabled = inCooldown ? true : (stage < 2);
+    if (els.step3) els.step3.disabled = inCooldown ? true : (stage < 3);
+    if (els.btnDiagnose) els.btnDiagnose.disabled = inCooldown;
+    updateTeacherVisuals();
+  }
+
+  function clearCooldown(){
+    state.cooldownUntil = 0;
+    state.cooldownNeedsAck = false;
+    state.cooldownResourceUrl = null;
+    if (state._cooldownInterval){
+      clearInterval(state._cooldownInterval);
+      state._cooldownInterval = null;
+    }
+    if (els.cooldownBox) els.cooldownBox.classList.remove('show');
+    if (els.btnCooldownDone) els.btnCooldownDone.disabled = true;
+    if (els.cooldownCountdown) els.cooldownCountdown.textContent = '';
+    applyTeacherLocks();
+  }
+
+  function startCooldown(seconds, resourceUrl){
+    if (!Number.isFinite(seconds) || seconds <= 0) return;
+
+    state.cooldownUntil = Date.now() + Math.floor(seconds * 1000);
+    state.cooldownNeedsAck = false;
+    state.cooldownResourceUrl = resourceUrl || null;
+
+    if (els.cooldownBox) els.cooldownBox.classList.add('show');
+    if (els.cooldownText){
+      els.cooldownText.textContent = resourceUrl
+        ? `你剛剛在同一關卡連續錯了 2 次，我們先停 ${seconds} 秒。請先打開補救影片連結，看 1~2 分鐘，倒數結束後按「回來繼續」。`
+        : `我們先停 ${seconds} 秒，深呼吸一下，再回來繼續。`;
+    }
+    if (els.btnCooldownDone) els.btnCooldownDone.disabled = true;
+
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((state.cooldownUntil - Date.now()) / 1000));
+      if (els.cooldownCountdown){
+        els.cooldownCountdown.textContent = remaining > 0
+          ? `倒數：${remaining} 秒（先看影片，再回來）`
+          : '倒數結束，可以回來繼續了。';
+      }
+      if (remaining <= 0){
+        state.cooldownNeedsAck = true;
+        if (els.btnCooldownDone) els.btnCooldownDone.disabled = false;
+      }
+      applyTeacherLocks();
+    };
+
+    if (state._cooldownInterval){
+      clearInterval(state._cooldownInterval);
+      state._cooldownInterval = null;
+    }
+    state._cooldownInterval = setInterval(tick, 250);
+    tick();
+  }
+
   function setTeacherStage(stage){
     state.teacherStage = stage;
-    if (els.step1) els.step1.disabled = false;
-    if (els.step2) els.step2.disabled = (stage < 2);
-    if (els.step3) els.step3.disabled = (stage < 3);
-
     if (els.teacherStage){
       if (stage === 1) els.teacherStage.textContent = '現在先做：Step 1（把左邊帶分數換成假分數）';
       else if (stage === 2) els.teacherStage.textContent = '很好！下一步：Step 2（分子×分子、分母×分母）';
       else if (stage === 3) els.teacherStage.textContent = '快完成了！最後：Step 3（約分成最簡，必要時再寫成帶分數）';
       else els.teacherStage.textContent = '完成 ✅（再練一題也用同樣三步）';
     }
+    applyTeacherLocks();
   }
 
   function setBanner(msg, ok=null){
@@ -491,6 +630,7 @@
 
     state.diagnoseFailByWeakId = {};
     state.diagnoseFailTotal = 0;
+    clearCooldown();
     setTeacherStage(1);
   }
 
@@ -777,8 +917,9 @@
       let resourceUrl = null;
       if (!ok && weakId && (state.diagnoseFailByWeakId[weakId] || 0) >= 2){
         lines.push('');
-        lines.push('補救模式：你在同一關卡連續錯 2 次，我們先看 2~3 分鐘短講解再回來。');
+        lines.push('補救模式：你在同一關卡連續錯 2 次，我們先看 1~2 分鐘短講解再回來。');
         resourceUrl = data.resource_url || null;
+        if (!isInCooldown()) startCooldown(15, resourceUrl);
       }
 
       setDiagnoseBox(ok, lines, resourceUrl);
@@ -823,8 +964,9 @@
         let resourceUrl = null;
         if (!ok && weakId && (state.diagnoseFailByWeakId[weakId] || 0) >= 2){
           lines.push('');
-          lines.push('補救模式：你在同一關卡連續錯 2 次，我們先看 2~3 分鐘短講解再回來。');
+          lines.push('補救模式：你在同一關卡連續錯 2 次，我們先看 1~2 分鐘短講解再回來。');
           resourceUrl = fb.resource_url || null;
+          if (!isInCooldown()) startCooldown(15, resourceUrl);
         }
 
         setDiagnoseBox(ok, lines, resourceUrl);
@@ -905,11 +1047,23 @@
       if (els.step3) els.step3.value = '';
       state.diagnoseFailByWeakId = {};
       state.diagnoseFailTotal = 0;
+      clearCooldown();
       setTeacherStage(1);
       if (els.diagnose){
         els.diagnose.className = 'banner muted';
         els.diagnose.textContent = '（尚未診斷）';
       }
+    });
+  }
+
+  if (els.btnCooldownDone){
+    els.btnCooldownDone.addEventListener('click', () => {
+      state.cooldownUntil = 0;
+      state.cooldownNeedsAck = false;
+      if (els.cooldownBox) els.cooldownBox.classList.remove('show');
+      if (els.btnCooldownDone) els.btnCooldownDone.disabled = true;
+      if (els.cooldownCountdown) els.cooldownCountdown.textContent = '';
+      applyTeacherLocks();
     });
   }
 
