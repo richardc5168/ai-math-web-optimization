@@ -135,10 +135,16 @@
            </div>
         </div>
 
-        <details style="margin-top:20px;">
-          <summary>提示與詳解 (AI 助教)</summary>
-          <div id="hintBox" class="banner muted" style="margin-top:10px; white-space: pre-wrap; font-family: monospace;">請先嘗試解題，提示會隨步驟出現。</div>
-        </details>
+        <div id="aiHintArea" style="margin-top:20px; border:1px solid var(--line); border-radius:12px; padding:16px; background:#1c2545; display:none;">
+           <h3 style="margin:0 0 10px 0; color:#a2d2ff;">🤖 AI 助教逐步詳解</h3>
+           <div id="hintSteps" style="display:grid; gap:10px;"></div>
+        </div>
+
+        <div id="hintToggleArea" style="margin-top:20px; display:none">
+          <button class="btn" id="btnShowHint" style="width:100%">💡 顯示/隱藏 完整解題步驟</button>
+        </div>
+
+      </section>
 
       </section>
 
@@ -185,6 +191,12 @@
     pills: document.getElementById('teacherPills'),
     hintBox: document.getElementById('hintBox'),
     
+    // AI Hints
+    aiHintArea: document.getElementById('aiHintArea'),
+    hintSteps: document.getElementById('hintSteps'),
+    btnShowHint: document.getElementById('btnShowHint'),
+    hintToggleArea: document.getElementById('hintToggleArea'),
+
     // Cooldown
     cdBox: document.getElementById('cooldownBox'),
     cdText: document.getElementById('cooldownText'),
@@ -318,10 +330,21 @@
       // Clear inputs
       els.s1a.value=''; els.s1b.value=''; els.s1c.value=''; els.s2ans.value='';
       els.banner.className = 'banner muted'; els.banner.innerText = '請開始 Step 1';
-      els.hintBox.innerText = "如需協助，請點擊上方展開詳解。\n\n(AI 尚未揭露答案)";
+      els.aiHintArea.style.display = 'none';
+      els.hintToggleArea.style.display = 'block';
+      els.hintSteps.innerHTML = '';
       
       // Store full explanation if available
       state.explanation = data.explanation || "此題暫無詳細步驟。";
+      
+      // Parse Explanation into steps
+      const lines = state.explanation.split('\n');
+      lines.forEach((line, idx) => {
+         const div = document.createElement('div');
+         div.style.cssText = "padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border-left:3px solid #58a6ff; font-family:monospace;";
+         div.innerHTML = `<span style="font-weight:bold; color:#58a6ff; margin-right:8px;">Step ${idx+1}</span> ${line}`;
+         els.hintSteps.appendChild(div);
+      });
 
       // Context
       if(data.knowledge_context) {
@@ -390,7 +413,8 @@
                   state.stage = 3;
                   updateUI();
                   // Show explanation on success
-                  els.hintBox.innerText = "【AI 完整詳解】\n" + state.explanation;
+                  els.aiHintArea.style.display = 'block';
+                  els.hintSteps.lastElementChild.scrollIntoView({behavior:'smooth'});
               } else {
                  throw new Error("Wrong");
               }
@@ -423,6 +447,11 @@
   els.btnCheck2.onclick = checkStep2;
   els.btnResetSteps = document.getElementById('btnResetSteps');
   els.btnResetSteps.onclick = () => { state.stage=1; state.fails=0; els.banner.className='banner muted'; els.banner.innerText=''; updateUI(); };
+  
+  els.btnShowHint.onclick = () => {
+     const isHidden = els.aiHintArea.style.display === 'none';
+     els.aiHintArea.style.display = isHidden ? 'block' : 'none';
+  };
 
   // Init
   newGame();
