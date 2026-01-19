@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, HTMLResponse
 from pydantic import BaseModel, Field
 
@@ -30,6 +31,16 @@ try:
     import fraction_logic
 except Exception:
     fraction_logic = None
+
+try:
+    from quadratic_engine import quadratic_engine
+except ImportError:
+    quadratic_engine = None
+
+try:
+    from knowledge_graph import KNOWLEDGE_GRAPH
+except ImportError:
+    KNOWLEDGE_GRAPH = {}
 
 # ========= 1) 這裡接你的 engine =========
 # 建議你把 math_cli.py 中的：
@@ -59,6 +70,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Math Practice MVP API", version="0.1", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ========= Diagnose: Knowledge base (concept -> prerequisites + resource) =========
 # NOTE: MVP 先用內建 dict；之後可搬到 DB / JSON / 向量庫。
@@ -97,6 +116,46 @@ class QuadraticPipelineValidateRequest(BaseModel):
     style: str = Field(default="factoring_then_formula", description="standard|factoring_then_formula")
     offline: bool = Field(default=True, description="Force offline mode (no OpenAI calls)")
 
+class QuadraticGenRequest(BaseModel):
+    topic_id: str = Field(default="A3", description="Topic ID from Knowledge Graph (A1-A5)")
+    difficulty: int = Field(default=2, ge=1, le=5)
+
+class QuadraticCheckRequest(BaseModel):
+    user_answer: str
+    question_data: Dict[str, Any]
+
+@app.post("/v1/quadratic/next", summary="Generate Quadratic Problem (MATH Dataset Level 1-5)")
+def next_quadratic(req: QuadraticGenRequest):
+    if not quadratic_engine:
+        raise HTTPException(status_code=500, detail="Quadratic Engine not loaded")
+    
+    # Map Khan Topic to difficulty logic if needed, or pass through
+    # Engine handles A3/A4/A5
+    try:
+        q = quadratic_engine.generate_problem(req.topic_id, req.difficulty)
+        
+        # Add Knowledge Graph Context
+        info = KNOWLEDGE_GRAPH.get(req.topic_id, {})
+        q["knowledge_context"] = {
+            "title": info.get("title"),
+            "prereqs": info.get("prereqs"),
+            "khan_mapped_id": info.get("khan_mapped_id")
+        }
+        return q
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
+
+@app.post("/v1/quadratic/check", summary="Check Quadratic Answer (SymPy Logic)")
+def check_quadratic(req: QuadraticCheckRequest):
+    if not quadratic_engine:
+        raise HTTPException(status_code=500, detail="Quadratic Engine not loaded")
+    
+    is_correct = quadratic_engine.check_answer(req.user_answer, req.question_data)
+    return {"correct": is_correct}
+
+@app.get("/v1/knowledge/graph", summary="Get Full Knowledge Graph")
+def get_knowledge_graph():
+    return KNOWLEDGE_GRAPH
 
 class MixedMultiplyDiagnoseRequest(BaseModel):
     left: str = Field(..., description="Left operand (mixed number like '2 1/3' or fraction like '7/3')")
