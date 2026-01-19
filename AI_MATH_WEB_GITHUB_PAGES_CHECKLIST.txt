@@ -23,6 +23,7 @@ This checklist uses GitHub web UI. Uploading files on GitHub IS a commit.
       docs/index.html
       docs/catalog.json
       docs/quadratic/index.html
+            docs/mixed-multiply/index.html
       docs/.nojekyll
     - Commit message: Publish AI MATH WEB
     - Click: Commit changes
@@ -41,6 +42,7 @@ This checklist uses GitHub web UI. Uploading files on GitHub IS a commit.
 [ ] 5) Verify URLs
     - https://richardc5168.github.io/ai-math-web/
     - https://richardc5168.github.io/ai-math-web/quadratic/
+    - https://richardc5168.github.io/ai-math-web/mixed-multiply/
 
 [ ] 6) Always test (local) before upload
         - Run tests:
@@ -50,7 +52,13 @@ This checklist uses GitHub web UI. Uploading files on GitHub IS a commit.
         - Rule: tests must be green before you upload the docs folder.
 
 If you get 404:
+    - If the page shows: "There isn't a GitHub Pages site here.", it usually means:
+        (A) Pages is not enabled yet (Settings -> Pages)
+        (B) Repo name is not exactly ai-math-web (check URL)
+        (C) You uploaded files but did not click "Commit changes"
+        (D) Pages is enabled but still building (wait 1–3 minutes)
     - Check the repo REALLY has docs/quadratic/index.html (not just quadratic/index.html)
+    - Check the repo REALLY has docs/mixed-multiply/index.html
     - Check Pages "Folder" is /docs (not /(root))
     - Wait 1–3 minutes and refresh (Pages build delay)
     - Ensure docs/.nojekyll exists (already included in the prepared docs folder)
