@@ -145,6 +145,91 @@ def get_question_hints(qobj: Dict[str, Any]) -> Dict[str, str]:
     """Generate 3-level hint strings WITHOUT revealing the final answer."""
     topic = str(qobj.get("topic") or "")
     qtext = str(qobj.get("question") or "")
+    steps = qobj.get("steps")
+
+    def _fraction_guidance() -> Optional[Dict[str, str]]:
+        # 詳細分數引導（小學五年級）
+        if "分數" not in topic and not re.search(r"\d+\s*/\s*\d+", qtext):
+            return None
+
+        # 通分
+        if "通分" in topic or "依序輸入：公分母" in qtext:
+            h = _hint_pack(
+                "先圈出每個分數的分母，這題的第一步是找到共同分母。",
+                "用倍數表或質因數分解求 LCM(分母1, 分母2)。",
+                "把每個分數放大到 LCM：分母乘幾倍，分子也乘幾倍。",
+            )
+            return {"level1": h[0], "level2": h[1], "level3": h[2]}
+
+        # 約分
+        if "約分" in topic or "約分到最簡" in qtext:
+            h = _hint_pack(
+                "先找分子與分母的最大公因數(GCD)。",
+                "分子、分母同時除以同一個 GCD。",
+                "檢查是否還能再同時被 2, 3, 5 整除，直到最簡。",
+            )
+            return {"level1": h[0], "level2": h[1], "level3": h[2]}
+
+        # 帶分數
+        if "帶分數" in topic or re.search(r"\d+\s+\d+\s*/\s*\d+", qtext):
+            h = _hint_pack(
+                "先把帶分數轉成假分數：整數×分母 + 分子。",
+                "再依題目做通分或運算，分母不同一定要先通分。",
+                "最後約分，必要時再換回帶分數。",
+            )
+            return {"level1": h[0], "level2": h[1], "level3": h[2]}
+
+        # 分數乘除
+        if re.search(r"\d+\s*/\s*\d+\s*[×x\*]\s*\d+\s*/\s*\d+", qtext):
+            h = _hint_pack(
+                "分數相乘：分子相乘、分母相乘。",
+                "可先約分再乘，數字會變小更好算。",
+                "算完再約分到最簡。",
+            )
+            return {"level1": h[0], "level2": h[1], "level3": h[2]}
+
+        if re.search(r"\d+\s*/\s*\d+\s*[÷]\s*\d+\s*/\s*\d+", qtext):
+            h = _hint_pack(
+                "分數相除：除以一個分數等於乘上它的倒數。",
+                "把後面的分數顛倒(互換分子分母)後做乘法。",
+                "算完約分到最簡。",
+            )
+            return {"level1": h[0], "level2": h[1], "level3": h[2]}
+
+        # 分數加減/連續
+        if "分數加減" in topic or "分數連續加減" in topic or re.search(r"\d+\s*/\s*\d+\s*[\+\-]", qtext):
+            h = _hint_pack(
+                "先判斷是加或減；分母不同一定要先通分。",
+                "用 LCM 當共同分母，把每個分數換成同分母後再加減分子。",
+                "算完約分，若是假分數可換回帶分數。",
+            )
+            return {"level1": h[0], "level2": h[1], "level3": h[2]}
+
+        return None
+
+    # If explicit steps are provided (New Detailed Guidance System)
+    if isinstance(steps, list) and len(steps) >= 1:
+        # Use steps as hints logic
+        # Hint 1: First step
+        h1 = steps[0]
+        # Hint 2: Second step if available
+        h2 = steps[1] if len(steps) > 1 else steps[0]
+        # Hint 3: Third step or "almost done"
+        if len(steps) > 2:
+            h3 = steps[2]
+        else:
+            h3 = "請完成計算檢查答案。"
+        
+        return {
+            "level1": h1,
+            "level2": h2,
+            "level3": h3
+        }
+
+    # 詳細分數引導優先
+    detailed_fraction_hints = _fraction_guidance()
+    if detailed_fraction_hints:
+        return detailed_fraction_hints
 
     # 通分
     if "通分" in topic or "依序輸入：公分母" in qtext:
@@ -477,12 +562,66 @@ def diagnose_attempt(qobj: Dict[str, Any], user_answer: str) -> Dict[str, Any]:
             "drill_reco": [_drill("1", 6, "運算順序")],
         }
 
+    # --- ADVANCED HINT INTEGRATION (RAG + Topic Specific) ---
+    if "一元一次" in topic or "linear" in topic.lower():
+        return {
+            "error_tag": "LINEAR_ERR",
+            "error_detail": "一元一次方程式解題建議。",
+            "hint_plan": _get_rag_enhanced_hints(topic, qtext, [
+                "移項法則：把含 x 的項移到一邊，常數移到另一邊（記得變號）。",
+                "合併同類項：整理兩邊的算式。",
+                "係數化為一：同除以 x 前面的係數。",
+            ]),
+            "drill_reco": [],
+        }
+
+    if "一元二次" in topic or "quadratic" in topic.lower():
+        return {
+            "error_tag": "QUAD_ERR",
+            "error_detail": "一元二次方程式解題建議。",
+            "hint_plan": _get_rag_enhanced_hints(topic, qtext, [
+                "判斷題型：可因式分解？還是要用公式解？",
+                "十字交乘法：試著分解成 (ax+b)(cx+d) = 0。",
+                "公式解：x = [-b ± sqrt(b^2 - 4ac)] / 2a。",
+            ]),
+            "drill_reco": [],
+        }
+
+    # RAG Fallback for OTHER
     return {
         "error_tag": "OTHER",
         "error_detail": "與任何典型錯誤模式不匹配。",
-        "hint_plan": _hint_pack("先整理題意。", "寫出中間步驟。", "逐步檢查運算。"),
+        "hint_plan": _get_rag_enhanced_hints(topic, qtext, [
+            "先整理題意。",
+            "寫出中間步驟。",
+            "逐步檢查運算。",
+        ]),
         "drill_reco": base_recos,
     }
+
+def _get_rag_enhanced_hints(topic: str, text: str, default_hints: List[str]) -> List[str]:
+    """Try to fetch hints from RAG based on topic/text. If fail, use default."""
+    try:
+        # Lazy import of Retriever to avoid circular deps or init cost if unused
+        # Assuming rag_backend.py is in the same folder or path
+        try:
+            from rag_backend import Retriever
+        except ImportError:
+            return default_hints
+
+        # We assume Retriever() initialization is relatively cheap or handles its own caching
+        # In a real app, this should be a reliable global instance
+        retriever = Retriever() 
+        results = retriever.search(topic + " " + text, topk=1)
+        if results:
+            rag_text = results[0].get('text', '')
+            # Truncate context to avoid overwhelming student
+            rag_hint = f"參考觀念：{rag_text[:60]}..."
+            # Append as an extra hint
+            return default_hints + [rag_hint]
+    except Exception:
+        pass
+    return default_hints
 
 # -------------------------
 # Custom solver (solve_custom)
@@ -916,9 +1055,70 @@ def gen_linear_equation():
     b = random.randint(-10, 10)
     c = a * x_val + b
     question = f"{a}x + {b} = {c}, 求 x"
+    
+    rhs = c - b
+    
     explanation = f"移項：{a}x = {c} - ({b}) = {c - b}\n兩邊除以 {a}：x = {x_val}"
-    return {"topic": "一元一次方程", "difficulty": "medium", "question": question, "answer": str(x_val), "explanation": explanation}
+    
+    steps = [
+        f"步驟 1: 將常數項移到等號右邊。 {a}x = {c} - ({b})",
+        f"步驟 2: 計算右邊的值。 {a}x = {rhs}",
+        f"步驟 3: 將兩邊同除以 x 的係數 {a}。 x = {rhs} ÷ {a} = {x_val}"
+    ]
+    
+    return {
+        "topic": "一元一次方程", 
+        "difficulty": "medium", 
+        "question": question, 
+        "answer": str(x_val), 
+        "explanation": explanation,
+        "steps": steps
+    }
 
+def gen_quadratic_equation():
+    # Simple quadratic: (x - r1)(x - r2) = 0 => x^2 - (r1+r2)x + r1*r2 = 0
+    r1 = random.randint(-5, 5)
+    r2 = random.randint(-5, 5)
+    if r1 == 0: r1 = 1
+    if r2 == 0: r2 = 2
+    
+    b = -(r1 + r2)
+    c = r1 * r2
+    
+    # Format: x^2 + bx + c = 0
+    # Simplify signs
+    def fmt(n, var=""):
+        if n == 0: return ""
+        if var == "": return f"{n:+}"
+        if n == 1: return f"+{var}"
+        if n == -1: return f"-{var}"
+        return f"{n:+}{var}"
+
+    term_b = fmt(b, "x")
+    term_c = fmt(c)
+    
+    eq = f"x^2 {term_b} {term_c} = 0".replace(" +", " +").replace(" -", " -").strip()
+    if eq.startswith("+"): eq = eq[1:]
+    
+    question = f"解方程式: {eq}"
+    ans = f"{min(r1,r2)},{max(r1,r2)}" if r1!=r2 else f"{r1}"
+    explanation = f"因式分解: (x - ({r1}))(x - ({r2})) = 0\n根為: {r1}, {r2}"
+    
+    steps = [
+        "步驟 1: 觀察方程式形式，嘗試使用因式分解法。",
+        f"步驟 2: 尋找兩個數，相乘為 {c}，相加為 {b}。",
+        f"步驟 3: 這兩個數是 {-r1} 和 {-r2}。所以分解為 (x {fmt(-r1)}) (x {fmt(-r2)}) = 0。",
+        f"步驟 4: 令每個括號為 0。 x = {r1} 或 x = {r2}。"
+    ]
+    
+    return {
+        "topic": "一元二次方程式", 
+        "difficulty": "hard", 
+        "question": question, 
+        "answer": ans, 
+        "explanation": explanation,
+        "steps": steps
+    }
 
 # -------------------------
 # GENERATORS
@@ -933,9 +1133,13 @@ GENERATORS: Dict[str, Tuple[str, Any]] = {
     "7": ("小數四則運算", gen_decimal_arith),
     "8": ("長/正方體積/面積", gen_volume_area),
     "10": ("分數連續加減(三項內)", gen_fraction_chain),
+    "linear": ("一元一次方程", gen_linear_equation),
+    "quadratic": ("一元二次方程式", gen_quadratic_equation)
 }
 if HAS_SYMPY:
     GENERATORS["9"] = ("一元一次方程", gen_linear_equation)
+    GENERATORS["linear"] = GENERATORS["9"]
+
 
 def get_random_generator(topic_filter: Optional[str] = None):
     if topic_filter and topic_filter in GENERATORS:
