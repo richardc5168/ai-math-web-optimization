@@ -105,6 +105,108 @@
     hintCont: document.getElementById('hintContainer')
   };
 
+  const params = new URLSearchParams(location.search);
+  const API_BASE = params.get('api') || '';
+  const FORCE_OFFLINE = params.get('offline') === '1';
+
+  function apiUrl(path) {
+    if (!API_BASE) return path;
+    return API_BASE.replace(/\/$/, '') + path;
+  }
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function fmtSign(n) {
+    return n >= 0 ? `+ ${n}` : `- ${Math.abs(n)}`;
+  }
+
+  function generateLocalLinear(level) {
+    let sol = randInt(-9, 9);
+    if (sol === 0) sol = randInt(1, 9);
+
+    let question_text = '';
+    let explanation = [];
+
+    if (level === 1) {
+      const mode = Math.random() < 0.5 ? 'add' : 'mul';
+      if (mode === 'add') {
+        const b = randInt(-12, 12) || 3;
+        const c = sol + b;
+        question_text = `解方程式：x ${fmtSign(b)} = ${c}`;
+        explanation = [
+          `題目：${question_text}`,
+          `把 ${b} 移到右邊：x = ${c} - (${b})`,
+          `x = ${sol}`
+        ];
+      } else {
+        const a = randInt(2, 6) * (Math.random() < 0.5 ? -1 : 1);
+        const c = a * sol;
+        question_text = `解方程式：${a}x = ${c}`;
+        explanation = [
+          `題目：${question_text}`,
+          `兩邊同除以 ${a}：x = ${c} / ${a}`,
+          `x = ${sol}`
+        ];
+      }
+    } else if (level === 2) {
+      const a = randInt(2, 6) * (Math.random() < 0.5 ? -1 : 1);
+      const b = randInt(-12, 12) || 5;
+      const c = a * sol + b;
+      question_text = `解方程式：${a}x ${fmtSign(b)} = ${c}`;
+      explanation = [
+        `題目：${question_text}`,
+        `移項：${a}x = ${c} - (${b})`,
+        `x = ${c - b} / ${a}`,
+        `x = ${sol}`
+      ];
+    } else if (level === 3) {
+      const a = randInt(2, 6) * (Math.random() < 0.5 ? -1 : 1);
+      let c = randInt(2, 6) * (Math.random() < 0.5 ? -1 : 1);
+      if (a === c) c += 1;
+      const b = randInt(-8, 8);
+      const d = a * sol + b - c * sol;
+      question_text = `解方程式：${a}x ${fmtSign(b)} = ${c}x ${fmtSign(d)}`;
+      explanation = [
+        `題目：${question_text}`,
+        `移項：${a}x - (${c}x) = ${d} - (${b})`,
+        `${a - c}x = ${d - b}`,
+        `x = ${sol}`
+      ];
+    } else if (level === 4) {
+      const a = randInt(2, 5) * (Math.random() < 0.5 ? -1 : 1);
+      const b = randInt(-6, 6) || 2;
+      const rhs = a * (sol + b);
+      question_text = `解方程式：${a}(x ${fmtSign(b)}) = ${rhs}`;
+      explanation = [
+        `題目：${question_text}`,
+        `先分配律：${a}x ${fmtSign(a * b)} = ${rhs}`,
+        `移項：${a}x = ${rhs} - (${a * b})`,
+        `x = ${sol}`
+      ];
+    } else {
+      const a = randInt(2, 6);
+      const b = randInt(-8, 8);
+      const k = randInt(2, 5);
+      const rhs = Math.floor((a * sol + b) / k);
+      const c = rhs * k;
+      question_text = `解方程式：(${a}x ${fmtSign(b)}) ÷ ${k} = ${rhs}`;
+      explanation = [
+        `題目：${question_text}`,
+        `兩邊同乘 ${k}：${a}x ${fmtSign(b)} = ${c}`,
+        `移項：${a}x = ${c} - (${b})`,
+        `x = ${sol}`
+      ];
+    }
+
+    return {
+      question_text,
+      correct_answer: String(sol),
+      explanation: explanation.join('\n')
+    };
+  }
+
   let currentQ = null;
   let currentStep = 0;
   let steps = [];
@@ -119,28 +221,34 @@
       els.hintCont.innerHTML = '';
       currentStep = 0;
 
-      try {
-          const res = await fetch('/v1/linear/next', {
+        let data = null;
+        if (!FORCE_OFFLINE) {
+          try {
+            const res = await fetch(apiUrl('/v1/linear/next'), {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({difficulty: parseInt(diff)})
-          });
-          const data = await res.json();
-          currentQ = data;
-          
-          els.qText.innerText = data.question_text;
-          els.inter.style.display = 'block';
-          els.hintSec.style.display = 'block';
-          
-          // Parse steps
-          steps = (data.explanation || "").split('\n');
-          els.btnHint.style.display = 'block';
-          els.btnHint.innerText = "💡 顯示解題提示 (共 " + steps.length + " 步)";
-          
-      } catch(e) {
-          els.qText.innerText = "連線錯誤，請檢查伺服器";
-          console.error(e);
-      }
+            });
+            if (!res.ok) throw new Error('API not ok');
+            data = await res.json();
+          } catch(e) {
+            console.warn('API error, fallback to offline', e);
+          }
+        }
+
+        if (!data) {
+          data = generateLocalLinear(parseInt(diff));
+        }
+
+        currentQ = data;
+        els.qText.innerText = data.question_text;
+        els.inter.style.display = 'block';
+        els.hintSec.style.display = 'block';
+      
+        // Parse steps
+        steps = (data.explanation || "").split('\n');
+        els.btnHint.style.display = 'block';
+        els.btnHint.innerText = "💡 顯示解題提示 (共 " + steps.length + " 步)";
   }
 
   function showNextStep() {
@@ -164,7 +272,7 @@
       els.banner.className = 'banner';
 
       try {
-          const res = await fetch('/v1/linear/check', {
+          const res = await fetch(apiUrl('/v1/linear/check'), {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({user_answer: ans, question_data: currentQ})
