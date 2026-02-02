@@ -68,6 +68,11 @@ try:
 except Exception:
     g5s_web_concepts = None
 
+try:
+    from question_types.g5s_good_concepts import type as g5s_good_concepts
+except Exception:
+    g5s_good_concepts = None
+
 
 # ======================================================================
 # ENGINE (出題 / 判題 / 自訂題目解題)
@@ -118,12 +123,16 @@ def check(user_answer: str, correct_answer: str) -> Optional[int]:
     user = (user_answer or "").strip()
     correct = (correct_answer or "").strip()
 
-    # New type: JSON payload with type_key + validator.
-    if correct.startswith("{") and g5s_web_concepts is not None:
+    # New types: JSON payload with type_key + validator.
+    if correct.startswith("{"):
         try:
             payload = json.loads(correct)
-            if isinstance(payload, dict) and payload.get("type_key") == getattr(g5s_web_concepts, "TYPE_KEY", ""):
-                return g5s_web_concepts.check_answer(user, payload)
+            if isinstance(payload, dict):
+                tkey = payload.get("type_key")
+                if g5s_web_concepts is not None and tkey == getattr(g5s_web_concepts, "TYPE_KEY", ""):
+                    return g5s_web_concepts.check_answer(user, payload)
+                if g5s_good_concepts is not None and tkey == getattr(g5s_good_concepts, "TYPE_KEY", ""):
+                    return g5s_good_concepts.check_answer(user, payload)
         except Exception:
             pass
 
@@ -1366,6 +1375,8 @@ GENERATORS: Dict[str, Tuple[str, Any]] = {
 # Register new isolated type_key (pack-based)
 if g5s_web_concepts is not None:
     GENERATORS["g5s_web_concepts_v1"] = ("20260203 小五下網路精選", g5s_web_concepts.next_question)
+if g5s_good_concepts is not None:
+    GENERATORS["g5s_good_concepts_v1"] = ("20260203 小五下數學好的觀念題型", g5s_good_concepts.next_question)
 if HAS_SYMPY:
     GENERATORS["9"] = ("一元一次方程", gen_linear_equation)
     GENERATORS["linear"] = GENERATORS["9"]

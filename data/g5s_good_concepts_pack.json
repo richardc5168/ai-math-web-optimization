@@ -1,0 +1,983 @@
+{
+  "type_key": "g5s_good_concepts_v1",
+  "version": "v20260203",
+  "generated_at": "2026-02-03T01:48:47",
+  "seed": 5203,
+  "items": [
+    {
+      "id": "g5good_0001",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction"
+      ],
+      "concept_points": [
+        "約分是分子分母同除最大公因數"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜約分）把分數 15/20 約成最簡分數。",
+      "answer": "3/4",
+      "hints": {
+        "level1": "最簡分數：分子和分母沒有共同因數（除了 1）。",
+        "level2": "先找分子分母的最大公因數，再同除。",
+        "level3": "gcd(15,20) = 5\n所以 15/20 = 3/4"
+      },
+      "steps": [
+        "找最大公因數 (GCD)",
+        "gcd(15,20) = 5",
+        "分子 ÷ gcd，分母 ÷ gcd → 3/4"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0002",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "volume"
+      ],
+      "concept_points": [
+        "公升轉毫升要乘 1000"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜容積換算）1.2 公升 = 多少毫升？請只寫數字。",
+      "answer": "1200",
+      "hints": {
+        "level1": "看到『公升↔毫升』先想 1 公升等於多少毫升。",
+        "level2": "列式：1.2 × 1000。",
+        "level3": "1.2 × 1000 = 1200，所以是 1200 毫升。"
+      },
+      "steps": [
+        "1 公升 = 1000 毫升",
+        "1.2 × 1000 = 1200"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0003",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "volume"
+      ],
+      "concept_points": [
+        "公升轉毫升要乘 1000"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜容積換算）2.3 公升 = 多少毫升？請只寫數字。",
+      "answer": "2300",
+      "hints": {
+        "level1": "看到『公升↔毫升』先想 1 公升等於多少毫升。",
+        "level2": "列式：2.3 × 1000。",
+        "level3": "2.3 × 1000 = 2300，所以是 2300 毫升。"
+      },
+      "steps": [
+        "1 公升 = 1000 毫升",
+        "2.3 × 1000 = 2300"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0004",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.4，參加 B 社團的比率是 0.3。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.7",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.4 + 0.3。",
+        "level3": "0.4 + 0.3 = 0.7，所以合計比率是 0.7。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.4 + 0.3 = 0.7",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0005",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction",
+        "decimal"
+      ],
+      "concept_points": [
+        "分數與小數可以互相轉換"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜等值）0.5 和 1/2 比較大小，結果是？請回答：一樣大/前者大/後者大。",
+      "answer": "一樣大",
+      "hints": {
+        "level1": "比較大小最穩的方法：先把兩個數變成同一種表示。",
+        "level2": "把分數 1/2 轉成小數再比。",
+        "level3": "1/2 = 0.5，所以答案是：一樣大。"
+      },
+      "steps": [
+        "把其中一個轉成另一種表示法再比較",
+        "1/2 = 0.5",
+        "所以兩者相等"
+      ],
+      "validator": {
+        "type": "text"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0006",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "volume"
+      ],
+      "concept_points": [
+        "公升轉毫升要乘 1000"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜容積換算）1.5 公升 = 多少毫升？請只寫數字。",
+      "answer": "1500",
+      "hints": {
+        "level1": "看到『公升↔毫升』先想 1 公升等於多少毫升。",
+        "level2": "列式：1.5 × 1000。",
+        "level3": "1.5 × 1000 = 1500，所以是 1500 毫升。"
+      },
+      "steps": [
+        "1 公升 = 1000 毫升",
+        "1.5 × 1000 = 1500"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0007",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction"
+      ],
+      "concept_points": [
+        "約分是分子分母同除最大公因數"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜約分）把分數 9/12 約成最簡分數。",
+      "answer": "3/4",
+      "hints": {
+        "level1": "最簡分數：分子和分母沒有共同因數（除了 1）。",
+        "level2": "先找分子分母的最大公因數，再同除。",
+        "level3": "gcd(9,12) = 3\n所以 9/12 = 3/4"
+      },
+      "steps": [
+        "找最大公因數 (GCD)",
+        "gcd(9,12) = 3",
+        "分子 ÷ gcd，分母 ÷ gcd → 3/4"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0008",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "volume"
+      ],
+      "concept_points": [
+        "公升轉毫升要乘 1000"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜容積換算）0.5 公升 = 多少毫升？請只寫數字。",
+      "answer": "500",
+      "hints": {
+        "level1": "看到『公升↔毫升』先想 1 公升等於多少毫升。",
+        "level2": "列式：0.5 × 1000。",
+        "level3": "0.5 × 1000 = 500，所以是 500 毫升。"
+      },
+      "steps": [
+        "1 公升 = 1000 毫升",
+        "0.5 × 1000 = 500"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0009",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.35，參加 B 社團的比率是 0.3。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.65",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.35 + 0.3。",
+        "level3": "0.35 + 0.3 = 0.65，所以合計比率是 0.65。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.35 + 0.3 = 0.65",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0010",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction",
+        "decimal"
+      ],
+      "concept_points": [
+        "分數與小數可以互相轉換"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜等值）0.75 和 3/4 比較大小，結果是？請回答：一樣大/前者大/後者大。",
+      "answer": "一樣大",
+      "hints": {
+        "level1": "比較大小最穩的方法：先把兩個數變成同一種表示。",
+        "level2": "把分數 3/4 轉成小數再比。",
+        "level3": "3/4 = 0.75，所以答案是：一樣大。"
+      },
+      "steps": [
+        "把其中一個轉成另一種表示法再比較",
+        "3/4 = 0.75",
+        "所以兩者相等"
+      ],
+      "validator": {
+        "type": "text"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0011",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "percent"
+      ],
+      "concept_points": [
+        "小數轉百分率要乘 100"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜小數→百分率）把小數 0.25 轉成百分率，請只寫數字（不要寫 %）。",
+      "answer": "25",
+      "hints": {
+        "level1": "想像『每 100 份裡有幾份』：把小數放大 100 倍。",
+        "level2": "列式：0.25 × 100。",
+        "level3": "0.25 × 100 = 25，所以百分率是 25%。\n（本題要求不寫 %，只寫 25）"
+      },
+      "steps": [
+        "百分率 = 小數 × 100",
+        "0.25 × 100 = 25"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0012",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.15，參加 B 社團的比率是 0.2。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.35",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.15 + 0.2。",
+        "level3": "0.15 + 0.2 = 0.35，所以合計比率是 0.35。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.15 + 0.2 = 0.35",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0013",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.25，參加 B 社團的比率是 0.2。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.45",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.25 + 0.2。",
+        "level3": "0.25 + 0.2 = 0.45，所以合計比率是 0.45。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.25 + 0.2 = 0.45",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0014",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "percent"
+      ],
+      "concept_points": [
+        "小數轉百分率要乘 100"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜小數→百分率）把小數 0.05 轉成百分率，請只寫數字（不要寫 %）。",
+      "answer": "5",
+      "hints": {
+        "level1": "想像『每 100 份裡有幾份』：把小數放大 100 倍。",
+        "level2": "列式：0.05 × 100。",
+        "level3": "0.05 × 100 = 5，所以百分率是 5%。\n（本題要求不寫 %，只寫 5）"
+      },
+      "steps": [
+        "百分率 = 小數 × 100",
+        "0.05 × 100 = 5"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0015",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "percent"
+      ],
+      "concept_points": [
+        "小數轉百分率要乘 100"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜小數→百分率）把小數 0.2 轉成百分率，請只寫數字（不要寫 %）。",
+      "answer": "20",
+      "hints": {
+        "level1": "想像『每 100 份裡有幾份』：把小數放大 100 倍。",
+        "level2": "列式：0.2 × 100。",
+        "level3": "0.2 × 100 = 20，所以百分率是 20%。\n（本題要求不寫 %，只寫 20）"
+      },
+      "steps": [
+        "百分率 = 小數 × 100",
+        "0.2 × 100 = 20"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0016",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction"
+      ],
+      "concept_points": [
+        "約分是分子分母同除最大公因數"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜約分）把分數 12/18 約成最簡分數。",
+      "answer": "2/3",
+      "hints": {
+        "level1": "最簡分數：分子和分母沒有共同因數（除了 1）。",
+        "level2": "先找分子分母的最大公因數，再同除。",
+        "level3": "gcd(12,18) = 6\n所以 12/18 = 2/3"
+      },
+      "steps": [
+        "找最大公因數 (GCD)",
+        "gcd(12,18) = 6",
+        "分子 ÷ gcd，分母 ÷ gcd → 2/3"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0017",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "percent"
+      ],
+      "concept_points": [
+        "小數轉百分率要乘 100"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜小數→百分率）把小數 0.75 轉成百分率，請只寫數字（不要寫 %）。",
+      "answer": "75",
+      "hints": {
+        "level1": "想像『每 100 份裡有幾份』：把小數放大 100 倍。",
+        "level2": "列式：0.75 × 100。",
+        "level3": "0.75 × 100 = 75，所以百分率是 75%。\n（本題要求不寫 %，只寫 75）"
+      },
+      "steps": [
+        "百分率 = 小數 × 100",
+        "0.75 × 100 = 75"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0018",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.15，參加 B 社團的比率是 0.3。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.45",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.15 + 0.3。",
+        "level3": "0.15 + 0.3 = 0.45，所以合計比率是 0.45。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.15 + 0.3 = 0.45",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0019",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "percent"
+      ],
+      "concept_points": [
+        "小數轉百分率要乘 100"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜小數→百分率）把小數 0.4 轉成百分率，請只寫數字（不要寫 %）。",
+      "answer": "40",
+      "hints": {
+        "level1": "想像『每 100 份裡有幾份』：把小數放大 100 倍。",
+        "level2": "列式：0.4 × 100。",
+        "level3": "0.4 × 100 = 40，所以百分率是 40%。\n（本題要求不寫 %，只寫 40）"
+      },
+      "steps": [
+        "百分率 = 小數 × 100",
+        "0.4 × 100 = 40"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0020",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction",
+        "decimal"
+      ],
+      "concept_points": [
+        "分數與小數可以互相轉換"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜等值）0.25 和 1/4 比較大小，結果是？請回答：一樣大/前者大/後者大。",
+      "answer": "一樣大",
+      "hints": {
+        "level1": "比較大小最穩的方法：先把兩個數變成同一種表示。",
+        "level2": "把分數 1/4 轉成小數再比。",
+        "level3": "1/4 = 0.25，所以答案是：一樣大。"
+      },
+      "steps": [
+        "把其中一個轉成另一種表示法再比較",
+        "1/4 = 0.25",
+        "所以兩者相等"
+      ],
+      "validator": {
+        "type": "text"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0021",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.35，參加 B 社團的比率是 0.1。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.45",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.35 + 0.1。",
+        "level3": "0.35 + 0.1 = 0.45，所以合計比率是 0.45。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.35 + 0.1 = 0.45",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0022",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction"
+      ],
+      "concept_points": [
+        "約分是分子分母同除最大公因數"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜約分）把分數 10/15 約成最簡分數。",
+      "answer": "2/3",
+      "hints": {
+        "level1": "最簡分數：分子和分母沒有共同因數（除了 1）。",
+        "level2": "先找分子分母的最大公因數，再同除。",
+        "level3": "gcd(10,15) = 5\n所以 10/15 = 2/3"
+      },
+      "steps": [
+        "找最大公因數 (GCD)",
+        "gcd(10,15) = 5",
+        "分子 ÷ gcd，分母 ÷ gcd → 2/3"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0023",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "fraction"
+      ],
+      "concept_points": [
+        "約分是分子分母同除最大公因數"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜約分）把分數 6/8 約成最簡分數。",
+      "answer": "3/4",
+      "hints": {
+        "level1": "最簡分數：分子和分母沒有共同因數（除了 1）。",
+        "level2": "先找分子分母的最大公因數，再同除。",
+        "level3": "gcd(6,8) = 2\n所以 6/8 = 3/4"
+      },
+      "steps": [
+        "找最大公因數 (GCD)",
+        "gcd(6,8) = 2",
+        "分子 ÷ gcd，分母 ÷ gcd → 3/4"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0024",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.4，參加 B 社團的比率是 0.2。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.6",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.4 + 0.2。",
+        "level3": "0.4 + 0.2 = 0.6，所以合計比率是 0.6。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.4 + 0.2 = 0.6",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0025",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.15，參加 B 社團的比率是 0.1。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.25",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.15 + 0.1。",
+        "level3": "0.15 + 0.1 = 0.25，所以合計比率是 0.25。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.15 + 0.1 = 0.25",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0026",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "percent"
+      ],
+      "concept_points": [
+        "小數轉百分率要乘 100"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜小數→百分率）把小數 0.12 轉成百分率，請只寫數字（不要寫 %）。",
+      "answer": "12",
+      "hints": {
+        "level1": "想像『每 100 份裡有幾份』：把小數放大 100 倍。",
+        "level2": "列式：0.12 × 100。",
+        "level3": "0.12 × 100 = 12，所以百分率是 12%。\n（本題要求不寫 %，只寫 12）"
+      },
+      "steps": [
+        "百分率 = 小數 × 100",
+        "0.12 × 100 = 12"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0027",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.25，參加 B 社團的比率是 0.3。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.55",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.25 + 0.3。",
+        "level3": "0.25 + 0.3 = 0.55，所以合計比率是 0.55。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.25 + 0.3 = 0.55",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0028",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.35，參加 B 社團的比率是 0.2。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.55",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.35 + 0.2。",
+        "level3": "0.35 + 0.2 = 0.55，所以合計比率是 0.55。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.35 + 0.2 = 0.55",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0029",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.4，參加 B 社團的比率是 0.1。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.5",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.4 + 0.1。",
+        "level3": "0.4 + 0.1 = 0.5，所以合計比率是 0.5。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.4 + 0.1 = 0.5",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    },
+    {
+      "id": "g5good_0030",
+      "type_key": "g5s_good_concepts_v1",
+      "topic_tags": [
+        "g5s",
+        "ratio"
+      ],
+      "concept_points": [
+        "合計比率可以直接相加"
+      ],
+      "difficulty": "easy",
+      "question": "（觀念｜比率合計）同一個班級中，參加 A 社團的比率是 0.25，參加 B 社團的比率是 0.1。\nA 和 B 合計比率是多少？（用小數表示）",
+      "answer": "0.35",
+      "hints": {
+        "level1": "合計比率：把『各部分的比率』直接相加（同一個群體）。",
+        "level2": "列式：0.25 + 0.1。",
+        "level3": "0.25 + 0.1 = 0.35，所以合計比率是 0.35。"
+      },
+      "steps": [
+        "同一群體的合計比率 = 各部分比率相加",
+        "0.25 + 0.1 = 0.35",
+        "檢查：合計不超過 1"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0.0
+      },
+      "evidence": {
+        "source_url": "local://concept-pack",
+        "title": "internal"
+      },
+      "generated_at": "2026-02-03T01:48:47"
+    }
+  ]
+}
