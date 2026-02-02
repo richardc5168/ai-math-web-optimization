@@ -47,7 +47,7 @@
 <body>
   <header>
     <div class="title">國小五年級｜生活應用題講義 + 自動出題（離線題庫）</div>
-    <div class="sub">主題：買東西/打折/平均單價、時間加法、常用單位換算、分數生活題。可離線（file://）或 GitHub Pages 使用。</div>
+    <div class="sub">主題：買東西/找零/兩段式購物、打折/平均單價、時間加法、常用單位換算、表格統計、面積鋪地磚、比例分配、分數生活題。可離線（file://）或 GitHub Pages 使用。</div>
     <div class="row" style="margin-top:10px">
       <a class="btn" href="../">← 回到 AI MATH WEB</a>
       <span class="pill" id="bankMeta">題庫載入中...</span>
@@ -70,9 +70,9 @@
 
         <h3 style="margin:14px 0 6px 0">0) 讀題 4 步驟（每題都通用）</h3>
         <div class="small" style="color:var(--muted)">
-          <div><b>步驟 1｜圈關鍵字</b>：一共/總共/合起來、平均、每…多少、剩下、打折。</div>
+          <div><b>步驟 1｜圈關鍵字</b>：一共/總共/合起來、平均、每…多少、剩下、打折、找回/找零、折價券、最多/最少、按…分配。</div>
           <div><b>步驟 2｜寫出已知與未知</b>：已知（數字+單位）、未知（要問什麼+單位）。</div>
-          <div><b>步驟 3｜選運算</b>：買多份→乘法；平均→除法；剩下→減法；合計→加法。</div>
+          <div><b>步驟 3｜選運算</b>：買多份→乘法；平均→除法；找零/差→減法；合計→加法；面積/地磚→先算面積再除；比例分配→先算總份數再除。</div>
           <div><b>步驟 4｜估算檢查</b>：答案應該變大/變小？大約在幾附近？</div>
         </div>
 
@@ -95,6 +95,19 @@
           <br><b>列式</b>：240×0.75。<b>檢查</b>：打折後一定變小。
         </div>
 
+        <h3 style="margin:14px 0 6px 0">3b) 找零/湊整（付款 − 金額）</h3>
+        <div><span class="k">情境</span> 買點心 68 元，用 100 元付款。</div>
+        <div class="small" style="color:var(--muted)">
+          <b>列式</b>：100−68。<b>檢查</b>：找零一定是正數，且小於 100。
+        </div>
+
+        <h3 style="margin:14px 0 6px 0">3c) 兩段式購物（小計 → 合計 → 折扣/折價）</h3>
+        <div><span class="k">情境</span> 果汁每瓶 12.5 元買 4 瓶；餅乾每包 16 元買 3 包；再用 20 元折價券。</div>
+        <div class="small" style="color:var(--muted)">
+          <b>列式</b>：(12.5×4) + (16×3) − 20。
+          <br><b>檢查</b>：折價後一定比「未折價合計」小。
+        </div>
+
         <h3 style="margin:14px 0 6px 0">4) 時間加法（分鐘進位）</h3>
         <div><span class="k">情境</span> 19:40 開始，寫 55 分鐘。</div>
         <div class="small" style="color:var(--muted)">
@@ -107,6 +120,34 @@
           <div><b>1 公斤 = 1000 公克</b></div>
           <div><b>1 公尺 = 100 公分</b></div>
           <div>看到換算題：先寫換算關係，再決定要乘還是除。</div>
+        </div>
+
+        <h3 style="margin:14px 0 6px 0">6) 表格統計（加總/比較/找最大）</h3>
+        <div><span class="k">情境</span> 表格列出四種水果的數量，要問「總共多少」、「差多少」、「最多是哪個」。</div>
+        <div class="small" style="color:var(--muted)">
+          <b>方法</b>：先把要用到的數字抄下來。
+          <br>總共→相加；差多少→相減取差；最多/最少→找最大/最小。
+        </div>
+
+        <h3 style="margin:14px 0 6px 0">7) 面積鋪地磚（房間面積 ÷ 地磚面積）</h3>
+        <div><span class="k">情境</span> 房間 4 公尺×3 公尺，要鋪 50 公分×50 公分地磚。</div>
+        <div class="small" style="color:var(--muted)">
+          <b>重點</b>：先統一單位（公尺↔公分）。
+          <br><b>列式</b>：房間面積÷地磚面積。
+        </div>
+
+        <h3 style="margin:14px 0 6px 0">8) 比例分配（先算總份數，再算每份）</h3>
+        <div><span class="k">情境</span> 120 顆糖按 甲:乙:丙=2:3:5 分配，甲拿多少？</div>
+        <div class="small" style="color:var(--muted)">
+          <b>方法</b>：總份數=2+3+5=10；每份=120÷10=12；甲=2×12。
+          <br><b>檢查</b>：三人加起來要剛好 120。
+        </div>
+
+        <h3 style="margin:14px 0 6px 0">9) 分數：用掉/剩下（全體×分數，再做減法）</h3>
+        <div><span class="k">情境</span> 40 公尺緞帶用掉 3/8，剩下多少？</div>
+        <div class="small" style="color:var(--muted)">
+          <b>列式</b>：用掉=40×3/8；剩下=40−用掉。
+          <br><b>檢查</b>：用掉的是全體的一部分，所以剩下應該仍接近 40、但比 40 小。
         </div>
 
         <details style="margin-top:12px;">
@@ -129,6 +170,11 @@
             <option value="buy_many">買多份（乘法）</option>
             <option value="unit_price">平均單價（除法）</option>
             <option value="discount">打折（百分率）</option>
+            <option value="make_change">找零/湊整（付款−金額）</option>
+            <option value="shopping_two_step">兩段式購物（小計→合計→折價）</option>
+            <option value="table_stats">表格統計（加總/比較）</option>
+            <option value="area_tiling">面積鋪地磚（面積÷面積）</option>
+            <option value="proportional_split">比例分配（比值）</option>
             <option value="time_add">時間加法（進位）</option>
             <option value="unit_convert">單位換算</option>
             <option value="fraction_remaining">分數：用掉/剩下</option>
@@ -432,6 +478,11 @@
       if (kind === 'buy_many') return '下一步：列式「單價×數量」，再做估算（答案一定變大）。';
       if (kind === 'unit_price') return '下一步：列式「總價÷數量」，算出平均每一份。';
       if (kind === 'discount') return '下一步：先算「要付幾%」=100%−折扣%，再用 原價×付費比例。';
+      if (kind === 'make_change') return '下一步：列式「付款金額−實際金額」，算出找零（再檢查找零應該是正數）。';
+      if (kind === 'shopping_two_step') return '下一步：先算兩個小計（單價×數量），再相加得到合計，最後再減折價券/優惠。';
+      if (kind === 'table_stats') return '下一步：把表格中的數字抄下來，照題目要的做加總或相減比較。';
+      if (kind === 'area_tiling') return '下一步：先把單位統一（公尺↔公分），算出房間面積與地磚面積，再用除法求需要幾塊。';
+      if (kind === 'proportional_split') return '下一步：先算「總份數」=比的各部分相加，再算每份=總數÷總份數，最後乘回那個人有幾份。';
       if (kind === 'time_add') return '下一步：先加分鐘；若 ≥60 就進位 1 小時，分鐘−60。';
       if (kind === 'unit_convert') return '下一步：先寫換算關係（例如 1L=1000mL），再決定乘或除。';
       if (kind === 'fraction_remaining') return '下一步：用掉=全體×分數；剩下=全體−用掉。';

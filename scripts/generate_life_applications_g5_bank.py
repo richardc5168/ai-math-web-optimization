@@ -73,10 +73,10 @@ TOPIC = "國小五年級｜生活應用題（講義+練習）"
 
 
 def q_buy_many(i: int) -> Q:
-    unit = random.choice(["瓶", "包", "本", "盒彩"])
-    item = random.choice(["果汁", "餅乾", "筆記本", "巧克力"])
-    price = Decimal(random.choice(["12.5", "18.8", "25.6", "36.5", "45.0"]))
-    qty = random.randint(3, 9)
+    unit = random.choice(["瓶", "包", "本", "盒彩", "顆", "支", "罐", "條"])
+    item = random.choice(["果汁", "餅乾", "筆記本", "巧克力", "牛奶", "麵包", "果凍", "原子筆", "橡皮擦", "酸奶"])
+    price = Decimal(random.randint(85, 650)) / Decimal(10)  # 8.5 ~ 65.0
+    qty = random.randint(2, 12)
     total = price * Decimal(qty)
 
     question = f"（買多份）{item} 每{unit} {fmt_money2(price)} 元，買 {qty} {unit}，一共多少元？（可寫小數）"
@@ -114,12 +114,13 @@ def q_buy_many(i: int) -> Q:
 
 
 def q_discount(i: int) -> Q:
-    price = Decimal(random.choice(["80", "120", "150", "240"]))
-    off = random.choice([10, 15, 20, 25, 30])
+    item = random.choice(["外套", "球鞋", "背包", "文具組", "玩具", "書本", "帽子", "水壺"])
+    price = Decimal(random.randrange(80, 505, 5))
+    off = random.choice([5, 10, 15, 20, 25, 30, 35, 40, 45])
     pay_rate = Decimal(100 - off) / Decimal(100)
     pay = price * pay_rate
 
-    question = f"（打折）一件衣服原價 {fmt_money2(price)} 元，打 {off}% 折扣，折扣後要付多少元？（可寫小數）"
+    question = f"（打折）一個{item}原價 {fmt_money2(price)} 元，打 {off}% 折扣，折扣後要付多少元？（可寫小數）"
     answer = fmt_money2(pay)
 
     hints = [
@@ -152,10 +153,10 @@ def q_discount(i: int) -> Q:
 
 
 def q_unit_price(i: int) -> Q:
-    qty = random.randint(4, 12)
-    unit = random.choice(["瓶", "盒", "支", "包"])
-    item = random.choice(["礦泉水", "牛奶", "餅乾", "鉛筆"])
-    price = Decimal(random.choice(["7.5", "8", "9.6", "12.5", "15.2", "18.8", "20.5"]))
+    qty = random.randint(3, 15)
+    unit = random.choice(["瓶", "盒", "支", "包", "本", "個"])
+    item = random.choice(["礦泉水", "牛奶", "餅乾", "鉛筆", "橡皮擦", "筆記本", "果汁"])
+    price = Decimal(random.randint(40, 320)) / Decimal(10)  # 4.0 ~ 32.0
     total = price * Decimal(qty)
 
     question = f"（單價）買 {qty} {unit}{item} 一共 {fmt_money2(total)} 元，平均每{unit}多少元？"
@@ -301,12 +302,25 @@ def q_unit_convert(i: int) -> Q:
 
 
 def q_fraction_remaining(i: int) -> Q:
-    whole = random.randint(18, 60)
-    fr = random.choice([Fraction(1, 4), Fraction(1, 3), Fraction(2, 5), Fraction(3, 8)])
+    thing = random.choice(["繩子", "緞帶", "布條", "木條"])
+    whole = random.randint(12, 90)
+    fr = random.choice(
+        [
+            Fraction(1, 2),
+            Fraction(1, 3),
+            Fraction(1, 4),
+            Fraction(1, 5),
+            Fraction(2, 3),
+            Fraction(3, 4),
+            Fraction(2, 5),
+            Fraction(3, 8),
+            Fraction(5, 6),
+        ]
+    )
     eaten = whole * fr
     left = whole - eaten
 
-    question = f"（分數應用）一條長 {whole} 公尺的繩子，用掉了 {fmt_fraction(fr)}，還剩多少公尺？"
+    question = f"（分數應用）一條長 {whole} 公尺的{thing}，用掉了 {fmt_fraction(fr)}，還剩多少公尺？"
     eaten_s = fmt_decimal_from_fraction(eaten)
     left_s = fmt_decimal_from_fraction(left)
 
@@ -339,7 +353,267 @@ def q_fraction_remaining(i: int) -> Q:
     )
 
 
-def build_bank(target_total: int = 120) -> List[Dict[str, Any]]:
+def q_make_change(i: int) -> Q:
+    item = random.choice(["早餐", "午餐便當", "文具", "飲料", "點心"])
+    price = Decimal(random.choice(["35", "48", "56", "63", "75", "88", "105", "128", "156", "175"]))
+
+    pay_choices = [
+        ((price // Decimal(50)) + 1) * Decimal(50),
+        ((price // Decimal(100)) + 1) * Decimal(100),
+        ((price // Decimal(200)) + 1) * Decimal(200),
+    ]
+    pay = random.choice([p for p in pay_choices if p >= price])
+    change = pay - price
+
+    question = (
+        f"（找零/湊整）買{item}花了 {fmt_money2(price)} 元，"
+        f"用 {fmt_money2(pay)} 元付款，找回多少元？（可寫小數）"
+    )
+    answer = fmt_money2(change)
+
+    hints = [
+        "觀念：找零＝付款金額 − 實際金額。",
+        f"列式：{fmt_money2(pay)} − {fmt_money2(price)}。",
+        "Level 3｜步驟\n"
+        f"1) 列式：{fmt_money2(pay)}-{fmt_money2(price)}\n"
+        f"2) 計算：{answer}（元）",
+    ]
+
+    steps = [
+        "找零 = 付款 − 總價",
+        f"{fmt_money2(pay)} − {fmt_money2(price)} = {answer}",
+        "寫上單位：元",
+    ]
+
+    return Q(
+        id=f"la5_chg_{i:03d}",
+        kind="make_change",
+        difficulty="easy",
+        question=question,
+        answer=answer,
+        answer_mode="money2",
+        hints=hints,
+        steps=steps,
+        meta={"unit": "元"},
+        explanation=f"找零 = {fmt_money2(pay)} − {fmt_money2(price)} = {answer}（元）。",
+    )
+
+
+def q_two_step_shopping(i: int) -> Q:
+    item1 = random.choice(["果汁", "牛奶", "餅乾", "橡皮擦", "鉛筆"]) 
+    unit1 = random.choice(["瓶", "盒", "包", "個", "支"]) 
+    p1 = Decimal(random.choice(["8.5", "12.5", "15.2", "18.8", "25.6"]))
+    q1 = random.randint(2, 6)
+
+    item2 = random.choice(["麵包", "巧克力", "筆記本", "貼紙", "果凍"]) 
+    unit2 = random.choice(["個", "包", "本", "張", "盒"]) 
+    p2 = Decimal(random.choice(["9.6", "16.5", "20.5", "36.5", "45.0"]))
+    q2 = random.randint(2, 6)
+
+    total = p1 * Decimal(q1) + p2 * Decimal(q2)
+
+    coupon = Decimal(random.choice(["10", "20", "30", "40"]))
+    if coupon >= total:
+        coupon = Decimal("10")
+    pay = total - coupon
+
+    question = (
+        "（兩段式購物）"
+        f"{item1} 每{unit1} {fmt_money2(p1)} 元，買 {q1} {unit1}；"
+        f"{item2} 每{unit2} {fmt_money2(p2)} 元，買 {q2} {unit2}。"
+        f"結帳時用了 {fmt_money2(coupon)} 元折價券，實付多少元？（可寫小數）"
+    )
+    answer = fmt_money2(pay)
+
+    hints = [
+        "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
+        f"列式：({fmt_money2(p1)}×{q1}) + ({fmt_money2(p2)}×{q2}) − {fmt_money2(coupon)}。",
+        "Level 3｜步驟\n"
+        f"1) 小計1：{fmt_money2(p1)}×{q1} = {fmt_money2(p1*Decimal(q1))}\n"
+        f"2) 小計2：{fmt_money2(p2)}×{q2} = {fmt_money2(p2*Decimal(q2))}\n"
+        f"3) 合計：{fmt_money2(total)}\n"
+        f"4) 減折價券：{fmt_money2(total)}-{fmt_money2(coupon)} = {answer}（元）",
+    ]
+
+    steps = [
+        "分別算小計：單價×數量",
+        "合計：小計相加",
+        "實付：合計 − 折價券",
+    ]
+
+    return Q(
+        id=f"la5_2st_{i:03d}",
+        kind="shopping_two_step",
+        difficulty="medium",
+        question=question,
+        answer=answer,
+        answer_mode="money2",
+        hints=hints,
+        steps=steps,
+        meta={"unit": "元"},
+        explanation=f"先算各自小計再合計 {fmt_money2(total)}，最後減 {fmt_money2(coupon)} 得 {answer}（元）。",
+    )
+
+
+def q_table_stats(i: int) -> Q:
+    cats = random.sample(["蘋果", "香蕉", "橘子", "葡萄", "草莓", "梨子"], 4)
+    a, b, c, d = [random.randint(6, 28) for _ in range(4)]
+    table = (
+        f"{cats[0]}：{a} 個\n"
+        f"{cats[1]}：{b} 個\n"
+        f"{cats[2]}：{c} 個\n"
+        f"{cats[3]}：{d} 個"
+    )
+
+    mode = random.choice(["total", "diff", "most"])
+    if mode == "total":
+        ans = a + b + c + d
+        question = f"（表格統計）水果數量如下：\n{table}\n一共多少個水果？（只寫數字）"
+        hints = [
+            "觀念：總數＝把各項數量相加。",
+            f"列式：{a}+{b}+{c}+{d}。",
+            f"Level 3｜計算：{a}+{b}+{c}+{d} = {ans}。",
+        ]
+        steps = ["把四個數相加", f"得到 {ans}"]
+        explanation = f"總數 = {a}+{b}+{c}+{d} = {ans}（個）。"
+    elif mode == "diff":
+        ans = abs(a - b)
+        question = f"（表格統計）水果數量如下：\n{table}\n{cats[0]}比{cats[1]}多(或少)多少個？（只寫數字）"
+        hints = [
+            "觀念：比較多/少多少 → 用減法，取差。",
+            f"列式：|{a}−{b}|。",
+            f"Level 3｜計算：|{a}−{b}| = {ans}。",
+        ]
+        steps = ["用減法求差", f"|{a}−{b}| = {ans}"]
+        explanation = f"差 = |{a}−{b}| = {ans}（個）。"
+    else:
+        values = {cats[0]: a, cats[1]: b, cats[2]: c, cats[3]: d}
+        best = max(values, key=values.get)
+        ans = values[best]
+        question = f"（表格統計）水果數量如下：\n{table}\n最多的是哪一種水果？（請輸入它的數量，只寫數字）"
+        hints = [
+            "觀念：先找最大值。",
+            "方法：比較四個數，找出最大那個。",
+            f"Level 3｜最大的是 {best}，數量 {ans}。",
+        ]
+        steps = ["比較四個數大小", f"最大值是 {ans}"]
+        explanation = f"四項中最大的是 {best}，共有 {ans}（個）。"
+
+    return Q(
+        id=f"la5_tbl_{i:03d}",
+        kind="table_stats",
+        difficulty="easy",
+        question=question,
+        answer=str(ans),
+        answer_mode="number",
+        hints=hints,
+        steps=steps,
+        meta={"unit": "個"},
+        explanation=explanation,
+    )
+
+
+def q_area_tiling(i: int) -> Q:
+    room_m_l = random.randint(2, 8)
+    room_m_w = random.randint(2, 7)
+    tile_cm = random.choice([25, 30, 40, 50])
+
+    room_cm_l = room_m_l * 100
+    room_cm_w = room_m_w * 100
+    room_area = room_cm_l * room_cm_w
+    tile_area = tile_cm * tile_cm
+
+    if room_area % tile_area != 0:
+        # make it divisible by adjusting width
+        room_cm_w = (room_cm_w // tile_cm) * tile_cm
+        if room_cm_w == 0:
+            room_cm_w = tile_cm
+        room_area = room_cm_l * room_cm_w
+
+    tiles = room_area // tile_area
+    question = (
+        "（面積鋪地磚）"
+        f"房間長 {room_m_l} 公尺、寬 {room_cm_w//100} 公尺，"
+        f"要鋪 {tile_cm} 公分×{tile_cm} 公分的正方形地磚，至少需要幾塊？（只寫數字）"
+    )
+
+    hints = [
+        "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+        "方法：把公尺換成公分後，用 面積=長×寬。",
+        "Level 3｜步驟\n"
+        f"1) 房間：{room_cm_l}×{room_cm_w} = {room_area}（平方公分）\n"
+        f"2) 地磚：{tile_cm}×{tile_cm} = {tile_area}（平方公分）\n"
+        f"3) 需要：{room_area}÷{tile_area} = {tiles}（塊）",
+    ]
+
+    steps = [
+        "公尺換算成公分",
+        "房間面積 = 長×寬",
+        "地磚面積 = 邊長×邊長",
+        "用除法求塊數",
+    ]
+
+    return Q(
+        id=f"la5_area_{i:03d}",
+        kind="area_tiling",
+        difficulty="medium",
+        question=question,
+        answer=str(tiles),
+        answer_mode="number",
+        hints=hints,
+        steps=steps,
+        meta={"unit": "塊"},
+        explanation=f"房間面積 {room_area}（cm²），每塊 {tile_area}（cm²），所以需要 {tiles}（塊）。",
+    )
+
+
+def q_proportional_split(i: int) -> Q:
+    names = random.sample(["甲", "乙", "丙", "丁"], 3)
+    a = random.randint(1, 5)
+    b = random.randint(1, 6)
+    c = random.randint(1, 7)
+    s = a + b + c
+    k = random.randint(6, 20)
+    total = s * k
+    pick = random.choice([(names[0], a), (names[1], b), (names[2], c)])
+    who, part = pick
+    share = part * k
+
+    question = (
+        "（比例分配）"
+        f"把 {total} 顆糖按 {names[0]}:{names[1]}:{names[2]} = {a}:{b}:{c} 分配，"
+        f"{who} 分到幾顆？（只寫數字）"
+    )
+
+    hints = [
+        "觀念：先把比的各部分加起來，算出『總份數』。",
+        f"方法：總份數={a}+{b}+{c}={s}；每份={total}÷{s}。",
+        "Level 3｜步驟\n"
+        f"1) 每份：{total}÷{s} = {k}\n"
+        f"2) {who} 有 {part} 份：{part}×{k} = {share}（顆）",
+    ]
+
+    steps = [
+        "總份數 = 比的各部分相加",
+        "每份 = 總數 ÷ 總份數",
+        "某人份數 × 每份 = 分到的數量",
+    ]
+
+    return Q(
+        id=f"la5_prop_{i:03d}",
+        kind="proportional_split",
+        difficulty="medium",
+        question=question,
+        answer=str(share),
+        answer_mode="number",
+        hints=hints,
+        steps=steps,
+        meta={"unit": "顆"},
+        explanation=f"總份數 {s}，每份 {k}；{who} {part} 份，所以 {part}×{k}={share}（顆）。",
+    )
+
+
+def build_bank(target_total: int = 240) -> List[Dict[str, Any]]:
     generators: Dict[str, Any] = {
         "buy_many": q_buy_many,
         "discount": q_discount,
@@ -347,15 +621,25 @@ def build_bank(target_total: int = 120) -> List[Dict[str, Any]]:
         "time_add": q_time_add,
         "unit_convert": q_unit_convert,
         "fraction_remaining": q_fraction_remaining,
+        "make_change": q_make_change,
+        "shopping_two_step": q_two_step_shopping,
+        "table_stats": q_table_stats,
+        "area_tiling": q_area_tiling,
+        "proportional_split": q_proportional_split,
     }
 
     quotas: Dict[str, int] = {
-        "buy_many": 25,
-        "discount": 20,
-        "unit_price": 20,
+        "buy_many": 28,
+        "unit_price": 25,
+        "discount": 25,
         "time_add": 20,
         "unit_convert": 20,
-        "fraction_remaining": 15,
+        "fraction_remaining": 18,
+        "make_change": 22,
+        "shopping_two_step": 22,
+        "table_stats": 20,
+        "area_tiling": 20,
+        "proportional_split": 20,
     }
 
     seen_questions: set[str] = set()
@@ -417,7 +701,7 @@ def build_bank(target_total: int = 120) -> List[Dict[str, Any]]:
 
 
 def main() -> None:
-    bank = build_bank(target_total=120)
+    bank = build_bank(target_total=240)
     OUT_JS.parent.mkdir(parents=True, exist_ok=True)
 
     payload = json.dumps(bank, ensure_ascii=False, indent=2)
