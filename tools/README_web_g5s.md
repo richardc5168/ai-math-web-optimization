@@ -29,6 +29,7 @@ Output:
 
 ## Integrate into backend
 - New `type_key`: `g5s_web_concepts_v1`
+- Display name: `20260203 小五下網路精選`
 - API: call `/v1/questions/next?topic_key=g5s_web_concepts_v1`
 
 ## Add new sources

@@ -1365,7 +1365,7 @@ GENERATORS: Dict[str, Tuple[str, Any]] = {
 
 # Register new isolated type_key (pack-based)
 if g5s_web_concepts is not None:
-    GENERATORS["g5s_web_concepts_v1"] = ("五下｜網路觀念題（新）", g5s_web_concepts.next_question)
+    GENERATORS["g5s_web_concepts_v1"] = ("20260203 小五下網路精選", g5s_web_concepts.next_question)
 if HAS_SYMPY:
     GENERATORS["9"] = ("一元一次方程", gen_linear_equation)
     GENERATORS["linear"] = GENERATORS["9"]
