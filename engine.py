@@ -62,6 +62,12 @@ try:
 except Exception:
     generate_fraction_word_problem_g5 = None
 
+# New isolated question type (pack-based, non-regression)
+try:
+    from question_types.g5s_web_concepts import type as g5s_web_concepts
+except Exception:
+    g5s_web_concepts = None
+
 
 # ======================================================================
 # ENGINE (出題 / 判題 / 自訂題目解題)
@@ -111,6 +117,15 @@ def check(user_answer: str, correct_answer: str) -> Optional[int]:
     """
     user = (user_answer or "").strip()
     correct = (correct_answer or "").strip()
+
+    # New type: JSON payload with type_key + validator.
+    if correct.startswith("{") and g5s_web_concepts is not None:
+        try:
+            payload = json.loads(correct)
+            if isinstance(payload, dict) and payload.get("type_key") == getattr(g5s_web_concepts, "TYPE_KEY", ""):
+                return g5s_web_concepts.check_answer(user, payload)
+        except Exception:
+            pass
 
     # 多值答案（以空格分隔）：GCD LCM、通分、公分母 新分子...
     user_clean = re.sub(r'[^0-9\s]', '', user)
@@ -1347,6 +1362,10 @@ GENERATORS: Dict[str, Tuple[str, Any]] = {
     "linear": ("一元一次方程", gen_linear_equation),
     "quadratic": ("一元二次方程式", gen_quadratic_equation)
 }
+
+# Register new isolated type_key (pack-based)
+if g5s_web_concepts is not None:
+    GENERATORS["g5s_web_concepts_v1"] = ("五下｜網路觀念題（新）", g5s_web_concepts.next_question)
 if HAS_SYMPY:
     GENERATORS["9"] = ("一元一次方程", gen_linear_equation)
     GENERATORS["linear"] = GENERATORS["9"]

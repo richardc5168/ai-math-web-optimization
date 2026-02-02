@@ -1,0 +1,1043 @@
+{
+  "type_key": "g5s_web_concepts_v1",
+  "version": "v20260203",
+  "generated_at": "2026-02-03T01:17:21",
+  "items": [
+    {
+      "id": "webg5s_0001",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）240 的 25% 是多少？（填整數）",
+      "answer": "60",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：240×25% = 240×25/100。",
+        "level3": "240×25/100 = 60"
+      },
+      "steps": [
+        "步驟 1：把 25% 變成 25/100。",
+        "步驟 2：列式：240×25/100。",
+        "步驟 3：計算：240×25 = 6000。",
+        "步驟 4：6000÷100 = 60。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0002",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent",
+        "discount"
+      ],
+      "concept_points": [
+        "打折＝剩下百分率",
+        "現價 = 原價 × 剩下百分率"
+      ],
+      "difficulty": "medium",
+      "question": "（打折）原價 200 元，打 80 折（等於打 20% 折扣），現價是多少元？（填整數）",
+      "answer": "160",
+      "hints": {
+        "level1": "先分清楚：打折就是『剩下幾成/幾%』。",
+        "level2": "現價 = 原價 × (100%−20%) = 200×80%。",
+        "level3": "200×80% = 200×0.8 = 160（元）"
+      },
+      "steps": [
+        "步驟 1：折扣 20% 表示剩下 80%。",
+        "步驟 2：列式：200×80%。",
+        "步驟 3：80% = 80/100。",
+        "步驟 4：200×80/100 = 160。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "元",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0003",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "area"
+      ],
+      "concept_points": [
+        "1 公頃 = 10,000 平方公尺",
+        "換算就是乘或除固定倍率"
+      ],
+      "difficulty": "easy",
+      "question": "（面積換算）25 公頃 = 多少平方公尺？（填整數）",
+      "answer": "250000",
+      "hints": {
+        "level1": "先想：公頃和平方公尺的換算關係。",
+        "level2": "1 公頃 = 10,000 平方公尺，所以要乘 10,000。",
+        "level3": "25×10,000 = 250000（平方公尺）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 公頃 = 10,000 平方公尺。",
+        "步驟 2：列式：25×10,000。",
+        "步驟 3：計算：25×10,000 = 250000。",
+        "步驟 4：加上單位（平方公尺）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "m2",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0004",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "time"
+      ],
+      "concept_points": [
+        "時間可以先換成分鐘再計算",
+        "最後再換回 HH:MM"
+      ],
+      "difficulty": "easy",
+      "question": "（時間）現在是 16:15，再過 90 分鐘是幾點幾分？（用 HH:MM）",
+      "answer": "17:45",
+      "hints": {
+        "level1": "先把時間改成『分鐘』會更好算。",
+        "level2": "16:15 = 16×60+15 分鐘，然後再加 90 分鐘。",
+        "level3": "算完再換回 HH:MM：答案 17:45"
+      },
+      "steps": [
+        "步驟 1：換成分鐘：16×60+15 = 975（分鐘）。",
+        "步驟 2：加上 90：975+90 = 1065（分鐘）。",
+        "步驟 3：換回時間：1065 ÷ 60 = 17 餘 45。",
+        "步驟 4：所以是 17:45。"
+      ],
+      "validator": {
+        "type": "time_hhmm"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0005",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "volume"
+      ],
+      "concept_points": [
+        "1 公升 = 1000 毫升",
+        "換算倍率固定"
+      ],
+      "difficulty": "easy",
+      "question": "（容積換算）1.2 公升 = 多少毫升？（填整數）",
+      "answer": "1200",
+      "hints": {
+        "level1": "先記住：公升和毫升的換算。",
+        "level2": "1 公升 = 1000 毫升，所以要乘 1000。",
+        "level3": "1.2×1000 = 1200（毫升）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 L = 1000 mL。",
+        "步驟 2：列式：1.2×1000。",
+        "步驟 3：計算：1.2×1000 = 1200。",
+        "步驟 4：加上單位（毫升）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "mL",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0006",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "fractions",
+        "multiply"
+      ],
+      "concept_points": [
+        "分數乘法：分子乘分子、分母乘分母",
+        "最後約分到最簡"
+      ],
+      "difficulty": "medium",
+      "question": "（分數乘法）4/2 × 3/4 = ?（填最簡分數）",
+      "answer": "3/2",
+      "hints": {
+        "level1": "分數乘法：分子乘分子，分母乘分母。",
+        "level2": "可以先交叉約分，計算會更快。",
+        "level3": "答案：3/2"
+      },
+      "steps": [
+        "步驟 1：列式：4/2 × 3/4。",
+        "步驟 2：分子：4×3 = 12；分母：2×4 = 8。",
+        "步驟 3：約分：(12)/(8) = 3/2。"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0007",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）240 的 40% 是多少？（填整數）",
+      "answer": "96",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：240×40% = 240×40/100。",
+        "level3": "240×40/100 = 96"
+      },
+      "steps": [
+        "步驟 1：把 40% 變成 40/100。",
+        "步驟 2：列式：240×40/100。",
+        "步驟 3：計算：240×40 = 9600。",
+        "步驟 4：9600÷100 = 96。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0008",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "volume"
+      ],
+      "concept_points": [
+        "1 公升 = 1000 毫升",
+        "換算倍率固定"
+      ],
+      "difficulty": "easy",
+      "question": "（容積換算）3.5 公升 = 多少毫升？（填整數）",
+      "answer": "3500",
+      "hints": {
+        "level1": "先記住：公升和毫升的換算。",
+        "level2": "1 公升 = 1000 毫升，所以要乘 1000。",
+        "level3": "3.5×1000 = 3500（毫升）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 L = 1000 mL。",
+        "步驟 2：列式：3.5×1000。",
+        "步驟 3：計算：3.5×1000 = 3500。",
+        "步驟 4：加上單位（毫升）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "mL",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0009",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）300 的 40% 是多少？（填整數）",
+      "answer": "120",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：300×40% = 300×40/100。",
+        "level3": "300×40/100 = 120"
+      },
+      "steps": [
+        "步驟 1：把 40% 變成 40/100。",
+        "步驟 2：列式：300×40/100。",
+        "步驟 3：計算：300×40 = 12000。",
+        "步驟 4：12000÷100 = 120。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0010",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "area"
+      ],
+      "concept_points": [
+        "1 公頃 = 10,000 平方公尺",
+        "換算就是乘或除固定倍率"
+      ],
+      "difficulty": "easy",
+      "question": "（面積換算）8 公頃 = 多少平方公尺？（填整數）",
+      "answer": "80000",
+      "hints": {
+        "level1": "先想：公頃和平方公尺的換算關係。",
+        "level2": "1 公頃 = 10,000 平方公尺，所以要乘 10,000。",
+        "level3": "8×10,000 = 80000（平方公尺）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 公頃 = 10,000 平方公尺。",
+        "步驟 2：列式：8×10,000。",
+        "步驟 3：計算：8×10,000 = 80000。",
+        "步驟 4：加上單位（平方公尺）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "m2",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0011",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "volume"
+      ],
+      "concept_points": [
+        "1 公升 = 1000 毫升",
+        "換算倍率固定"
+      ],
+      "difficulty": "easy",
+      "question": "（容積換算）1.5 公升 = 多少毫升？（填整數）",
+      "answer": "1500",
+      "hints": {
+        "level1": "先記住：公升和毫升的換算。",
+        "level2": "1 公升 = 1000 毫升，所以要乘 1000。",
+        "level3": "1.5×1000 = 1500（毫升）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 L = 1000 mL。",
+        "步驟 2：列式：1.5×1000。",
+        "步驟 3：計算：1.5×1000 = 1500。",
+        "步驟 4：加上單位（毫升）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "mL",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0012",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）160 的 25% 是多少？（填整數）",
+      "answer": "40",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：160×25% = 160×25/100。",
+        "level3": "160×25/100 = 40"
+      },
+      "steps": [
+        "步驟 1：把 25% 變成 25/100。",
+        "步驟 2：列式：160×25/100。",
+        "步驟 3：計算：160×25 = 4000。",
+        "步驟 4：4000÷100 = 40。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0013",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）200 的 25% 是多少？（填整數）",
+      "answer": "50",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：200×25% = 200×25/100。",
+        "level3": "200×25/100 = 50"
+      },
+      "steps": [
+        "步驟 1：把 25% 變成 25/100。",
+        "步驟 2：列式：200×25/100。",
+        "步驟 3：計算：200×25 = 5000。",
+        "步驟 4：5000÷100 = 50。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0014",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "volume"
+      ],
+      "concept_points": [
+        "1 公升 = 1000 毫升",
+        "換算倍率固定"
+      ],
+      "difficulty": "easy",
+      "question": "（容積換算）2.4 公升 = 多少毫升？（填整數）",
+      "answer": "2400",
+      "hints": {
+        "level1": "先記住：公升和毫升的換算。",
+        "level2": "1 公升 = 1000 毫升，所以要乘 1000。",
+        "level3": "2.4×1000 = 2400（毫升）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 L = 1000 mL。",
+        "步驟 2：列式：2.4×1000。",
+        "步驟 3：計算：2.4×1000 = 2400。",
+        "步驟 4：加上單位（毫升）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "mL",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0015",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）80 的 25% 是多少？（填整數）",
+      "answer": "20",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：80×25% = 80×25/100。",
+        "level3": "80×25/100 = 20"
+      },
+      "steps": [
+        "步驟 1：把 25% 變成 25/100。",
+        "步驟 2：列式：80×25/100。",
+        "步驟 3：計算：80×25 = 2000。",
+        "步驟 4：2000÷100 = 20。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0016",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "time"
+      ],
+      "concept_points": [
+        "時間可以先換成分鐘再計算",
+        "最後再換回 HH:MM"
+      ],
+      "difficulty": "easy",
+      "question": "（時間）現在是 18:10，再過 75 分鐘是幾點幾分？（用 HH:MM）",
+      "answer": "19:25",
+      "hints": {
+        "level1": "先把時間改成『分鐘』會更好算。",
+        "level2": "18:10 = 18×60+10 分鐘，然後再加 75 分鐘。",
+        "level3": "算完再換回 HH:MM：答案 19:25"
+      },
+      "steps": [
+        "步驟 1：換成分鐘：18×60+10 = 1090（分鐘）。",
+        "步驟 2：加上 75：1090+75 = 1165（分鐘）。",
+        "步驟 3：換回時間：1165 ÷ 60 = 19 餘 25。",
+        "步驟 4：所以是 19:25。"
+      ],
+      "validator": {
+        "type": "time_hhmm"
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0017",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent",
+        "discount"
+      ],
+      "concept_points": [
+        "打折＝剩下百分率",
+        "現價 = 原價 × 剩下百分率"
+      ],
+      "difficulty": "medium",
+      "question": "（打折）原價 200 元，打 90 折（等於打 10% 折扣），現價是多少元？（填整數）",
+      "answer": "180",
+      "hints": {
+        "level1": "先分清楚：打折就是『剩下幾成/幾%』。",
+        "level2": "現價 = 原價 × (100%−10%) = 200×90%。",
+        "level3": "200×90% = 200×0.9 = 180（元）"
+      },
+      "steps": [
+        "步驟 1：折扣 10% 表示剩下 90%。",
+        "步驟 2：列式：200×90%。",
+        "步驟 3：90% = 90/100。",
+        "步驟 4：200×90/100 = 180。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "元",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0018",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "time"
+      ],
+      "concept_points": [
+        "時間可以先換成分鐘再計算",
+        "最後再換回 HH:MM"
+      ],
+      "difficulty": "easy",
+      "question": "（時間）現在是 12:30，再過 75 分鐘是幾點幾分？（用 HH:MM）",
+      "answer": "13:45",
+      "hints": {
+        "level1": "先把時間改成『分鐘』會更好算。",
+        "level2": "12:30 = 12×60+30 分鐘，然後再加 75 分鐘。",
+        "level3": "算完再換回 HH:MM：答案 13:45"
+      },
+      "steps": [
+        "步驟 1：換成分鐘：12×60+30 = 750（分鐘）。",
+        "步驟 2：加上 75：750+75 = 825（分鐘）。",
+        "步驟 3：換回時間：825 ÷ 60 = 13 餘 45。",
+        "步驟 4：所以是 13:45。"
+      ],
+      "validator": {
+        "type": "time_hhmm"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0019",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent"
+      ],
+      "concept_points": [
+        "求某數的百分之幾：用乘法",
+        "百分率要除以 100"
+      ],
+      "difficulty": "easy",
+      "question": "（百分率）120 的 20% 是多少？（填整數）",
+      "answer": "24",
+      "hints": {
+        "level1": "先把百分率想成『每 100 份裡面有幾份』。",
+        "level2": "列式：120×20% = 120×20/100。",
+        "level3": "120×20/100 = 24"
+      },
+      "steps": [
+        "步驟 1：把 20% 變成 20/100。",
+        "步驟 2：列式：120×20/100。",
+        "步驟 3：計算：120×20 = 2400。",
+        "步驟 4：2400÷100 = 24。"
+      ],
+      "validator": {
+        "type": "number",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0020",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "fractions",
+        "multiply"
+      ],
+      "concept_points": [
+        "分數乘法：分子乘分子、分母乘分母",
+        "最後約分到最簡"
+      ],
+      "difficulty": "medium",
+      "question": "（分數乘法）2/4 × 3/8 = ?（填最簡分數）",
+      "answer": "3/16",
+      "hints": {
+        "level1": "分數乘法：分子乘分子，分母乘分母。",
+        "level2": "可以先交叉約分，計算會更快。",
+        "level3": "答案：3/16"
+      },
+      "steps": [
+        "步驟 1：列式：2/4 × 3/8。",
+        "步驟 2：分子：2×3 = 6；分母：4×8 = 32。",
+        "步驟 3：約分：(6)/(32) = 3/16。"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0021",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent",
+        "discount"
+      ],
+      "concept_points": [
+        "打折＝剩下百分率",
+        "現價 = 原價 × 剩下百分率"
+      ],
+      "difficulty": "medium",
+      "question": "（打折）原價 500 元，打 75 折（等於打 25% 折扣），現價是多少元？（填整數）",
+      "answer": "375",
+      "hints": {
+        "level1": "先分清楚：打折就是『剩下幾成/幾%』。",
+        "level2": "現價 = 原價 × (100%−25%) = 500×75%。",
+        "level3": "500×75% = 500×0.75 = 375（元）"
+      },
+      "steps": [
+        "步驟 1：折扣 25% 表示剩下 75%。",
+        "步驟 2：列式：500×75%。",
+        "步驟 3：75% = 75/100。",
+        "步驟 4：500×75/100 = 375。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "元",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0022",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "fractions",
+        "multiply"
+      ],
+      "concept_points": [
+        "分數乘法：分子乘分子、分母乘分母",
+        "最後約分到最簡"
+      ],
+      "difficulty": "medium",
+      "question": "（分數乘法）2/6 × 3/8 = ?（填最簡分數）",
+      "answer": "1/8",
+      "hints": {
+        "level1": "分數乘法：分子乘分子，分母乘分母。",
+        "level2": "可以先交叉約分，計算會更快。",
+        "level3": "答案：1/8"
+      },
+      "steps": [
+        "步驟 1：列式：2/6 × 3/8。",
+        "步驟 2：分子：2×3 = 6；分母：6×8 = 48。",
+        "步驟 3：約分：(6)/(48) = 1/8。"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0023",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "area"
+      ],
+      "concept_points": [
+        "1 公頃 = 10,000 平方公尺",
+        "換算就是乘或除固定倍率"
+      ],
+      "difficulty": "easy",
+      "question": "（面積換算）12 公頃 = 多少平方公尺？（填整數）",
+      "answer": "120000",
+      "hints": {
+        "level1": "先想：公頃和平方公尺的換算關係。",
+        "level2": "1 公頃 = 10,000 平方公尺，所以要乘 10,000。",
+        "level3": "12×10,000 = 120000（平方公尺）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 公頃 = 10,000 平方公尺。",
+        "步驟 2：列式：12×10,000。",
+        "步驟 3：計算：12×10,000 = 120000。",
+        "步驟 4：加上單位（平方公尺）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "m2",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0024",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "ratio_percent",
+        "discount"
+      ],
+      "concept_points": [
+        "打折＝剩下百分率",
+        "現價 = 原價 × 剩下百分率"
+      ],
+      "difficulty": "medium",
+      "question": "（打折）原價 200 元，打 70 折（等於打 30% 折扣），現價是多少元？（填整數）",
+      "answer": "140",
+      "hints": {
+        "level1": "先分清楚：打折就是『剩下幾成/幾%』。",
+        "level2": "現價 = 原價 × (100%−30%) = 200×70%。",
+        "level3": "200×70% = 200×0.7 = 140（元）"
+      },
+      "steps": [
+        "步驟 1：折扣 30% 表示剩下 70%。",
+        "步驟 2：列式：200×70%。",
+        "步驟 3：70% = 70/100。",
+        "步驟 4：200×70/100 = 140。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "元",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0025",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "fractions",
+        "multiply"
+      ],
+      "concept_points": [
+        "分數乘法：分子乘分子、分母乘分母",
+        "最後約分到最簡"
+      ],
+      "difficulty": "medium",
+      "question": "（分數乘法）4/2 × 1/7 = ?（填最簡分數）",
+      "answer": "2/7",
+      "hints": {
+        "level1": "分數乘法：分子乘分子，分母乘分母。",
+        "level2": "可以先交叉約分，計算會更快。",
+        "level3": "答案：2/7"
+      },
+      "steps": [
+        "步驟 1：列式：4/2 × 1/7。",
+        "步驟 2：分子：4×1 = 4；分母：2×7 = 14。",
+        "步驟 3：約分：(4)/(14) = 2/7。"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0026",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "area"
+      ],
+      "concept_points": [
+        "1 公頃 = 10,000 平方公尺",
+        "換算就是乘或除固定倍率"
+      ],
+      "difficulty": "easy",
+      "question": "（面積換算）3 公頃 = 多少平方公尺？（填整數）",
+      "answer": "30000",
+      "hints": {
+        "level1": "先想：公頃和平方公尺的換算關係。",
+        "level2": "1 公頃 = 10,000 平方公尺，所以要乘 10,000。",
+        "level3": "3×10,000 = 30000（平方公尺）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 公頃 = 10,000 平方公尺。",
+        "步驟 2：列式：3×10,000。",
+        "步驟 3：計算：3×10,000 = 30000。",
+        "步驟 4：加上單位（平方公尺）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "m2",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0027",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "fractions",
+        "multiply"
+      ],
+      "concept_points": [
+        "分數乘法：分子乘分子、分母乘分母",
+        "最後約分到最簡"
+      ],
+      "difficulty": "medium",
+      "question": "（分數乘法）5/9 × 3/7 = ?（填最簡分數）",
+      "answer": "5/21",
+      "hints": {
+        "level1": "分數乘法：分子乘分子，分母乘分母。",
+        "level2": "可以先交叉約分，計算會更快。",
+        "level3": "答案：5/21"
+      },
+      "steps": [
+        "步驟 1：列式：5/9 × 3/7。",
+        "步驟 2：分子：5×3 = 15；分母：9×7 = 63。",
+        "步驟 3：約分：(15)/(63) = 5/21。"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "https://example.com/moe-108-math-g5s",
+        "title": "(mock) moe-108-math-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0028",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "unit_conversion",
+        "area"
+      ],
+      "concept_points": [
+        "1 公頃 = 10,000 平方公尺",
+        "換算就是乘或除固定倍率"
+      ],
+      "difficulty": "easy",
+      "question": "（面積換算）5 公頃 = 多少平方公尺？（填整數）",
+      "answer": "50000",
+      "hints": {
+        "level1": "先想：公頃和平方公尺的換算關係。",
+        "level2": "1 公頃 = 10,000 平方公尺，所以要乘 10,000。",
+        "level3": "5×10,000 = 50000（平方公尺）"
+      },
+      "steps": [
+        "步驟 1：寫出 1 公頃 = 10,000 平方公尺。",
+        "步驟 2：列式：5×10,000。",
+        "步驟 3：計算：5×10,000 = 50000。",
+        "步驟 4：加上單位（平方公尺）。"
+      ],
+      "validator": {
+        "type": "number",
+        "unit": "m2",
+        "tolerance": 0
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0029",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "time"
+      ],
+      "concept_points": [
+        "時間可以先換成分鐘再計算",
+        "最後再換回 HH:MM"
+      ],
+      "difficulty": "easy",
+      "question": "（時間）現在是 17:50，再過 90 分鐘是幾點幾分？（用 HH:MM）",
+      "answer": "19:20",
+      "hints": {
+        "level1": "先把時間改成『分鐘』會更好算。",
+        "level2": "17:50 = 17×60+50 分鐘，然後再加 90 分鐘。",
+        "level3": "算完再換回 HH:MM：答案 19:20"
+      },
+      "steps": [
+        "步驟 1：換成分鐘：17×60+50 = 1070（分鐘）。",
+        "步驟 2：加上 90：1070+90 = 1160（分鐘）。",
+        "步驟 3：換回時間：1160 ÷ 60 = 19 餘 20。",
+        "步驟 4：所以是 19:20。"
+      ],
+      "validator": {
+        "type": "time_hhmm"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    },
+    {
+      "id": "webg5s_0030",
+      "type_key": "g5s_web_concepts_v1",
+      "topic_tags": [
+        "fractions",
+        "multiply"
+      ],
+      "concept_points": [
+        "分數乘法：分子乘分子、分母乘分母",
+        "最後約分到最簡"
+      ],
+      "difficulty": "medium",
+      "question": "（分數乘法）1/3 × 1/4 = ?（填最簡分數）",
+      "answer": "1/12",
+      "hints": {
+        "level1": "分數乘法：分子乘分子，分母乘分母。",
+        "level2": "可以先交叉約分，計算會更快。",
+        "level3": "答案：1/12"
+      },
+      "steps": [
+        "步驟 1：列式：1/3 × 1/4。",
+        "步驟 2：分子：1×1 = 1；分母：3×4 = 12。",
+        "步驟 3：約分：(1)/(12) = 1/12。"
+      ],
+      "validator": {
+        "type": "fraction"
+      },
+      "evidence": {
+        "source_url": "https://example.com/unit-conversion-g5s",
+        "title": "(mock) unit-conversion-g5s"
+      },
+      "generated_at": "2026-02-03T01:17:21"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+# Whitelisted sources for Grade 5 (semester 2) math concept collection.
+# IMPORTANT: Add only sources you are allowed to use.
+# Collector stores ONLY: URL + title + short excerpt (<=200 chars) + extracted concept points.
+# It must NOT copy full question text or full solution text.
+
+sources:
+  - url: "https://example.com/moe-108-math-g5s"
+    title_selector: "title"
+    content_selector: "main"
+    concept_item_selectors:
+      - "li"
+    topic_tags: ["curriculum", "moe", "scope"]
+    notes: "Placeholder. Replace with official MOE curriculum page/PDF landing page."
+
+  - url: "https://example.com/unit-conversion-g5s"
+    title_selector: "title"
+    content_selector: "article"
+    concept_item_selectors:
+      - "h2"
+      - "li"
+    topic_tags: ["unit_conversion", "area", "volume"]
+    notes: "Placeholder. Use open licensed educational material."
+
+  - url: "https://example.com/percent-discount-g5s"
+    title_selector: "title"
+    content_selector: "article"
+    concept_item_selectors:
+      - "h2"
+      - "li"
+    topic_tags: ["ratio_percent", "discount", "markup"]
+    notes: "Placeholder. Ensure license permits summarization."
+
+  - url: "https://example.com/time-calculation-g5s"
+    title_selector: "title"
+    content_selector: "article"
+    concept_item_selectors:
+      - "h2"
+      - "li"
+    topic_tags: ["time", "timeline"]
+    notes: "Placeholder."
+
+  - url: "https://example.com/fractions-multiply-g5s"
+    title_selector: "title"
+    content_selector: "article"
+    concept_item_selectors:
+      - "h2"
+      - "li"
+    topic_tags: ["fractions", "multiply"]
+    notes: "Placeholder."

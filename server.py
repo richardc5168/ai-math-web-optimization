@@ -455,6 +455,18 @@ def row_to_dict(r: sqlite3.Row) -> Dict[str, Any]:
 
 
 def _build_hints(q: Dict[str, Any]) -> Dict[str, str]:
+    # If the generator provides explicit 3-level hints (e.g. new pack-based types), use them.
+    try:
+        h = q.get("hints")
+        if isinstance(h, dict) and all(k in h for k in ("level1", "level2", "level3")):
+            return {
+                "level1": str(h.get("level1") or ""),
+                "level2": str(h.get("level2") or ""),
+                "level3": str(h.get("level3") or ""),
+            }
+    except Exception:
+        pass
+
     # Prefer engine's internal helper if present.
     if engine is not None and hasattr(engine, "get_question_hints"):
         try:
