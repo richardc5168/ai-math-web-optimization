@@ -32,6 +32,24 @@ def _to_str(x: float) -> str:
     return s if s else "0"
 
 
+def _int_places_to_str_fixed(n: int, places: int) -> str:
+        """Convert integer `n` into a fixed-decimal string with exactly `places` digits.
+
+        Examples:
+            n=123, places=1 -> '12.3'
+            n=5, places=2 -> '0.05'
+            n=120, places=2 -> '1.20'
+        """
+
+        sign = "-" if n < 0 else ""
+        a = abs(int(n))
+        p = int(places)
+        if p <= 0:
+                return f"{sign}{a}"
+        s = str(a).rjust(p + 1, "0")
+        return f"{sign}{s[:-p]}.{s[-p:]}"
+
+
 def _gcd(a: int, b: int) -> int:
     return math.gcd(a, b)
 
@@ -77,19 +95,16 @@ class Q:
 
 
 def q_decimal_mul(r: random.Random, idx: int) -> Q:
-    # a (1-2 decimals) * int
-    a = r.randint(12, 399) / (10 if r.random() < 0.6 else 100)
+    # a (1-2 decimals) * int, generated exactly with integers to avoid float rounding
+    a_places = 1 if r.random() < 0.6 else 2
+    a_int = r.randint(12, 399)
     b = r.randint(2, 9)
-    ans = a * b
+    raw = a_int * b
+    a_s = _int_places_to_str_fixed(a_int, a_places)
+    ans_s = _int_places_to_str_fixed(raw, a_places)
     unit = _pick(r, ["公尺", "公斤", "元", "公升"]) if r.random() < 0.6 else ""
     ctx = _pick(r, ["每份", "每袋", "每瓶", "每段"]) if unit else "每個"
-    q = f"（帝國｜小數乘法）{ctx} {_to_str(a)} {unit}，有 {b} 份，一共多少 {unit}？（可寫小數）"
-
-    # meta for workshop
-    a_s = _to_str(a)
-    a_places = len(a_s.split(".")[1]) if "." in a_s else 0
-    a_int = int(round(a * (10**a_places)))
-    raw = a_int * b
+    q = f"（帝國｜小數乘法）{ctx} {a_s} {unit}，有 {b} 份，一共多少 {unit}？（可寫小數）"
 
     return Q(
         id=f"g5e_decimal_mul_{idx:03d}",
@@ -97,11 +112,11 @@ def q_decimal_mul(r: random.Random, idx: int) -> Q:
         topic="五年級｜帝國互動闖關",
         difficulty="easy" if a_places == 1 else "medium",
         question=q,
-        answer=_to_str(ans),
+        answer=ans_s,
         answer_mode="number",
         hints=[
             "觀念：小數×整數 → 先當整數算，再放回小數點。",
-            f"列式：{_to_str(a)}×{b}。先估算方向：乘 {b}（>1）答案應該變大。",
+            f"列式：{a_s}×{b}。先估算方向：乘 {b}（>1）答案應該變大。",
             "Level 3｜互動：先做整數乘法（拿掉小數點），再依小數位數放回去。",
         ],
         steps=[
@@ -110,7 +125,7 @@ def q_decimal_mul(r: random.Random, idx: int) -> Q:
             "依小數位數放回小數點",
             "估算檢查大小是否合理",
         ],
-        explanation=f"{_to_str(a)}×{b}={_to_str(ans)}。",
+        explanation=f"{a_s}×{b}={ans_s}。",
         meta={
             "a": a_s,
             "b": str(b),
@@ -125,26 +140,30 @@ def q_decimal_mul(r: random.Random, idx: int) -> Q:
 
 
 def q_decimal_div(r: random.Random, idx: int) -> Q:
-    # decimal / int
+    # decimal / int, guaranteed terminating with <=2 decimal places
     b = r.randint(2, 9)
-    # ensure divisibility to finite decimal with <=2 places
-    base = r.randint(10, 600)
-    a = base / (10 if r.random() < 0.55 else 100)
-    ans = a / b
+    a_places = 0 if r.random() < 0.25 else (1 if r.random() < 0.7 else 2)
+    # Work in integers: let a_int = b * k, where a = a_int / 10^a_places, ans = k / 10^a_places
+    k_min = max(1, math.ceil(10 / b))
+    k_max = max(k_min, 600 // b)
+    k = r.randint(k_min, k_max)
+    a_int = b * k
+    a_s = _int_places_to_str_fixed(a_int, a_places)
+    ans_s = _int_places_to_str_fixed(k, a_places)
     unit = _pick(r, ["公尺", "公斤", "元", "公升"]) if r.random() < 0.6 else ""
-    q = f"（帝國｜小數除法）把 {_to_str(a)} {unit} 平均分成 {b} 份，每份是多少 {unit}？（可寫小數）"
+    q = f"（帝國｜小數除法）把 {a_s} {unit} 平均分成 {b} 份，每份是多少 {unit}？（可寫小數）"
 
     return Q(
         id=f"g5e_decimal_div_{idx:03d}",
         kind="decimal_div",
         topic="五年級｜帝國互動闖關",
-        difficulty="easy" if "." in _to_str(ans) else "medium",
+        difficulty="easy" if a_places <= 1 else "medium",
         question=q,
-        answer=_to_str(ans),
+        answer=ans_s,
         answer_mode="number",
         hints=[
             "觀念：平均分配 → 用除法。",
-            f"列式：{_to_str(a)}÷{b}。不夠除就補 0。",
+            f"列式：{a_s}÷{b}。不夠除就補 0。",
             "Level 3｜互動：商的小數點要和被除數的小數點對齊（往上點）。",
         ],
         steps=[
@@ -153,8 +172,16 @@ def q_decimal_div(r: random.Random, idx: int) -> Q:
             "小數點對齊",
             "用乘回去檢查",
         ],
-        explanation=f"{_to_str(a)}÷{b}={_to_str(ans)}。",
-        meta={"a": _to_str(a), "b": str(b), "unit": unit},
+        explanation=f"{a_s}÷{b}={ans_s}。",
+        meta={
+            "a": a_s,
+            "b": str(b),
+            "a_int": a_int,
+            "a_places": a_places,
+            "ans_int": k,
+            "ans_places": a_places,
+            "unit": unit,
+        },
     )
 
 

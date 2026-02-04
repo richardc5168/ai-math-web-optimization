@@ -18,6 +18,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from math import gcd
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -55,6 +56,20 @@ def _parse_number(s: str) -> float:
     if v != v or v in (float("inf"), float("-inf")):
         raise ValueError("not finite")
     return v
+
+
+def _parse_decimal(s: str) -> Decimal:
+    try:
+        return Decimal(str(s).strip().replace(",", ""))
+    except InvalidOperation as e:
+        raise ValueError("not decimal") from e
+
+
+def _expected_from_int_places(n: int, places: int) -> Decimal:
+    p = int(places)
+    if p <= 0:
+        return Decimal(int(n))
+    return Decimal(int(n)) / (Decimal(10) ** p)
 
 
 def _parse_fraction(s: str) -> Tuple[int, int]:
@@ -141,6 +156,59 @@ def verify() -> List[Fail]:
             continue
 
         # Tool-driven meta requirements
+        if kind == "decimal_mul":
+            for k in ("a", "b", "a_int", "b_int", "a_places", "raw_int_product", "total_places"):
+                if k not in meta:
+                    fails.append(Fail(i, qid, f"decimal_mul meta missing {k}"))
+            if not any(f.idx == i for f in fails):
+                try:
+                    a_int = int(meta["a_int"])
+                    b_int = int(meta["b_int"])
+                    a_places = int(meta["a_places"])
+                    raw = int(meta["raw_int_product"])
+                    total_places = int(meta["total_places"])
+                    if a_places != total_places:
+                        fails.append(Fail(i, qid, "decimal_mul a_places != total_places"))
+                    if raw != a_int * b_int:
+                        fails.append(Fail(i, qid, "decimal_mul raw_int_product mismatch"))
+                    # Validate displayed a matches a_int/a_places, and answer matches raw/total_places
+                    a_val = _parse_decimal(meta["a"])
+                    exp_a = _expected_from_int_places(a_int, a_places)
+                    if a_val != exp_a:
+                        fails.append(Fail(i, qid, "decimal_mul meta a mismatch (a_int/a_places)"))
+                    ans_val = _parse_decimal(q["answer"])
+                    exp_ans = _expected_from_int_places(raw, total_places)
+                    if ans_val != exp_ans:
+                        fails.append(Fail(i, qid, "decimal_mul answer mismatch (raw_int_product/places)"))
+                except Exception as e:  # noqa: BLE001
+                    fails.append(Fail(i, qid, f"decimal_mul meta validation failed: {e}"))
+
+        if kind == "decimal_div":
+            for k in ("a", "b", "a_int", "a_places", "ans_int", "ans_places"):
+                if k not in meta:
+                    fails.append(Fail(i, qid, f"decimal_div meta missing {k}"))
+            if not any(f.idx == i for f in fails):
+                try:
+                    b_int = int(meta["b"])
+                    a_int = int(meta["a_int"])
+                    a_places = int(meta["a_places"])
+                    ans_int = int(meta["ans_int"])
+                    ans_places = int(meta["ans_places"])
+                    if ans_places != a_places:
+                        fails.append(Fail(i, qid, "decimal_div ans_places != a_places"))
+                    if a_int != b_int * ans_int:
+                        fails.append(Fail(i, qid, "decimal_div a_int != b*ans_int"))
+                    a_val = _parse_decimal(meta["a"])
+                    exp_a = _expected_from_int_places(a_int, a_places)
+                    if a_val != exp_a:
+                        fails.append(Fail(i, qid, "decimal_div meta a mismatch (a_int/a_places)"))
+                    ans_val = _parse_decimal(q["answer"])
+                    exp_ans = _expected_from_int_places(ans_int, ans_places)
+                    if ans_val != exp_ans:
+                        fails.append(Fail(i, qid, "decimal_div answer mismatch (ans_int/ans_places)"))
+                except Exception as e:  # noqa: BLE001
+                    fails.append(Fail(i, qid, f"decimal_div meta validation failed: {e}"))
+
         if kind == "fraction_addsub":
             for k in ("a", "b", "lcm", "op"):
                 if k not in meta:

@@ -184,6 +184,79 @@
             這些工具會跟著題型自動出現：讓孩子「先做對一小步」，再自然走到答案。
           </div>
 
+          <!-- Tool 0A: Decimal multiplication workshop (for decimal_mul) -->
+          <div id="toolDecMul" style="display:none; margin-top:10px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.12)">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <b>小數點放回工坊</b>
+                <span class="pill" style="margin-left:8px">小數乘法</span>
+              </div>
+              <button class="btn" id="btnDecMulFill" type="button">帶入本題</button>
+            </div>
+            <div class="small" style="color:var(--muted); margin-top:6px">先把小數點拿掉做「整數乘法」，再依小數位數把小數點放回去。</div>
+
+            <div class="row" style="margin-top:10px">
+              <span class="pill">題目</span>
+              <span id="dmExpr" class="small" style="color:var(--text)">—</span>
+              <span class="pill">小數位數</span>
+              <span class="pill"><b id="dmPlaces">0</b> 位</span>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <label>Step 1｜先做整數乘法（拿掉小數點）</label>
+              <input id="dmRaw" placeholder="整數乘法結果（例如 360）" />
+              <button class="btn" id="btnDmCheckRaw" type="button">檢查</button>
+              <span id="dmRawHint" class="small" style="color:var(--muted)"></span>
+            </div>
+
+            <div class="row" style="margin-top:8px">
+              <label>Step 2｜放回小數點（最後答案）</label>
+              <input id="dmFinal" placeholder="例如：36.0 或 3.60" />
+              <button class="btn good" id="btnDmCheckFinal" type="button">檢查</button>
+              <span id="dmFinalHint" class="small" style="color:var(--muted)"></span>
+            </div>
+          </div>
+
+          <!-- Tool 0B: Decimal division point-align workshop (for decimal_div) -->
+          <div id="toolDecDiv" style="display:none; margin-top:10px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.12)">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <b>小數除法對齊工坊</b>
+                <span class="pill" style="margin-left:8px">小數除法</span>
+              </div>
+              <button class="btn" id="btnDecDivFill" type="button">帶入本題</button>
+            </div>
+            <div class="small" style="color:var(--muted); margin-top:6px">把被除數的小數點右移變成整數再除（等於商的小數點左移同樣位數）。</div>
+
+            <div class="row" style="margin-top:10px">
+              <span class="pill">題目</span>
+              <span id="ddExpr" class="small" style="color:var(--text)">—</span>
+              <span class="pill">右移</span>
+              <span class="pill"><b id="ddPlaces">0</b> 位</span>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <label>Step 1｜把被除數小數點右移變整數（a_int）</label>
+              <input id="ddAInt" placeholder="例如：120（把 1.20 變 120）" />
+              <button class="btn" id="btnDdCheckShift" type="button">檢查</button>
+              <span id="ddShiftHint" class="small" style="color:var(--muted)"></span>
+            </div>
+
+            <div class="row" style="margin-top:8px">
+              <label>Step 2｜整數除法（a_int ÷ b = ans_int）</label>
+              <input id="ddAnsInt" placeholder="例如：15（整數商）" />
+              <button class="btn" id="btnDdCheckAnsInt" type="button">檢查</button>
+              <span id="ddAnsIntHint" class="small" style="color:var(--muted)"></span>
+            </div>
+
+            <div class="row" style="margin-top:8px">
+              <label>Step 3｜把小數點放回（最後答案）</label>
+              <input id="ddFinal" placeholder="例如：1.5 或 0.15" />
+              <button class="btn good" id="btnDdCheckFinal" type="button">檢查</button>
+              <span id="ddFinalHint" class="small" style="color:var(--muted)"></span>
+            </div>
+          </div>
+
           <!-- Tool 1: Fraction common-denominator helper (for fraction_addsub) -->
           <div id="toolFraction" style="display:none; margin-top:10px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.12)">
             <div class="row" style="justify-content:space-between">
@@ -673,12 +746,39 @@
 
       // tools
       tools: document.getElementById('tools'),
+      toolDecMul: document.getElementById('toolDecMul'),
+      toolDecDiv: document.getElementById('toolDecDiv'),
       toolFraction: document.getElementById('toolFraction'),
       toolVolume: document.getElementById('toolVolume'),
       toolConvert: document.getElementById('toolConvert'),
       toolFracMul: document.getElementById('toolFracMul'),
       toolPercent: document.getElementById('toolPercent'),
       toolTime: document.getElementById('toolTime'),
+
+      // decimal mul tool
+      btnDecMulFill: document.getElementById('btnDecMulFill'),
+      dmExpr: document.getElementById('dmExpr'),
+      dmPlaces: document.getElementById('dmPlaces'),
+      dmRaw: document.getElementById('dmRaw'),
+      btnDmCheckRaw: document.getElementById('btnDmCheckRaw'),
+      dmRawHint: document.getElementById('dmRawHint'),
+      dmFinal: document.getElementById('dmFinal'),
+      btnDmCheckFinal: document.getElementById('btnDmCheckFinal'),
+      dmFinalHint: document.getElementById('dmFinalHint'),
+
+      // decimal div tool
+      btnDecDivFill: document.getElementById('btnDecDivFill'),
+      ddExpr: document.getElementById('ddExpr'),
+      ddPlaces: document.getElementById('ddPlaces'),
+      ddAInt: document.getElementById('ddAInt'),
+      btnDdCheckShift: document.getElementById('btnDdCheckShift'),
+      ddShiftHint: document.getElementById('ddShiftHint'),
+      ddAnsInt: document.getElementById('ddAnsInt'),
+      btnDdCheckAnsInt: document.getElementById('btnDdCheckAnsInt'),
+      ddAnsIntHint: document.getElementById('ddAnsIntHint'),
+      ddFinal: document.getElementById('ddFinal'),
+      btnDdCheckFinal: document.getElementById('btnDdCheckFinal'),
+      ddFinalHint: document.getElementById('ddFinalHint'),
 
       // fraction tool
       btnFracFill: document.getElementById('btnFracFill'),
@@ -770,6 +870,8 @@
 
     // ---------- tools wiring ----------
     function hideAllTools(){
+      if (els.toolDecMul) els.toolDecMul.style.display = 'none';
+      if (els.toolDecDiv) els.toolDecDiv.style.display = 'none';
       if (els.toolFraction) els.toolFraction.style.display = 'none';
       if (els.toolVolume) els.toolVolume.style.display = 'none';
       if (els.toolConvert) els.toolConvert.style.display = 'none';
@@ -784,6 +886,11 @@
       if (els.volBaseHint) els.volBaseHint.textContent = '';
       if (els.volTotalHint) els.volTotalHint.textContent = '';
       if (els.convHint) els.convHint.textContent = '';
+      if (els.dmRawHint) els.dmRawHint.textContent = '';
+      if (els.dmFinalHint) els.dmFinalHint.textContent = '';
+      if (els.ddShiftHint) els.ddShiftHint.textContent = '';
+      if (els.ddAnsIntHint) els.ddAnsIntHint.textContent = '';
+      if (els.ddFinalHint) els.ddFinalHint.textContent = '';
       if (els.fmReducedHint) els.fmReducedHint.textContent = '';
       if (els.fmFinalHint) els.fmFinalHint.textContent = '';
       if (els.pctPartsHint) els.pctPartsHint.textContent = '';
@@ -796,6 +903,65 @@
     function toIntSafe(v){
       const n = Number(String(v||'').trim());
       return Number.isFinite(n) ? Math.trunc(n) : NaN;
+    }
+
+    // ----- decimal tools -----
+    function decMulExpect(){
+      const q = state.q;
+      if (!q || q.kind !== 'decimal_mul') return null;
+      const m = q.meta || {};
+      const a = String(m.a || '');
+      const b = toIntSafe(m.b);
+      const aInt = toIntSafe(m.a_int);
+      const aPlaces = toIntSafe(m.a_places);
+      const raw = toIntSafe(m.raw_int_product);
+      const totalPlaces = toIntSafe(m.total_places);
+      if (!a || !Number.isFinite(b) || !Number.isFinite(aInt) || !Number.isFinite(aPlaces) || !Number.isFinite(raw) || !Number.isFinite(totalPlaces)) return null;
+      return { a, b, aInt, aPlaces, raw, totalPlaces, ans: String(q.answer || '') };
+    }
+
+    function fillDecMulTool(){
+      const ex = decMulExpect();
+      if (!ex) return;
+      if (els.dmExpr) els.dmExpr.textContent = `${ex.a} × ${ex.b}`;
+      if (els.dmPlaces) els.dmPlaces.textContent = String(ex.totalPlaces);
+      if (els.dmRaw) els.dmRaw.value = '';
+      if (els.dmFinal) els.dmFinal.value = '';
+      if (els.dmRawHint){
+        els.dmRawHint.textContent = `提示：把 ${ex.a} 的小數點拿掉 → ${ex.aInt}，再算 ${ex.aInt}×${ex.b}`;
+        els.dmRawHint.style.color = 'var(--muted)';
+      }
+      if (els.dmFinalHint) els.dmFinalHint.textContent = '';
+    }
+
+    function decDivExpect(){
+      const q = state.q;
+      if (!q || q.kind !== 'decimal_div') return null;
+      const m = q.meta || {};
+      const a = String(m.a || '');
+      const b = toIntSafe(m.b);
+      const aInt = toIntSafe(m.a_int);
+      const aPlaces = toIntSafe(m.a_places);
+      const ansInt = toIntSafe(m.ans_int);
+      const ansPlaces = toIntSafe(m.ans_places);
+      if (!a || !Number.isFinite(b) || !Number.isFinite(aInt) || !Number.isFinite(aPlaces) || !Number.isFinite(ansInt) || !Number.isFinite(ansPlaces)) return null;
+      return { a, b, aInt, aPlaces, ansInt, ansPlaces, ans: String(q.answer || '') };
+    }
+
+    function fillDecDivTool(){
+      const ex = decDivExpect();
+      if (!ex) return;
+      if (els.ddExpr) els.ddExpr.textContent = `${ex.a} ÷ ${ex.b}`;
+      if (els.ddPlaces) els.ddPlaces.textContent = String(ex.aPlaces);
+      if (els.ddAInt) els.ddAInt.value = '';
+      if (els.ddAnsInt) els.ddAnsInt.value = '';
+      if (els.ddFinal) els.ddFinal.value = '';
+      if (els.ddShiftHint){
+        els.ddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位（×${Math.pow(10, ex.aPlaces)}) 變整數。`;
+        els.ddShiftHint.style.color = 'var(--muted)';
+      }
+      if (els.ddAnsIntHint) els.ddAnsIntHint.textContent = '';
+      if (els.ddFinalHint) els.ddFinalHint.textContent = '';
     }
 
     function parseFracStrict(s){
@@ -1136,6 +1302,14 @@
       // tools
       hideAllTools();
       const kind = String(q?.kind || '');
+      if (kind === 'decimal_mul' && els.toolDecMul){
+        els.toolDecMul.style.display = '';
+        fillDecMulTool();
+      }
+      if (kind === 'decimal_div' && els.toolDecDiv){
+        els.toolDecDiv.style.display = '';
+        fillDecDivTool();
+      }
       if (kind === 'fraction_addsub' && els.toolFraction){
         els.toolFraction.style.display = '';
         fillFractionTool();
@@ -1161,6 +1335,96 @@
         fillTimeTool();
       }
     }
+
+    // decimal tool events
+    els.btnDecMulFill?.addEventListener('click', fillDecMulTool);
+    els.btnDmCheckRaw?.addEventListener('click', () => {
+      const ex = decMulExpect();
+      if (!ex) return;
+      const v = toIntSafe(els.dmRaw.value);
+      if (!Number.isFinite(v)){
+        els.dmRawHint.textContent = '請輸入整數（整數乘法結果）';
+        els.dmRawHint.style.color = 'var(--bad)';
+        return;
+      }
+      if (v === ex.raw){
+        els.dmRawHint.textContent = 'Step 1 正確！接著把小數點放回去。';
+        els.dmRawHint.style.color = 'var(--ok)';
+      } else {
+        els.dmRawHint.textContent = `提示：${ex.aInt}×${ex.b} = ${ex.raw}`;
+        els.dmRawHint.style.color = 'var(--warn)';
+      }
+    });
+    els.btnDmCheckFinal?.addEventListener('click', () => {
+      const ex = decMulExpect();
+      if (!ex) return;
+      try{
+        const ok = compareByMode(els.dmFinal.value, ex.ans, 'number');
+        if (ok){
+          els.dmFinalHint.textContent = 'Step 2 正確！';
+          els.dmFinalHint.style.color = 'var(--ok)';
+        } else {
+          els.dmFinalHint.textContent = `提示：整數結果 ${ex.raw} 共有 ${ex.totalPlaces} 位小數，要放回小數點。`;
+          els.dmFinalHint.style.color = 'var(--warn)';
+        }
+      } catch(e){
+        els.dmFinalHint.textContent = String(e?.message || e);
+        els.dmFinalHint.style.color = 'var(--bad)';
+      }
+    });
+
+    els.btnDecDivFill?.addEventListener('click', fillDecDivTool);
+    els.btnDdCheckShift?.addEventListener('click', () => {
+      const ex = decDivExpect();
+      if (!ex) return;
+      const v = toIntSafe(els.ddAInt.value);
+      if (!Number.isFinite(v)){
+        els.ddShiftHint.textContent = '請輸入整數 a_int（把小數點右移後的整數）';
+        els.ddShiftHint.style.color = 'var(--bad)';
+        return;
+      }
+      if (v === ex.aInt){
+        els.ddShiftHint.textContent = 'Step 1 正確！接著做整數除法。';
+        els.ddShiftHint.style.color = 'var(--ok)';
+      } else {
+        els.ddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位後，a_int 應該是 ${ex.aInt}`;
+        els.ddShiftHint.style.color = 'var(--warn)';
+      }
+    });
+    els.btnDdCheckAnsInt?.addEventListener('click', () => {
+      const ex = decDivExpect();
+      if (!ex) return;
+      const v = toIntSafe(els.ddAnsInt.value);
+      if (!Number.isFinite(v)){
+        els.ddAnsIntHint.textContent = '請輸入整數商 ans_int';
+        els.ddAnsIntHint.style.color = 'var(--bad)';
+        return;
+      }
+      if (v === ex.ansInt){
+        els.ddAnsIntHint.textContent = 'Step 2 正確！最後把小數點放回去。';
+        els.ddAnsIntHint.style.color = 'var(--ok)';
+      } else {
+        els.ddAnsIntHint.textContent = `提示：${ex.aInt}÷${ex.b} = ${ex.ansInt}`;
+        els.ddAnsIntHint.style.color = 'var(--warn)';
+      }
+    });
+    els.btnDdCheckFinal?.addEventListener('click', () => {
+      const ex = decDivExpect();
+      if (!ex) return;
+      try{
+        const ok = compareByMode(els.ddFinal.value, ex.ans, 'number');
+        if (ok){
+          els.ddFinalHint.textContent = 'Step 3 正確！';
+          els.ddFinalHint.style.color = 'var(--ok)';
+        } else {
+          els.ddFinalHint.textContent = `提示：整數商 ${ex.ansInt} 要左移 ${ex.ansPlaces} 位小數。`;
+          els.ddFinalHint.style.color = 'var(--warn)';
+        }
+      } catch(e){
+        els.ddFinalHint.textContent = String(e?.message || e);
+        els.ddFinalHint.style.color = 'var(--bad)';
+      }
+    });
 
     // fraction tool events
     els.btnFracFill?.addEventListener('click', fillFractionTool);
