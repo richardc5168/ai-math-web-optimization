@@ -113,7 +113,7 @@
           <label>答案</label>
           <input id="gAnswer" placeholder="例如：7.5 或 0.45 或 3.6" />
           <button class="btn good" id="btnSubmit" disabled>送出</button>
-          <button class="btn warn" id="btnNudge" disabled>小提示（扣 2 分）</button>
+          <button class="btn warn" id="btnNudge" disabled>小提示（不扣分）</button>
         </div>
 
         <div id="gBanner" class="banner muted">提示：先估算方向，再計算。</div>
@@ -577,7 +577,7 @@
     });
 
     // ---------- game mode ----------
-    let g = { running:false, t:90, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:[] };
+    let g = { running:false, t:90, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:[], hintUsedThisQ:false };
 
     function packFilter(pack){
       if (pack === 'mul') return new Set(['d_mul_int','int_mul_d','d_mul_d']);
@@ -612,6 +612,7 @@
 
     function gPick(){
       g.q = pickFromPool(g.pool);
+      g.hintUsedThisQ = false;
       els.gQ.textContent = g.q ? g.q.question : '（題庫不足）';
       els.gAnswer.value = '';
       gBanner('muted', '提示：先估算方向，再計算。');
@@ -640,7 +641,7 @@
         gBanner('bad', '沒有符合條件的題目（請改成「全部」或換難度）');
         return;
       }
-      g = { running:true, t:90, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:g.pool };
+      g = { running:true, t:90, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:g.pool, hintUsedThisQ:false };
       els.btnStart.disabled = true;
       els.btnStop.disabled = false;
       els.btnSubmit.disabled = false;
@@ -667,8 +668,14 @@
         if (ok){
           g.correct += 1;
           g.streak += 1;
-          g.score += 10 + Math.min(10, g.streak);
-          gBanner('ok', `答對！+${10 + Math.min(10, g.streak)} 分（連對 ${g.streak}）`);
+          const base = 10 + Math.min(10, g.streak);
+          const bonus = g.hintUsedThisQ ? 0 : 5;
+          g.score += base + bonus;
+          if (bonus){
+            gBanner('ok', `答對！+${base}+${bonus}（不看提示加分）｜連對 ${g.streak}`);
+          } else {
+            gBanner('ok', `答對！+${base} 分｜連對 ${g.streak}`);
+          }
         } else {
           g.streak = 0;
           g.score = Math.max(0, g.score - 4);
@@ -685,8 +692,7 @@
 
     function gNudge(){
       if (!g.running || !g.q) return;
-      g.score = Math.max(0, g.score - 2);
-      gUpdate();
+      g.hintUsedThisQ = true;
       const kind = String(g.q.kind||'');
       if (kind === 'x10_shift') gBanner('warn', '提示：這題是小數點移動。先看是 ×10/×100 還是 ×0.1/×0.01，再移動小數點。');
       else if (kind === 'd_div_int' || kind === 'int_div_int_to_decimal') gBanner('warn', '提示：不夠除就補 0；商的小數點要往上點到對齊。');
