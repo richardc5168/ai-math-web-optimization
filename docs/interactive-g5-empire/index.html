@@ -178,6 +178,143 @@
         <div id="hints"></div>
         <div id="solution"></div>
 
+        <div id="tools" class="card" style="margin-top:12px; background:rgba(0,0,0,.16)">
+          <h3 style="margin:0 0 8px 0; font-size:14px">專屬小工具（看得懂、做得出來）</h3>
+          <div class="small" style="color:var(--muted); line-height:1.6">
+            這些工具會跟著題型自動出現：讓孩子「先做對一小步」，再自然走到答案。
+          </div>
+
+          <!-- Tool 1: Fraction common-denominator helper (for fraction_addsub) -->
+          <div id="toolFraction" style="display:none; margin-top:10px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.12)">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <b>通分小幫手</b>
+                <span class="pill" style="margin-left:8px">分數加減</span>
+              </div>
+              <button class="btn" id="btnFracFill" type="button">帶入本題</button>
+            </div>
+            <div class="small" style="color:var(--muted); margin-top:6px">先找公分母（通分）→ 再做分子加減 → 最後約分。</div>
+
+            <div class="row" style="margin-top:10px">
+              <span class="pill">題目</span>
+              <span id="fracExpr" class="small" style="color:var(--text)">—</span>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <label>Step 1｜公分母（最小公倍數 LCM）</label>
+              <input id="fracLCD" placeholder="例如：12" />
+              <button class="btn" id="btnFracCheckLCD" type="button">檢查</button>
+              <span id="fracLCDHint" class="small" style="color:var(--muted)"></span>
+            </div>
+
+            <div class="row" style="margin-top:8px">
+              <label>Step 2｜通分後分子</label>
+              <input id="fracA2" placeholder="左邊分子（通分後）" />
+              <input id="fracB2" placeholder="右邊分子（通分後）" />
+              <button class="btn" id="btnFracCheckNums" type="button">檢查</button>
+              <span id="fracNumHint" class="small" style="color:var(--muted)"></span>
+            </div>
+
+            <div class="row" style="margin-top:8px">
+              <label>Step 3｜結果（最簡分數）</label>
+              <input id="fracFinal" placeholder="例如：5/6" />
+              <button class="btn good" id="btnFracCheckFinal" type="button">檢查</button>
+              <span id="fracFinalHint" class="small" style="color:var(--muted)"></span>
+            </div>
+          </div>
+
+          <!-- Tool 2: Volume layered blocks helper (for volume_rect_prism) -->
+          <div id="toolVolume" style="display:none; margin-top:10px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.12)">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <b>體積積木分層</b>
+                <span class="pill" style="margin-left:8px">長方體體積</span>
+              </div>
+              <button class="btn" id="btnVolFill" type="button">帶入本題</button>
+            </div>
+            <div class="small" style="color:var(--muted); margin-top:6px">想像底面鋪滿積木，一層一層堆高：體積 = 底面積 × 層數（高）。</div>
+
+            <div class="row" style="margin-top:10px">
+              <span class="pill">尺寸</span>
+              <span id="volDims" class="small">—</span>
+              <span class="pill">底面積</span>
+              <span id="volBaseArea" class="small">—</span>
+              <span class="pill">體積</span>
+              <span id="volTotal" class="small">—</span>
+            </div>
+
+            <div style="margin-top:10px">
+              <div class="small" style="color:var(--muted)">拖曳層數（高度）看看「一層有多少顆」→ 「總共多少顆」</div>
+              <div class="row" style="margin-top:6px">
+                <label>層數</label>
+                <input id="volLayer" type="range" min="1" max="10" value="1" style="min-width:260px" />
+                <span class="pill">目前：<b id="volLayerN">1</b> 層</span>
+                <span class="pill">目前積木：<b id="volCubesNow">0</b> 顆</span>
+              </div>
+              <div id="volViz" style="margin-top:10px"></div>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <label>互動檢查：底面積</label>
+              <input id="volInputBase" placeholder="例如：120" />
+              <button class="btn" id="btnVolCheckBase" type="button">檢查</button>
+              <span id="volBaseHint" class="small" style="color:var(--muted)"></span>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <label>互動檢查：體積</label>
+              <input id="volInputTotal" placeholder="例如：1560" />
+              <button class="btn good" id="btnVolCheckTotal" type="button">檢查</button>
+              <span id="volTotalHint" class="small" style="color:var(--muted)"></span>
+            </div>
+          </div>
+
+          <!-- Tool 3: Unit conversion slider (for unit_convert) -->
+          <div id="toolConvert" style="display:none; margin-top:10px; border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.12)">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <b>換算滑桿</b>
+                <span class="pill" style="margin-left:8px">單位換算</span>
+              </div>
+              <button class="btn" id="btnConvFill" type="button">帶入本題</button>
+            </div>
+            <div class="small" style="color:var(--muted); margin-top:6px">把「整包」和「剩下」分開算：例如 公尺×100 + 公分。</div>
+
+            <div class="row" style="margin-top:10px">
+              <label>換算類型</label>
+              <select id="convKind">
+                <option value="m_cm">公尺/公分 → 公分</option>
+                <option value="kg_g">公斤/公克 → 公克</option>
+                <option value="l_ml">公升/毫升 → 毫升</option>
+              </select>
+              <span class="pill">整包倍率：<b id="convFactor">100</b></span>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <label id="convBigLabel">公尺</label>
+              <input id="convBig" type="range" min="0" max="30" value="0" style="min-width:260px" />
+              <span class="pill"><b id="convBigN">0</b></span>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <label id="convSmallLabel">公分</label>
+              <input id="convSmall" type="range" min="0" max="99" value="0" style="min-width:260px" />
+              <span class="pill"><b id="convSmallN">0</b></span>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <span class="pill">結果（小單位）</span>
+              <span class="pill"><b id="convResult">0</b></span>
+              <span class="small" style="color:var(--muted)">= big×factor + small</span>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <label>互動檢查：你算的答案</label>
+              <input id="convAnswer" placeholder="例如：1234" />
+              <button class="btn good" id="btnConvCheck" type="button">檢查</button>
+              <span id="convHint" class="small" style="color:var(--muted)"></span>
+            </div>
+          </div>
+        </div>
+
         <details style="margin-top:12px;">
           <summary>依孩子目前想法，給「下一步」</summary>
           <div class="small" style="margin-top:8px; color:var(--muted); line-height:1.6">
@@ -421,7 +558,244 @@
       studentState: document.getElementById('studentState'),
       btnNext: document.getElementById('btnNext'),
       nextHint: document.getElementById('nextHint'),
+
+      // tools
+      tools: document.getElementById('tools'),
+      toolFraction: document.getElementById('toolFraction'),
+      toolVolume: document.getElementById('toolVolume'),
+      toolConvert: document.getElementById('toolConvert'),
+
+      // fraction tool
+      btnFracFill: document.getElementById('btnFracFill'),
+      fracExpr: document.getElementById('fracExpr'),
+      fracLCD: document.getElementById('fracLCD'),
+      btnFracCheckLCD: document.getElementById('btnFracCheckLCD'),
+      fracLCDHint: document.getElementById('fracLCDHint'),
+      fracA2: document.getElementById('fracA2'),
+      fracB2: document.getElementById('fracB2'),
+      btnFracCheckNums: document.getElementById('btnFracCheckNums'),
+      fracNumHint: document.getElementById('fracNumHint'),
+      fracFinal: document.getElementById('fracFinal'),
+      btnFracCheckFinal: document.getElementById('btnFracCheckFinal'),
+      fracFinalHint: document.getElementById('fracFinalHint'),
+
+      // volume tool
+      btnVolFill: document.getElementById('btnVolFill'),
+      volDims: document.getElementById('volDims'),
+      volBaseArea: document.getElementById('volBaseArea'),
+      volTotal: document.getElementById('volTotal'),
+      volLayer: document.getElementById('volLayer'),
+      volLayerN: document.getElementById('volLayerN'),
+      volCubesNow: document.getElementById('volCubesNow'),
+      volViz: document.getElementById('volViz'),
+      volInputBase: document.getElementById('volInputBase'),
+      btnVolCheckBase: document.getElementById('btnVolCheckBase'),
+      volBaseHint: document.getElementById('volBaseHint'),
+      volInputTotal: document.getElementById('volInputTotal'),
+      btnVolCheckTotal: document.getElementById('btnVolCheckTotal'),
+      volTotalHint: document.getElementById('volTotalHint'),
+
+      // conversion tool
+      btnConvFill: document.getElementById('btnConvFill'),
+      convKind: document.getElementById('convKind'),
+      convFactor: document.getElementById('convFactor'),
+      convBigLabel: document.getElementById('convBigLabel'),
+      convSmallLabel: document.getElementById('convSmallLabel'),
+      convBig: document.getElementById('convBig'),
+      convSmall: document.getElementById('convSmall'),
+      convBigN: document.getElementById('convBigN'),
+      convSmallN: document.getElementById('convSmallN'),
+      convResult: document.getElementById('convResult'),
+      convAnswer: document.getElementById('convAnswer'),
+      btnConvCheck: document.getElementById('btnConvCheck'),
+      convHint: document.getElementById('convHint'),
     };
+
+    // ---------- tools wiring ----------
+    function hideAllTools(){
+      if (els.toolFraction) els.toolFraction.style.display = 'none';
+      if (els.toolVolume) els.toolVolume.style.display = 'none';
+      if (els.toolConvert) els.toolConvert.style.display = 'none';
+
+      // reset hints
+      if (els.fracLCDHint) els.fracLCDHint.textContent = '';
+      if (els.fracNumHint) els.fracNumHint.textContent = '';
+      if (els.fracFinalHint) els.fracFinalHint.textContent = '';
+      if (els.volBaseHint) els.volBaseHint.textContent = '';
+      if (els.volTotalHint) els.volTotalHint.textContent = '';
+      if (els.convHint) els.convHint.textContent = '';
+    }
+
+    function toIntSafe(v){
+      const n = Number(String(v||'').trim());
+      return Number.isFinite(n) ? Math.trunc(n) : NaN;
+    }
+
+    function parseFracStrict(s){
+      const [n,d] = parseFraction(s);
+      return { n, d };
+    }
+
+    function fracToolExpect(){
+      const q = state.q;
+      if (!q || q.kind !== 'fraction_addsub') return null;
+      const m = q.meta || {};
+      const op = String(m.op || '+');
+      const a = String(m.a || '');
+      const b = String(m.b || '');
+      const lcm = Number(m.lcm);
+      if (!a.includes('/') || !b.includes('/') || !Number.isFinite(lcm)) return null;
+      const [aN,aD] = a.split('/').map(x=>Number(x));
+      const [bN,bD] = b.split('/').map(x=>Number(x));
+      const a2 = aN * (lcm / aD);
+      const b2 = bN * (lcm / bD);
+      return { aN, aD, bN, bD, op, lcm, a2, b2, answer: String(q.answer||'') };
+    }
+
+    function fillFractionTool(){
+      const ex = fracToolExpect();
+      if (!ex) return;
+      if (els.fracExpr) els.fracExpr.textContent = `${ex.aN}/${ex.aD} ${ex.op} ${ex.bN}/${ex.bD}`;
+      if (els.fracLCD) els.fracLCD.value = '';
+      if (els.fracA2) els.fracA2.value = '';
+      if (els.fracB2) els.fracB2.value = '';
+      if (els.fracFinal) els.fracFinal.value = '';
+      if (els.fracLCDHint) els.fracLCDHint.textContent = `提示：${ex.aD} 和 ${ex.bD} 的最小公倍數。`;
+      if (els.fracNumHint) els.fracNumHint.textContent = '';
+      if (els.fracFinalHint) els.fracFinalHint.textContent = '';
+    }
+
+    function volToolExpect(){
+      const q = state.q;
+      if (!q || q.kind !== 'volume_rect_prism') return null;
+      const m = q.meta || {};
+      const l = Number(m.l), w = Number(m.w), h = Number(m.h);
+      if (!Number.isFinite(l) || !Number.isFinite(w) || !Number.isFinite(h)) return null;
+      const base = l*w;
+      const total = base*h;
+      return { l, w, h, base, total, answer: String(q.answer||total) };
+    }
+
+    function renderVolViz(ex){
+      if (!els.volViz || !els.volLayer) return;
+      const layer = Math.max(1, Math.min(ex.h, Number(els.volLayer.value||1)));
+      const base = ex.base;
+      if (els.volLayerN) els.volLayerN.textContent = String(layer);
+      if (els.volCubesNow) els.volCubesNow.textContent = String(base * layer);
+
+      // Simple visualization: show base as a grid of tiny tiles (capped), and show layers count.
+      const MAX_SHOW = 160;
+      const showCount = Math.min(MAX_SHOW, base);
+      const cols = Math.min(16, Math.max(6, Math.round(Math.sqrt(showCount))));
+      const rows = Math.ceil(showCount / cols);
+
+      const wrap = document.createElement('div');
+      wrap.style.display = 'grid';
+      wrap.style.gridTemplateColumns = `repeat(${cols}, 10px)`;
+      wrap.style.gap = '4px';
+      wrap.style.alignItems = 'center';
+
+      for (let i=0;i<showCount;i++){
+        const t = document.createElement('div');
+        t.style.width = '10px';
+        t.style.height = '10px';
+        t.style.borderRadius = '3px';
+        t.style.border = '1px solid rgba(255,255,255,.12)';
+        t.style.background = 'rgba(88,166,255,.18)';
+        wrap.appendChild(t);
+      }
+
+      const meta = document.createElement('div');
+      meta.className = 'small';
+      meta.style.color = 'var(--muted)';
+      meta.style.marginTop = '8px';
+      const note = base > MAX_SHOW ? `（底面積 ${base} 顆，只顯示前 ${MAX_SHOW} 顆示意）` : `（底面積 ${base} 顆）`;
+      meta.textContent = `一層 = 底面積 ${base} 顆；現在 ${layer} 層 → ${base*layer} 顆。${note}`;
+
+      els.volViz.innerHTML = '';
+      els.volViz.appendChild(wrap);
+      els.volViz.appendChild(meta);
+    }
+
+    function fillVolumeTool(){
+      const ex = volToolExpect();
+      if (!ex) return;
+      if (els.volDims) els.volDims.textContent = `長 ${ex.l} × 寬 ${ex.w} × 高 ${ex.h}（cm）`;
+      if (els.volBaseArea) els.volBaseArea.textContent = String(ex.base);
+      if (els.volTotal) els.volTotal.textContent = String(ex.total);
+      if (els.volLayer){
+        els.volLayer.min = '1';
+        els.volLayer.max = String(ex.h);
+        els.volLayer.value = String(Math.min(ex.h, 1));
+      }
+      if (els.volInputBase) els.volInputBase.value = '';
+      if (els.volInputTotal) els.volInputTotal.value = '';
+      if (els.volBaseHint) els.volBaseHint.textContent = `提示：底面積 = 長×寬 = ${ex.l}×${ex.w}`;
+      if (els.volTotalHint) els.volTotalHint.textContent = '';
+      renderVolViz(ex);
+    }
+
+    function convToolExpect(){
+      const q = state.q;
+      if (!q || q.kind !== 'unit_convert') return null;
+      const m = q.meta || {};
+      const ck = String(m.convert_kind || 'm_cm');
+      let big = 0, small = 0;
+      if (ck === 'm_cm'){ big = Number(m.m); small = Number(m.cm); }
+      else if (ck === 'kg_g'){ big = Number(m.kg); small = Number(m.g); }
+      else { big = Number(m.l); small = Number(m.ml); }
+      if (!Number.isFinite(big) || !Number.isFinite(small)) return null;
+      const factor = ck === 'm_cm' ? 100 : 1000;
+      const result = big * factor + small;
+      return { ck, big, small, factor, result, answer: String(q.answer||result) };
+    }
+
+    function applyConvKindUI(kind){
+      const k = String(kind||'m_cm');
+      if (!els.convKind) return;
+      const factor = k === 'm_cm' ? 100 : 1000;
+      if (els.convFactor) els.convFactor.textContent = String(factor);
+
+      if (k === 'm_cm'){
+        if (els.convBigLabel) els.convBigLabel.textContent = '公尺';
+        if (els.convSmallLabel) els.convSmallLabel.textContent = '公分';
+        if (els.convSmall) els.convSmall.max = '99';
+      } else if (k === 'kg_g'){
+        if (els.convBigLabel) els.convBigLabel.textContent = '公斤';
+        if (els.convSmallLabel) els.convSmallLabel.textContent = '公克';
+        if (els.convSmall) els.convSmall.max = '999';
+      } else {
+        if (els.convBigLabel) els.convBigLabel.textContent = '公升';
+        if (els.convSmallLabel) els.convSmallLabel.textContent = '毫升';
+        if (els.convSmall) els.convSmall.max = '999';
+      }
+
+      // update result
+      updateConvResult();
+    }
+
+    function updateConvResult(){
+      const k = String(els.convKind?.value || 'm_cm');
+      const factor = k === 'm_cm' ? 100 : 1000;
+      const big = Number(els.convBig?.value || 0);
+      const small = Number(els.convSmall?.value || 0);
+      if (els.convBigN) els.convBigN.textContent = String(big);
+      if (els.convSmallN) els.convSmallN.textContent = String(small);
+      if (els.convFactor) els.convFactor.textContent = String(factor);
+      if (els.convResult) els.convResult.textContent = String(big * factor + small);
+    }
+
+    function fillConvertTool(){
+      const ex = convToolExpect();
+      if (!ex) return;
+      if (els.convKind) els.convKind.value = ex.ck;
+      applyConvKindUI(ex.ck);
+      if (els.convBig) els.convBig.value = String(ex.big);
+      if (els.convSmall) els.convSmall.value = String(ex.small);
+      updateConvResult();
+      if (els.convAnswer) els.convAnswer.value = '';
+      if (els.convHint) els.convHint.textContent = `提示：${ex.big}×${ex.factor} + ${ex.small}`;
+    }
 
     // region buttons (8)
     const REGION_BTN_IDS = [
@@ -466,7 +840,145 @@
       els.qText.textContent = q ? q.question : '（題庫中沒有符合條件的題目）';
       els.banner.className = 'banner muted';
       els.banner.textContent = '提示：先抓「已知/未知」→ 再列式。';
+
+      // tools
+      hideAllTools();
+      const kind = String(q?.kind || '');
+      if (kind === 'fraction_addsub' && els.toolFraction){
+        els.toolFraction.style.display = '';
+        fillFractionTool();
+      }
+      if (kind === 'volume_rect_prism' && els.toolVolume){
+        els.toolVolume.style.display = '';
+        fillVolumeTool();
+      }
+      if (kind === 'unit_convert' && els.toolConvert){
+        els.toolConvert.style.display = '';
+        fillConvertTool();
+      }
     }
+
+    // fraction tool events
+    els.btnFracFill?.addEventListener('click', fillFractionTool);
+    els.btnFracCheckLCD?.addEventListener('click', () => {
+      const ex = fracToolExpect();
+      if (!ex) return;
+      const v = toIntSafe(els.fracLCD.value);
+      if (!Number.isFinite(v)){
+        els.fracLCDHint.textContent = '請輸入整數（例如 12）';
+        els.fracLCDHint.style.color = 'var(--bad)';
+        return;
+      }
+      if (v === ex.lcm){
+        els.fracLCDHint.textContent = 'Step 1 正確！';
+        els.fracLCDHint.style.color = 'var(--ok)';
+      } else {
+        els.fracLCDHint.textContent = `再想想：${ex.aD} 和 ${ex.bD} 的最小公倍數不是 ${v}。`;
+        els.fracLCDHint.style.color = 'var(--warn)';
+      }
+    });
+    els.btnFracCheckNums?.addEventListener('click', () => {
+      const ex = fracToolExpect();
+      if (!ex) return;
+      const a2 = toIntSafe(els.fracA2.value);
+      const b2 = toIntSafe(els.fracB2.value);
+      if (!Number.isFinite(a2) || !Number.isFinite(b2)){
+        els.fracNumHint.textContent = '請輸入兩個整數分子';
+        els.fracNumHint.style.color = 'var(--bad)';
+        return;
+      }
+      if (a2 === ex.a2 && b2 === ex.b2){
+        els.fracNumHint.textContent = `Step 2 正確！同分母是 ${ex.lcm}。`;
+        els.fracNumHint.style.color = 'var(--ok)';
+      } else {
+        const la = ex.lcm / ex.aD;
+        const lb = ex.lcm / ex.bD;
+        els.fracNumHint.textContent = `提示：左邊分子要乘 ${la}，右邊分子要乘 ${lb}。`;
+        els.fracNumHint.style.color = 'var(--warn)';
+      }
+    });
+    els.btnFracCheckFinal?.addEventListener('click', () => {
+      const ex = fracToolExpect();
+      if (!ex) return;
+      try{
+        const ok = compareByMode(els.fracFinal.value, ex.answer, 'fraction');
+        if (ok){
+          els.fracFinalHint.textContent = 'Step 3 正確！而且是最簡分數。';
+          els.fracFinalHint.style.color = 'var(--ok)';
+        } else {
+          els.fracFinalHint.textContent = '再試一次：先用通分後的分子做加減，再約分到最簡。';
+          els.fracFinalHint.style.color = 'var(--warn)';
+        }
+      } catch(e){
+        els.fracFinalHint.textContent = String(e?.message || e);
+        els.fracFinalHint.style.color = 'var(--bad)';
+      }
+    });
+
+    // volume tool events
+    els.btnVolFill?.addEventListener('click', fillVolumeTool);
+    els.volLayer?.addEventListener('input', () => {
+      const ex = volToolExpect();
+      if (!ex) return;
+      renderVolViz(ex);
+    });
+    els.btnVolCheckBase?.addEventListener('click', () => {
+      const ex = volToolExpect();
+      if (!ex) return;
+      try{
+        const v = parseStudentNumber(els.volInputBase.value);
+        if (nearlyEqual(v, ex.base, 1e-9)){
+          els.volBaseHint.textContent = '底面積正確！';
+          els.volBaseHint.style.color = 'var(--ok)';
+        } else {
+          els.volBaseHint.textContent = `提示：${ex.l}×${ex.w} = ${ex.base}`;
+          els.volBaseHint.style.color = 'var(--warn)';
+        }
+      } catch(e){
+        els.volBaseHint.textContent = String(e?.message || e);
+        els.volBaseHint.style.color = 'var(--bad)';
+      }
+    });
+    els.btnVolCheckTotal?.addEventListener('click', () => {
+      const ex = volToolExpect();
+      if (!ex) return;
+      try{
+        const ok = compareByMode(els.volInputTotal.value, ex.answer, 'number');
+        if (ok){
+          els.volTotalHint.textContent = '體積正確！';
+          els.volTotalHint.style.color = 'var(--ok)';
+        } else {
+          els.volTotalHint.textContent = `提示：底面積 ${ex.base} × 高 ${ex.h}`;
+          els.volTotalHint.style.color = 'var(--warn)';
+        }
+      } catch(e){
+        els.volTotalHint.textContent = String(e?.message || e);
+        els.volTotalHint.style.color = 'var(--bad)';
+      }
+    });
+
+    // conversion tool events
+    els.btnConvFill?.addEventListener('click', fillConvertTool);
+    els.convKind?.addEventListener('change', () => applyConvKindUI(els.convKind.value));
+    els.convBig?.addEventListener('input', updateConvResult);
+    els.convSmall?.addEventListener('input', updateConvResult);
+    els.btnConvCheck?.addEventListener('click', () => {
+      const ex = convToolExpect();
+      if (!ex) return;
+      try{
+        const ok = compareByMode(els.convAnswer.value, ex.answer, 'number');
+        if (ok){
+          els.convHint.textContent = '正確！';
+          els.convHint.style.color = 'var(--ok)';
+        } else {
+          els.convHint.textContent = `再想想：${ex.big}×${ex.factor} + ${ex.small} = ${ex.result}`;
+          els.convHint.style.color = 'var(--warn)';
+        }
+      } catch(e){
+        els.convHint.textContent = String(e?.message || e);
+        els.convHint.style.color = 'var(--bad)';
+      }
+    });
 
     function showBanner(kind, text){
       els.banner.className = `banner ${kind}`;
