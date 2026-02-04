@@ -45,13 +45,21 @@
     .k{padding:2px 8px; border:1px solid rgba(56,139,253,0.35); background:rgba(56,139,253,0.12); border-radius:999px; font-size:12px; color:#a9d1ff}
     .callout{border-left:4px solid rgba(210, 153, 34, .7); background:rgba(210, 153, 34, .08); padding:10px 12px; border-radius:12px; margin:10px 0}
     .meter{height:10px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10); border-radius:999px; overflow:hidden}
-    .meter > div{height:100%; background:linear-gradient(90deg, rgba(88,166,255,.8), rgba(46,160,67,.7)); width:0%}
+    .meter > div{height:100%; background:linear-gradient(90deg, rgba(88,166,255,.95), rgba(88,166,255,.55)); width:0%}
     .stat{display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:12px}
     .stat b{color:var(--text)}
     .workshop{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; background:rgba(0,0,0,.18); margin-top:10px}
     .workshop h3{margin:0 0 8px 0; font-size:14px}
     .wk-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     @media (max-width: 980px){ .wk-grid{grid-template-columns:1fr} }
+
+    .empire{margin-top:12px; border-top:1px solid var(--line); padding-top:12px}
+    .empire h3{margin:0 0 8px 0; font-size:14px}
+    .empire-grid{display:grid; grid-template-columns:repeat(10, 12px); gap:5px; align-items:center}
+    .tile{width:12px; height:12px; border-radius:4px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05)}
+    .tile.own{border-color:rgba(88,166,255,.55); background:rgba(88,166,255,.28)}
+    .tile.castle{border-color:rgba(46,160,67,.7); background:rgba(46,160,67,.22)}
+    .tile.latest{outline:2px solid rgba(210,153,34,.8); outline-offset:1px}
   </style>
 </head>
 <body>
@@ -104,8 +112,11 @@
           <div>分數：<b id="gScore">0</b></div>
           <div>連對：<b id="gStreak">0</b></div>
           <div>正確率：<b id="gAcc">-</b></div>
+          <div>領地：<b id="gLand">0</b></div>
+          <div>堡壘：<b id="gFort">-</b></div>
         </div>
         <div class="meter" style="margin-top:8px"><div id="gBar"></div></div>
+        <div class="small" style="color:var(--muted); margin-top:6px" id="gProgressMeta">進度：0 / 60（答對才前進）</div>
 
         <div class="q" id="gQ">（按「開始闖關」）</div>
 
@@ -222,6 +233,20 @@
           <div><b>3) 估算範圍</b>：先四捨五入算大概，答案不要差太多。</div>
           <hr style="border:0; border-top:1px solid var(--line); margin:10px 0;">
           <div class="small">題庫是離線 bank.js，自動抽題；闖關分數會存在本機 localStorage。</div>
+        </div>
+
+        <div class="empire">
+          <h3>帝國擴張（領地進度）</h3>
+          <div class="small" style="color:var(--muted); line-height:1.6">
+            每答對累積「工程點數」，達到門檻就取得一塊領地；領地越多，堡壘等級越高。
+          </div>
+          <div class="row" style="margin-top:8px">
+            <span class="pill">領地 <b id="empireLand">0</b></span>
+            <span class="pill">工程點數 <b id="empireXP">0</b></span>
+            <button class="btn" id="btnEmpireReset" title="只重置領地，不影響題庫">重置領地</button>
+          </div>
+          <div class="small" style="color:var(--muted); margin-top:8px" id="empireMeta">下一塊領地：0 / 60</div>
+          <div class="empire-grid" id="empireGrid" style="margin-top:10px"></div>
         </div>
       </aside>
     </div>
@@ -577,6 +602,71 @@
     });
 
     // ---------- game mode ----------
+    const TERRITORY_XP = 60;
+    const MAX_TILES = 60;
+    const gPersistKey = 'idg5_empire';
+    let gEmpire = ls.get(gPersistKey, { xp: 0 });
+
+    function territoriesFromXP(xp){
+      return Math.max(0, Math.floor((Number(xp)||0) / TERRITORY_XP));
+    }
+
+    function fortressLevel(land){
+      const n = Number(land) || 0;
+      if (n >= 45) return '帝國堡壘';
+      if (n >= 30) return '鋼鐵要塞';
+      if (n >= 18) return '石造城堡';
+      if (n >= 8) return '木造堡壘';
+      if (n >= 1) return '前哨';
+      return '—';
+    }
+
+    function empireStats(){
+      const xp = Math.max(0, Number(gEmpire?.xp) || 0);
+      const land = territoriesFromXP(xp);
+      const toNext = TERRITORY_XP - (xp % TERRITORY_XP || 0);
+      const inTile = xp % TERRITORY_XP;
+      return { xp, land, inTile, toNext };
+    }
+
+    function saveEmpire(){
+      gEmpire.xp = Math.max(0, Number(gEmpire?.xp) || 0);
+      ls.set(gPersistKey, gEmpire);
+    }
+
+    function renderEmpireGrid(latestIndex){
+      const { xp, land, inTile } = empireStats();
+      els.empireLand.textContent = String(land);
+      els.empireXP.textContent = String(xp);
+      els.empireMeta.textContent = `下一塊領地：${inTile} / ${TERRITORY_XP}`;
+
+      const grid = document.getElementById('empireGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const tiles = Math.min(MAX_TILES, Math.max(10, MAX_TILES));
+      for (let i=1;i<=tiles;i++){
+        const d = document.createElement('div');
+        d.className = 'tile' + (i <= land ? ' own' : '');
+        // castle tiles at milestones
+        if (i === 8 || i === 18 || i === 30 || i === 45) d.className += ' castle';
+        if (latestIndex && i === latestIndex) d.className += ' latest';
+        d.title = i <= land ? `領地 #${i}` : `未取得（還差 ${Math.max(0, (i*TERRITORY_XP) - xp)} 點）`;
+        grid.appendChild(d);
+      }
+    }
+
+    function resetEmpire(){
+      gEmpire = { xp: 0 };
+      saveEmpire();
+      renderEmpireGrid(null);
+      gUpdate();
+    }
+
+    document.getElementById('btnEmpireReset')?.addEventListener('click', () => {
+      if (confirm('確定要重置領地/工程點數嗎？（不會影響題庫）')) resetEmpire();
+    });
+
     let g = { running:false, t:90, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:[], hintUsedThisQ:false };
 
     function packFilter(pack){
@@ -602,12 +692,18 @@
     }
 
     function gUpdate(){
+      const { xp, land, inTile } = empireStats();
       els.gTime.textContent = String(g.t);
       els.gScore.textContent = String(g.score);
       els.gStreak.textContent = String(g.streak);
       els.gAcc.textContent = g.total ? `${Math.round((g.correct/g.total)*100)}%` : '-';
-      const pct = Math.max(0, Math.min(100, ((90 - g.t) / 90) * 100));
+      els.gLand.textContent = String(land);
+      els.gFort.textContent = fortressLevel(land);
+
+      // Progress bar: advance ONLY when XP increases (correct answer).
+      const pct = Math.max(0, Math.min(100, (inTile / TERRITORY_XP) * 100));
       els.gBar.style.width = `${pct}%`;
+      els.gProgressMeta.textContent = `進度：${inTile} / ${TERRITORY_XP}（答對才前進）｜工程點數：${xp}`;
     }
 
     function gPick(){
@@ -632,6 +728,9 @@
       ls.set('idg5_best', next);
       updateBankMeta();
 
+      saveEmpire();
+      renderEmpireGrid(null);
+
       gBanner('warn', `結束！分數 ${g.score}｜正確 ${g.correct}/${g.total}（${g.total?Math.round((g.correct/g.total)*100):0}%）\n你可以再挑戰一次，或切到練習模式用「小數點工坊」練最容易錯的地方。`);
     }
 
@@ -647,6 +746,7 @@
       els.btnSubmit.disabled = false;
       els.btnNudge.disabled = false;
       gPick();
+      renderEmpireGrid(null);
       gUpdate();
       g.timer = setInterval(() => {
         g.t -= 1;
@@ -670,7 +770,17 @@
           g.streak += 1;
           const base = 10 + Math.min(10, g.streak);
           const bonus = g.hintUsedThisQ ? 0 : 5;
-          g.score += base + bonus;
+          const delta = base + bonus;
+          g.score += delta;
+
+          // Empire XP: only increases when correct.
+          const beforeLand = territoriesFromXP(gEmpire.xp);
+          gEmpire.xp = (Number(gEmpire.xp)||0) + delta;
+          const afterLand = territoriesFromXP(gEmpire.xp);
+          saveEmpire();
+          const latest = afterLand > beforeLand ? afterLand : null;
+          renderEmpireGrid(latest);
+
           if (bonus){
             gBanner('ok', `答對！+${base}+${bonus}（不看提示加分）｜連對 ${g.streak}`);
           } else {
@@ -709,6 +819,7 @@
 
     // init
     updateBankMeta();
+    renderEmpireGrid(null);
     if (bank.length) showQuestion(bank[0]);
   </script>
 </body>
