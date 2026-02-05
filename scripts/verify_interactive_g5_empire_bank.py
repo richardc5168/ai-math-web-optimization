@@ -29,6 +29,18 @@ ROOT = Path(__file__).resolve().parents[1]
 BANK_PATH = ROOT / "docs" / "interactive-g5-empire" / "bank.js"
 
 
+EXPECTED_KINDS = {
+    "decimal_mul",
+    "decimal_div",
+    "fraction_addsub",
+    "fraction_mul",
+    "percent_of",
+    "time_add",
+    "unit_convert",
+    "volume_rect_prism",
+}
+
+
 ALLOWED_MODES = {"number", "fraction", "hhmm", "exact"}
 
 
@@ -245,6 +257,11 @@ def verify_path(path: Path) -> Tuple[List[Dict[str, Any]], List[Fail]]:
 def main(argv: List[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Verify interactive-g5-empire bank.js")
     p.add_argument("--path", type=str, default=str(BANK_PATH), help="Path to bank.js")
+    p.add_argument(
+        "--strict-kinds",
+        action="store_true",
+        help="Fail if bank kinds are not exactly the expected 8 kinds",
+    )
     args = p.parse_args(argv)
 
     path = Path(args.path)
@@ -253,6 +270,23 @@ def main(argv: List[str] | None = None) -> int:
         return 1
 
     bank, fails = verify_path(path)
+
+    if args.strict_kinds:
+        kinds = [str(q.get("kind") or "") for q in bank]
+        kind_set = set(kinds)
+        missing = sorted(EXPECTED_KINDS - kind_set)
+        extra = sorted(kind_set - EXPECTED_KINDS)
+        if missing or extra:
+            print(f"FAIL: kinds mismatch (missing={missing} extra={extra})")
+            return 1
+        # ensure each kind appears at least once
+        counts: Dict[str, int] = {}
+        for k in kinds:
+            counts[k] = counts.get(k, 0) + 1
+        zero = sorted([k for k in EXPECTED_KINDS if counts.get(k, 0) <= 0])
+        if zero:
+            print(f"FAIL: some expected kinds have zero items: {zero}")
+            return 1
     if not fails:
         kinds = sorted({str(q.get('kind')) for q in bank})
         print(f"OK: {path} (n={len(bank)} kinds={len(kinds)}: {', '.join(kinds)})")
