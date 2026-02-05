@@ -244,7 +244,12 @@
             <option value="3">Level 3（計算引導）</option>
           </select>
           <button class="btn" id="btnHint">看提示</button>
+          <button class="btn" id="btnHintNext" title="自動切到下一個 Level 並顯示提示">下一個 Level</button>
           <button class="btn" id="btnShowSteps">看完整解題</button>
+        </div>
+
+        <div id="hintHelp" class="small" style="color:var(--muted); margin-top:6px; line-height:1.6">
+          小提醒：如果看完還不清楚，請改選其他提示層級（Level 2 / Level 3）再按一次「看提示」，提示會更詳細。
         </div>
 
         <div id="banner" class="banner muted">提示：先抓「已知/未知」→ 再列式。</div>
@@ -778,16 +783,17 @@
       if (els.answerModePill) els.answerModePill.textContent = `答案格式：${ui.pill}`;
     }
 
-    function renderHint(text){
+    function renderHint(text, level){
       const div = document.createElement('div');
       div.className = 'hint';
+      if (level != null) div.dataset.level = String(level);
       div.textContent = text;
       return div;
     }
 
     // ---------- bank/state ----------
     const bank = Array.isArray(window.INTERACTIVE_G5_EMPIRE_BANK) ? window.INTERACTIVE_G5_EMPIRE_BANK : [];
-    const state = { q: null, revealed: false, hintUsed: 0 };
+    const state = { q: null, revealed: false, hintUsed: 0, shownHintLevels: {1:false,2:false,3:false} };
 
     const ls = {
       get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -874,6 +880,7 @@
       hintLevel: document.getElementById('hintLevel'),
       btnHint: document.getElementById('btnHint'),
       btnShowSteps: document.getElementById('btnShowSteps'),
+      btnHintNext: document.getElementById('btnHintNext'),
       studentState: document.getElementById('studentState'),
       btnNext: document.getElementById('btnNext'),
       nextHint: document.getElementById('nextHint'),
@@ -1482,6 +1489,7 @@
       state.q = q;
       state.revealed = false;
       state.hintUsed = 0;
+      state.shownHintLevels = {1:false,2:false,3:false};
       els.answer.value = '';
       els.studentState.value = '';
       els.hints.innerHTML = '';
@@ -1490,7 +1498,7 @@
       els.qText.textContent = q ? q.question : '（題庫中沒有符合條件的題目）';
       applyAnswerUI(q, 'practice');
       els.banner.className = 'banner muted';
-      els.banner.textContent = '提示：先抓「已知/未知」→ 再列式。';
+      els.banner.textContent = '提示：先抓「已知/未知」→ 再列式。看完不清楚 → 改選 Level 2/3 再按「看提示」。';
 
       // tools
       hideAllTools();
@@ -1944,6 +1952,35 @@
       return '（沒有提示）';
     }
 
+    function clampHintLevel(raw){
+      const n = Number(raw);
+      if (!Number.isFinite(n)) return 1;
+      return Math.max(1, Math.min(3, Math.floor(n)));
+    }
+
+    function showHintForLevel(level, source){
+      const q = state.q;
+      if (!q) return false;
+      const lv = clampHintLevel(level);
+
+      const existing = els.hints.querySelector(`.hint[data-level="${lv}"]`);
+      if (existing){
+        showBanner('warn', source === 'next'
+          ? '這個 Level 的提示已經看過了；請再按「下一個 Level」或改選其他 Level。'
+          : '這個 Level 的提示你已經看過了；如果還不清楚，請改選其他 Level 再按「看提示」。'
+        );
+        try { existing.scrollIntoView({behavior:'smooth', block:'nearest'}); } catch {}
+        return false;
+      }
+
+      const text = currentHint(lv);
+      if (!text) return false;
+      els.hints.appendChild(renderHint(text, lv));
+      state.shownHintLevels[lv] = true;
+      state.hintUsed = Math.max(state.hintUsed, lv);
+      return true;
+    }
+
     function nextStepHintByRule(q, studentState){
       const st = normalizeText(studentState);
       const kind = String(q?.kind || '');
@@ -1978,11 +2015,19 @@
     els.btnHint?.addEventListener('click', () => {
       const q = state.q;
       if (!q) return;
-      const level = Number(els.hintLevel.value || '1');
-      const text = currentHint(level);
-      if (!text) return;
-      els.hints.appendChild(renderHint(text));
-      state.hintUsed = Math.max(state.hintUsed, level);
+      const level = clampHintLevel(els.hintLevel.value || '1');
+      showHintForLevel(level, 'hint');
+    });
+
+    els.btnHintNext?.addEventListener('click', () => {
+      const q = state.q;
+      if (!q) return;
+      const cur = clampHintLevel(els.hintLevel.value || '1');
+      for (let lv = cur + 1; lv <= 3; lv++){
+        els.hintLevel.value = String(lv);
+        if (showHintForLevel(lv, 'next')) return;
+      }
+      showBanner('warn', '已經到 Level 3 了；如果還是不懂，可以按「看完整解題」，或換一題再試一次。');
     });
 
     els.btnShowSteps?.addEventListener('click', () => {
