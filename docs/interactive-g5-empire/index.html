@@ -143,6 +143,8 @@
               <span class="pill">小數位數</span>
               <span class="pill"><b id="gdmPlaces">0</b> 位</span>
             </div>
+
+            <div id="gdmDemo" class="sol small" style="margin-top:10px; color:var(--muted); line-height:1.6">（示範會依本題更新）</div>
             <div class="row" style="margin-top:10px">
               <label>Step 1｜整數乘法結果</label>
               <input id="gdmRaw" placeholder="例如：360" />
@@ -171,6 +173,8 @@
               <span class="pill">右移</span>
               <span class="pill"><b id="gddPlaces">0</b> 位</span>
             </div>
+
+            <div id="gddDemo" class="sol small" style="margin-top:10px; color:var(--muted); line-height:1.6">（示範會依本題更新）</div>
             <div class="row" style="margin-top:10px">
               <label>Step 1｜右移後整數 a_int</label>
               <input id="gddAInt" placeholder="例如：120" />
@@ -271,6 +275,8 @@
               <span class="pill"><b id="dmPlaces">0</b> 位</span>
             </div>
 
+            <div id="dmDemo" class="sol small" style="margin-top:10px; color:var(--muted); line-height:1.6">（示範會依本題更新）</div>
+
             <div class="row" style="margin-top:10px">
               <label>Step 1｜先做整數乘法（拿掉小數點）</label>
               <input id="dmRaw" placeholder="整數乘法結果（例如 360）" />
@@ -303,6 +309,8 @@
               <span class="pill">右移</span>
               <span class="pill"><b id="ddPlaces">0</b> 位</span>
             </div>
+
+            <div id="ddDemo" class="sol small" style="margin-top:10px; color:var(--muted); line-height:1.6">（示範會依本題更新）</div>
 
             <div class="row" style="margin-top:10px">
               <label>Step 1｜把被除數小數點右移變整數（a_int）</label>
@@ -818,6 +826,7 @@
       gToolDecDiv: document.getElementById('gToolDecDiv'),
       btnGdmFill: document.getElementById('btnGdmFill'),
       gdmExpr: document.getElementById('gdmExpr'),
+      gdmDemo: document.getElementById('gdmDemo'),
       gdmPlaces: document.getElementById('gdmPlaces'),
       gdmRaw: document.getElementById('gdmRaw'),
       btnGdmCheckRaw: document.getElementById('btnGdmCheckRaw'),
@@ -827,6 +836,7 @@
       gdmFinalHint: document.getElementById('gdmFinalHint'),
       btnGddFill: document.getElementById('btnGddFill'),
       gddExpr: document.getElementById('gddExpr'),
+      gddDemo: document.getElementById('gddDemo'),
       gddPlaces: document.getElementById('gddPlaces'),
       gddAInt: document.getElementById('gddAInt'),
       btnGddCheckShift: document.getElementById('btnGddCheckShift'),
@@ -882,6 +892,7 @@
       // decimal mul tool
       btnDecMulFill: document.getElementById('btnDecMulFill'),
       dmExpr: document.getElementById('dmExpr'),
+      dmDemo: document.getElementById('dmDemo'),
       dmPlaces: document.getElementById('dmPlaces'),
       dmRaw: document.getElementById('dmRaw'),
       btnDmCheckRaw: document.getElementById('btnDmCheckRaw'),
@@ -893,6 +904,7 @@
       // decimal div tool
       btnDecDivFill: document.getElementById('btnDecDivFill'),
       ddExpr: document.getElementById('ddExpr'),
+      ddDemo: document.getElementById('ddDemo'),
       ddPlaces: document.getElementById('ddPlaces'),
       ddAInt: document.getElementById('ddAInt'),
       btnDdCheckShift: document.getElementById('btnDdCheckShift'),
@@ -1029,6 +1041,16 @@
       return Number.isFinite(n) ? Math.trunc(n) : NaN;
     }
 
+    function intPlacesToStrFixed(n, places){
+      const sign = n < 0 ? '-' : '';
+      const a = Math.abs(toIntSafe(n));
+      const p = Math.max(0, toIntSafe(places));
+      if (!Number.isFinite(a) || !Number.isFinite(p)) return '';
+      if (p <= 0) return `${sign}${a}`;
+      const s = String(a).padStart(p + 1, '0');
+      return `${sign}${s.slice(0, -p)}.${s.slice(-p)}`;
+    }
+
     // ----- decimal tools -----
     function decMulExpect(){
       const q = state.q;
@@ -1051,8 +1073,17 @@
       if (els.dmPlaces) els.dmPlaces.textContent = String(ex.totalPlaces);
       if (els.dmRaw) els.dmRaw.value = '';
       if (els.dmFinal) els.dmFinal.value = '';
+      if (els.dmDemo){
+        const pow = Math.pow(10, ex.totalPlaces);
+        els.dmDemo.textContent = [
+          '完整示範（跟著本題做）：',
+          `Step 1｜右移 ${ex.totalPlaces} 位（×${pow}）：${ex.a} → ${ex.aInt}`,
+          `Step 2｜整數乘法：${ex.aInt} × ${ex.b} = ${ex.raw}`,
+          `Step 3｜左移 ${ex.totalPlaces} 位（÷${pow}）：${ex.raw} → ${ex.ans}`,
+        ].join('\n');
+      }
       if (els.dmRawHint){
-        els.dmRawHint.textContent = `提示：把 ${ex.a} 的小數點拿掉 → ${ex.aInt}，再算 ${ex.aInt}×${ex.b}`;
+        els.dmRawHint.textContent = `提示：先把 ${ex.a} 右移 ${ex.totalPlaces} 位 → ${ex.aInt}，再算 ${ex.aInt}×${ex.b}`;
         els.dmRawHint.style.color = 'var(--muted)';
       }
       if (els.dmFinalHint) els.dmFinalHint.textContent = '';
@@ -1080,8 +1111,18 @@
       if (els.ddAInt) els.ddAInt.value = '';
       if (els.ddAnsInt) els.ddAnsInt.value = '';
       if (els.ddFinal) els.ddFinal.value = '';
+      if (els.ddDemo){
+        const pow = Math.pow(10, ex.aPlaces);
+        const ansFixed = intPlacesToStrFixed(ex.ansInt, ex.ansPlaces);
+        els.ddDemo.textContent = [
+          '完整示範（跟著本題做）：',
+          `Step 1｜右移 ${ex.aPlaces} 位（×${pow}）：${ex.a} → ${ex.aInt}`,
+          `Step 2｜整數除法：${ex.aInt} ÷ ${ex.b} = ${ex.ansInt}`,
+          `Step 3｜左移 ${ex.aPlaces} 位（÷${pow}）：${ex.ansInt} → ${ansFixed}`,
+        ].join('\n');
+      }
       if (els.ddShiftHint){
-        els.ddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位（×${Math.pow(10, ex.aPlaces)}) 變整數。`;
+        els.ddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位（×${Math.pow(10, ex.aPlaces)}) 變整數 a_int。`;
         els.ddShiftHint.style.color = 'var(--muted)';
       }
       if (els.ddAnsIntHint) els.ddAnsIntHint.textContent = '';
@@ -1473,7 +1514,7 @@
         return;
       }
       if (v === ex.raw){
-        els.dmRawHint.textContent = 'Step 1 正確！接著把小數點放回去。';
+        els.dmRawHint.textContent = `Step 1 正確！現在把 ${ex.raw} 左移 ${ex.totalPlaces} 位，得到答案。`;
         els.dmRawHint.style.color = 'var(--ok)';
       } else {
         els.dmRawHint.textContent = `提示：${ex.aInt}×${ex.b} = ${ex.raw}`;
@@ -1489,7 +1530,7 @@
           els.dmFinalHint.textContent = 'Step 2 正確！';
           els.dmFinalHint.style.color = 'var(--ok)';
         } else {
-          els.dmFinalHint.textContent = `提示：整數結果 ${ex.raw} 共有 ${ex.totalPlaces} 位小數，要放回小數點。`;
+          els.dmFinalHint.textContent = `提示：把 ${ex.raw} 左移 ${ex.totalPlaces} 位（放回小數點），答案應該是 ${ex.ans}`;
           els.dmFinalHint.style.color = 'var(--warn)';
         }
       } catch(e){
@@ -1509,7 +1550,7 @@
         return;
       }
       if (v === ex.aInt){
-        els.ddShiftHint.textContent = 'Step 1 正確！接著做整數除法。';
+        els.ddShiftHint.textContent = `Step 1 正確！接著算整數：${ex.aInt} ÷ ${ex.b}`;
         els.ddShiftHint.style.color = 'var(--ok)';
       } else {
         els.ddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位後，a_int 應該是 ${ex.aInt}`;
@@ -1526,7 +1567,7 @@
         return;
       }
       if (v === ex.ansInt){
-        els.ddAnsIntHint.textContent = 'Step 2 正確！最後把小數點放回去。';
+        els.ddAnsIntHint.textContent = `Step 2 正確！把 ${ex.ansInt} 左移 ${ex.ansPlaces} 位小數，得到答案。`;
         els.ddAnsIntHint.style.color = 'var(--ok)';
       } else {
         els.ddAnsIntHint.textContent = `提示：${ex.aInt}÷${ex.b} = ${ex.ansInt}`;
@@ -1542,7 +1583,7 @@
           els.ddFinalHint.textContent = 'Step 3 正確！';
           els.ddFinalHint.style.color = 'var(--ok)';
         } else {
-          els.ddFinalHint.textContent = `提示：整數商 ${ex.ansInt} 要左移 ${ex.ansPlaces} 位小數。`;
+          els.ddFinalHint.textContent = `提示：把 ${ex.ansInt} 左移 ${ex.ansPlaces} 位（放回小數點），答案應該是 ${ex.ans}`;
           els.ddFinalHint.style.color = 'var(--warn)';
         }
       } catch(e){
@@ -2131,8 +2172,17 @@
       if (els.gdmPlaces) els.gdmPlaces.textContent = String(ex.totalPlaces);
       if (els.gdmRaw) els.gdmRaw.value = '';
       if (els.gdmFinal) els.gdmFinal.value = '';
+      if (els.gdmDemo){
+        const pow = Math.pow(10, ex.totalPlaces);
+        els.gdmDemo.textContent = [
+          '完整示範（跟著本題做）：',
+          `Step 1｜右移 ${ex.totalPlaces} 位（×${pow}）：${ex.a} → ${ex.aInt}`,
+          `Step 2｜整數乘法：${ex.aInt} × ${ex.b} = ${ex.raw}`,
+          `Step 3｜左移 ${ex.totalPlaces} 位（÷${pow}）：${ex.raw} → ${ex.ans}`,
+        ].join('\n');
+      }
       if (els.gdmRawHint){
-        els.gdmRawHint.textContent = `提示：把 ${ex.a} 的小數點拿掉 → ${ex.aInt}，再算 ${ex.aInt}×${ex.b}`;
+        els.gdmRawHint.textContent = `提示：先把 ${ex.a} 右移 ${ex.totalPlaces} 位 → ${ex.aInt}，再算 ${ex.aInt}×${ex.b}`;
         els.gdmRawHint.style.color = 'var(--muted)';
       }
       if (els.gdmFinalHint) els.gdmFinalHint.textContent = '';
@@ -2160,8 +2210,18 @@
       if (els.gddAInt) els.gddAInt.value = '';
       if (els.gddAnsInt) els.gddAnsInt.value = '';
       if (els.gddFinal) els.gddFinal.value = '';
+      if (els.gddDemo){
+        const pow = Math.pow(10, ex.aPlaces);
+        const ansFixed = intPlacesToStrFixed(ex.ansInt, ex.ansPlaces);
+        els.gddDemo.textContent = [
+          '完整示範（跟著本題做）：',
+          `Step 1｜右移 ${ex.aPlaces} 位（×${pow}）：${ex.a} → ${ex.aInt}`,
+          `Step 2｜整數除法：${ex.aInt} ÷ ${ex.b} = ${ex.ansInt}`,
+          `Step 3｜左移 ${ex.aPlaces} 位（÷${pow}）：${ex.ansInt} → ${ansFixed}`,
+        ].join('\n');
+      }
       if (els.gddShiftHint){
-        els.gddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位（×${Math.pow(10, ex.aPlaces)}) 變整數。`;
+        els.gddShiftHint.textContent = `提示：右移 ${ex.aPlaces} 位（×${Math.pow(10, ex.aPlaces)}) 變整數 a_int。`;
         els.gddShiftHint.style.color = 'var(--muted)';
       }
       if (els.gddAnsIntHint) els.gddAnsIntHint.textContent = '';
