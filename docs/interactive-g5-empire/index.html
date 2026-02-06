@@ -50,13 +50,25 @@
 
     .empire{margin-top:12px; border-top:1px solid var(--line); padding-top:12px}
     .empire h3{margin:0 0 8px 0; font-size:14px}
-    .empire-grid{--tile:18px; --gap:6px; display:grid; grid-template-columns:repeat(12, var(--tile)); gap:var(--gap); align-items:center}
+    .empire-grid{--tile:20px; --gap:6px; display:grid; grid-template-columns:repeat(12, var(--tile)); gap:var(--gap); align-items:center}
     .tile{width:var(--tile); height:var(--tile); border-radius:6px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.05); transition:transform .16s ease, filter .16s ease}
     .tile.own{border-color:rgba(88,166,255,.55); background:rgba(88,166,255,.28)}
     .tile.castle{border-color:rgba(46,160,67,.7); background:rgba(46,160,67,.22)}
     .tile.next{outline:2px dashed rgba(210,153,34,.75); outline-offset:2px; filter:brightness(1.25)}
     .tile.latest{outline:3px solid rgba(210,153,34,.95); outline-offset:2px; transform:scale(1.08); filter:brightness(1.35)}
     .btn.empire-reset{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
+
+    /* big map overlay (does not affect question layout) */
+    .modal{position:fixed; inset:0; background:rgba(0,0,0,.62); display:none; z-index:50}
+    .modal .dialog{position:absolute; inset:20px; background:linear-gradient(180deg, rgba(18,28,61,.98), rgba(8,16,42,.98)); border:1px solid rgba(255,255,255,.14); border-radius:16px; padding:14px; overflow:auto}
+    .modal .dialog h2{margin:0 0 10px 0; font-size:16px}
+    .modal .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+    .modal .hint{margin:8px 0 0 0}
+    .empire-grid.big{--tile:26px; --gap:7px; grid-template-columns:repeat(18, var(--tile))}
+    @media (max-width: 980px){
+      .modal .dialog{inset:10px}
+      .empire-grid.big{--tile:22px; --gap:6px; grid-template-columns:repeat(14, var(--tile))}
+    }
   </style>
 </head>
 <body>
@@ -631,6 +643,7 @@
             <span class="pill">本區工程點數 <b id="empireXP">0</b></span>
             <span class="pill">堡壘 <b id="empireFort">—</b></span>
             <span class="pill" id="empireSaved">存檔：準備中</span>
+            <button class="btn" id="btnEmpireBig" title="開啟大地圖（不影響題目字大小）">大地圖</button>
             <button class="btn empire-reset" id="btnEmpireReset" title="只重置目前區域的領地/工程點數，不影響題庫">重置本區</button>
             <button class="btn" id="btnEmpireResetAll" title="重置所有區域的領地/工程點數">全部重置</button>
           </div>
@@ -642,6 +655,28 @@
       </aside>
     </div>
   </main>
+
+  <div class="modal" id="empireModal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-label="帝國大地圖">
+      <div class="topbar">
+        <div>
+          <h2>帝國大地圖（更大格子 + 更多領地）</h2>
+          <div class="small" style="color:var(--muted)">答對就擴張：地圖會預告下一塊領地；答錯不扣分。</div>
+        </div>
+        <div class="row">
+          <span class="pill">本區領地 <b id="empireLandBig">0</b></span>
+          <span class="pill">本區工程點數 <b id="empireXPBig">0</b></span>
+          <span class="pill">堡壘 <b id="empireFortBig">—</b></span>
+          <button class="btn" id="btnEmpireBigClose" type="button">關閉</button>
+        </div>
+      </div>
+
+      <div class="small" style="color:var(--muted); margin-top:10px" id="empireSummaryBig">載入中...</div>
+      <div class="small" style="color:var(--muted); margin-top:6px" id="empireMetaBig">下一塊領地：0 / 45</div>
+
+      <div class="empire-grid big" id="empireGridBig" style="margin-top:12px"></div>
+    </div>
+  </div>
 
   <script src="./bank.js"></script>
   <script>
@@ -863,6 +898,15 @@
       empireSummary: document.getElementById('empireSummary'),
       empireMeta: document.getElementById('empireMeta'),
       empireGrid: document.getElementById('empireGrid'),
+      btnEmpireBig: document.getElementById('btnEmpireBig'),
+      empireModal: document.getElementById('empireModal'),
+      btnEmpireBigClose: document.getElementById('btnEmpireBigClose'),
+      empireLandBig: document.getElementById('empireLandBig'),
+      empireXPBig: document.getElementById('empireXPBig'),
+      empireFortBig: document.getElementById('empireFortBig'),
+      empireSummaryBig: document.getElementById('empireSummaryBig'),
+      empireMetaBig: document.getElementById('empireMetaBig'),
+      empireGridBig: document.getElementById('empireGridBig'),
       btnEmpireReset: document.getElementById('btnEmpireReset'),
       btnEmpireResetAll: document.getElementById('btnEmpireResetAll'),
 
@@ -1501,6 +1545,9 @@
       els.banner.className = 'banner muted';
       els.banner.textContent = '提示：先抓「已知/未知」→ 再列式。看完不清楚 → 改選 Level 2/3 再按「看提示」。';
 
+      // focus map to this question type (preview next tile)
+      if (q && q.kind) renderEmpire(null, regionFromKind(q.kind));
+
       // tools
       hideAllTools();
       const kind = String(q?.kind || '');
@@ -2045,12 +2092,21 @@
       try {
         const ok = compareByMode(els.answer.value, q.answer, q.answer_mode || 'number');
         if (ok){
-          showBanner('ok', '答對了！你可以出下一題。');
+          const rid = regionFromKind(q.kind);
+          const beforeLand = regionStats(rid).land;
+          const delta = 12;
+          setRegionXP(rid, regionXP(rid) + delta);
+          const after = regionStats(rid);
+          saveEmpire();
+          const latest = after.land > beforeLand ? after.land : null;
+          renderEmpire(latest, rid);
+          if (empireBigOpen) renderEmpireBig(latest, rid);
+          showBanner('ok', `答對了！+${delta} 工程點數（練習也能擴張）\n你可以出下一題。`);
         } else {
-          showBanner('bad', '答案不對，再試一次；可以先看提示 Level 1/2/3。');
+          showBanner('warn', '答案不對沒關係（不扣分）。再試一次；可以先看提示 Level 1/2/3。');
         }
       } catch (e){
-        showBanner('bad', String(e?.message || e || '答案格式錯誤'));
+        showBanner('warn', `格式不對沒關係（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}`);
       }
     });
 
@@ -2063,8 +2119,9 @@
     });
 
     // ---------- game mode / empire regions ----------
-    const TERRITORY_XP = 60;
-    const MAX_TILES = 72;
+    const TERRITORY_XP = 45;
+    const MAX_TILES_SMALL = 72;
+    const MAX_TILES_BIG = 144;
     const gPersistKey = 'g5e_empire_regions_v1';
 
     const REGIONS = [
@@ -2094,11 +2151,15 @@
       return Math.max(0, Math.floor((Number(xp)||0) / TERRITORY_XP));
     }
 
+    const CASTLE_MILESTONES = [12, 30, 50, 70, 90, 120];
+
     function fortressLevel(land){
       const n = Number(land) || 0;
-      if (n >= 54) return '帝國堡壘';
-      if (n >= 40) return '鋼鐵要塞';
-      if (n >= 26) return '石造城堡';
+      if (n >= 120) return '星辰王城';
+      if (n >= 90) return '皇都巨堡';
+      if (n >= 70) return '帝國堡壘';
+      if (n >= 50) return '鋼鐵要塞';
+      if (n >= 30) return '石造城堡';
       if (n >= 12) return '木造堡壘';
       if (n >= 1) return '前哨';
       return '—';
@@ -2155,39 +2216,81 @@
       return 'life';
     }
 
-    function renderEmpire(latestIndex, viewRegionId){
+    function renderEmpireCore(latestIndex, viewRegionId, maxTiles, sink){
       const rid = (viewRegionId && regionById[viewRegionId]) ? viewRegionId : (empire.selected || REGIONS[0].id);
       const rs = regionStats(rid);
 
-      // toggle tab active
-      for (const id of REGION_BTN_IDS){
-        const el = document.getElementById(id);
-        if (!el) continue;
-        el.classList.toggle('active', id === `region_${rid}`);
+      // toggle tab active (small map only)
+      if (!sink || sink.toggleTabs){
+        for (const id of REGION_BTN_IDS){
+          const el = document.getElementById(id);
+          if (!el) continue;
+          el.classList.toggle('active', id === `region_${rid}`);
+        }
       }
 
-      if (els.empireLand) els.empireLand.textContent = String(rs.land);
-      if (els.empireXP) els.empireXP.textContent = String(rs.xp);
-      if (els.empireFort) els.empireFort.textContent = rs.fort;
-      if (els.empireMeta) els.empireMeta.textContent = `下一塊領地：${rs.inTile} / ${TERRITORY_XP}`;
+      if (sink?.landEl) sink.landEl.textContent = String(rs.land);
+      if (sink?.xpEl) sink.xpEl.textContent = String(rs.xp);
+      if (sink?.fortEl) sink.fortEl.textContent = rs.fort;
+      if (sink?.metaEl) sink.metaEl.textContent = `下一塊領地：${rs.inTile} / ${TERRITORY_XP}`;
 
-      if (els.empireSummary){
+      if (sink?.summaryEl){
         const parts = REGIONS.map(r => `${r.title} ${regionStats(r.id).land}`);
-        els.empireSummary.textContent = parts.join('｜');
+        sink.summaryEl.textContent = parts.join('｜');
       }
 
-      const grid = els.empireGrid;
+      const grid = sink?.gridEl;
       if (!grid) return;
       grid.innerHTML = '';
 
-      for (let i=1;i<=MAX_TILES;i++){
+      const total = Math.max(1, Number(maxTiles || MAX_TILES_SMALL));
+      for (let i=1;i<=total;i++){
         const d = document.createElement('div');
         d.className = 'tile' + (i <= rs.land ? ' own' : '') + (i === (rs.land + 1) ? ' next' : '');
-        if (i === 12 || i === 26 || i === 40 || i === 54) d.className += ' castle';
+        if (CASTLE_MILESTONES.includes(i)) d.className += ' castle';
         if (latestIndex && i === latestIndex) d.className += ' latest';
         d.title = i <= rs.land ? `${regionById[rid].title}｜領地 #${i}` : `未取得（還差 ${Math.max(0, (i*TERRITORY_XP) - rs.xp)} 點）`;
         grid.appendChild(d);
       }
+    }
+
+    function renderEmpire(latestIndex, viewRegionId){
+      renderEmpireCore(latestIndex, viewRegionId, MAX_TILES_SMALL, {
+        toggleTabs: true,
+        landEl: els.empireLand,
+        xpEl: els.empireXP,
+        fortEl: els.empireFort,
+        metaEl: els.empireMeta,
+        summaryEl: els.empireSummary,
+        gridEl: els.empireGrid,
+      });
+    }
+
+    function renderEmpireBig(latestIndex, viewRegionId){
+      renderEmpireCore(latestIndex, viewRegionId, MAX_TILES_BIG, {
+        toggleTabs: false,
+        landEl: els.empireLandBig,
+        xpEl: els.empireXPBig,
+        fortEl: els.empireFortBig,
+        metaEl: els.empireMetaBig,
+        summaryEl: els.empireSummaryBig,
+        gridEl: els.empireGridBig,
+      });
+    }
+
+    let empireBigOpen = false;
+    function openEmpireBig(){
+      if (!els.empireModal) return;
+      empireBigOpen = true;
+      els.empireModal.style.display = '';
+      els.empireModal.setAttribute('aria-hidden', 'false');
+      renderEmpireBig(null, g?.running ? g.activeRegion : (state?.q ? regionFromKind(state.q.kind) : null));
+    }
+    function closeEmpireBig(){
+      if (!els.empireModal) return;
+      empireBigOpen = false;
+      els.empireModal.style.display = 'none';
+      els.empireModal.setAttribute('aria-hidden', 'true');
     }
 
     function resetSelectedRegion(){
@@ -2246,8 +2349,19 @@
         const p = packFromRegion(r.id);
         if (els.pack && String(els.pack.value||'') !== p) els.pack.value = p;
         gRebuildPoolAndMaybePick(`已切換戰場：${r.title}（題目會對應切換）`);
+        if (empireBigOpen) renderEmpireBig(null, r.id);
       });
     }
+
+    // big map modal events
+    els.btnEmpireBig?.addEventListener('click', openEmpireBig);
+    els.btnEmpireBigClose?.addEventListener('click', closeEmpireBig);
+    els.empireModal?.addEventListener('click', (e) => {
+      if (e.target === els.empireModal) closeEmpireBig();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && empireBigOpen) closeEmpireBig();
+    });
 
     els.btnEmpireReset?.addEventListener('click', () => {
       const title = regionById[empire.selected || REGIONS[0].id]?.title || '目前區域';
@@ -2416,7 +2530,10 @@
       if (els.gProgressMeta) els.gProgressMeta.textContent = `進度：${rs.inTile} / ${TERRITORY_XP}（答對才前進）｜答對預估 +${nextDelta}｜本區工程點數：${rs.xp}`;
 
       // show expansion map for the active territory while running
-      if (g.running) renderEmpire(null, g.activeRegion);
+      if (g.running){
+        renderEmpire(null, g.activeRegion);
+        if (empireBigOpen) renderEmpireBig(null, g.activeRegion);
+      }
     }
 
     function gPick(){
