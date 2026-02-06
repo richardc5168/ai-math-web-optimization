@@ -22,6 +22,17 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
+from adaptive_mastery import (
+    AttemptEvent,
+    ConceptState,
+    ErrorCode,
+    Stage,
+    classify_error_code,
+    error_stats_from_json,
+    error_stats_to_json,
+    update_state_on_attempt,
+)
+
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -409,6 +420,31 @@ def init_db():
     )
     """)
 
+    # Adaptive mastery (per-student per-concept)
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS student_concepts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER NOT NULL,
+        concept_id TEXT NOT NULL,
+        stage TEXT NOT NULL DEFAULT 'BASIC',
+        answered INTEGER NOT NULL DEFAULT 0,
+        correct INTEGER NOT NULL DEFAULT 0,
+        in_hint_mode INTEGER NOT NULL DEFAULT 0,
+        in_micro_step INTEGER NOT NULL DEFAULT 0,
+        micro_count INTEGER NOT NULL DEFAULT 0,
+        consecutive_wrong INTEGER NOT NULL DEFAULT 0,
+        calm_mode INTEGER NOT NULL DEFAULT 0,
+        last_activity TEXT,
+        concept_started_at TEXT,
+        error_stats_json TEXT NOT NULL DEFAULT '{}',
+        flag_teacher INTEGER NOT NULL DEFAULT 0,
+        completed INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL,
+        UNIQUE(student_id, concept_id),
+        FOREIGN KEY(student_id) REFERENCES students(id)
+    )
+    """)
+
     # ---- schema migration (non-breaking) ----
     def ensure_column(table: str, col: str, col_type: str):
         cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()}
@@ -421,10 +457,200 @@ def init_db():
     ensure_column("attempts", "hint_level_used", "INTEGER")
     ensure_column("attempts", "meta_json", "TEXT")
 
+    # Track the student's current concept for the adaptive flow.
+    ensure_column("students", "current_concept_id", "TEXT")
+    ensure_column("students", "updated_at", "TEXT")
+
     conn.commit()
     conn.close()
 
 init_db()
+
+
+def _concept_sequence() -> List[str]:
+    """Default ordered concepts for progression.
+
+    Priority:
+    1) ENV ADAPTIVE_CONCEPT_SEQUENCE="A1,A2,A3"
+    2) KNOWLEDGE_GRAPH order (A1..)
+    """
+
+    raw = os.environ.get("ADAPTIVE_CONCEPT_SEQUENCE", "").strip()
+    if raw:
+        seq = [x.strip() for x in raw.split(",") if x.strip()]
+        if seq:
+            return seq
+
+    # Default to knowledge graph IDs in sorted order.
+    try:
+        keys = list(KNOWLEDGE_GRAPH.keys())
+        if all(isinstance(k, str) for k in keys):
+            return sorted(keys)
+    except Exception:
+        pass
+
+    return []
+
+
+def _next_concept_id(current: str) -> Optional[str]:
+    seq = _concept_sequence()
+    if not seq or current not in seq:
+        return None
+    idx = seq.index(current)
+    if idx + 1 >= len(seq):
+        return None
+    return seq[idx + 1]
+
+
+def _get_or_create_student_concept(conn: sqlite3.Connection, *, student_id: int, concept_id: str) -> ConceptState:
+    row = conn.execute(
+        "SELECT * FROM student_concepts WHERE student_id=? AND concept_id=?",
+        (student_id, concept_id),
+    ).fetchone()
+    if row:
+        return ConceptState(
+            concept_id=concept_id,
+            stage=Stage(str(row["stage"]) or Stage.BASIC.value),
+            answered=int(row["answered"] or 0),
+            correct=int(row["correct"] or 0),
+            in_hint_mode=bool(row["in_hint_mode"]),
+            in_micro_step=bool(row["in_micro_step"]),
+            micro_count=int(row["micro_count"] or 0),
+            consecutive_wrong=int(row["consecutive_wrong"] or 0),
+            calm_mode=bool(row["calm_mode"]),
+            last_activity=str(row["last_activity"] or "") or None,
+            concept_started_at=str(row["concept_started_at"] or "") or None,
+            error_stats=error_stats_from_json(row["error_stats_json"]),
+            flag_teacher=bool(row["flag_teacher"]),
+            completed=bool(row["completed"]),
+        )
+
+    # Insert fresh row.
+    st = ConceptState(concept_id=concept_id, stage=Stage.BASIC)
+    conn.execute(
+        """
+        INSERT INTO student_concepts(
+            student_id, concept_id, stage, answered, correct,
+            in_hint_mode, in_micro_step, micro_count,
+            consecutive_wrong, calm_mode,
+            last_activity, concept_started_at,
+            error_stats_json, flag_teacher, completed,
+            updated_at
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """,
+        (
+            student_id,
+            concept_id,
+            st.stage.value,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            now_iso(),
+            now_iso(),
+            "{}",
+            0,
+            0,
+            now_iso(),
+        ),
+    )
+    return st
+
+
+def _save_student_concept(conn: sqlite3.Connection, *, student_id: int, state: ConceptState) -> None:
+    conn.execute(
+        """
+        UPDATE student_concepts SET
+          stage=?, answered=?, correct=?,
+          in_hint_mode=?, in_micro_step=?, micro_count=?,
+          consecutive_wrong=?, calm_mode=?,
+          last_activity=?, concept_started_at=?,
+          error_stats_json=?, flag_teacher=?, completed=?,
+          updated_at=?
+        WHERE student_id=? AND concept_id=?
+        """,
+        (
+            state.stage.value,
+            int(state.answered),
+            int(state.correct),
+            1 if state.in_hint_mode else 0,
+            1 if state.in_micro_step else 0,
+            int(state.micro_count),
+            int(state.consecutive_wrong),
+            1 if state.calm_mode else 0,
+            state.last_activity or now_iso(),
+            state.concept_started_at or now_iso(),
+            error_stats_to_json(state.error_stats),
+            1 if state.flag_teacher else 0,
+            1 if state.completed else 0,
+            now_iso(),
+            student_id,
+            state.concept_id,
+        ),
+    )
+
+
+def _window_accuracy(conn: sqlite3.Connection, *, student_id: int, concept_id: str, n: int) -> Optional[float]:
+    rows = conn.execute(
+        """
+        SELECT is_correct FROM attempts
+        WHERE student_id=? AND topic=? AND is_correct IN (0,1)
+        ORDER BY ts DESC LIMIT ?
+        """,
+        (student_id, concept_id, int(n)),
+    ).fetchall()
+    if not rows:
+        return None
+    total = len(rows)
+    correct = sum(1 for r in rows if r["is_correct"] == 1)
+    return correct / total if total else None
+
+
+def _avg_time(conn: sqlite3.Connection, *, student_id: int, concept_id: str) -> Optional[float]:
+    row = conn.execute(
+        """
+        SELECT AVG(time_spent_sec) AS avg_t
+        FROM attempts
+        WHERE student_id=? AND topic=? AND time_spent_sec > 0
+        """,
+        (student_id, concept_id),
+    ).fetchone()
+    if not row:
+        return None
+    v = row["avg_t"]
+    try:
+        return float(v) if v is not None else None
+    except Exception:
+        return None
+
+
+def _adaptive_ui_actions(state: ConceptState, *, error_code: Optional[str]) -> List[str]:
+    out: List[str] = []
+    if state.calm_mode:
+        out.append("calm_mode")
+        out.append("slow_ui")
+    if state.in_micro_step:
+        out.append("micro_step")
+        out.append("split_question")
+    if state.in_hint_mode:
+        out.append("hint_mode")
+        out.append("show_steps")
+
+    code = (error_code or "").strip().upper()
+    if code == ErrorCode.CAL.value:
+        out.append("show_steps")
+    elif code == ErrorCode.CON.value:
+        out.append("show_example")
+    elif code == ErrorCode.READ.value:
+        out.append("highlight_keywords")
+    elif code == ErrorCode.CARE.value:
+        out.append("slow_ui")
+    elif code == ErrorCode.TIME.value:
+        out.append("split_question")
+    return sorted(set(out))
 
 # ========= 3) Auth + Subscription Gate =========
 def get_account_by_api_key(api_key: str) -> sqlite3.Row:
@@ -1616,8 +1842,13 @@ async def submit_answer(request: Request, x_api_key: str = Header(..., alias="X-
     meta = {
         "hint_level_used": hint_level_used_int,
         "policy": {"reveal_answer_after_submit": True, "max_hint_level": 3},
-        "resources_reco": resources_reco
+        "resources_reco": resources_reco,
     }
+
+    # Optional meta payload from client for error classification.
+    client_meta = body.get("meta")
+    if isinstance(client_meta, dict):
+        meta["client_meta"] = client_meta
 
     conn.execute("""INSERT INTO attempts(account_id, student_id, question_id, mode, topic, difficulty,
                     question, correct_answer, user_answer, is_correct, time_spent_sec,
@@ -1627,6 +1858,52 @@ async def submit_answer(request: Request, x_api_key: str = Header(..., alias="X-
                   q["question"], q["correct_answer"], user_answer, is_correct, time_spent,
                   error_tag, error_detail, hint_level_used_int, json.dumps(meta, ensure_ascii=False), now_iso()))
     conn.commit()
+
+    # ---- Adaptive Mastery Update (per student x concept) ----
+    concept_id = str(q["topic"] or "unknown")
+    avg_t = _avg_time(conn, student_id=student_id, concept_id=concept_id)
+    err_code = classify_error_code(
+        is_correct=(is_correct == 1),
+        correct_answer=q["correct_answer"],
+        user_answer=user_answer,
+        time_spent_sec=time_spent,
+        avg_time_sec=avg_t,
+        meta=meta.get("client_meta") if isinstance(meta.get("client_meta"), dict) else {},
+    )
+
+    st_state = _get_or_create_student_concept(conn, student_id=student_id, concept_id=concept_id)
+    last5 = _window_accuracy(conn, student_id=student_id, concept_id=concept_id, n=5)
+    last8 = _window_accuracy(conn, student_id=student_id, concept_id=concept_id, n=8)
+    last4 = _window_accuracy(conn, student_id=student_id, concept_id=concept_id, n=4)
+    st_state, actions = update_state_on_attempt(
+        st_state,
+        AttemptEvent(
+            is_correct=(is_correct == 1),
+            time_spent_sec=time_spent,
+            error_code=err_code,
+            meta=meta.get("client_meta") if isinstance(meta.get("client_meta"), dict) else {},
+            now_iso=now_iso(),
+        ),
+        last5_acc=last5,
+        last8_acc=last8,
+        last4_acc=last4,
+    )
+
+    # Advance concept if the state machine says so.
+    next_id = None
+    if actions.advanced_concept:
+        next_id = _next_concept_id(concept_id)
+        if next_id:
+            # Mark student's current concept.
+            conn.execute(
+                "UPDATE students SET current_concept_id=?, updated_at=? WHERE id=?",
+                (next_id, now_iso(), student_id),
+            )
+            # Ensure the next concept row exists.
+            _get_or_create_student_concept(conn, student_id=student_id, concept_id=next_id)
+
+    _save_student_concept(conn, student_id=student_id, state=st_state)
+
     conn.close()
 
     # 回傳詳解與結果（你現有 INCORRECT_CUSTOM_FEEDBACK 可在前端呈現）
@@ -1641,6 +1918,157 @@ async def submit_answer(request: Request, x_api_key: str = Header(..., alias="X-
         "hint_plan": hint_plan,
         "drill_reco": drill_reco,
         "resources_reco": resources_reco
+        ,
+        "adaptive": {
+            "concept_id": st_state.concept_id,
+            "stage": st_state.stage.value,
+            "answered": st_state.answered,
+            "correct": st_state.correct,
+            "mastery": round(st_state.mastery(), 4),
+            "in_hint_mode": bool(st_state.in_hint_mode),
+            "in_micro_step": bool(st_state.in_micro_step),
+            "micro_count": int(st_state.micro_count),
+            "consecutive_wrong": int(st_state.consecutive_wrong),
+            "calm_mode": bool(st_state.calm_mode),
+            "flag_teacher": bool(st_state.flag_teacher),
+            "completed": bool(st_state.completed),
+            "error_code": (err_code.value if err_code else None),
+            "actions": {
+                "upgraded_stage": bool(actions.upgraded_stage),
+                "advanced_concept": bool(actions.advanced_concept),
+                "next_concept_id": next_id,
+                "entered_hint": bool(actions.entered_hint),
+                "exited_hint": bool(actions.exited_hint),
+                "entered_micro": bool(actions.entered_micro),
+                "exited_micro": bool(actions.exited_micro),
+                "entered_calm": bool(actions.entered_calm),
+                "exited_calm": bool(actions.exited_calm),
+                "flagged_teacher": bool(actions.flagged_teacher),
+            },
+            "ui_actions": _adaptive_ui_actions(st_state, error_code=(err_code.value if err_code else None)),
+        },
+    }
+
+
+@app.get("/v1/adaptive/state", summary="Get adaptive mastery state for a student")
+def adaptive_state(student_id: int, x_api_key: str = Header(..., alias="X-API-Key")):
+    acc = get_account_by_api_key(x_api_key)
+    ensure_subscription_active(acc["id"])
+
+    conn = db()
+    st = conn.execute(
+        "SELECT * FROM students WHERE id=? AND account_id=?",
+        (int(student_id), acc["id"]),
+    ).fetchone()
+    if not st:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    current = str(st["current_concept_id"] or "").strip() or None
+    if not current:
+        seq = _concept_sequence()
+        current = seq[0] if seq else None
+
+    out_state = None
+    if current:
+        cs = _get_or_create_student_concept(conn, student_id=int(student_id), concept_id=current)
+        out_state = {
+            "concept_id": cs.concept_id,
+            "stage": cs.stage.value,
+            "answered": cs.answered,
+            "correct": cs.correct,
+            "mastery": round(cs.mastery(), 4),
+            "in_hint_mode": bool(cs.in_hint_mode),
+            "in_micro_step": bool(cs.in_micro_step),
+            "micro_count": int(cs.micro_count),
+            "consecutive_wrong": int(cs.consecutive_wrong),
+            "calm_mode": bool(cs.calm_mode),
+            "flag_teacher": bool(cs.flag_teacher),
+            "completed": bool(cs.completed),
+            "error_stats": cs.error_stats,
+        }
+
+        # Persist current concept if missing.
+        if not st["current_concept_id"]:
+            conn.execute(
+                "UPDATE students SET current_concept_id=?, updated_at=? WHERE id=?",
+                (current, now_iso(), int(student_id)),
+            )
+            conn.commit()
+
+    conn.close()
+    return {
+        "student_id": int(student_id),
+        "current_concept_id": current,
+        "sequence": _concept_sequence(),
+        "current_state": out_state,
+    }
+
+
+@app.get("/v1/adaptive/dashboard", summary="Dashboard (JSON) for parent/teacher")
+def adaptive_dashboard(student_id: int, x_api_key: str = Header(..., alias="X-API-Key")):
+    acc = get_account_by_api_key(x_api_key)
+    ensure_subscription_active(acc["id"])
+
+    conn = db()
+    st = conn.execute(
+        "SELECT * FROM students WHERE id=? AND account_id=?",
+        (int(student_id), acc["id"]),
+    ).fetchone()
+    if not st:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    rows = conn.execute(
+        "SELECT * FROM student_concepts WHERE student_id=? ORDER BY concept_id ASC",
+        (int(student_id),),
+    ).fetchall()
+
+    seq = _concept_sequence()
+    cur_id = str(st["current_concept_id"] or "").strip() or (seq[0] if seq else None)
+
+    concepts: List[Dict[str, Any]] = []
+    for r in rows:
+        answered = int(r["answered"] or 0)
+        correct = int(r["correct"] or 0)
+        mastery = (correct / answered) if answered > 0 else 0.0
+        stuck_flag = bool(answered >= 6 and mastery < 0.6)
+
+        color = "yellow"
+        if bool(r["completed"]):
+            color = "green"
+        elif bool(r["flag_teacher"]) or stuck_flag:
+            color = "red"
+
+        concepts.append(
+            {
+                "concept_id": r["concept_id"],
+                "stage": r["stage"],
+                "answered": answered,
+                "correct": correct,
+                "mastery": round(mastery, 4),
+                "in_hint_mode": bool(r["in_hint_mode"]),
+                "in_micro_step": bool(r["in_micro_step"]),
+                "micro_count": int(r["micro_count"] or 0),
+                "consecutive_wrong": int(r["consecutive_wrong"] or 0),
+                "calm_mode": bool(r["calm_mode"]),
+                "stuck_flag": bool(stuck_flag),
+                "flag_teacher": bool(r["flag_teacher"]),
+                "last_activity": r["last_activity"],
+                "color": color,
+                "error_stats": error_stats_from_json(r["error_stats_json"]),
+            }
+        )
+
+    conn.close()
+    return {
+        "student": {
+            "id": st["id"],
+            "display_name": st["display_name"],
+            "grade": st["grade"],
+        },
+        "current_concept_id": cur_id,
+        "concepts": concepts,
     }
 
 
