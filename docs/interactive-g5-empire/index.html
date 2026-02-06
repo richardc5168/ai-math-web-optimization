@@ -101,6 +101,41 @@
       .modal .dialog{inset:10px}
       .empire-grid.big{--tile:22px; --gap:6px; grid-template-columns:repeat(14, var(--tile))}
     }
+
+
+    /* Victory Modal & Effects */
+    .victory-modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .4s ease;
+    }
+    .victory-modal.show { opacity: 1; pointer-events: auto; }
+    .victory-content {
+      background: linear-gradient(135deg, #1a264a 0%, #0d1222 100%);
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 215, 0, 0.1);
+      border-radius: 24px; padding: 40px; text-align: center;
+      max-width: 90%; width: 420px;
+      transform: scale(0.8) translateY(20px); transition: transform .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative; overflow: hidden;
+    }
+    .victory-modal.show .victory-content { transform: scale(1) translateY(0); }
+    .victory-icon { margin-bottom: 14px; line-height: 1; filter: drop-shadow(0 0 25px rgba(255,221,87,0.6)); animation: castleFloat 3s ease-in-out infinite; }
+    .victory-castle{ width:min(260px, 76vw); margin:0 auto; }
+    .victory-castle svg{ width:100%; height:auto; display:block; }
+    .victory-flag{ transform-origin:175px 18px; animation: flagWave 1.3s ease-in-out infinite; }
+    @keyframes flagWave{
+      0%,100%{ transform:skewX(0deg) translateX(0px) }
+      50%{ transform:skewX(-6deg) translateX(2px) }
+    }
+    @keyframes castleFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .victory-title { font-size: 32px; color: #ffd700; margin: 0 0 16px 0; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px; }
+    .victory-desc { color: #e6edf3; font-size: 18px; margin-bottom: 30px; line-height: 1.6; }
+    .btn.victory-btn { background: linear-gradient(90deg, #d29922, #f9c513); border: none; color: #000; font-weight: 900; padding: 14px 32px; font-size: 18px; box-shadow: 0 4px 15px rgba(210,153,34,0.4); transform-origin: center; transition: transform .2s; }
+    .btn.victory-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+    .btn.victory-btn:active { transform: scale(0.95); }
+    
+    .firework { position: absolute; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -709,6 +744,76 @@
       <div class="empire-grid big" id="empireGridBig" style="margin-top:12px"></div>
     </div>
   </div>
+
+
+  <div class="victory-modal" id="victoryModal" aria-hidden="true" role="dialog">
+    <div class="victory-content">
+      <div class="victory-icon" aria-hidden="true">
+        <div class="victory-castle">
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="勝利城堡">
+            <defs>
+              <linearGradient id="gStone" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#d8dee9" stop-opacity="0.95"/>
+                <stop offset="1" stop-color="#aab6c6" stop-opacity="0.95"/>
+              </linearGradient>
+              <linearGradient id="gGold" x1="0" x2="1">
+                <stop offset="0" stop-color="#f9d76e"/>
+                <stop offset="1" stop-color="#ffd700"/>
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="6" result="b"/>
+                <feColorMatrix in="b" type="matrix" values="1 0 0 0 1  0 1 0 0 0.85  0 0 1 0 0.2  0 0 0 0.6 0"/>
+              </filter>
+            </defs>
+
+            <ellipse cx="160" cy="200" rx="120" ry="14" fill="#ffd700" opacity="0.25" filter="url(#glow)"/>
+
+            <g fill="url(#gStone)" stroke="#334155" stroke-width="3" opacity="0.98">
+              <rect x="34" y="70" width="62" height="132" rx="10"/>
+              <rect x="224" y="70" width="62" height="132" rx="10"/>
+              <rect x="116" y="44" width="88" height="158" rx="12"/>
+            </g>
+
+            <g fill="#e6edf3" stroke="#334155" stroke-width="3" opacity="0.98">
+              <path d="M34 70 h62 v-18 h-10 v10 h-12 v-10 h-12 v10 h-12 v-10 h-16 z"/>
+              <path d="M224 70 h62 v-18 h-10 v10 h-12 v-10 h-12 v10 h-12 v-10 h-16 z"/>
+              <path d="M116 44 h88 v-18 h-10 v10 h-12 v-10 h-12 v10 h-12 v-10 h-12 v10 h-18 z"/>
+            </g>
+
+            <g>
+              <rect x="136" y="128" width="48" height="74" rx="22" fill="#0b1020" opacity="0.9"/>
+              <path d="M136 165 h48" stroke="#475569" stroke-width="3" opacity="0.9"/>
+              <circle cx="150" cy="170" r="3" fill="#ffd700" opacity="0.9"/>
+              <circle cx="170" cy="170" r="3" fill="#ffd700" opacity="0.9"/>
+            </g>
+
+            <rect x="170" y="12" width="5" height="64" fill="#e6edf3" opacity="0.95"/>
+
+            <g class="victory-flag">
+              <path d="M175 18 C198 10, 212 18, 236 12 L236 44 C212 50, 198 40, 175 48 Z" fill="url(#gGold)" stroke="#7c5c00" stroke-width="2"/>
+              <path d="M194 26 C205 22, 216 22, 228 20" stroke="#7c5c00" stroke-width="2" opacity="0.55"/>
+              <path d="M194 38 C205 34, 216 34, 228 32" stroke="#7c5c00" stroke-width="2" opacity="0.55"/>
+            </g>
+
+            <g fill="#ffd700" opacity="0.9">
+              <path d="M64 34 l6 12 12 6-12 6-6 12-6-12-12-6 12-6z" opacity="0.55"/>
+              <path d="M270 40 l5 10 10 5-10 5-5 10-5-10-10-5 10-5z" opacity="0.5"/>
+              <circle cx="90" cy="116" r="3" opacity="0.5"/>
+              <circle cx="248" cy="120" r="3" opacity="0.5"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="victory-title">大獲全勝！</div>
+      <div class="victory-desc">
+        太厲害了！你已經征服了<br>
+        <b id="victoryRegion" style="color:#fff; font-size:22px; margin:0 4px">--</b><br>
+        的所有領地！現在它是你的最強堡壘！
+      </div>
+      <button class="btn victory-btn" id="btnVictoryClose">收下榮耀 🚩</button>
+    </div>
+  </div>
+
 
   <div class="expand-toast" id="expandToast" aria-live="polite"></div>
 
@@ -2147,6 +2252,8 @@
           const gained = Math.max(0, res.claimed || 0);
           const latest = (res.ids && res.ids.length) ? res.ids[res.ids.length - 1] : null;
 
+          // Victory (Practice Mode): celebrate even when already full
+          maybeShowVictory(rid, after.land);
           // render + sparkle chain on both maps
           renderEmpireCore(latest, rid, MAX_TILES_SMALL, {
             toggleTabs: true,
@@ -2179,11 +2286,18 @@
 
           if (gained){
             showExpandToast(`連對 ${state.practiceStreak}｜擴張 +${gained} 格 ✨`);
+          } else if (after.land >= MAX_TILES_SMALL) {
+            showExpandToast(`連對 ${state.practiceStreak}｜領地已滿！大獲全勝！🏰`);
           } else {
             showExpandToast(`工程點數 +${delta}`);
           }
 
-          showBanner('ok', `答對了！+${delta} 工程點數（練習也能擴張）\n連對 ${state.practiceStreak}：擴張 ${gained || 0} 格。你可以出下一題。`);
+          const rTitle = regionById[rid]?.title || '本區域';
+          if (after.land >= MAX_TILES_SMALL){
+            showBanner('ok', `答對了！+${delta} 工程點數（練習也能擴張）\n連對 ${state.practiceStreak}：領地已滿！你已征服「${rTitle}」全境 🏰`);
+          } else {
+            showBanner('ok', `答對了！+${delta} 工程點數（練習也能擴張）\n連對 ${state.practiceStreak}：擴張 ${gained || 0} 格。你可以出下一題。`);
+          }
         } else {
           state.practiceStreak = 0;
           showBanner('warn', '答案不對沒關係（不扣分）。再試一次；可以先看提示 Level 1/2/3。');
@@ -2520,6 +2634,83 @@
         els.expandToast?.classList.remove('show');
       }, 1400);
     }
+
+
+    // ----- victory modal -----
+    let victoryLast = { rid: null, ts: 0 };
+
+    function maybeShowVictory(rid, afterLand){
+      if (!rid) return;
+      const land = Number.isFinite(Number(afterLand)) ? Number(afterLand) : regionStats(rid).land;
+      if (land < MAX_TILES_SMALL) return;
+      const now = Date.now();
+      if (victoryLast.rid === rid && (now - victoryLast.ts) < 12000) return; // throttle (avoid spam)
+      victoryLast = { rid, ts: now };
+      const rTitle = regionById[rid]?.title || '此區域';
+      setTimeout(() => showVictoryModal(rTitle), 450);
+    }
+
+    function showVictoryModal(regionName){
+      if (!els.victoryModal) return;
+      if (els.victoryRegion) els.victoryRegion.textContent = regionName || '本區域';
+      els.victoryModal.classList.add('show');
+      els.victoryModal.setAttribute('aria-hidden', 'false');
+      spawnFireworks();
+    }
+
+    function closeVictoryModal(){
+      if (!els.victoryModal) return;
+      els.victoryModal.classList.remove('show');
+      setTimeout(() => {
+        els.victoryModal.setAttribute('aria-hidden', 'true');
+      }, 400);
+    }
+
+    els.btnVictoryClose?.addEventListener('click', closeVictoryModal);
+
+    function spawnFireworks(){
+      // simple CSS particle explosion
+      const modal = els.victoryModal;
+      if (!modal) return;
+      const count = 30; 
+      const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff'];
+      
+      for(let i=0; i<count; i++){
+        setTimeout(() => createParticle(modal, colors), Math.random() * 600);
+        setTimeout(() => createParticle(modal, colors), Math.random() * 600 + 400);
+        setTimeout(() => createParticle(modal, colors), Math.random() * 600 + 800);
+      }
+    }
+
+    function createParticle(parent, colors){
+      const p = document.createElement('div');
+      p.className = 'firework';
+      const c = colors[Math.floor(Math.random() * colors.length)];
+      p.style.backgroundColor = c;
+      p.style.width = Math.random() * 8 + 4 + 'px';
+      p.style.height = p.style.width;
+      p.style.borderRadius = '50%';
+      // random position around center
+      const startX = window.innerWidth / 2;
+      const startY = window.innerHeight / 2;
+      p.style.left = startX + 'px';
+      p.style.top = startY + 'px';
+      
+      const angle = Math.random() * Math.PI * 2;
+      const velocity = Math.random() * 200 + 100;
+      const tx = Math.cos(angle) * velocity;
+      const ty = Math.sin(angle) * velocity;
+      
+      p.style.transition = 'transform 1s ease-out, opacity 1s ease-out';
+      parent.appendChild(p);
+      
+      requestAnimationFrame(()=>{
+        p.style.transform = `translate(${tx}px, ${ty}px) scale(0)`;
+        p.style.opacity = '0';
+      });
+      setTimeout(() => p.remove(), 1000);
+    }
+
 
     function empireSparkle(gridEl, idsOrLatestIndex, intensity){
       if (!gridEl) return;
@@ -2940,6 +3131,8 @@
           const gained = Math.max(0, res.claimed || 0);
           const latest = (res.ids && res.ids.length) ? res.ids[res.ids.length - 1] : null;
 
+          // Victory (Game Mode): celebrate even when already full
+          maybeShowVictory(rid, after.land);
           // render + sparkle chain on both maps
           renderEmpireCore(latest, rid, MAX_TILES_SMALL, {
             toggleTabs: true,
@@ -2972,6 +3165,8 @@
 
           if (gained){
             showExpandToast(`連對 ${g.streak}｜擴張 +${gained} 格 ✨`);
+          } else if (after.land >= MAX_TILES_SMALL) {
+            showExpandToast(`連對 ${g.streak}｜領地已滿！大獲全勝！🏰`);
           } else {
             showExpandToast(`連對 ${g.streak}｜工程點數 +${delta}`);
           }
