@@ -14,6 +14,12 @@
       "description": "Khan Academy (A1-A5) 知識圖譜整合 + SymPy 智能運算引擎。支援分步解題 (Steps)、智慧防刷題 (Cool-down) 與難度分級。"
     },
     {
+      "id": "learning-map",
+      "title": "題型觀念地圖（快速摘要｜可搜尋）",
+      "path": "learning-map/",
+      "description": "自動掃描所有離線題庫 bank.js，彙整每個模組的題型（kind）、核心觀念、常見步驟與題數/難度分布；適合考前快速複習與查漏補缺。"
+    },
+    {
       "id": "mixed-multiply",
       "title": "國小｜帶分數乘法（練習）",
       "path": "mixed-multiply/",

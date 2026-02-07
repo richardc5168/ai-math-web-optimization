@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>題型觀念地圖｜AI Math Web</title>
+    <style>
+        :root{
+            --bg:#0b0f14; --panel:#101826; --panel2:#0f1623; --text:#e8eef7;
+            --muted:#a8b3c5; --line:#243046; --accent:#7dd3fc; --accent2:#34d399;
+            --warn:#fbbf24; --bad:#fb7185;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        }
+        *{box-sizing:border-box}
+        body{margin:0; font-family:var(--sans); background:var(--bg); color:var(--text); line-height:1.6}
+        a{color:var(--accent); text-decoration:none}
+        a:hover{text-decoration:underline}
+        header{padding:24px 18px 14px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, rgba(125,211,252,0.08), rgba(0,0,0,0))}
+        header h1{margin:0 0 6px; font-size:20px}
+        header .sub{color:var(--muted); font-size:13px}
+        .wrap{display:grid; grid-template-columns: 340px 1fr; gap:16px; padding:16px; max-width:1280px; margin:0 auto}
+        @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
+        .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow: 0 10px 30px rgba(0,0,0,0.25)}
+        .toc{padding:14px 14px 10px; position:sticky; top:12px; height:fit-content}
+        .toc h2{margin:0 0 10px; font-size:14px; letter-spacing:.3px; color:var(--muted)}
+        .toc .search{display:flex; gap:8px; align-items:center; margin-bottom:10px}
+        .toc input{
+            width:100%; padding:10px 10px; border-radius:10px; border:1px solid var(--line);
+            background:var(--panel2); color:var(--text); outline:none;
+        }
+        .toc .hint{font-size:12px; color:var(--muted); margin:6px 0 0}
+        .toc ul{list-style:none; padding:0; margin:10px 0 0; max-height: calc(100vh - 170px); overflow:auto}
+        .toc li{margin:6px 0}
+        .toc a{display:block; padding:6px 8px; border-radius:10px}
+        .toc a:hover{background:rgba(125,211,252,0.08)}
+        main{padding:16px}
+        section{margin:0 0 18px}
+        section > h2{margin:0 0 8px; font-size:16px; border-left:4px solid var(--accent); padding-left:10px}
+        .meta{font-size:12px; color:var(--muted); margin:6px 0 0}
+        .pill{display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); margin-right:6px; margin-bottom:6px}
+        .lvl{border-color:rgba(125,211,252,0.35); color:var(--accent)}
+        .lvl.mid{border-color:rgba(52,211,153,0.35); color:var(--accent2)}
+        .lvl.deep{border-color:rgba(251,113,133,0.35); color:var(--bad)}
+        details{background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin:10px 0}
+        details summary{cursor:pointer; font-weight:600}
+        details summary .pills{margin-left:8px}
+        .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+        @media (max-width: 980px){ .grid2{grid-template-columns:1fr} }
+        ul{margin:8px 0 0 18px}
+        li{margin:6px 0}
+        .k{font-family:var(--mono); font-size:12px; color:var(--muted)}
+        .box{padding:10px 12px; border:1px dashed rgba(125,211,252,0.35); border-radius:12px; background:rgba(125,211,252,0.06); margin:10px 0}
+        .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+        .chip{font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid rgba(125,211,252,0.25); background:rgba(125,211,252,0.08); color:var(--accent)}
+        .footer{padding:12px 16px; border-top:1px solid var(--line); color:var(--muted); font-size:12px}
+    </style>
+</head>
+
+<body>
+<header>
+    <div style="max-width:1280px;margin:0 auto;">
+        <h1>題型觀念地圖（提示 / 題型 / 核心觀念快速摘要）</h1>
+        <div class="sub">
+            來源：自動掃描 <span class="k">docs/**/bank.js</span>，彙整每個模組的 <b>kind 題型</b>、<b>常見觀念</b>、<b>步驟要點</b> 與 <b>題數/難度分布</b>。<br/>
+            使用方式：左側搜尋（中/英關鍵字皆可）→ 右側展開題型細節。<br/>
+            生成時間：2026-02-07 12:47
+        </div>
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="pill lvl" href="../">回首頁</a>
+            <a class="pill lvl mid" href="#top">回到頂部</a>
+        </div>
+    </div>
+</header>
+
+<div class="wrap" id="top">
+    <aside class="card toc">
+        <h2>目錄 / 搜尋</h2>
+        <div class="search">
+            <input id="q" placeholder="輸入關鍵字，例如：通分、約分、折扣、unit conversion、softmax…" />
+        </div>
+        <div class="hint">提示：可用「題型 kind」或「觀念句子」搜尋，例如：小數點移動、平均分配、%↔小數。</div>
+        <ul id="toc">
+            <li><a href="#m_decimal-unit4">五下第4單元｜小數 <span class="k">(94 題 / 6 題型)</span></a></li>
+      <li><a href="#m_fraction-g5">國小五年級｜分數（計算） <span class="k">(123 題 / 9 題型)</span></a></li>
+      <li><a href="#m_fraction-word-g5">分數應用題(五年級) <span class="k">(160 題 / 7 題型)</span></a></li>
+      <li><a href="#m_g5-grand-slam">大單位換算 <span class="k">(188 題 / 46 題型)</span></a></li>
+      <li><a href="#m_interactive-decimal-g5">五下｜互動小數計算 <span class="k">(240 題 / 6 題型)</span></a></li>
+      <li><a href="#m_interactive-g5-empire">五年級｜帝國互動闖關 <span class="k">(320 題 / 8 題型)</span></a></li>
+      <li><a href="#m_interactive-g5-life-pack1-empire">小五生活應用題｜第一包｜帝國 <span class="k">(200 題 / 10 題型)</span></a></li>
+      <li><a href="#m_interactive-g5-life-pack1plus-empire">小五生活應用題｜第一包｜加強版｜帝國 <span class="k">(240 題 / 10 題型)</span></a></li>
+      <li><a href="#m_interactive-g5-life-pack2-empire">小五生活應用題｜第二包｜帝國 <span class="k">(200 題 / 10 題型)</span></a></li>
+      <li><a href="#m_interactive-g5-life-pack2plus-empire">小五生活應用題｜第二包（加強版）｜帝國 <span class="k">(240 題 / 10 題型)</span></a></li>
+      <li><a href="#m_life-applications-g5">國小五年級｜生活應用題（講義+練習） <span class="k">(300 題 / 14 題型)</span></a></li>
+      <li><a href="#m_ratio-percent-g5">國小五年級下｜比率與百分率 <span class="k">(179 題 / 17 題型)</span></a></li>
+      <li><a href="#m_volume-g5">國小五年級｜體積（長方體/正方體） <span class="k">(147 題 / 11 題型)</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="card">
+        <div class="box">
+            <b>這頁適合怎麼用？</b>
+            <ul>
+                <li>考前 10 分鐘：用搜尋找出弱點（例如「通分」「補 0」「折扣」「速率」）。</li>
+                <li>做題卡住：看同 kind 的「常見步驟」與「核心觀念」。</li>
+                <li>教學備課：用題型統計抓出出題面向是否齊全。</li>
+            </ul>
+        </div>
+
+        <section id="m_decimal-unit4" data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK">
+  <h2>五下第4單元｜小數</h2>
+  <div class="meta"><span class="pill lvl">模組</span><span class="pill">decimal-unit4</span><span class="pill">94 題</span><span class="pill">6 題型</span><span class="pill">DECIMAL_UNIT4_BANK</span></div>
+  <details data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK d_div_int 平均分配 → 用除法（總量 ÷ 份數）。 列式：總量 ÷ 份數。 用直式除法計算。 不夠除就補 0 繼續除。 做到被除數的小數點時，商也要點小數點。 檢查：商 × 份數 ≈ 總量。 ">
+  <summary>d_div_int <span class="pills"><span class="pill lvl mid">16 題</span><span class="pill">難度 easy:9 / medium:7</span></span></summary>
+  <div class="grid2">
+    <div>
+      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>
+      <ul>        <li>平均分配 → 用除法（總量 ÷ 份數）。</li>
+      </ul>
+      <div class="meta"><span class="pill lvl mid">常見步驟</span></div>
+      <ul>        <li>列式：總量 ÷ 份數。</li>
+        <li>用直式除法計算。</li>
+        <li>不夠除就補 0 繼續除。</li>
+        <li>做到被除數的小數點時，商也要點小數點。</li>
+        <li>檢查：商 × 份數 ≈ 總量。</li>
+      </ul>
+    </div>
+    <div>
+      <div class="meta"><span class="pill lvl mid">常用標籤</span></div>
+      <div class="chips">        <span class="chip">（無 tags）</span>
+      </div>
+      <div class="meta" style="margin-top:10px;"><span class="pill lvl deep">題目樣例</span></div>
+      <div class="box">（平均分）一共 8.4 公斤，平均分給 6 份，每份多少 公斤？</div>
+      <div class="k">參考答案：1.4</div>
+    </div>
+  </div>
+</details>
+  <details data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK d_mul_d 小數×小數常見在面積（長×寬）或單價×數量。 先估算：大約在幾附近。 先把小數點去掉，改用整數相乘。 把兩個數的小數位數加起來，答案就要有這麼多位小數。 把小數點放回，必要時補 0 或刪尾 0。 檢查：大小合理嗎？單位對嗎？ ">
+  <summary>d_mul_d <span class="pills"><span class="pill lvl mid">18 題</span><span class="pill">難度 easy:11 / medium:7</span></span></summary>
+  <div class="grid2">
+    <div>
+      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>
+      <ul>        <li>小數×小數常見在面積（長×寬）或單價×數量。</li>
+      </ul>
+      <div class="meta"><span class="pill lvl mid">常見步驟</span></div>
+      <ul>        <li>先估算：大約在幾附近。</li>
+        <li>先把小數點去掉，改用整數相乘。</li>
+        <li>把兩個數的小數位數加起來，答案就要有這麼多位小數。</li>
+        <li>把小數點放回，必要時補 0 或刪尾 0。</li>
+        <li>檢查：大小合理嗎？單位對嗎？</li>
+      </ul>
+    </div>
+    <div>
+      <div class="meta"><span class="pill lvl mid">常用標籤</span></div>
+      <div class="chips">        <span class="chip">（無 tags）</span>
+      </div>
+      <div class="meta" style="margin-top:10px;"><span class="pill lvl deep">題目樣例</span></div>
+      <div class="box">（單價×重量）每公斤 7.33 元，買了 4.2 公斤，一共多少元？</div>
+      <div class="k">參考答案：30.79</div>
+    </div>
+  </div>
+</details>
+  <details data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK d_mul_int 同一份量有很多份 → 用乘法。 先估算：大約在幾附近（看會變大/變小）。 列式：每份 × 份數。 先忽略小數點做整數乘法。 最後把小數點放回（看原數有幾位小數）。 檢查：結果單位與大小是否合理。 ">
+  <summary>d_mul_int <span class="pills"><span class="pill lvl mid">20 題</span><span class="pill">難度 easy:11 / medium:9</span></span></summary>
+  <div class="grid2">
+    <div>
+      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>
+      <ul>        <li>同一份量有很多份 → 用乘法。</li>
+      </ul>
+      <div class="meta"><span class="pill lvl mid">常見步驟</span></div>
+      <ul>        <li>先估算：大約在幾附近（看會變大/變小）。</li>
+        <li>列式：每份 × 份數。</li>
+        <li>先忽略小數點做整數乘法。</li>
+        <li>最後把小數點放回（看原數有幾位小數）。</li>
+        <li>檢查：結果單位與大小是否合理。</li>
+      </ul>
+    </div>
+    <div>
+      <div class="meta"><span class="pill lvl mid">常用標籤</span></div>
+      <div class="chips">        <span class="chip">（無 tags）</span>
+      </div>
+      <div class="meta" style="margin-top:10px;"><span class="pill lvl deep">題目樣例</span></div>
+      <div class="box">（買多份）每份 2.51 公斤，有 6 份，一共多少 公斤？</div>
+      <div class="k">參考答案：15.06</div>
+    </div>
+  </div>
+</details>
+  <details data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK int_div_int_to_decimal 整數÷整數也可能得到小數；不夠除就補 0。 寫直式除法。 不夠除就補 0，繼續除。 小數點的位置：被除數的小數點往上點到商。 算出商後，可用商×除數驗算。 ">
+  <summary>int_div_int_to_decimal <span class="pills"><span class="pill lvl mid">12 題</span><span class="pill">難度 easy:6 / medium:6</span></span></summary>
+  <div class="grid2">
+    <div>
+      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>
+      <ul>        <li>整數÷整數也可能得到小數；不夠除就補 0。</li>
+      </ul>
+      <div class="meta"><span class="pill lvl mid">常見步驟</span></div>
+      <ul>        <li>寫直式除法。</li>
+        <li>不夠除就補 0，繼續除。</li>
+        <li>小數點的位置：被除數的小數點往上點到商。</li>
+        <li>算出商後，可用商×除數驗算。</li>
+      </ul>
+    </div>
+    <div>
+      <div class="meta"><span class="pill lvl mid">常用標籤</span></div>
+      <div class="chips">        <span class="chip">（無 tags）</span>
+      </div>
+      <div class="meta" style="margin-top:10px;"><span class="pill lvl deep">題目樣例</span></div>
+      <div class="box">（商是小數）計算：216 ÷ 10 = ?</div>
+      <div class="k">參考答案：21.6</div>
+    </div>
+  </div>
+</details>
+  <details data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK int_mul_d 乘上小於 1 的小數，結果會變小。 判斷：倍數/比例 &lt; 1，所以答案應該小於原本。 列式：原本 × 倍數（比例）。 把小數先不管，先算整數乘法。 把小數點放回，必要時四捨五入到 2 位小數。 檢查：答案有沒有小於原本？ ">
+  <summary>int_mul_d <span class="pills"><span class="pill lvl mid">16 題</span><span class="pill">難度 easy:9 / medium:7</span></span></summary>
+  <div class="grid2">
+    <div>
+      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>
+      <ul>        <li>乘上小於 1 的小數，結果會變小。</li>
+      </ul>
+      <div class="meta"><span class="pill lvl mid">常見步驟</span></div>
+      <ul>        <li>判斷：倍數/比例 &lt; 1，所以答案應該小於原本。</li>
+        <li>列式：原本 × 倍數（比例）。</li>
+        <li>把小數先不管，先算整數乘法。</li>
+        <li>把小數點放回，必要時四捨五入到 2 位小數。</li>
+        <li>檢查：答案有沒有小於原本？</li>
+      </ul>
+    </div>
+    <div>
+      <div class="meta"><span class="pill lvl mid">常用標籤</span></div>
+      <div class="chips">        <span class="chip">（無 tags）</span>
+      </div>
+      <div class="meta" style="margin-top:10px;"><span class="pill lvl deep">題目樣例</span></div>
+      <div class="box">（打折）原價 110 元，打 0.3 倍（= 30%），要付多少元？</div>
+      <div class="k">參考答案：33</div>
+    </div>
+  </div>
+</details>
+  <details data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK x10_shift 只有乘以 10/100/1000（或 0.1/0.01/0.001）才是『小數點移動』。 這題要把小數點往左移 3 格；不夠就補 0。 這題要把小數點往右移 3 格；不夠就補 0。 這題要把小數點往右移 1 格；不夠就補 0。 這題要把小數點往右移 2 格；不夠就補 0。 確認這是 10/100/1000 倍（或 0.1/0.01/0.001 倍）。 把小數點依規則左右移動指定格數。 不夠就補 0。 檢查：乘以 &gt;1 變大；乘以 &lt;1 變小。 ">
+  <summary>x10_shift <span class="pills"><span class="pill lvl mid">12 題</span><span class="pill">難度 easy:12</span></span></summary>
+  <div class="grid2">
+    <div>
+      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>
+      <ul>        <li>只有乘以 10/100/1000（或 0.1/0.01/0.001）才是『小數點移動』。</li>
+        <li>這題要把小數點往左移 3 格；不夠就補 0。</li>
+        <li>這題要把小數點往右移 3 格；不夠就補 0。</li>
+        <li>這題要把小數點往右移 1 格；不夠就補 0。</li>
+        <li>這題要把小數點往右移 2 格；不夠就補 0。</li>
+      </ul>
+      <div class="meta"><span class="pill lvl mid">常見步驟</span></div>
+      <ul>        <li>確認這是 10/100/1000 倍（或 0.1/0.01/0.001 倍）。</li>
+        <li>把小數點依規則左右移動指定格數。</li>
+        <li>不夠就補 0。</li>
+        <li>檢查：乘以 &gt;1 變大；乘以 &lt;1 變小。</li>
+      </ul>
+    </div>
+    <div>
+      <div class="meta"><span class="pill lvl mid">常用標籤</span></div>
+      <div class="chips">        <span class="chip">（無 tags）</span>
+      </div>
+      <div class="meta" style="margin-top:10px;"><span class="pill lvl deep">題目樣例</span></div>
+      <div class="box">（小數點移動）計算：39.93 ×0.001 = ?</div>
+      <div class="k">參考答案：0.03993</div>
+    </div>
+  </div>
+</details>
+</section>
+
+        <div class="footer">
+            本頁由 <span class="k">scripts/generate_learning_map.py</span> 自動產生；若你更新題庫（bank.js），請重新執行腳本以同步內容。
+        </div>
+    </main>
+</div>
+
+<script>
+(function(){
+    const q = document.getElementById('q');
+    const sections = Array.from(document.querySelectorAll('main section'));
+    const detailsList = Array.from(document.querySelectorAll('main details'));
+    const tocLinks = Array.from(document.querySelectorAll('#toc a'));
+
+    function norm(s){ return (s||'').toLowerCase(); }
+
+    function apply(){
+        const term = norm(q.value.trim());
+
+        // Filter details first
+        detailsList.forEach(d=>{
+            const keys = norm(d.getAttribute('data-keywords') || '');
+            const text = norm(d.innerText || '');
+            const hit = !term || keys.includes(term) || text.includes(term);
+            d.style.display = hit ? '' : 'none';
+        });
+
+        // Hide section if it has no visible details and term is non-empty
+        sections.forEach(sec=>{
+            if (!term){ sec.style.display = ''; return; }
+            const visibleDetails = Array.from(sec.querySelectorAll('details')).some(x=>x.style.display !== 'none');
+            sec.style.display = visibleDetails ? '' : 'none';
+        });
+
+        // TOC sync
+        tocLinks.forEach(a=>{
+            const id = a.getAttribute('href').slice(1);
+            const sec = document.getElementById(id);
+            const visible = sec && sec.style.display !== 'none';
+            a.parentElement.style.display = visible ? '' : 'none';
+        });
+    }
+
+    q.addEventListener('input', apply);
+    apply();
+})();
+</script>
+</body>
+</html>
