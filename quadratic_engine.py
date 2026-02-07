@@ -33,6 +33,45 @@ class QuadraticEngine:
         else:
             return self._gen_factoring(difficulty) # Default
 
+    def _build_hints(self, topic_id: str, level: int, a: int, b: int, c: int, kind: str) -> Dict[str, Any]:
+        """Return a browser-friendly 3-level hint ladder.
+
+        Design goal:
+        - Prefer flexible methods (factoring / completing square)
+        - Use formula as last resort
+        - Keep text free of backslashes for JSON safety
+        """
+
+        poly = f"{a}x^2 {b:+d}x {c:+d} = 0".replace('+', '+').replace('-', '-')
+        poly = poly.replace(' 1x^2', ' x^2').replace('-1x^2', '-x^2').replace(' 1x', ' x').replace('-1x', '-x')
+        poly = poly.replace(' +', ' + ').replace(' -', ' - ')
+        poly = " ".join(poly.split())
+
+        h1 = f"先把題目整理成 ax^2+bx+c=0，標出係數：a={a}, b={b}, c={c}。"
+        h2 = ""
+        h3 = ""
+
+        if topic_id == "A3" or kind == "factoring":
+            if a == 1:
+                h2 = f"先試因式分解：找兩個數 p、q，使得 p×q={c} 且 p+q={b}，就能寫成 (x+p)(x+q)=0。"
+            else:
+                h2 = "先試因式分解：如果 a≠1，常用做法是找兩數乘積=ac、和=b，再拆中間項分組分解。"
+            h3 = "如果真的分不出來：改用配方法補成完全平方；最後才用公式解。"
+
+        elif topic_id == "A4":
+            h2 = "配方法：先把常數移到右邊，左邊補成完全平方，再開根號求 x。"
+            h3 = "如果配不順或根號很麻煩，最後再用公式解：x = (-b ± √(b^2-4ac)) / (2a)。"
+
+        else:  # A5 / formula
+            h2 = "先觀察：若 D=b^2-4ac 是完全平方數，通常可以回頭用因式分解更快。"
+            h3 = "最後才用公式解：先算 D=b^2-4ac，再代入 x = (-b ± √D) / (2a)。"
+
+        return {
+            "hints": [h1, h2, h3],
+            "method_order": ["factoring", "completing_square", "formula"],
+            "hint_style": "tiered_v1"
+        }
+
     def _gen_factoring(self, level: int):
         """
         Generates problems solvable by factoring.
@@ -101,6 +140,8 @@ class QuadraticEngine:
             "correct_answer": solutions_str,
             "coefficients": {"a": a, "b": b, "c": c},
             "explanation": "\n".join(explanation_steps),
+            "solution": "\n".join(explanation_steps),
+            **self._build_hints("A3", level, a, b, c, kind="factoring"),
             "type": "factoring"
         }
 
@@ -161,6 +202,8 @@ class QuadraticEngine:
             "correct_answer": sol_str,
             "coefficients": {"a": a, "b": b, "c": c},
             "explanation": "\n".join(steps),
+            "solution": "\n".join(steps),
+            **self._build_hints("A5", level, a, b, c, kind="formula"),
             "type": "formula"
         }
 

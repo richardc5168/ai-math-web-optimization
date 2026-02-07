@@ -634,15 +634,23 @@
       els.hintToggleArea.style.display = 'block';
       els.hintSteps.innerHTML = '';
       
-      // Store full explanation if available
-      state.explanation = buildAdaptiveExplanation({
+      // Prefer backend-provided tiered hints/solution (integrates with the API hint system).
+      // Fallback to local builders when backend doesn't provide them.
+      const backendHints = (data && Array.isArray(data.hints) && data.hints.length >= 3) ? data.hints : null;
+      const backendSolution = (data && (data.solution || data.explanation)) ? (data.solution || data.explanation) : null;
+
+      state.explanation = backendSolution || buildAdaptiveExplanation({
         topicId: els.topic.value,
         difficulty: diff,
         coefficients: data.coefficients,
         questionText: data.question_text
-      }) || data.explanation || "此題暫無詳細步驟。";
+      }) || "此題暫無詳細步驟。";
 
-      state.hintBundle = buildHintBundle({ topicId: els.topic.value, coefficients: data.coefficients });
+      state.hintBundle = backendHints ? {
+        h1: String(backendHints[0] || ''),
+        h2: String(backendHints[1] || ''),
+        h3: String(backendHints[2] || ''),
+      } : buildHintBundle({ topicId: els.topic.value, coefficients: data.coefficients });
       state.hintLevel = 0;
 
       // Context
