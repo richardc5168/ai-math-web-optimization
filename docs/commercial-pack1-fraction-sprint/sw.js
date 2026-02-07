@@ -1,5 +1,5 @@
 /* Minimal offline cache for the commercial pack (static-only). */
-const CACHE = 'aimath-commercial-pack1-fraction-sprint-v1';
+const CACHE = 'aimath-commercial-pack1-fraction-sprint-v2';
 
 const ASSETS = [
   './',

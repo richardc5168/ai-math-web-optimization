@@ -28,7 +28,6 @@ import csv
 import datetime as dt
 import hashlib
 import json
-import os
 import secrets
 from pathlib import Path
 
@@ -58,6 +57,23 @@ def gen_code(prefix: str, groups: int, group_len: int) -> str:
     return "-".join(parts)
 
 
+def load_existing_json(path: Path, expected_pack_id: str) -> dict | None:
+    if not path.exists():
+        return None
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    if not isinstance(obj, dict):
+        return None
+    if obj.get("schema") != "aimath.redeem_codes.v1":
+        return None
+    pack_id = obj.get("pack_id")
+    if pack_id and pack_id != expected_pack_id:
+        raise SystemExit(f"Refusing to merge: out-json pack_id mismatch (found={pack_id!r}, expected={expected_pack_id!r})")
+    return obj
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pack-id", required=True)
@@ -72,6 +88,7 @@ def main() -> int:
     ap.add_argument("--out-json", required=True)
     ap.add_argument("--out-json-dist", default=None)
     ap.add_argument("--out-csv", required=True)
+    ap.add_argument("--replace", action="store_true", help="Replace out-json instead of merging (default: merge if file exists)")
     args = ap.parse_args()
 
     if args.count <= 0:
@@ -95,6 +112,17 @@ def main() -> int:
 
     now = dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
 
+    new_entries = [
+        {
+            "code_hash": sha256_hex(c),
+            "expires_utc": expires_utc,
+            "valid_days": valid_days,
+            "max_uses_per_device": args.max_uses,
+            "label": args.label,
+        }
+        for c in codes
+    ]
+
     json_obj = {
         "schema": "aimath.redeem_codes.v1",
         "pack_id": args.pack_id,
@@ -105,20 +133,31 @@ def main() -> int:
             "max_uses_per_device": args.max_uses,
             "label": args.label,
         },
-        "codes": [
-            {
-                "code_hash": sha256_hex(c),
-                "expires_utc": expires_utc,
-                "valid_days": valid_days,
-                "max_uses_per_device": args.max_uses,
-                "label": args.label,
-            }
-            for c in codes
-        ],
+        "codes": new_entries,
     }
 
     out_json = Path(args.out_json)
     out_json.parent.mkdir(parents=True, exist_ok=True)
+
+    added = len(new_entries)
+    total = added
+    if not args.replace:
+        existing = load_existing_json(out_json, args.pack_id)
+        if existing:
+            existing_codes = existing.get("codes") if isinstance(existing.get("codes"), list) else []
+            existing_hashes = {
+                c.get("code_hash")
+                for c in existing_codes
+                if isinstance(c, dict) and isinstance(c.get("code_hash"), str)
+            }
+            merged = list(existing_codes)
+            for e in new_entries:
+                if e["code_hash"] not in existing_hashes:
+                    merged.append(e)
+            json_obj["codes"] = merged
+            added = len(merged) - len(existing_codes)
+            total = len(merged)
+
     out_json.write_text(json.dumps(json_obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     if args.out_json_dist:
@@ -135,7 +174,12 @@ def main() -> int:
         for c in codes:
             w.writerow([args.pack_id, c, valid_days if valid_days is not None else "", expires_utc or "", args.max_uses, args.label])
 
-    print(f"OK: wrote JSON: {out_json}")
+    if args.replace:
+        print(f"OK: wrote JSON (replaced): {out_json}")
+    elif out_json.exists() and total != len(new_entries):
+        print(f"OK: wrote JSON (merged): {out_json} (added={added}, total={total})")
+    else:
+        print(f"OK: wrote JSON: {out_json}")
     if args.out_json_dist:
         print(f"OK: wrote JSON (dist): {args.out_json_dist}")
     print(f"OK: wrote CSV (DO NOT COMMIT): {out_csv}")

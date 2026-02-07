@@ -206,6 +206,41 @@
   const BANK_GLOBAL = 'COMMERCIAL_PACK1_FRACTION_SPRINT_BANK';
   document.getElementById('packId').innerText = PACK_ID;
 
+  // Optional commercial CTA links (set by sales link, no need to hardcode):
+  // - ?buy=https%3A%2F%2Fexample.com%2Fbuy
+  // - ?support=mailto%3Asupport%40example.com
+  const CTA = (() => {
+    const qs = new URLSearchParams(location.search);
+    const buy = qs.get('buy') || '';
+    const support = qs.get('support') || '';
+    return { buy, support };
+  })();
+
+  function isSafeUrl(u) {
+    try {
+      const url = new URL(String(u), location.href);
+      return ['http:', 'https:', 'mailto:'].includes(url.protocol);
+    } catch {
+      return false;
+    }
+  }
+
+  function expiredCtaHtml(expiresAtMs) {
+    const expText = expiresAtMs ? `（到期：${formatDateTime(expiresAtMs)}）` : '';
+    const url = (isSafeUrl(CTA.buy) && CTA.buy) || (isSafeUrl(CTA.support) && CTA.support) || '';
+    const btn = url
+      ? `<a class="btn primary" href="${escapeHtml(url)}" target="_blank" rel="noopener">續費 / 取得新 15 天解鎖碼</a>`
+      : '';
+    const line2 = url
+      ? '想繼續練習：請續費取得新 15 天解鎖碼。'
+      : '想繼續練習：請向老師/客服索取新 15 天解鎖碼。';
+    return `
+      <div><b>方案已到期</b>${escapeHtml(expText)}：已停止出題；仍可查看右側週報（歷史紀錄）。</div>
+      <div style="margin-top:6px">${escapeHtml(line2)}</div>
+      ${btn ? `<div class="row" style="margin:10px 0 0 0">${btn}</div>` : ''}
+    `;
+  }
+
   const LS = {
     unlock: (p) => `aimath_unlock_${PACK_ID}_${p}`,
     access: (p) => `aimath_access_${PACK_ID}_${p}`,
@@ -372,7 +407,9 @@
     if (disabled) {
       if (state.tick) clearInterval(state.tick);
       els.timer.innerText = '00:00';
-      els.q.innerText = '（方案已到期：停止出題，可查看週報）';
+      const access = loadAccess(els.profile.value);
+      const exp = access?.expires_at_ms;
+      els.q.innerHTML = expiredCtaHtml(exp);
       els.hintBox.style.display = 'none';
       els.hintBox.innerHTML = '';
     }
@@ -390,7 +427,7 @@
       const access = loadAccess(els.profile.value);
       const exp = access?.expires_at_ms;
       els.unlockBadge.className = 'badge warn';
-      els.unlockBadge.innerText = exp ? `⏳ 已到期（${formatDateTime(exp)}）：僅可看週報` : '⏳ 已到期：僅可看週報';
+      els.unlockBadge.innerText = exp ? `⏳ 已到期（${formatDateTime(exp)}）：請續費取得新碼` : '⏳ 已到期：請續費取得新碼';
       return;
     }
 
@@ -564,7 +601,7 @@
       els.streakBadge.innerText = `連續天數：${computeStreak(profile)}`;
       renderDayProgress();
       els.banner.className = 'banner warn';
-      els.banner.innerText = '方案已到期：停止出題；仍可查看右側週報（歷史紀錄）。';
+      els.banner.innerHTML = expiredCtaHtml(access?.access?.expires_at_ms);
       refreshReport();
       return;
     }
