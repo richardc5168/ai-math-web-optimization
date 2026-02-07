@@ -1,0 +1,612 @@
+{
+  "schema": "aimath.redeem_codes.v1",
+  "pack_id": "commercial.pack1.g5.fraction_sprint.tw.v1",
+  "generated_at_utc": "2026-02-07T15:31:31.119886Z",
+  "policy": {
+    "expires_utc": "2026-03-31T23:59:59Z",
+    "max_uses_per_device": 1,
+    "label": "trial-2026Q1"
+  },
+  "codes": [
+    {
+      "code_hash": "bd5247df15aaa44356493db1c418a780289dd3c5f035d95aee8be5ee99c3fb73",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "2388ce4eef699c9591a2bd32d745cc86221bc09aa6f202dfb0d348c229bfa7be",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "15d14de8f1133258b900a4fd620b5d37e0c0c23700105901d57ce55c717acd73",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "8c1e85bfd99273e9acc1b11b55cf0a00cb3c9cec21a29b345bc3828abacc1c39",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "f39ef1599d0b02d9801ce3686ae1296326eacfab8de4cf5fef56da1db3349a6f",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "ccae1a545f13570b2cbcbb01ba893ecae02222a664df5eef64fd943ea00b5309",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b9185d746250b16810aef5b902f57416c3698c0d51a154c507e733fbc17544c4",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "c6e09b1e0f5e04fbc7ea87941c3fc992e04cf080b2772fe9b674ee5ba37c1c72",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "29b09638fb0cb541dad4b03262f713d8b316c2aaadd78b2c0fea40f5ad2b9f46",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "1f4a2c6547f7489f5b2434636f0afa2be3567a43237d5b657c1cf3369ed32f7d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "c136e184b737183c3b408e212c2ded9def2c58da0629868c0a0a37ac8855eefd",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "45f82d3bdcb734d9bf88b5a3f5d36367d7b5758ee228dc88e0c2f11b7cd1e7be",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "660a204d87fb12d1dd1e68cc791a7de87d86f5ff29b4ae736887990f0d02343e",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "aa115fa65b98782b57307bd8b50a3dad1777e841f423cd3fc8330885e0f47e87",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "1449a5f0b22b0ecbf000b2a5fd1734ab288d8382dadcb332b0ba2c9e2e0a8ca3",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "5cc86e000789630af93dcd605987b038d1f0a0c5e5a4812b8582b8f4befe7af5",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b8a1656abde9fc589e4c132cb4656d13ab3612bb0a38f2c0c27f3b38df8ee917",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "3da75d9c72086a582f2c9b58113e9e7a1c6052a2f72a80885ef51b3f0fc78b56",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "0429d67eb815084d3ac21f574fdea07df4e2fc9d58dfef5d6e728eebf9733ac3",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "c6c6bd109ea846c97a3123ec81a11dbc4d80de0f2c48fa1b60e721915626b542",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "81214761f637addb38361a1dae64c4aff44e39b7eaaa547a756208834ff5a30d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "cbb790c8dd172e5c3c74c5b65b0eb64cf06d2cf94fefb179364a55e685020a23",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "30e28c83b007dd83af034140be78b574eeb4415997a54193256dbcdf6455f820",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "6e7e7efc64bb04a7f451861cb6c125aef5724506fd8fb5473a54976cb310add5",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "17a9e3e54a93c2f27ec0f382edc1b58c7211baa972d7c48319aa1dfef48f3b22",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "c87bc7f072468aea497ead8bcb900f01bb08af4c489aa90e2867515d9d38bdc7",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "13c4af4daba26536d3e5da14a33245faddbc57d96713e0e4db7deb430af46236",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "34260a22a8ef7fe5dd15cdac5c3f945284f318f0023508a640d354cfad10f0d3",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b62ffed448194199954a022b978b656b372d3982520c39336c0fab65343310b2",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "7c2058fd52013d702c8ad945f5a342ab335c1a901c5ce7d09b04b6f4e382110a",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "047411f1b0389baae239f86f5dd36b6bb58e2340b74814d69264d86fcad2528a",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "d3a1f008491d385d4d7c2144d0cbbc13d3b48b757056f04a78328bbdcd33b4b7",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "8ef97d2e1334133b4d32d0e949f174665d1928c8f3e4b67b1f4cfa4c6da470be",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "49ed6670a1129a99005f5bfac5e711589aa466474a30adbf665df0f9a320328c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "67182dde5cceceaab1f8fa6bc6b9cf13b5726718330307f5ee518537e1c4d194",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "bef8df79572d6f2675fbf995fe0f1ea0168e4941879c21deeb293e12310271e2",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "de1d246880e33b76a0b225bb1fae8db3bbdf06fd294badad7d4231c13751e507",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "7f8656182a890f78063a6bb5c5fcbabdfa06d2cc044497b800d17782766db192",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "1e0915bcb637107224f8271463db49a2838309c66097121bf500952ad690de7c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "cb6ffd864bbbef715b580138d9605e662feff21411deccfbb455700cce5bcdc4",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "e5280b77c4641aafd9874961af8eca75ff95b4fe8b35d86ab0f13e8ac84acb20",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b3ab068bf5bd1583ed59e24212888ab05d00a07974e98cefbfef7f468d02cedc",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "19fe70ea668918d60b53fbbf95bcadd1eee7b76babe93f83907f7fb38dbed62e",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "40e8ed1e0b5db8241e15c7f55977e0fdc623acd30b894ce01eb4b3ad6d20b42b",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "8576315e77cb6a7161851193780d1ef007501d556293fdba1ea5ccf94dafab7a",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b370d6eed105f0b26839a2b404ba872a6122203deebcc07de942775791b55211",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b6e08d819c792eaa4fbf9a7c9945b5a70b6e5a1919c300f45ef6b1954df16942",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "d190f3cce1aa35119407a1080cc52f0455952b4cbbe60751bfbe9a0f1ebb38c4",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "4623ec23e9b80cc7cf7fc23cc589b8f6082ce1643011b1b688fecb62504bbfe6",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "6d93b11b72f81778cd55532457b48bcd6e858e3b6684d0647d700695995e5bf6",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "d88589e3d109dedfdbb81a2752ca7a3dd4d3dc8d9f5047e90210f66f71423e69",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "e95bacda78ac08ab24ec18a26e330b134581919e1434f4e2303feea2987e454d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "f933e9ab4bee7d88cc92cc92731e20dada0341e9c84cfd44cebb4ab7f62fc4aa",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "127d270af7186bb2713c01dde0e1ca04f3885d8cc1fc3d9344cf24f2d1f81655",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "b8a0c5723e059ab8f77057787e1fac52c47be183e9b9afa146d2dcd25e321a1b",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "0e746d67159bf17ba4b1a60a7a96b80bc6e812a1025c90df941528cce63fe098",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "f65999d9fd04ff5c8d838ca7ccb704ebf7387960a857c909b0d36a41bfbe098d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "325d9aaa7ebacb93cf18f6edd1833c36bcd2ccc72c8cf2931cfa3bb54715231c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "12cb37d57c658804c1f7f7057bfd74278a113bca11a7156bf0172915774be135",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "84d2e4b9d0b5ce99c324ae5e2d8a20bce72d71fe7a9b0f694569476214b362c1",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "e1884b75d1d00243046e162c9f4f31265e0437a05d9ddad03279c1b89066f744",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "520da467840d4b12115e970ff9ae109dbb52fb52176a290ad0843d555eb2fe00",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "3821d1cf27c3442450ad7a2e1b9bd64cb7874c79ae00550a168d4e6b83944e0d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "aeb1476baa702c77eda0ae5680c6c40581212f001c4fff4cb9f179f54d12ccd7",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "42c16b858a28ff7c5a931de01e33f73ae39ee13c70772de109b00cd0154c575b",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "af064bcf1e5428d66f3d2fc521637f1ddecc2508674a59972f0a5bafccf7dea9",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "a4443930d5436b490af181a5b26c7baa5524498ab5f97625af48b06dcc7d3442",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "585b8c0488915edffee7846bdf306a246a6e35a4062fe28ebaccbfe5c801bf11",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "09fd9f7062062b71f5bccd7d34113f89868dbbe894acb6bb60c54340fb8c1163",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "2b8045664eba02a4bce4e34d36a7d3876b9220b0b702d038719f6f607006c660",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "91c2969cbcc1e78bef1282f5daf2e2124de11fb7d78aa2de5f0569da547a8c2b",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "8ba277506f865565eb747416048da1885f900e5557aed49fffbcb748579de5df",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "6a7d28c6e8d6c1a85ccbf7c8e930b4ead978aba7a4f40d95957a0bda59bc6930",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "265b769151c1a1853f54bf729d6fc779358590e384bf8472f3592b55d1e59cff",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "86d945099381da9da14689694f653a1ec9663e83bf8a2aa3ae7dddff128c6613",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "396f0a88d6fd26000daf30d1fa0352c6f912013ed07235e5c15a058faa18b331",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "d33e988e329b1837196ddfe2fa21d7e6b76cbd57acab050c4a8f75b894b74f5d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "63aaad25158f7608cc437d8a67caf85a2bf5d6362e0429e9e88ba5ee4f70bda3",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "2507794adbe04a29dace238fe410e13e5d6c120da7b61b78b56b5879af4d9d9d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "f62adaa4b8e305fe60debcd66bb079a208b200a00fd6bc7b2dca47bba3f76408",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "77cff6045c12b4fbd1a6864acaf495ffa7371c6f9ccc28432710ad1ea1d5c48e",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "8d97142db84303d0560057b56ef8a3bc6b49a2cb8b4d25f1457da7ffc7f567a3",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "adf3378abc6bca03cf13aaa129f353ea8b28744be5ac257ccea7014d146dfa2c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "213242291f13e7ea3cf63f7d5f537942dae7e412a0b62b82526b216625544ac5",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "03bfc27495e170ce4cbaa5c0ab78fe8b2aefc8fca369af650a2d336fc456477c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "81435664e531ad29861b1e90bc2a13493f7a288f4793eec1870d54eca4be6feb",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "85723956412ade1a82bdba2eacf9976b36e417cd397ad5d835a5df3b654cc0d3",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "d8865589ec8144ad7b08c4b4891bc1cd21b5d84b766c485612978876ecfaf16c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "9fd93d42b648dee8a4c1976e85b328427e93ac90278e5dce042ad2e1ea5d4971",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "3955756e3879038ef3fe46ba1bff399f18f9d6c808473b0089abdde0f68e699f",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "e96b348f5f15a46347a694c0334694f5c6d9e5c2dd877e0c29a5fe287709ac1c",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "4c7814c83208817d9196e3fbfafb95e1b3cc5cd032753ae0360d6398e981d8bb",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "0cbc135122e55a29b83f269e6874fc2d6ff3cb2ffb94c840af42b2ea9348158f",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "fa92b232f0a1ba96840e866a95dc14a1d93e25e6d9d24f18d89bee8d40966927",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "0d5b327a009a7ef5954252b0752db79d2e3f18bccc65a930999732b54c053fb8",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "ee10e98908ceba84e3ac6342ef5583072af408a3e606fbbc564c85593ba484ad",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "71b4e2c30c44b06c7fc9d46a8c3c42b3b363cbead2ced3d9bb8217af9ca7e19d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "def54485b224828ffa9df63c16b08dcb10807d9d7bf9e88e0e0d9e8beeae9529",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "3154b61a920d5f9828684b22f97e982b330025e96946f73223dd1e9b320c8b4d",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    },
+    {
+      "code_hash": "6fd005fca973fb4678067256b017fe8ffabc628a23cf9f83f794dc8e9ac4d55e",
+      "expires_utc": "2026-03-31T23:59:59Z",
+      "max_uses_per_device": 1,
+      "label": "trial-2026Q1"
+    }
+  ]
+}

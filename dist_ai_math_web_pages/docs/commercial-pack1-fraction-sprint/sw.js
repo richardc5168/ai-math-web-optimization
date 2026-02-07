@@ -5,6 +5,7 @@ const ASSETS = [
   './',
   './index.html',
   './bank.js',
+  './redeem_codes.json',
   './manifest.json',
   './icon.svg'
 ];

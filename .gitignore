@@ -95,3 +95,6 @@ verify_*.py
 
 # Local resources (optional / user-specific)
 data/resources/
+
+# Issued redeem codes (plaintext) - DO NOT COMMIT
+issued_codes/

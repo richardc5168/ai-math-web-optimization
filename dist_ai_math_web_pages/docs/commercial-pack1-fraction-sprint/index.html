@@ -666,11 +666,55 @@
     return arr.map(b => b.toString(16).padStart(2,'0')).join('');
   }
 
-  // Demo code hashes (front-end obfuscation only)
-  const VALID_CODE_HASHES = new Set([
+  // Redeem codes live in redeem_codes.json (SHA-256 only).
+  // Fallback demo code hash (in case JSON can't be loaded).
+  const FALLBACK_DEMO_HASHES = new Set([
     // DEMO-2026-001
     'd22ebb49b09abbe3d6f37bf4d2adaa315ac335a471a04f2f9762bd9fd7603a11'
   ]);
+
+  const redeemState = {
+    loaded: false,
+    byHash: new Map(),
+    policy: null,
+  };
+
+  function lsRedeemKey(profile) {
+    return `aimath_redeem_${PACK_ID}_${profile}`;
+  }
+
+  function loadRedeemUsage(profile) {
+    return safeJsonParse(localStorage.getItem(lsRedeemKey(profile)), { by_hash: {} });
+  }
+
+  function saveRedeemUsage(profile, obj) {
+    localStorage.setItem(lsRedeemKey(profile), JSON.stringify(obj));
+  }
+
+  function parseUtcMs(iso) {
+    if (!iso) return null;
+    const t = Date.parse(String(iso));
+    return Number.isFinite(t) ? t : null;
+  }
+
+  async function loadRedeemCodes() {
+    try {
+      const res = await fetch('./redeem_codes.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const obj = await res.json();
+      const codes = Array.isArray(obj?.codes) ? obj.codes : [];
+      redeemState.byHash = new Map();
+      for (const c of codes) {
+        if (c && typeof c.code_hash === 'string') redeemState.byHash.set(c.code_hash, c);
+      }
+      redeemState.policy = obj?.policy || null;
+      redeemState.loaded = true;
+    } catch (e) {
+      redeemState.loaded = false;
+      redeemState.byHash = new Map();
+      redeemState.policy = null;
+    }
+  }
 
   async function redeemCode() {
     const raw = String(els.code.value || '').trim();
@@ -680,11 +724,43 @@
       return;
     }
     const h = await sha256Hex(raw);
-    if (!VALID_CODE_HASHES.has(h)) {
+
+    // Resolve code policy: JSON first, then fallback demo.
+    const entry = redeemState.byHash.get(h) || null;
+    const expiresUtc = entry?.expires_utc ?? redeemState.policy?.expires_utc ?? null;
+    const maxUses = entry?.max_uses_per_device ?? redeemState.policy?.max_uses_per_device ?? 1;
+
+    const expiresMs = parseUtcMs(expiresUtc);
+    if (expiresMs && Date.now() > expiresMs) {
       els.parentMsg.className = 'banner bad';
-      els.parentMsg.innerText = '解鎖碼無效（或已過期）。';
+      els.parentMsg.innerText = '解鎖碼已過期。';
       return;
     }
+
+    const profile = els.profile.value;
+    const usage = loadRedeemUsage(profile);
+    const rec = usage.by_hash?.[h] || { uses: 0, first_ts: null };
+
+    // If not in JSON, allow only fallback demo codes.
+    const known = !!entry || FALLBACK_DEMO_HASHES.has(h);
+    if (!known) {
+      els.parentMsg.className = 'banner bad';
+      els.parentMsg.innerText = '解鎖碼無效（或不屬於本內容包）。';
+      return;
+    }
+
+    if ((rec.uses || 0) >= maxUses) {
+      els.parentMsg.className = 'banner bad';
+      els.parentMsg.innerText = `此解鎖碼在本裝置已達使用上限（${maxUses} 次）。`;
+      return;
+    }
+
+    rec.uses = (rec.uses || 0) + 1;
+    rec.first_ts = rec.first_ts || Date.now();
+    usage.by_hash = usage.by_hash || {};
+    usage.by_hash[h] = rec;
+    saveRedeemUsage(profile, usage);
+
     setUnlocked(els.profile.value, true);
     els.parentMsg.className = 'banner ok';
     els.parentMsg.innerText = '解鎖成功：已可使用完整內容包。';
@@ -850,6 +926,7 @@
   // init
   initBank();
   initPwa();
+  loadRedeemCodes();
   state.unlocked = isUnlocked(els.profile.value);
   renderUnlock();
   buildToday(false);
