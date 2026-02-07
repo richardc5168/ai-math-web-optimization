@@ -343,7 +343,7 @@
         <button class="btn" id="btnHintNext">下一層提示</button>
         <button class="btn warn" id="btnShowSteps">看完整解題</button>
       </div>
-      <div class="banner muted" id="banner">提示：先抓「已知/未知」→ 再列式。看完不清楚 → 提示等級往上再按「看提示」。</div>
+      <div class="banner muted" id="banner">提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。卡住就按「下一層提示」或「給我下一步」。</div>
       <div id="hints"></div>
       <div id="solution"></div>
       <div class="row" style="margin-top:8px">
@@ -698,7 +698,7 @@
 
       if (els.qText) els.qText.textContent = q ? q.question : '（題庫中沒有符合條件的題目）';
       applyAnswerUI(q, 'practice');
-      showBanner('muted', '提示：先抓「已知/未知」→ 再列式。看完不清楚 → 提示等級往上再按「看提示」。');
+      showBanner('muted', '提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。卡住就按「下一層提示」或「給我下一步」。');
 
       // focus empire to this unit
       if (q && q.kind) setSelectedUnit(q.kind);
@@ -758,7 +758,7 @@
     function nextStepHintByUnit(unitId, studentState){
       const st = normalizeText(studentState);
       const u = String(unitId || '');
-      if (!st) return '下一步：先圈出「總量 / 每份 / 份數」或「單價 / 數量」等關鍵字，寫出算式，再算。';
+      if (!st) return '下一步：先標出「已知 / 未知 / 單位」，再決定用 + / − / × / ÷ 的方向，寫出算式，最後計算。';
       if (u === 'u1_avg_fraction') return '下一步：把「平均分成 n 份」寫成「÷n」，再用分數表示每份。';
       if (u === 'u2_frac_addsub_life') return '下一步：先判斷分母是否相同；不同就通分，再做加減，最後約分。';
       if (u === 'u3_frac_times_int') return '下一步：分數×整數 = 分子×整數，分母不變；或先算 1 份再乘份數。';
@@ -769,7 +769,7 @@
       if (u === 'u8_ratio_recipe') return '下一步：用份數法：總份→每份→各自份數×每份。';
       if (u === 'u9_unit_convert_decimal') return '下一步：先把單位統一（例如 m→cm ×100），再做加減乘除。';
       if (u === 'u10_rate_time_distance') return '下一步：先找「每…」= 單位率；距離=每…×時間；時間=距離÷每…。';
-      return '下一步：先寫算式，再做合理性檢查（單位、大小）。';
+      return '下一步：先把題目問的是什麼寫成「未知」，再用「已知 / 未知 / 單位」對齊，寫算式，最後做單位與大小合理性檢查。';
     }
 
     // ---------- empire (10 cities) ----------
@@ -1112,7 +1112,7 @@
       for (let lv = cur + 1; lv <= 4; lv++){
         if (!state.shownHintLevels[lv]){ showHintForLevel(lv); return; }
       }
-      showBanner('warn', '已經到 Level 4 了；如果還是不懂，可以按「看完整解題」，或換一題再試一次。');
+      showBanner('warn', '已經到 Level 4 了；如果還卡住，可以按「看完整解題」對照，或在下方描述你卡住的地方再按「給我下一步」。');
     });
 
     els.btnShowSteps?.addEventListener('click', () => {
@@ -1155,10 +1155,10 @@
           if (empireBigOpen) renderEmpireBig(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
         } else {
           state.practiceStreak = 0;
-          showBanner('warn', '答案不對沒關係（不扣分）。再試一次；可以先看提示 Level 1/2/3/4。');
+          showBanner('warn', '答案不對沒關係（不扣分）。再試一次：先確認題目要找什麼（未知），把「已知 / 未知 / 單位」標出來，再決定算式方向。需要時按「下一層提示」或「給我下一步」，也可以看完整解題。');
         }
       } catch (e){
-        showBanner('warn', `格式不對沒關係（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}`);
+        showBanner('warn', `格式或輸入有誤（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}\n（可先按提示或看完整解題，確認答案格式）`);
       }
     });
 
@@ -1337,13 +1337,13 @@
           if (empireBigOpen) renderEmpireBig(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
         } else {
           g.streak = 0;
-          gBanner('warn', '不對喔！連對歸零，但沒關係，下一題再來。');
+          gBanner('warn', '不對沒關係！連對歸零，但下一題再把它追回來。先確認題目問什麼、單位、算式方向。');
         }
         g.hintUsedThisQ = false;
         gPick();
         gUpdate();
       } catch (e){
-        gBanner('warn', `格式不對也沒關係（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}`);
+        gBanner('warn', `格式或輸入有誤（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}`);
       }
     }
 
@@ -1352,7 +1352,7 @@
       if (!q) return;
       g.hintUsedThisQ = true;
       const t = nextStepHintByUnit(q.kind, '');
-      gBanner('warn', `提示方向：${t}`);
+      gBanner('warn', `提示方向：${t}\n（先寫算式，再算）`);
     }
 
     els.btnStart?.addEventListener('click', gStart);

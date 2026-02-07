@@ -551,12 +551,12 @@
       try {
         const ok = compareByMode(els.answer.value, q.answer, q.answer_mode || 'number');
         if (ok){
-          showBanner('ok', '答對了！你可以出下一題。');
+          showBanner('ok', '做得好！✅ 你可以出下一題，或挑戰更高難度。');
         } else {
-          showBanner('bad', '答案不對，再試一次；可以先看提示 Level 1/2。');
+          showBanner('bad', '答案不對沒關係：先確認題目問什麼（未知）、已知/未知/單位，再列式。可按提示、看完整解題或按「給我下一步」。');
         }
       } catch (e){
-        showBanner('bad', String(e?.message || e || '答案格式錯誤'));
+        showBanner('bad', '格式或輸入有誤：' + String(e?.message || e || '答案格式錯誤'));
       }
     });
 

@@ -373,7 +373,7 @@
       try{
         student = parseStudentRational(els.answer.value);
       }catch(e){
-        setBannerBad(String(e && e.message ? e.message : e));
+        setBannerBad('格式或輸入有誤：' + String(e && e.message ? e.message : e));
         return;
       }
 
@@ -385,7 +385,7 @@
       }
 
       if (fracEq(student, correct)){
-        setBannerOk('答對了 ✅ 你可以看完整解題確認步驟。');
+        setBannerOk('答對了 ✅ 做得好！按「出新題」再來一題，或看完整解題確認步驟。');
         if (!state.revealed) showFullSolution(q);
         state.revealed = true;
       } else {

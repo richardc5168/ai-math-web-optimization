@@ -281,15 +281,15 @@
         const a = parseAnswerToFrac(state.q.answer);
         if (fracEq(u,a)){
           els.banner.className = 'banner ok';
-          els.banner.textContent = '答對了！很好！';
+          els.banner.textContent = '答對了！很好！按「出新題」再來一題。';
           state.revealed = true;
         } else {
           els.banner.className = 'banner bad';
-          els.banner.textContent = '還差一點點：請再檢查「通分/約分」或計算。';
+          els.banner.textContent = '還差一點點：先確認題目問什麼，再檢查「通分/約分」與計算。需要可按提示或看完整解題。';
         }
       } catch(e){
         els.banner.className = 'banner bad';
-        els.banner.textContent = String(e && e.message ? e.message : e);
+        els.banner.textContent = '格式或輸入有誤：' + String(e && e.message ? e.message : e);
       }
     }
 
