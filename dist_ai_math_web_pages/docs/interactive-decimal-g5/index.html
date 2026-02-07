@@ -546,12 +546,12 @@
       try {
         const ok = compareByMode(els.answer.value, q.answer, q.answer_mode || 'number');
         if (ok){
-          showBanner('ok', '答對了！你可以出下一題。');
+          showBanner('ok', '做得好！✅ 你可以出下一題，或挑戰更高難度。');
         } else {
-          showBanner('bad', '答案不對，再試一次；可以先看提示 Level 1/2，或用「小數點工坊」拆解。');
+          showBanner('bad', '答案不對沒關係：先估算方向（應該變大/變小？）、再檢查小數點位置與對齊。可先看提示 Level 1/2，或用「小數點工坊」拆解。');
         }
       } catch (e){
-        showBanner('bad', String(e?.message || e || '答案格式錯誤'));
+        showBanner('bad', '格式或輸入有誤：' + String(e?.message || e || '答案格式錯誤'));
       }
     });
 
@@ -978,7 +978,7 @@
       } catch(e){
         g.streak = 0;
         g.score = Math.max(0, g.score - 1);
-        gBanner('bad', String(e?.message || e || '答案格式錯誤'));
+        gBanner('bad', '格式或輸入有誤：' + String(e?.message || e || '答案格式錯誤'));
       }
       gUpdate();
       setTimeout(() => { if (g.running) gPick(); }, 650);

@@ -552,7 +552,7 @@
         renderKpi();
         renderSideLists();
       } catch (e){
-        setBanner('bad', e.message || '格式錯誤');
+        setBanner('bad', '格式或輸入有誤：' + (e.message || '格式錯誤'));
       }
     }
 

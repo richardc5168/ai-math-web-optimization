@@ -830,7 +830,7 @@
       } else {
           state.fails++;
           els.banner.className = 'banner bad';
-          els.banner.innerText = "係數不對喔，再檢查正負號或有無移項。";
+          els.banner.innerText = "係數不對：先確認已整理成 ax²+bx+c=0（移項後符號要變），再檢查正負號；也可能是整體倍數不同。";
           if (state.fails === 1) revealHint(1);
           if(state.fails >= 2) { revealHint(2); startCooldown(); }
       }
@@ -884,14 +884,14 @@
 
          if(ok) {
            els.banner.className = 'banner ok';
-           els.banner.innerText = "答案正確（離線代入檢查）！";
+           els.banner.innerText = "答案正確（離線代入檢查）！做得好！";
            state.stage = 3; 
            updateUI();
            revealHint(4);
          } else {
            state.fails++;
            els.banner.className = 'banner bad';
-           els.banner.innerText = "答案不正確。先試因式分解；卡住再配方法；最後才用公式解。";
+           els.banner.innerText = "答案不正確：先確認根的格式與正負號；再試因式分解；卡住再配方法；最後才用公式解。";
            if (state.fails === 1) revealHint(1);
            if(state.fails >= 2) { revealHint(2); startCooldown(); }
          }

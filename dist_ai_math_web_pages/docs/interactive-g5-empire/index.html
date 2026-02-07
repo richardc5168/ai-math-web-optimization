@@ -348,7 +348,7 @@
           小提醒：如果看完還不清楚，請改選其他提示層級（Level 2 / Level 3）再按一次「看提示」，提示會更詳細。
         </div>
 
-        <div id="banner" class="banner muted">提示：先抓「已知/未知」→ 再列式。</div>
+        <div id="banner" class="banner muted">提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。卡住就按「下一個 Level」或「給我下一步」。</div>
         <div id="hints"></div>
         <div id="solution"></div>
 
@@ -1704,7 +1704,7 @@
       els.qText.textContent = q ? q.question : '（題庫中沒有符合條件的題目）';
       applyAnswerUI(q, 'practice');
       els.banner.className = 'banner muted';
-      els.banner.textContent = '提示：先抓「已知/未知」→ 再列式。看完不清楚 → 改選 Level 2/3 再按「看提示」。';
+      els.banner.textContent = '提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。看完不清楚 → 改選 Level 2/3 再按「看提示」，或按「給我下一步」。';
 
       // focus map to this question type (preview next expansion size)
       if (q && q.kind){
@@ -2332,10 +2332,10 @@
           }
         } else {
           state.practiceStreak = 0;
-          showBanner('warn', '答案不對沒關係（不扣分）。再試一次；可以先看提示 Level 1/2/3。');
+          showBanner('warn', '答案不對沒關係（不扣分）。再試一次：先確認題目要找什麼（未知），把「已知 / 未知 / 單位」標出來，再決定算式方向。需要時按提示 Level 1/2/3 或「給我下一步」，也可以看完整解題。');
         }
       } catch (e){
-        showBanner('warn', `格式不對沒關係（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}`);
+        showBanner('warn', `格式或輸入有誤（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}\n（可先按提示或看完整解題，確認答案格式）`);
       }
     });
 

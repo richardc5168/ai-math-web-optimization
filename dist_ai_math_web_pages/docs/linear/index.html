@@ -328,21 +328,21 @@
           
           if(j.correct) {
               els.banner.className = 'banner ok';
-              els.banner.innerText = "🎉 正確答案！太棒了！";
+              els.banner.innerText = "🎉 正確！太棒了！已展開全部步驟。按「出新題」再來一題。";
               // Auto show all steps on success
               while(currentStep < steps.length) showNextStep();
           } else {
               els.banner.className = 'banner bad';
-              els.banner.innerText = "🤔 答案不對喔，請參考下方提示再試試看。";
+              els.banner.innerText = "還差一點：再檢查移項與符號、等式兩邊同做；可先看下方提示再試一次。";
           }
       } catch(e) {
          // Fallback
          if(ans.trim() === currentQ.correct_answer) {
              els.banner.className = 'banner ok';
-             els.banner.innerText = "正確 (Offline Check)";
+           els.banner.innerText = "正確（離線檢查）！按「出新題」再來一題。";
          } else {
              els.banner.className = 'banner bad';
-             els.banner.innerText = "錯誤";
+           els.banner.innerText = "答案不對（離線檢查）。再檢查移項/分配律/符號。";
          }
       }
   }
