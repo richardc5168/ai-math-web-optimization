@@ -5850,9 +5850,9 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "id": "g5lp2p_u7_discount_percent_21",
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜折扣）一件外套原價 62.3 元，打 8 折，省下多少元？",
-    "answer": "12.46",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 80.2 元，打 折扣 0.88，省下多少元？",
+    "answer": "9.62",
     "answer_mode": "money2",
     "hints": [
       "先求折後價，再求省下多少。",
@@ -5865,7 +5865,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "省下 = 原價 − 折後價。",
       "用『分』計算避免小數誤差。"
     ],
-    "explanation": "折後價 49.84，省下 62.3 − 49.84 = 12.46。",
+    "explanation": "折後價 70.58，省下 80.2 − 70.58 = 9.62。",
     "common_mistakes": [
       "把省下寫成折後價（問省下卻算要付）。",
       "忘記先乘折扣就直接相減。"
@@ -5882,14 +5882,266 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "金錢"
     ],
     "meta": {
-      "price_cents": 6230,
-      "disc": 0.8,
-      "sale_cents": 4984,
+      "price_cents": 8020,
+      "disc": 0.88,
+      "sale_cents": 7058,
       "ask": "save"
     }
   },
   {
     "id": "g5lp2p_u7_discount_percent_22",
+    "kind": "u7_discount_percent",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 80.8 元，打 折扣 0.82，省下多少元？",
+    "answer": "14.54",
+    "answer_mode": "money2",
+    "hints": [
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
+    ],
+    "steps": [
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
+    ],
+    "explanation": "折後價 66.26，省下 80.8 − 66.26 = 14.54。",
+    "common_mistakes": [
+      "把省下寫成折後價（問省下卻算要付）。",
+      "忘記先乘折扣就直接相減。"
+    ],
+    "tags": [
+      "生活應用",
+      "折扣",
+      "百分比",
+      "小數"
+    ],
+    "core": [
+      "倍率概念",
+      "乘法",
+      "金錢"
+    ],
+    "meta": {
+      "price_cents": 8080,
+      "disc": 0.82,
+      "sale_cents": 6626,
+      "ask": "save"
+    }
+  },
+  {
+    "id": "g5lp2p_u7_discount_percent_23",
+    "kind": "u7_discount_percent",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 41.7 元，打 折扣 0.95，省下多少元？",
+    "answer": "2.08",
+    "answer_mode": "money2",
+    "hints": [
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
+    ],
+    "steps": [
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
+    ],
+    "explanation": "折後價 39.62，省下 41.7 − 39.62 = 2.08。",
+    "common_mistakes": [
+      "把省下寫成折後價（問省下卻算要付）。",
+      "忘記先乘折扣就直接相減。"
+    ],
+    "tags": [
+      "生活應用",
+      "折扣",
+      "百分比",
+      "小數"
+    ],
+    "core": [
+      "倍率概念",
+      "乘法",
+      "金錢"
+    ],
+    "meta": {
+      "price_cents": 4170,
+      "disc": 0.95,
+      "sale_cents": 3962,
+      "ask": "save"
+    }
+  },
+  {
+    "id": "g5lp2p_u7_discount_percent_24",
+    "kind": "u7_discount_percent",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 93.7 元，打 折扣 0.88，折後價是多少元？",
+    "answer": "82.46",
+    "answer_mode": "money2",
+    "hints": [
+      "關鍵字：打折後要付多少。",
+      "折後價 = 原價 × 折扣倍率。",
+      "折扣 0.88 對應倍率約是 0.88。",
+      "最後檢查：打折後價格應比原價小。"
+    ],
+    "steps": [
+      "把『x折』換成小數倍率（例如 8 折=0.8）。",
+      "列式：原價×倍率=折後價。",
+      "用『分』計算再換回元。"
+    ],
+    "explanation": "折後價：93.7×0.88=82.46（元）。",
+    "common_mistakes": [
+      "把折扣當成要減的比例（直接減 disc）。",
+      "把 8 折誤當 0.08。"
+    ],
+    "tags": [
+      "生活應用",
+      "折扣",
+      "百分比",
+      "小數"
+    ],
+    "core": [
+      "倍率概念",
+      "乘法",
+      "金錢"
+    ],
+    "meta": {
+      "price_cents": 9370,
+      "disc": 0.88,
+      "sale_cents": 8246,
+      "ask": "sale"
+    }
+  },
+  {
+    "id": "g5lp2p_u7_discount_percent_25",
+    "kind": "u7_discount_percent",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 82.1 元，打 折扣 0.95，折後價是多少元？",
+    "answer": "78",
+    "answer_mode": "money2",
+    "hints": [
+      "關鍵字：打折後要付多少。",
+      "折後價 = 原價 × 折扣倍率。",
+      "折扣 0.95 對應倍率約是 0.95。",
+      "最後檢查：打折後價格應比原價小。"
+    ],
+    "steps": [
+      "把『x折』換成小數倍率（例如 8 折=0.8）。",
+      "列式：原價×倍率=折後價。",
+      "用『分』計算再換回元。"
+    ],
+    "explanation": "折後價：82.1×0.95=78（元）。",
+    "common_mistakes": [
+      "把折扣當成要減的比例（直接減 disc）。",
+      "把 8 折誤當 0.08。"
+    ],
+    "tags": [
+      "生活應用",
+      "折扣",
+      "百分比",
+      "小數"
+    ],
+    "core": [
+      "倍率概念",
+      "乘法",
+      "金錢"
+    ],
+    "meta": {
+      "price_cents": 8210,
+      "disc": 0.95,
+      "sale_cents": 7800,
+      "ask": "sale"
+    }
+  },
+  {
+    "id": "g5lp2p_u7_discount_percent_26",
+    "kind": "u7_discount_percent",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 88.1 元，打 折扣 0.78，省下多少元？",
+    "answer": "19.38",
+    "answer_mode": "money2",
+    "hints": [
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
+    ],
+    "steps": [
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
+    ],
+    "explanation": "折後價 68.72，省下 88.1 − 68.72 = 19.38。",
+    "common_mistakes": [
+      "把省下寫成折後價（問省下卻算要付）。",
+      "忘記先乘折扣就直接相減。"
+    ],
+    "tags": [
+      "生活應用",
+      "折扣",
+      "百分比",
+      "小數"
+    ],
+    "core": [
+      "倍率概念",
+      "乘法",
+      "金錢"
+    ],
+    "meta": {
+      "price_cents": 8810,
+      "disc": 0.78,
+      "sale_cents": 6872,
+      "ask": "save"
+    }
+  },
+  {
+    "id": "g5lp2p_u7_discount_percent_27",
+    "kind": "u7_discount_percent",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件外套原價 84.3 元，打 折扣 0.78，省下多少元？",
+    "answer": "18.55",
+    "answer_mode": "money2",
+    "hints": [
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
+    ],
+    "steps": [
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
+    ],
+    "explanation": "折後價 65.75，省下 84.3 − 65.75 = 18.55。",
+    "common_mistakes": [
+      "把省下寫成折後價（問省下卻算要付）。",
+      "忘記先乘折扣就直接相減。"
+    ],
+    "tags": [
+      "生活應用",
+      "折扣",
+      "百分比",
+      "小數"
+    ],
+    "core": [
+      "倍率概念",
+      "乘法",
+      "金錢"
+    ],
+    "meta": {
+      "price_cents": 8430,
+      "disc": 0.78,
+      "sale_cents": 6575,
+      "ask": "save"
+    }
+  },
+  {
+    "id": "g5lp2p_u7_discount_percent_28",
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -5931,280 +6183,28 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u7_discount_percent_23",
-    "kind": "u7_discount_percent",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜折扣）一件玩具原價 40.5 元，打 8 折，折後價是多少元？",
-    "answer": "32.4",
-    "answer_mode": "money2",
-    "hints": [
-      "關鍵字：打折後要付多少。",
-      "折後價 = 原價 × 折扣倍率。",
-      "8 折 對應倍率約是 0.8。",
-      "最後檢查：打折後價格應比原價小。"
-    ],
-    "steps": [
-      "把『x折』換成小數倍率（例如 8 折=0.8）。",
-      "列式：原價×倍率=折後價。",
-      "用『分』計算再換回元。"
-    ],
-    "explanation": "折後價：40.5×0.8=32.4（元）。",
-    "common_mistakes": [
-      "把折扣當成要減的比例（直接減 disc）。",
-      "把 8 折誤當 0.08。"
-    ],
-    "tags": [
-      "生活應用",
-      "折扣",
-      "百分比",
-      "小數"
-    ],
-    "core": [
-      "倍率概念",
-      "乘法",
-      "金錢"
-    ],
-    "meta": {
-      "price_cents": 4050,
-      "disc": 0.8,
-      "sale_cents": 3240,
-      "ask": "sale"
-    }
-  },
-  {
-    "id": "g5lp2p_u7_discount_percent_24",
-    "kind": "u7_discount_percent",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件外套原價 10.8 元，打 9 折，省下多少元？",
-    "answer": "1.08",
-    "answer_mode": "money2",
-    "hints": [
-      "先求折後價，再求省下多少。",
-      "省下 = 原價 − 折後價。",
-      "或用省下倍率：1−折扣倍率。",
-      "檢查：省下 + 折後價 = 原價。"
-    ],
-    "steps": [
-      "先算折後價：原價×倍率。",
-      "省下 = 原價 − 折後價。",
-      "用『分』計算避免小數誤差。"
-    ],
-    "explanation": "折後價 9.72，省下 10.8 − 9.72 = 1.08。",
-    "common_mistakes": [
-      "把省下寫成折後價（問省下卻算要付）。",
-      "忘記先乘折扣就直接相減。"
-    ],
-    "tags": [
-      "生活應用",
-      "折扣",
-      "百分比",
-      "小數"
-    ],
-    "core": [
-      "倍率概念",
-      "乘法",
-      "金錢"
-    ],
-    "meta": {
-      "price_cents": 1080,
-      "disc": 0.9,
-      "sale_cents": 972,
-      "ask": "save"
-    }
-  },
-  {
-    "id": "g5lp2p_u7_discount_percent_25",
-    "kind": "u7_discount_percent",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜折扣）一件玩具原價 61.8 元，打 8 折，省下多少元？",
-    "answer": "12.36",
-    "answer_mode": "money2",
-    "hints": [
-      "先求折後價，再求省下多少。",
-      "省下 = 原價 − 折後價。",
-      "或用省下倍率：1−折扣倍率。",
-      "檢查：省下 + 折後價 = 原價。"
-    ],
-    "steps": [
-      "先算折後價：原價×倍率。",
-      "省下 = 原價 − 折後價。",
-      "用『分』計算避免小數誤差。"
-    ],
-    "explanation": "折後價 49.44，省下 61.8 − 49.44 = 12.36。",
-    "common_mistakes": [
-      "把省下寫成折後價（問省下卻算要付）。",
-      "忘記先乘折扣就直接相減。"
-    ],
-    "tags": [
-      "生活應用",
-      "折扣",
-      "百分比",
-      "小數"
-    ],
-    "core": [
-      "倍率概念",
-      "乘法",
-      "金錢"
-    ],
-    "meta": {
-      "price_cents": 6180,
-      "disc": 0.8,
-      "sale_cents": 4944,
-      "ask": "save"
-    }
-  },
-  {
-    "id": "g5lp2p_u7_discount_percent_26",
-    "kind": "u7_discount_percent",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件書包原價 37.6 元，打 9 折，省下多少元？",
-    "answer": "3.76",
-    "answer_mode": "money2",
-    "hints": [
-      "先求折後價，再求省下多少。",
-      "省下 = 原價 − 折後價。",
-      "或用省下倍率：1−折扣倍率。",
-      "檢查：省下 + 折後價 = 原價。"
-    ],
-    "steps": [
-      "先算折後價：原價×倍率。",
-      "省下 = 原價 − 折後價。",
-      "用『分』計算避免小數誤差。"
-    ],
-    "explanation": "折後價 33.84，省下 37.6 − 33.84 = 3.76。",
-    "common_mistakes": [
-      "把省下寫成折後價（問省下卻算要付）。",
-      "忘記先乘折扣就直接相減。"
-    ],
-    "tags": [
-      "生活應用",
-      "折扣",
-      "百分比",
-      "小數"
-    ],
-    "core": [
-      "倍率概念",
-      "乘法",
-      "金錢"
-    ],
-    "meta": {
-      "price_cents": 3760,
-      "disc": 0.9,
-      "sale_cents": 3384,
-      "ask": "save"
-    }
-  },
-  {
-    "id": "g5lp2p_u7_discount_percent_27",
-    "kind": "u7_discount_percent",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件球鞋原價 36.7 元，打 折扣 0.82，折後價是多少元？",
-    "answer": "30.09",
-    "answer_mode": "money2",
-    "hints": [
-      "關鍵字：打折後要付多少。",
-      "折後價 = 原價 × 折扣倍率。",
-      "折扣 0.82 對應倍率約是 0.82。",
-      "最後檢查：打折後價格應比原價小。"
-    ],
-    "steps": [
-      "把『x折』換成小數倍率（例如 8 折=0.8）。",
-      "列式：原價×倍率=折後價。",
-      "用『分』計算再換回元。"
-    ],
-    "explanation": "折後價：36.7×0.82=30.09（元）。",
-    "common_mistakes": [
-      "把折扣當成要減的比例（直接減 disc）。",
-      "把 8 折誤當 0.08。"
-    ],
-    "tags": [
-      "生活應用",
-      "折扣",
-      "百分比",
-      "小數"
-    ],
-    "core": [
-      "倍率概念",
-      "乘法",
-      "金錢"
-    ],
-    "meta": {
-      "price_cents": 3670,
-      "disc": 0.82,
-      "sale_cents": 3009,
-      "ask": "sale"
-    }
-  },
-  {
-    "id": "g5lp2p_u7_discount_percent_28",
-    "kind": "u7_discount_percent",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜折扣）一件書包原價 11.5 元，打 9 折，省下多少元？",
-    "answer": "1.15",
-    "answer_mode": "money2",
-    "hints": [
-      "先求折後價，再求省下多少。",
-      "省下 = 原價 − 折後價。",
-      "或用省下倍率：1−折扣倍率。",
-      "檢查：省下 + 折後價 = 原價。"
-    ],
-    "steps": [
-      "先算折後價：原價×倍率。",
-      "省下 = 原價 − 折後價。",
-      "用『分』計算避免小數誤差。"
-    ],
-    "explanation": "折後價 10.35，省下 11.5 − 10.35 = 1.15。",
-    "common_mistakes": [
-      "把省下寫成折後價（問省下卻算要付）。",
-      "忘記先乘折扣就直接相減。"
-    ],
-    "tags": [
-      "生活應用",
-      "折扣",
-      "百分比",
-      "小數"
-    ],
-    "core": [
-      "倍率概念",
-      "乘法",
-      "金錢"
-    ],
-    "meta": {
-      "price_cents": 1150,
-      "disc": 0.9,
-      "sale_cents": 1035,
-      "ask": "save"
-    }
-  },
-  {
     "id": "g5lp2p_u7_discount_percent_29",
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜折扣）一件外套原價 11.5 元，打 9 折，折後價是多少元？",
-    "answer": "10.35",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 37.9 元，打 折扣 0.66，省下多少元？",
+    "answer": "12.89",
     "answer_mode": "money2",
     "hints": [
-      "關鍵字：打折後要付多少。",
-      "折後價 = 原價 × 折扣倍率。",
-      "9 折 對應倍率約是 0.9。",
-      "最後檢查：打折後價格應比原價小。"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "把『x折』換成小數倍率（例如 8 折=0.8）。",
-      "列式：原價×倍率=折後價。",
-      "用『分』計算再換回元。"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "折後價：11.5×0.9=10.35（元）。",
+    "explanation": "折後價 25.01，省下 37.9 − 25.01 = 12.89。",
     "common_mistakes": [
-      "把折扣當成要減的比例（直接減 disc）。",
-      "把 8 折誤當 0.08。"
+      "把省下寫成折後價（問省下卻算要付）。",
+      "忘記先乘折扣就直接相減。"
     ],
     "tags": [
       "生活應用",
@@ -6218,19 +6218,19 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "金錢"
     ],
     "meta": {
-      "price_cents": 1150,
-      "disc": 0.9,
-      "sale_cents": 1035,
-      "ask": "sale"
+      "price_cents": 3790,
+      "disc": 0.66,
+      "sale_cents": 2501,
+      "ask": "save"
     }
   },
   {
     "id": "g5lp2p_u7_discount_percent_30",
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜折扣）一件玩具原價 78.1 元，打 9 折，省下多少元？",
-    "answer": "7.81",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件外套原價 80.6 元，打 折扣 0.95，省下多少元？",
+    "answer": "4.03",
     "answer_mode": "money2",
     "hints": [
       "先求折後價，再求省下多少。",
@@ -6243,7 +6243,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "省下 = 原價 − 折後價。",
       "用『分』計算避免小數誤差。"
     ],
-    "explanation": "折後價 70.29，省下 78.1 − 70.29 = 7.81。",
+    "explanation": "折後價 76.57，省下 80.6 − 76.57 = 4.03。",
     "common_mistakes": [
       "把省下寫成折後價（問省下卻算要付）。",
       "忘記先乘折扣就直接相減。"
@@ -6260,9 +6260,9 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "金錢"
     ],
     "meta": {
-      "price_cents": 7810,
-      "disc": 0.9,
-      "sale_cents": 7029,
+      "price_cents": 8060,
+      "disc": 0.95,
+      "sale_cents": 7657,
       "ask": "save"
     }
   },
@@ -6271,13 +6271,13 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜比例）調配果汁，果汁:水 = 4:9，總共有 494 mL，水有多少 mL？",
-    "answer": "342",
+    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 2:3，總共有 500 mL，果汁有多少 mL？",
+    "answer": "200",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：4+9=13。",
-      "每份 = 總量 ÷ 總份數 = 494÷13。",
+      "先算總份數：2+3=5。",
+      "每份 = 總量 ÷ 總份數 = 500÷5。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6286,7 +6286,91 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 13，每份 38 mL，所以水 9 份 = 342 mL。",
+    "explanation": "總份數 5，每份 100 mL，所以果汁 2 份 = 200 mL。",
+    "common_mistakes": [
+      "把 {a}:{b} 當成要相加/相減而不是份數。",
+      "總份數算錯（忘記 a+b）。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 2,
+      "b": 3,
+      "total": 500,
+      "ask": "a"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_02",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 5:4，總共有 1026 mL，水有多少 mL？",
+    "answer": "456",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：5+4=9。",
+      "每份 = 總量 ÷ 總份數 = 1026÷9。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 9，每份 114 mL，所以水 4 份 = 456 mL。",
+    "common_mistakes": [
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 5,
+      "b": 4,
+      "total": 1026,
+      "ask": "b"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_03",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 4:1，總共有 1740 mL，水有多少 mL？",
+    "answer": "348",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：4+1=5。",
+      "每份 = 總量 ÷ 總份數 = 1740÷5。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 5，每份 348 mL，所以水 1 份 = 348 mL。",
     "common_mistakes": [
       "只算其中一邊，忘記用份數乘。",
       "每份=總量÷總份數這一步寫錯。"
@@ -6303,23 +6387,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 4,
-      "b": 9,
-      "total": 494,
+      "b": 1,
+      "total": 1740,
       "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_02",
+    "id": "g5lp2p_u8_ratio_recipe_04",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 2:8，總共有 1780 mL，水有多少 mL？",
-    "answer": "1424",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 7:5，總共有 1248 mL，水有多少 mL？",
+    "answer": "520",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+8=10。",
-      "每份 = 總量 ÷ 總份數 = 1780÷10。",
+      "先算總份數：7+5=12。",
+      "每份 = 總量 ÷ 總份數 = 1248÷12。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6328,7 +6412,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 10，每份 178 mL，所以水 8 份 = 1424 mL。",
+    "explanation": "總份數 12，每份 104 mL，所以水 5 份 = 520 mL。",
     "common_mistakes": [
       "只算其中一邊，忘記用份數乘。",
       "每份=總量÷總份數這一步寫錯。"
@@ -6344,24 +6428,24 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "a": 2,
-      "b": 8,
-      "total": 1780,
+      "a": 7,
+      "b": 5,
+      "total": 1248,
       "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_03",
+    "id": "g5lp2p_u8_ratio_recipe_05",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 3:4，總共有 917 mL，果汁有多少 mL？",
-    "answer": "393",
+    "difficulty": "easy",
+    "question": "（生活應用｜比例）調配果汁，果汁:水 = 2:3，總共有 1170 mL，果汁有多少 mL？",
+    "answer": "468",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：3+4=7。",
-      "每份 = 總量 ÷ 總份數 = 917÷7。",
+      "先算總份數：2+3=5。",
+      "每份 = 總量 ÷ 總份數 = 1170÷5。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6370,7 +6454,49 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 7，每份 131 mL，所以果汁 3 份 = 393 mL。",
+    "explanation": "總份數 5，每份 234 mL，所以果汁 2 份 = 468 mL。",
+    "common_mistakes": [
+      "把 {a}:{b} 當成要相加/相減而不是份數。",
+      "總份數算錯（忘記 a+b）。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 2,
+      "b": 3,
+      "total": 1170,
+      "ask": "a"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_06",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 3:1，總共有 412 mL，果汁有多少 mL？",
+    "answer": "309",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：3+1=4。",
+      "每份 = 總量 ÷ 總份數 = 412÷4。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 4，每份 103 mL，所以果汁 3 份 = 309 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -6387,107 +6513,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 3,
-      "b": 4,
-      "total": 917,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_04",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 4:1，總共有 850 mL，果汁有多少 mL？",
-    "answer": "680",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：4+1=5。",
-      "每份 = 總量 ÷ 總份數 = 850÷5。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 5，每份 170 mL，所以果汁 4 份 = 680 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 4,
       "b": 1,
-      "total": 850,
+      "total": 412,
       "ask": "a"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_05",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 6:3，總共有 2169 mL，果汁有多少 mL？",
-    "answer": "1446",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：6+3=9。",
-      "每份 = 總量 ÷ 總份數 = 2169÷9。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 9，每份 241 mL，所以果汁 6 份 = 1446 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 6,
-      "b": 3,
-      "total": 2169,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_06",
+    "id": "g5lp2p_u8_ratio_recipe_07",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "easy",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 2:5，總共有 1141 mL，果汁有多少 mL？",
-    "answer": "326",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 2:1，總共有 795 mL，果汁有多少 mL？",
+    "answer": "530",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+5=7。",
-      "每份 = 總量 ÷ 總份數 = 1141÷7。",
+      "先算總份數：2+1=3。",
+      "每份 = 總量 ÷ 總份數 = 795÷3。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6496,7 +6538,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 7，每份 163 mL，所以果汁 2 份 = 326 mL。",
+    "explanation": "總份數 3，每份 265 mL，所以果汁 2 份 = 530 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -6513,13 +6555,139 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 2,
-      "b": 5,
-      "total": 1141,
+      "b": 1,
+      "total": 795,
       "ask": "a"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_07",
+    "id": "g5lp2p_u8_ratio_recipe_08",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配果汁，果汁:水 = 2:9，總共有 1199 mL，水有多少 mL？",
+    "answer": "981",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：2+9=11。",
+      "每份 = 總量 ÷ 總份數 = 1199÷11。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 11，每份 109 mL，所以水 9 份 = 981 mL。",
+    "common_mistakes": [
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 2,
+      "b": 9,
+      "total": 1199,
+      "ask": "b"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_09",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 6:3，總共有 1476 mL，水有多少 mL？",
+    "answer": "492",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：6+3=9。",
+      "每份 = 總量 ÷ 總份數 = 1476÷9。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 9，每份 164 mL，所以水 3 份 = 492 mL。",
+    "common_mistakes": [
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 6,
+      "b": 3,
+      "total": 1476,
+      "ask": "b"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_10",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 5:5，總共有 2190 mL，果汁有多少 mL？",
+    "answer": "1095",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：5+5=10。",
+      "每份 = 總量 ÷ 總份數 = 2190÷10。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 10，每份 219 mL，所以果汁 5 份 = 1095 mL。",
+    "common_mistakes": [
+      "把 {a}:{b} 當成要相加/相減而不是份數。",
+      "總份數算錯（忘記 a+b）。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 5,
+      "b": 5,
+      "total": 2190,
+      "ask": "a"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_11",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
@@ -6561,17 +6729,17 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_08",
+    "id": "g5lp2p_u8_ratio_recipe_12",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 7:5，總共有 1956 mL，果汁有多少 mL？",
-    "answer": "1141",
+    "difficulty": "normal",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 7:3，總共有 1950 mL，果汁有多少 mL？",
+    "answer": "1365",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：7+5=12。",
-      "每份 = 總量 ÷ 總份數 = 1956÷12。",
+      "先算總份數：7+3=10。",
+      "每份 = 總量 ÷ 總份數 = 1950÷10。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6580,7 +6748,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 12，每份 163 mL，所以果汁 7 份 = 1141 mL。",
+    "explanation": "總份數 10，每份 195 mL，所以果汁 7 份 = 1365 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -6597,23 +6765,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 7,
-      "b": 5,
-      "total": 1956,
+      "b": 3,
+      "total": 1950,
       "ask": "a"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_09",
+    "id": "g5lp2p_u8_ratio_recipe_13",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 7:4，總共有 1287 mL，果汁有多少 mL？",
-    "answer": "819",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 7:6，總共有 1287 mL，果汁有多少 mL？",
+    "answer": "693",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：7+4=11。",
-      "每份 = 總量 ÷ 總份數 = 1287÷11。",
+      "先算總份數：7+6=13。",
+      "每份 = 總量 ÷ 總份數 = 1287÷13。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6622,7 +6790,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 11，每份 117 mL，所以果汁 7 份 = 819 mL。",
+    "explanation": "總份數 13，每份 99 mL，所以果汁 7 份 = 693 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -6639,23 +6807,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 7,
-      "b": 4,
+      "b": 6,
       "total": 1287,
       "ask": "a"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_10",
+    "id": "g5lp2p_u8_ratio_recipe_14",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 4:5，總共有 2133 mL，水有多少 mL？",
-    "answer": "1185",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 4:8，總共有 1560 mL，水有多少 mL？",
+    "answer": "1040",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：4+5=9。",
-      "每份 = 總量 ÷ 總份數 = 2133÷9。",
+      "先算總份數：4+8=12。",
+      "每份 = 總量 ÷ 總份數 = 1560÷12。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6664,7 +6832,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 9，每份 237 mL，所以水 5 份 = 1185 mL。",
+    "explanation": "總份數 12，每份 130 mL，所以水 8 份 = 1040 mL。",
     "common_mistakes": [
       "只算其中一邊，忘記用份數乘。",
       "每份=總量÷總份數這一步寫錯。"
@@ -6681,13 +6849,13 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 4,
-      "b": 5,
-      "total": 2133,
+      "b": 8,
+      "total": 1560,
       "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_11",
+    "id": "g5lp2p_u8_ratio_recipe_15",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
@@ -6729,7 +6897,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_12",
+    "id": "g5lp2p_u8_ratio_recipe_16",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
@@ -6771,17 +6939,17 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_13",
+    "id": "g5lp2p_u8_ratio_recipe_17",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜比例）調配果汁，果汁:水 = 1:2，總共有 522 mL，果汁有多少 mL？",
-    "answer": "174",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配果汁，果汁:水 = 6:3，總共有 765 mL，果汁有多少 mL？",
+    "answer": "510",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：1+2=3。",
-      "每份 = 總量 ÷ 總份數 = 522÷3。",
+      "先算總份數：6+3=9。",
+      "每份 = 總量 ÷ 總份數 = 765÷9。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6790,7 +6958,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 3，每份 174 mL，所以果汁 1 份 = 174 mL。",
+    "explanation": "總份數 9，每份 85 mL，所以果汁 6 份 = 510 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -6806,14 +6974,14 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "a": 1,
-      "b": 2,
-      "total": 522,
+      "a": 6,
+      "b": 3,
+      "total": 765,
       "ask": "a"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_14",
+    "id": "g5lp2p_u8_ratio_recipe_18",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -6855,7 +7023,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_15",
+    "id": "g5lp2p_u8_ratio_recipe_19",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -6897,17 +7065,17 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_16",
+    "id": "g5lp2p_u8_ratio_recipe_20",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 4:8，總共有 912 mL，水有多少 mL？",
-    "answer": "608",
+    "difficulty": "normal",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 4:2，總共有 1350 mL，水有多少 mL？",
+    "answer": "450",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：4+8=12。",
-      "每份 = 總量 ÷ 總份數 = 912÷12。",
+      "先算總份數：4+2=6。",
+      "每份 = 總量 ÷ 總份數 = 1350÷6。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6916,7 +7084,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 12，每份 76 mL，所以水 8 份 = 608 mL。",
+    "explanation": "總份數 6，每份 225 mL，所以水 2 份 = 450 mL。",
     "common_mistakes": [
       "只算其中一邊，忘記用份數乘。",
       "每份=總量÷總份數這一步寫錯。"
@@ -6933,23 +7101,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 4,
-      "b": 8,
-      "total": 912,
+      "b": 2,
+      "total": 1350,
       "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_17",
+    "id": "g5lp2p_u8_ratio_recipe_21",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 7:7，總共有 756 mL，果汁有多少 mL？",
-    "answer": "378",
+    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 2:5，總共有 1463 mL，水有多少 mL？",
+    "answer": "1045",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：7+7=14。",
-      "每份 = 總量 ÷ 總份數 = 756÷14。",
+      "先算總份數：2+5=7。",
+      "每份 = 總量 ÷ 總份數 = 1463÷7。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -6958,7 +7126,49 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 14，每份 54 mL，所以果汁 7 份 = 378 mL。",
+    "explanation": "總份數 7，每份 209 mL，所以水 5 份 = 1045 mL。",
+    "common_mistakes": [
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 2,
+      "b": 5,
+      "total": 1463,
+      "ask": "b"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_22",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 5:5，總共有 590 mL，果汁有多少 mL？",
+    "answer": "295",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：5+5=10。",
+      "每份 = 總量 ÷ 總份數 = 590÷10。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 10，每份 59 mL，所以果汁 5 份 = 295 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -6974,24 +7184,24 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "a": 7,
-      "b": 7,
-      "total": 756,
+      "a": 5,
+      "b": 5,
+      "total": 590,
       "ask": "a"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_18",
+    "id": "g5lp2p_u8_ratio_recipe_23",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 5:4，總共有 1251 mL，水有多少 mL？",
-    "answer": "556",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配果汁，果汁:水 = 3:8，總共有 2365 mL，水有多少 mL？",
+    "answer": "1720",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：5+4=9。",
-      "每份 = 總量 ÷ 總份數 = 1251÷9。",
+      "先算總份數：3+8=11。",
+      "每份 = 總量 ÷ 總份數 = 2365÷11。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -7000,7 +7210,133 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 9，每份 139 mL，所以水 4 份 = 556 mL。",
+    "explanation": "總份數 11，每份 215 mL，所以水 8 份 = 1720 mL。",
+    "common_mistakes": [
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 3,
+      "b": 8,
+      "total": 2365,
+      "ask": "b"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_24",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配果汁，果汁:水 = 5:4，總共有 2178 mL，果汁有多少 mL？",
+    "answer": "1210",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：5+4=9。",
+      "每份 = 總量 ÷ 總份數 = 2178÷9。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 9，每份 242 mL，所以果汁 5 份 = 1210 mL。",
+    "common_mistakes": [
+      "把 {a}:{b} 當成要相加/相減而不是份數。",
+      "總份數算錯（忘記 a+b）。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 5,
+      "b": 4,
+      "total": 2178,
+      "ask": "a"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_25",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 4:4，總共有 2176 mL，果汁有多少 mL？",
+    "answer": "1088",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：4+4=8。",
+      "每份 = 總量 ÷ 總份數 = 2176÷8。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 8，每份 272 mL，所以果汁 4 份 = 1088 mL。",
+    "common_mistakes": [
+      "把 {a}:{b} 當成要相加/相減而不是份數。",
+      "總份數算錯（忘記 a+b）。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 4,
+      "b": 4,
+      "total": 2176,
+      "ask": "a"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_26",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 5:8，總共有 1820 mL，水有多少 mL？",
+    "answer": "1120",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：5+8=13。",
+      "每份 = 總量 ÷ 總份數 = 1820÷13。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 13，每份 140 mL，所以水 8 份 = 1120 mL。",
     "common_mistakes": [
       "只算其中一邊，忘記用份數乘。",
       "每份=總量÷總份數這一步寫錯。"
@@ -7017,65 +7353,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 5,
-      "b": 4,
-      "total": 1251,
+      "b": 8,
+      "total": 1820,
       "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_19",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 2:1，總共有 1146 mL，果汁有多少 mL？",
-    "answer": "764",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+1=3。",
-      "每份 = 總量 ÷ 總份數 = 1146÷3。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 3，每份 382 mL，所以果汁 2 份 = 764 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 2,
-      "b": 1,
-      "total": 1146,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_20",
+    "id": "g5lp2p_u8_ratio_recipe_27",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜比例）調配果汁，果汁:水 = 2:6，總共有 896 mL，果汁有多少 mL？",
-    "answer": "224",
+    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 3:9，總共有 2088 mL，水有多少 mL？",
+    "answer": "1566",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+6=8。",
-      "每份 = 總量 ÷ 總份數 = 896÷8。",
+      "先算總份數：3+9=12。",
+      "每份 = 總量 ÷ 總份數 = 2088÷12。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -7084,10 +7378,10 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 8，每份 112 mL，所以果汁 2 份 = 224 mL。",
+    "explanation": "總份數 12，每份 174 mL，所以水 9 份 = 1566 mL。",
     "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
     ],
     "tags": [
       "生活應用",
@@ -7100,24 +7394,24 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "a": 2,
-      "b": 6,
-      "total": 896,
-      "ask": "a"
+      "a": 3,
+      "b": 9,
+      "total": 2088,
+      "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_21",
+    "id": "g5lp2p_u8_ratio_recipe_28",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜比例）調配奶茶，果汁:水 = 2:3，總共有 760 mL，果汁有多少 mL？",
-    "answer": "304",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配果汁，果汁:水 = 2:7，總共有 1494 mL，水有多少 mL？",
+    "answer": "1162",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+3=5。",
-      "每份 = 總量 ÷ 總份數 = 760÷5。",
+      "先算總份數：2+7=9。",
+      "每份 = 總量 ÷ 總份數 = 1494÷9。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -7126,10 +7420,10 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 5，每份 152 mL，所以果汁 2 份 = 304 mL。",
+    "explanation": "總份數 9，每份 166 mL，所以水 7 份 = 1162 mL。",
     "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
     ],
     "tags": [
       "生活應用",
@@ -7143,23 +7437,65 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 2,
+      "b": 7,
+      "total": 1494,
+      "ask": "b"
+    }
+  },
+  {
+    "id": "g5lp2p_u8_ratio_recipe_29",
+    "kind": "u8_ratio_recipe",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 7:3，總共有 940 mL，水有多少 mL？",
+    "answer": "282",
+    "answer_mode": "number",
+    "hints": [
+      "份數法：比例 a:b 表示 a 份對 b 份。",
+      "先算總份數：7+3=10。",
+      "每份 = 總量 ÷ 總份數 = 940÷10。",
+      "最後用（需要的份數）×（每份）得到答案。"
+    ],
+    "steps": [
+      "算總份數 a+b。",
+      "用總量÷總份數得到每份。",
+      "用需要的份數×每份得到需要的量。",
+      "檢查：兩部分相加應等於總量。"
+    ],
+    "explanation": "總份數 10，每份 94 mL，所以水 3 份 = 282 mL。",
+    "common_mistakes": [
+      "只算其中一邊，忘記用份數乘。",
+      "每份=總量÷總份數這一步寫錯。"
+    ],
+    "tags": [
+      "生活應用",
+      "比例",
+      "份數法"
+    ],
+    "core": [
+      "比例=份數",
+      "平均",
+      "乘除"
+    ],
+    "meta": {
+      "a": 7,
       "b": 3,
-      "total": 760,
-      "ask": "a"
+      "total": 940,
+      "ask": "b"
     }
   },
   {
-    "id": "g5lp2p_u8_ratio_recipe_22",
+    "id": "g5lp2p_u8_ratio_recipe_30",
     "kind": "u8_ratio_recipe",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 6:9，總共有 1695 mL，果汁有多少 mL？",
-    "answer": "678",
+    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 6:4，總共有 1570 mL，果汁有多少 mL？",
+    "answer": "942",
     "answer_mode": "number",
     "hints": [
       "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：6+9=15。",
-      "每份 = 總量 ÷ 總份數 = 1695÷15。",
+      "先算總份數：6+4=10。",
+      "每份 = 總量 ÷ 總份數 = 1570÷10。",
       "最後用（需要的份數）×（每份）得到答案。"
     ],
     "steps": [
@@ -7168,7 +7504,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "用需要的份數×每份得到需要的量。",
       "檢查：兩部分相加應等於總量。"
     ],
-    "explanation": "總份數 15，每份 113 mL，所以果汁 6 份 = 678 mL。",
+    "explanation": "總份數 10，每份 157 mL，所以果汁 6 份 = 942 mL。",
     "common_mistakes": [
       "把 {a}:{b} 當成要相加/相減而不是份數。",
       "總份數算錯（忘記 a+b）。"
@@ -7185,344 +7521,8 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "a": 6,
-      "b": 9,
-      "total": 1695,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_23",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 7:5，總共有 2076 mL，果汁有多少 mL？",
-    "answer": "1211",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：7+5=12。",
-      "每份 = 總量 ÷ 總份數 = 2076÷12。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 12，每份 173 mL，所以果汁 7 份 = 1211 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 7,
-      "b": 5,
-      "total": 2076,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_24",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 3:8，總共有 2178 mL，水有多少 mL？",
-    "answer": "1584",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：3+8=11。",
-      "每份 = 總量 ÷ 總份數 = 2178÷11。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 11，每份 198 mL，所以水 8 份 = 1584 mL。",
-    "common_mistakes": [
-      "只算其中一邊，忘記用份數乘。",
-      "每份=總量÷總份數這一步寫錯。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 3,
-      "b": 8,
-      "total": 2178,
-      "ask": "b"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_25",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配果汁，果汁:水 = 7:3，總共有 1000 mL，水有多少 mL？",
-    "answer": "300",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：7+3=10。",
-      "每份 = 總量 ÷ 總份數 = 1000÷10。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 10，每份 100 mL，所以水 3 份 = 300 mL。",
-    "common_mistakes": [
-      "只算其中一邊，忘記用份數乘。",
-      "每份=總量÷總份數這一步寫錯。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 7,
-      "b": 3,
-      "total": 1000,
-      "ask": "b"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_26",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配運動飲料，果汁:水 = 5:5，總共有 890 mL，水有多少 mL？",
-    "answer": "445",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：5+5=10。",
-      "每份 = 總量 ÷ 總份數 = 890÷10。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 10，每份 89 mL，所以水 5 份 = 445 mL。",
-    "common_mistakes": [
-      "只算其中一邊，忘記用份數乘。",
-      "每份=總量÷總份數這一步寫錯。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 5,
-      "b": 5,
-      "total": 890,
-      "ask": "b"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_27",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 2:1，總共有 1521 mL，果汁有多少 mL？",
-    "answer": "1014",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+1=3。",
-      "每份 = 總量 ÷ 總份數 = 1521÷3。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 3，每份 507 mL，所以果汁 2 份 = 1014 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 2,
-      "b": 1,
-      "total": 1521,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_28",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 3:4，總共有 406 mL，果汁有多少 mL？",
-    "answer": "174",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：3+4=7。",
-      "每份 = 總量 ÷ 總份數 = 406÷7。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 7，每份 58 mL，所以果汁 3 份 = 174 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 3,
       "b": 4,
-      "total": 406,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_29",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜比例）調配檸檬水，果汁:水 = 7:8，總共有 645 mL，果汁有多少 mL？",
-    "answer": "301",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：7+8=15。",
-      "每份 = 總量 ÷ 總份數 = 645÷15。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 15，每份 43 mL，所以果汁 7 份 = 301 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 7,
-      "b": 8,
-      "total": 645,
-      "ask": "a"
-    }
-  },
-  {
-    "id": "g5lp2p_u8_ratio_recipe_30",
-    "kind": "u8_ratio_recipe",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜比例）調配果汁，果汁:水 = 2:4，總共有 912 mL，果汁有多少 mL？",
-    "answer": "304",
-    "answer_mode": "number",
-    "hints": [
-      "份數法：比例 a:b 表示 a 份對 b 份。",
-      "先算總份數：2+4=6。",
-      "每份 = 總量 ÷ 總份數 = 912÷6。",
-      "最後用（需要的份數）×（每份）得到答案。"
-    ],
-    "steps": [
-      "算總份數 a+b。",
-      "用總量÷總份數得到每份。",
-      "用需要的份數×每份得到需要的量。",
-      "檢查：兩部分相加應等於總量。"
-    ],
-    "explanation": "總份數 6，每份 152 mL，所以果汁 2 份 = 304 mL。",
-    "common_mistakes": [
-      "把 {a}:{b} 當成要相加/相減而不是份數。",
-      "總份數算錯（忘記 a+b）。"
-    ],
-    "tags": [
-      "生活應用",
-      "比例",
-      "份數法"
-    ],
-    "core": [
-      "比例=份數",
-      "平均",
-      "乘除"
-    ],
-    "meta": {
-      "a": 2,
-      "b": 4,
-      "total": 912,
+      "total": 1570,
       "ask": "a"
     }
   },
@@ -7530,14 +7530,14 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "id": "g5lp2p_u9_unit_convert_decimal_01",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）40.7 kg = 多少 g？（可寫小數）",
-    "answer": "40700",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）6.04 kg = 多少 g？（可寫小數）",
+    "answer": "6040",
     "answer_mode": "number",
     "hints": [
       "先記換算：1 kg = 1000 g。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：40.7×1000。",
+      "列式：6.04×1000。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -7546,7 +7546,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "40.7 kg × 1000 = 40700 g。",
+    "explanation": "6.04 kg × 1000 = 6040 g。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -7564,12 +7564,393 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "from": "kg",
       "to": "g",
       "mul": 1000,
-      "a": "40.7",
+      "a": "6.04",
       "dir": "mul"
     }
   },
   {
     "id": "g5lp2p_u9_unit_convert_decimal_02",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）7.84 mL = 多少 L？（可寫小數）",
+    "answer": "0.00784",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 L = 1000 mL。",
+      "由小單位換成大單位 → 用除法。",
+      "列式：7.84÷1000（小數點往左移 3 位）。",
+      "檢查：換成更大單位，數字應變小。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "7.84 mL ÷ 1000 = 0.00784 L。",
+    "common_mistakes": [
+      "小→大卻用乘法（方向弄反）。",
+      "小數點移動位數錯（10/100/1000 搞混）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "mL",
+      "to": "L",
+      "mul": 1000,
+      "a": "7.84",
+      "dir": "div",
+      "pow10": 3
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_03",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）0.90 cm = 多少 m？（可寫小數）",
+    "answer": "0.009",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 m = 100 cm。",
+      "由小單位換成大單位 → 用除法。",
+      "列式：0.90÷100（小數點往左移 2 位）。",
+      "檢查：換成更大單位，數字應變小。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "0.90 cm ÷ 100 = 0.009 m。",
+    "common_mistakes": [
+      "小→大卻用乘法（方向弄反）。",
+      "小數點移動位數錯（10/100/1000 搞混）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "cm",
+      "to": "m",
+      "mul": 100,
+      "a": "0.90",
+      "dir": "div",
+      "pow10": 2
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_04",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜單位換算）31.7 km = 多少 m？（可寫小數）",
+    "answer": "31700",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 km = 1000 m。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：31.7×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "31.7 km × 1000 = 31700 m。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "31.7",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_05",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜單位換算）0.32 kg = 多少 g？（可寫小數）",
+    "answer": "320",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 kg = 1000 g。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：0.32×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "0.32 kg × 1000 = 320 g。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "kg",
+      "to": "g",
+      "mul": 1000,
+      "a": "0.32",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_06",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜單位換算）8 kg = 多少 g？（可寫小數）",
+    "answer": "8",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 kg = 1000 g。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：8×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "8 kg × 1000 = 8 g。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "kg",
+      "to": "g",
+      "mul": 1000,
+      "a": "8",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_07",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜單位換算）11 km = 多少 m？（可寫小數）",
+    "answer": "11",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 km = 1000 m。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：11×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "11 km × 1000 = 11 m。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "11",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_08",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜單位換算）4.15 km = 多少 m？（可寫小數）",
+    "answer": "4150",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 km = 1000 m。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：4.15×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "4.15 km × 1000 = 4150 m。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "4.15",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_09",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）0.245 mL = 多少 L？（可寫小數）",
+    "answer": "0.000245",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 L = 1000 mL。",
+      "由小單位換成大單位 → 用除法。",
+      "列式：0.245÷1000（小數點往左移 3 位）。",
+      "檢查：換成更大單位，數字應變小。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "0.245 mL ÷ 1000 = 0.000245 L。",
+    "common_mistakes": [
+      "小→大卻用乘法（方向弄反）。",
+      "小數點移動位數錯（10/100/1000 搞混）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "mL",
+      "to": "L",
+      "mul": 1000,
+      "a": "0.245",
+      "dir": "div",
+      "pow10": 3
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_10",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）0.810 kg = 多少 g？（可寫小數）",
+    "answer": "810",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 kg = 1000 g。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：0.810×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "0.810 kg × 1000 = 810 g。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "kg",
+      "to": "g",
+      "mul": 1000,
+      "a": "0.810",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_11",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -7611,61 +7992,18 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_03",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜單位換算）9.31 cm = 多少 m？（可寫小數）",
-    "answer": "0.0931",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由小單位換成大單位 → 用除法。",
-      "列式：9.31÷100（小數點往左移 2 位）。",
-      "檢查：換成更大單位，數字應變小。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "9.31 cm ÷ 100 = 0.0931 m。",
-    "common_mistakes": [
-      "小→大卻用乘法（方向弄反）。",
-      "小數點移動位數錯（10/100/1000 搞混）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "cm",
-      "to": "m",
-      "mul": 100,
-      "a": "9.31",
-      "dir": "div",
-      "pow10": 2
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_04",
+    "id": "g5lp2p_u9_unit_convert_decimal_12",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
-    "question": "（生活應用｜單位換算）19.5 m = 多少 km？（可寫小數）",
-    "answer": "0.0195",
+    "question": "（生活應用｜單位換算）21.6 m = 多少 cm？（可寫小數）",
+    "answer": "2160",
     "answer_mode": "number",
     "hints": [
-      "先記換算：1 km = 1000 m。",
-      "由小單位換成大單位 → 用除法。",
-      "列式：19.5÷1000（小數點往左移 3 位）。",
-      "檢查：換成更大單位，數字應變小。"
+      "先記換算：1 m = 100 cm。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：21.6×100。",
+      "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
       "寫出 1 單位的換算關係。",
@@ -7673,10 +8011,10 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "19.5 m ÷ 1000 = 0.0195 km。",
+    "explanation": "21.6 m × 100 = 2160 cm。",
     "common_mistakes": [
-      "小→大卻用乘法（方向弄反）。",
-      "小數點移動位數錯（10/100/1000 搞混）。"
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
     ],
     "tags": [
       "生活應用",
@@ -7689,15 +8027,56 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "from": "m",
-      "to": "km",
-      "mul": 1000,
-      "a": "19.5",
-      "dir": "div",
-      "pow10": 3
+      "to": "cm",
+      "mul": 100,
+      "a": "21.6",
+      "dir": "mul"
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_05",
+    "id": "g5lp2p_u9_unit_convert_decimal_13",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜單位換算）24 km = 多少 m？（可寫小數）",
+    "answer": "24",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 km = 1000 m。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：24×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "24 km × 1000 = 24 m。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "24",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_14",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -7739,7 +8118,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_06",
+    "id": "g5lp2p_u9_unit_convert_decimal_15",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
@@ -7782,101 +8161,101 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_07",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜單位換算）2.11 m = 多少 cm？（可寫小數）",
-    "answer": "211",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：2.11×100。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "2.11 m × 100 = 211 cm。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "2.11",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_08",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜單位換算）22 m = 多少 cm？（可寫小數）",
-    "answer": "22",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：22×100。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "22 m × 100 = 22 cm。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "22",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_09",
+    "id": "g5lp2p_u9_unit_convert_decimal_16",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
-    "question": "（生活應用｜單位換算）12.7 L = 多少 mL？（可寫小數）",
-    "answer": "12700",
+    "question": "（生活應用｜單位換算）10.8 m = 多少 cm？（可寫小數）",
+    "answer": "1080",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 m = 100 cm。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：10.8×100。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "10.8 m × 100 = 1080 cm。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "m",
+      "to": "cm",
+      "mul": 100,
+      "a": "10.8",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_17",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜單位換算）17.6 m = 多少 cm？（可寫小數）",
+    "answer": "1760",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 m = 100 cm。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：17.6×100。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "17.6 m × 100 = 1760 cm。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "m",
+      "to": "cm",
+      "mul": 100,
+      "a": "17.6",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_18",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）2.50 L = 多少 mL？（可寫小數）",
+    "answer": "2500",
     "answer_mode": "number",
     "hints": [
       "先記換算：1 L = 1000 mL。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：12.7×1000。",
+      "列式：2.50×1000。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -7885,7 +8264,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "12.7 L × 1000 = 12700 mL。",
+    "explanation": "2.50 L × 1000 = 2500 mL。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -7903,12 +8282,12 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "from": "L",
       "to": "mL",
       "mul": 1000,
-      "a": "12.7",
+      "a": "2.50",
       "dir": "mul"
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_10",
+    "id": "g5lp2p_u9_unit_convert_decimal_19",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
@@ -7950,17 +8329,17 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_11",
+    "id": "g5lp2p_u9_unit_convert_decimal_20",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜單位換算）17 m = 多少 cm？（可寫小數）",
-    "answer": "17",
+    "difficulty": "normal",
+    "question": "（生活應用｜單位換算）13.5 m = 多少 cm？（可寫小數）",
+    "answer": "1350",
     "answer_mode": "number",
     "hints": [
       "先記換算：1 m = 100 cm。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：17×100。",
+      "列式：13.5×100。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -7969,7 +8348,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "17 m × 100 = 17 cm。",
+    "explanation": "13.5 m × 100 = 1350 cm。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -7987,23 +8366,23 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "from": "m",
       "to": "cm",
       "mul": 100,
-      "a": "17",
+      "a": "13.5",
       "dir": "mul"
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_12",
+    "id": "g5lp2p_u9_unit_convert_decimal_21",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）2.83 mL = 多少 L？（可寫小數）",
-    "answer": "0.00283",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）0.480 kg = 多少 g？（可寫小數）",
+    "answer": "480",
     "answer_mode": "number",
     "hints": [
-      "先記換算：1 L = 1000 mL。",
-      "由小單位換成大單位 → 用除法。",
-      "列式：2.83÷1000（小數點往左移 3 位）。",
-      "檢查：換成更大單位，數字應變小。"
+      "先記換算：1 kg = 1000 g。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：0.480×1000。",
+      "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
       "寫出 1 單位的換算關係。",
@@ -8011,10 +8390,10 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "2.83 mL ÷ 1000 = 0.00283 L。",
+    "explanation": "0.480 kg × 1000 = 480 g。",
     "common_mistakes": [
-      "小→大卻用乘法（方向弄反）。",
-      "小數點移動位數錯（10/100/1000 搞混）。"
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
     ],
     "tags": [
       "生活應用",
@@ -8026,16 +8405,15 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "位值"
     ],
     "meta": {
-      "from": "mL",
-      "to": "L",
+      "from": "kg",
+      "to": "g",
       "mul": 1000,
-      "a": "2.83",
-      "dir": "div",
-      "pow10": 3
+      "a": "0.480",
+      "dir": "mul"
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_13",
+    "id": "g5lp2p_u9_unit_convert_decimal_22",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -8078,355 +8456,17 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_14",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜單位換算）11 kg = 多少 g？（可寫小數）",
-    "answer": "11",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 kg = 1000 g。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：11×1000。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "11 kg × 1000 = 11 g。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "kg",
-      "to": "g",
-      "mul": 1000,
-      "a": "11",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_15",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）1.02 m = 多少 cm？（可寫小數）",
-    "answer": "102",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：1.02×100。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "1.02 m × 100 = 102 cm。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "1.02",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_16",
+    "id": "g5lp2p_u9_unit_convert_decimal_23",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜單位換算）0.758 m = 多少 cm？（可寫小數）",
-    "answer": "75.8",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：0.758×100。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "0.758 m × 100 = 75.8 cm。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "0.758",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_17",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）2.09 m = 多少 cm？（可寫小數）",
-    "answer": "209",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：2.09×100。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "2.09 m × 100 = 209 cm。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "2.09",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_18",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜單位換算）8.95 m = 多少 km？（可寫小數）",
-    "answer": "0.00895",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 km = 1000 m。",
-      "由小單位換成大單位 → 用除法。",
-      "列式：8.95÷1000（小數點往左移 3 位）。",
-      "檢查：換成更大單位，數字應變小。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "8.95 m ÷ 1000 = 0.00895 km。",
-    "common_mistakes": [
-      "小→大卻用乘法（方向弄反）。",
-      "小數點移動位數錯（10/100/1000 搞混）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "km",
-      "mul": 1000,
-      "a": "8.95",
-      "dir": "div",
-      "pow10": 3
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_19",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）12.5 L = 多少 mL？（可寫小數）",
-    "answer": "12500",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 L = 1000 mL。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：12.5×1000。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "12.5 L × 1000 = 12500 mL。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "L",
-      "to": "mL",
-      "mul": 1000,
-      "a": "12.5",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_20",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜單位換算）8.73 mL = 多少 L？（可寫小數）",
-    "answer": "0.00873",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 L = 1000 mL。",
-      "由小單位換成大單位 → 用除法。",
-      "列式：8.73÷1000（小數點往左移 3 位）。",
-      "檢查：換成更大單位，數字應變小。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "8.73 mL ÷ 1000 = 0.00873 L。",
-    "common_mistakes": [
-      "小→大卻用乘法（方向弄反）。",
-      "小數點移動位數錯（10/100/1000 搞混）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "mL",
-      "to": "L",
-      "mul": 1000,
-      "a": "8.73",
-      "dir": "div",
-      "pow10": 3
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_21",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）16.9 m = 多少 cm？（可寫小數）",
-    "answer": "1690",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 m = 100 cm。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：16.9×100。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "16.9 m × 100 = 1690 cm。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "16.9",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_22",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜單位換算）0.734 g = 多少 kg？（可寫小數）",
-    "answer": "0.000734",
+    "question": "（生活應用｜單位換算）0.732 g = 多少 kg？（可寫小數）",
+    "answer": "0.000732",
     "answer_mode": "number",
     "hints": [
       "先記換算：1 kg = 1000 g。",
       "由小單位換成大單位 → 用除法。",
-      "列式：0.734÷1000（小數點往左移 3 位）。",
+      "列式：0.732÷1000（小數點往左移 3 位）。",
       "檢查：換成更大單位，數字應變小。"
     ],
     "steps": [
@@ -8435,7 +8475,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "0.734 g ÷ 1000 = 0.000734 kg。",
+    "explanation": "0.732 g ÷ 1000 = 0.000732 kg。",
     "common_mistakes": [
       "小→大卻用乘法（方向弄反）。",
       "小數點移動位數錯（10/100/1000 搞混）。"
@@ -8453,50 +8493,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "from": "g",
       "to": "kg",
       "mul": 1000,
-      "a": "0.734",
-      "dir": "div",
-      "pow10": 3
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_23",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）22.5 mL = 多少 L？（可寫小數）",
-    "answer": "0.0225",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 L = 1000 mL。",
-      "由小單位換成大單位 → 用除法。",
-      "列式：22.5÷1000（小數點往左移 3 位）。",
-      "檢查：換成更大單位，數字應變小。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "22.5 mL ÷ 1000 = 0.0225 L。",
-    "common_mistakes": [
-      "小→大卻用乘法（方向弄反）。",
-      "小數點移動位數錯（10/100/1000 搞混）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "mL",
-      "to": "L",
-      "mul": 1000,
-      "a": "22.5",
+      "a": "0.732",
       "dir": "div",
       "pow10": 3
     }
@@ -8505,14 +8502,14 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "id": "g5lp2p_u9_unit_convert_decimal_24",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）2.27 m = 多少 cm？（可寫小數）",
-    "answer": "227",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）1.09 km = 多少 m？（可寫小數）",
+    "answer": "1090",
     "answer_mode": "number",
     "hints": [
-      "先記換算：1 m = 100 cm。",
+      "先記換算：1 km = 1000 m。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：2.27×100。",
+      "列式：1.09×1000。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -8521,7 +8518,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "2.27 m × 100 = 227 cm。",
+    "explanation": "1.09 km × 1000 = 1090 m。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -8536,10 +8533,10 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "位值"
     ],
     "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "2.27",
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "1.09",
       "dir": "mul"
     }
   },
@@ -8548,13 +8545,13 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜單位換算）5.20 m = 多少 cm？（可寫小數）",
-    "answer": "520",
+    "question": "（生活應用｜單位換算）1.08 km = 多少 m？（可寫小數）",
+    "answer": "1080",
     "answer_mode": "number",
     "hints": [
-      "先記換算：1 m = 100 cm。",
+      "先記換算：1 km = 1000 m。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：5.20×100。",
+      "列式：1.08×1000。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -8563,7 +8560,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "5.20 m × 100 = 520 cm。",
+    "explanation": "1.08 km × 1000 = 1080 m。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -8578,10 +8575,10 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "位值"
     ],
     "meta": {
-      "from": "m",
-      "to": "cm",
-      "mul": 100,
-      "a": "5.20",
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "1.08",
       "dir": "mul"
     }
   },
@@ -8590,139 +8587,13 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜單位換算）4.10 L = 多少 mL？（可寫小數）",
-    "answer": "4100",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 L = 1000 mL。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：4.10×1000。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "4.10 L × 1000 = 4100 mL。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "L",
-      "to": "mL",
-      "mul": 1000,
-      "a": "4.10",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_27",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）24.9 km = 多少 m？（可寫小數）",
-    "answer": "24900",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 km = 1000 m。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：24.9×1000。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "24.9 km × 1000 = 24900 m。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "km",
-      "to": "m",
-      "mul": 1000,
-      "a": "24.9",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_28",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜單位換算）0.23 km = 多少 m？（可寫小數）",
-    "answer": "230",
-    "answer_mode": "number",
-    "hints": [
-      "先記換算：1 km = 1000 m。",
-      "由大單位換成小單位 → 用乘法。",
-      "列式：0.23×1000。",
-      "檢查：換成更小單位，數字應變大。"
-    ],
-    "steps": [
-      "寫出 1 單位的換算關係。",
-      "判斷方向（大→小用乘，小→大用除）。",
-      "計算並寫出答案。",
-      "做合理性檢查（數字變大/變小是否合理）。"
-    ],
-    "explanation": "0.23 km × 1000 = 230 m。",
-    "common_mistakes": [
-      "大→小卻用除法（方向弄反）。",
-      "把換算倍率寫錯（例如 km→m 用 100）。"
-    ],
-    "tags": [
-      "生活應用",
-      "單位換算",
-      "小數"
-    ],
-    "core": [
-      "乘除方向",
-      "位值"
-    ],
-    "meta": {
-      "from": "km",
-      "to": "m",
-      "mul": 1000,
-      "a": "0.23",
-      "dir": "mul"
-    }
-  },
-  {
-    "id": "g5lp2p_u9_unit_convert_decimal_29",
-    "kind": "u9_unit_convert_decimal",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜單位換算）34 kg = 多少 g？（可寫小數）",
-    "answer": "34",
+    "question": "（生活應用｜單位換算）0.697 kg = 多少 g？（可寫小數）",
+    "answer": "697",
     "answer_mode": "number",
     "hints": [
       "先記換算：1 kg = 1000 g。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：34×1000。",
+      "列式：0.697×1000。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -8731,7 +8602,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "34 kg × 1000 = 34 g。",
+    "explanation": "0.697 kg × 1000 = 697 g。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -8749,22 +8620,22 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "from": "kg",
       "to": "g",
       "mul": 1000,
-      "a": "34",
+      "a": "0.697",
       "dir": "mul"
     }
   },
   {
-    "id": "g5lp2p_u9_unit_convert_decimal_30",
+    "id": "g5lp2p_u9_unit_convert_decimal_27",
     "kind": "u9_unit_convert_decimal",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜單位換算）3 L = 多少 mL？（可寫小數）",
-    "answer": "3",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）1.98 L = 多少 mL？（可寫小數）",
+    "answer": "1980",
     "answer_mode": "number",
     "hints": [
       "先記換算：1 L = 1000 mL。",
       "由大單位換成小單位 → 用乘法。",
-      "列式：3×1000。",
+      "列式：1.98×1000。",
       "檢查：換成更小單位，數字應變大。"
     ],
     "steps": [
@@ -8773,7 +8644,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "計算並寫出答案。",
       "做合理性檢查（數字變大/變小是否合理）。"
     ],
-    "explanation": "3 L × 1000 = 3 mL。",
+    "explanation": "1.98 L × 1000 = 1980 mL。",
     "common_mistakes": [
       "大→小卻用除法（方向弄反）。",
       "把換算倍率寫錯（例如 km→m 用 100）。"
@@ -8791,7 +8662,134 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "from": "L",
       "to": "mL",
       "mul": 1000,
-      "a": "3",
+      "a": "1.98",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_28",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）0.523 m = 多少 cm？（可寫小數）",
+    "answer": "52.3",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 m = 100 cm。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：0.523×100。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "0.523 m × 100 = 52.3 cm。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "m",
+      "to": "cm",
+      "mul": 100,
+      "a": "0.523",
+      "dir": "mul"
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_29",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）0.781 m = 多少 km？（可寫小數）",
+    "answer": "0.000781",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 km = 1000 m。",
+      "由小單位換成大單位 → 用除法。",
+      "列式：0.781÷1000（小數點往左移 3 位）。",
+      "檢查：換成更大單位，數字應變小。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "0.781 m ÷ 1000 = 0.000781 km。",
+    "common_mistakes": [
+      "小→大卻用乘法（方向弄反）。",
+      "小數點移動位數錯（10/100/1000 搞混）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "m",
+      "to": "km",
+      "mul": 1000,
+      "a": "0.781",
+      "dir": "div",
+      "pow10": 3
+    }
+  },
+  {
+    "id": "g5lp2p_u9_unit_convert_decimal_30",
+    "kind": "u9_unit_convert_decimal",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜單位換算）5.61 km = 多少 m？（可寫小數）",
+    "answer": "5610",
+    "answer_mode": "number",
+    "hints": [
+      "先記換算：1 km = 1000 m。",
+      "由大單位換成小單位 → 用乘法。",
+      "列式：5.61×1000。",
+      "檢查：換成更小單位，數字應變大。"
+    ],
+    "steps": [
+      "寫出 1 單位的換算關係。",
+      "判斷方向（大→小用乘，小→大用除）。",
+      "計算並寫出答案。",
+      "做合理性檢查（數字變大/變小是否合理）。"
+    ],
+    "explanation": "5.61 km × 1000 = 5610 m。",
+    "common_mistakes": [
+      "大→小卻用除法（方向弄反）。",
+      "把換算倍率寫錯（例如 km→m 用 100）。"
+    ],
+    "tags": [
+      "生活應用",
+      "單位換算",
+      "小數"
+    ],
+    "core": [
+      "乘除方向",
+      "位值"
+    ],
+    "meta": {
+      "from": "km",
+      "to": "m",
+      "mul": 1000,
+      "a": "5.61",
       "dir": "mul"
     }
   },
@@ -8800,22 +8798,62 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 6 公尺，要走 156 公尺，需要幾分鐘？",
-    "answer": "26",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 12 公尺，走了 13 分鐘，一共走了多少公尺？",
+    "answer": "156",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：12×13。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 12×13 = 156（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 12,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_02",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 13 公尺，要走 273 公尺，需要幾分鐘？",
+    "answer": "21",
     "answer_mode": "number",
     "hints": [
       "關鍵字：需要幾分鐘（求時間）。",
       "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：156÷6。",
+      "列式：273÷13。",
       "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
       "時間=距離÷速率。",
-      "列式：156÷6。",
+      "列式：273÷13。",
       "計算並寫出答案。",
       "檢查：速率越快時間越短。"
     ],
-    "explanation": "時間 = 156÷6 = 26（分鐘）。",
+    "explanation": "時間 = 273÷13 = 21（分鐘）。",
     "common_mistakes": [
       "把除法寫成乘法，答案變得太大。",
       "單位搞混（公尺/分鐘）。"
@@ -8830,97 +8868,17 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "rate": 6,
+      "rate": 13,
       "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_02",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 6 公尺，走了 13 分鐘，一共走了多少公尺？",
-    "answer": "78",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：6×13。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 6×13 = 78（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 6,
-      "mode": "d"
     }
   },
   {
     "id": "g5lp2p_u10_rate_time_distance_03",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 14 公尺，走了 39 分鐘，一共走了多少公尺？",
-    "answer": "546",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：14×39。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 14×39 = 546（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 14,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_04",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 15 公尺，走了 20 分鐘，一共走了多少公尺？",
-    "answer": "300",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 15 公尺，走了 19 分鐘，一共走了多少公尺？",
+    "answer": "285",
     "answer_mode": "number",
     "hints": [
       "關鍵字：每分鐘…（單位率）。",
@@ -8931,11 +8889,11 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "steps": [
       "距離=速率×時間。",
       "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：15×20。",
+      "列式：15×19。",
       "計算並寫出答案。",
       "檢查：時間越久距離越大。"
     ],
-    "explanation": "距離 = 15×20 = 300（公尺）。",
+    "explanation": "距離 = 15×19 = 285（公尺）。",
     "common_mistakes": [
       "把乘法寫成加法但只加一次。",
       "把『每分鐘』當成『總共』。"
@@ -8955,12 +8913,12 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_05",
+    "id": "g5lp2p_u10_rate_time_distance_04",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 8 公尺，走了 7 分鐘，一共走了多少公尺？",
-    "answer": "56",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 10 公尺，走了 12 分鐘，一共走了多少公尺？",
+    "answer": "120",
     "answer_mode": "number",
     "hints": [
       "關鍵字：每分鐘…（單位率）。",
@@ -8971,13 +8929,332 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "steps": [
       "距離=速率×時間。",
       "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：8×7。",
+      "列式：10×12。",
       "計算並寫出答案。",
       "檢查：時間越久距離越大。"
     ],
-    "explanation": "距離 = 8×7 = 56（公尺）。",
+    "explanation": "距離 = 10×12 = 120（公尺）。",
     "common_mistakes": [
       "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 10,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_05",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 13 公尺，走了 34 分鐘，一共走了多少公尺？",
+    "answer": "442",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：13×34。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 13×34 = 442（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 13,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_06",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 11 公尺，走了 26 分鐘，一共走了多少公尺？",
+    "answer": "286",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：11×26。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 11×26 = 286（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 11,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_07",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，要走 155 公尺，需要幾分鐘？",
+    "answer": "31",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：155÷5。",
+      "最後檢查：算出來應是整數分鐘。"
+    ],
+    "steps": [
+      "時間=距離÷速率。",
+      "列式：155÷5。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
+    ],
+    "explanation": "時間 = 155÷5 = 31（分鐘）。",
+    "common_mistakes": [
+      "把除法寫成乘法，答案變得太大。",
+      "單位搞混（公尺/分鐘）。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 5,
+      "mode": "t"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_08",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 13 公尺，走了 8 分鐘，一共走了多少公尺？",
+    "answer": "104",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：13×8。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 13×8 = 104（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 13,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_09",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 9 公尺，走了 18 分鐘，一共走了多少公尺？",
+    "answer": "162",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：9×18。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 9×18 = 162（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 9,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_10",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 3 公尺，走了 9 分鐘，一共走了多少公尺？",
+    "answer": "27",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：3×9。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 3×9 = 27（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 3,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_11",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 13 公尺，走了 4 分鐘，一共走了多少公尺？",
+    "answer": "52",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：13×4。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 13×4 = 52（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 13,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_12",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 8 公尺，總共經過 13 分鐘，其中休息了 3 分鐘沒前進。實際騎車前進了多少公尺？",
+    "answer": "80",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：8×（13−3）。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "真正前進時間 13−3=10（分鐘），距離 = 8×10 = 80（公尺）。",
+    "common_mistakes": [
+      "把休息時間也算進去（沒扣掉休息）。",
       "把『每分鐘』當成『總共』。"
     ],
     "tags": [
@@ -8995,26 +9272,26 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_06",
+    "id": "g5lp2p_u10_rate_time_distance_13",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 9 公尺，要走 234 公尺，需要幾分鐘？",
-    "answer": "26",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 7 公尺，要走 245 公尺，需要幾分鐘？",
+    "answer": "35",
     "answer_mode": "number",
     "hints": [
       "關鍵字：需要幾分鐘（求時間）。",
       "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：234÷9。",
+      "列式：245÷7。",
       "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
       "時間=距離÷速率。",
-      "列式：234÷9。",
+      "列式：245÷7。",
       "計算並寫出答案。",
       "檢查：速率越快時間越短。"
     ],
-    "explanation": "時間 = 234÷9 = 26（分鐘）。",
+    "explanation": "時間 = 245÷7 = 35（分鐘）。",
     "common_mistakes": [
       "把除法寫成乘法，答案變得太大。",
       "單位搞混（公尺/分鐘）。"
@@ -9029,12 +9306,410 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "rate": 9,
+      "rate": 7,
       "mode": "t"
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_07",
+    "id": "g5lp2p_u10_rate_time_distance_14",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，走了 4 分鐘，一共走了多少公尺？",
+    "answer": "20",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：5×4。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 5×4 = 20（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 5,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_15",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 6 公尺，走了 16 分鐘，一共走了多少公尺？",
+    "answer": "96",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：6×16。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 6×16 = 96（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 6,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_16",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 15 公尺，要走 420 公尺，需要幾分鐘？",
+    "answer": "28",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：420÷15。",
+      "最後檢查：算出來應是整數分鐘。"
+    ],
+    "steps": [
+      "時間=距離÷速率。",
+      "列式：420÷15。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
+    ],
+    "explanation": "時間 = 420÷15 = 28（分鐘）。",
+    "common_mistakes": [
+      "把除法寫成乘法，答案變得太大。",
+      "單位搞混（公尺/分鐘）。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 15,
+      "mode": "t"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_17",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "normal",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 4 公尺，要走 76 公尺，需要幾分鐘？",
+    "answer": "19",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：76÷4。",
+      "最後檢查：算出來應是整數分鐘。"
+    ],
+    "steps": [
+      "時間=距離÷速率。",
+      "列式：76÷4。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
+    ],
+    "explanation": "時間 = 76÷4 = 19（分鐘）。",
+    "common_mistakes": [
+      "把除法寫成乘法，答案變得太大。",
+      "單位搞混（公尺/分鐘）。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 4,
+      "mode": "t"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_18",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 14 公尺，走了 24 分鐘，一共走了多少公尺？",
+    "answer": "336",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：14×24。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 14×24 = 336（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 14,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_19",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "easy",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 3 公尺，走了 9 分鐘，一共走了多少公尺？",
+    "answer": "27",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：3×9。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 3×9 = 27（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 3,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_20",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 15 公尺，總共經過 37 分鐘，其中休息了 1 分鐘沒前進。實際騎車前進了多少公尺？",
+    "answer": "540",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：15×（37−1）。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "真正前進時間 37−1=36（分鐘），距離 = 15×36 = 540（公尺）。",
+    "common_mistakes": [
+      "把休息時間也算進去（沒扣掉休息）。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 15,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_21",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 14 公尺，總共經過 27 分鐘，其中休息了 4 分鐘沒前進。實際騎車前進了多少公尺？",
+    "answer": "322",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：14×（27−4）。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "真正前進時間 27−4=23（分鐘），距離 = 14×23 = 322（公尺）。",
+    "common_mistakes": [
+      "把休息時間也算進去（沒扣掉休息）。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 14,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_22",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 12 公尺，走了 19 分鐘，一共走了多少公尺？",
+    "answer": "228",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：12×19。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 12×19 = 228（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 12,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_23",
+    "kind": "u10_rate_time_distance",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 9 公尺，走了 29 分鐘，一共走了多少公尺？",
+    "answer": "261",
+    "answer_mode": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "若題目有『休息/停下』，休息時間不算前進。",
+      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "若有休息：先算真正前進時間=總時間−休息時間。",
+      "列式：9×29。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 9×29 = 261（公尺）。",
+    "common_mistakes": [
+      "把乘法寫成加法但只加一次。",
+      "把『每分鐘』當成『總共』。"
+    ],
+    "tags": [
+      "生活應用",
+      "速率",
+      "單位率"
+    ],
+    "core": [
+      "單位率",
+      "乘除"
+    ],
+    "meta": {
+      "rate": 9,
+      "mode": "d"
+    }
+  },
+  {
+    "id": "g5lp2p_u10_rate_time_distance_24",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -9073,30 +9748,29 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_08",
+    "id": "g5lp2p_u10_rate_time_distance_25",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 6 公尺，走了 19 分鐘，一共走了多少公尺？",
-    "answer": "114",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 11 公尺，要走 451 公尺，需要幾分鐘？",
+    "answer": "41",
     "answer_mode": "number",
     "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：451÷11。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：6×19。",
+      "時間=距離÷速率。",
+      "列式：451÷11。",
       "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "距離 = 6×19 = 114（公尺）。",
+    "explanation": "時間 = 451÷11 = 41（分鐘）。",
     "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
+      "把除法寫成乘法，答案變得太大。",
+      "單位搞混（公尺/分鐘）。"
     ],
     "tags": [
       "生活應用",
@@ -9108,12 +9782,12 @@ window.G5_LIFE_PACK2PLUS_BANK = [
       "乘除"
     ],
     "meta": {
-      "rate": 6,
-      "mode": "d"
+      "rate": 11,
+      "mode": "t"
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_09",
+    "id": "g5lp2p_u10_rate_time_distance_26",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -9152,7 +9826,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_10",
+    "id": "g5lp2p_u10_rate_time_distance_27",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
@@ -9191,12 +9865,12 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_11",
+    "id": "g5lp2p_u10_rate_time_distance_28",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 8 公尺，走了 17 分鐘，一共走了多少公尺？",
-    "answer": "136",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 8 公尺，走了 35 分鐘，一共走了多少公尺？",
+    "answer": "280",
     "answer_mode": "number",
     "hints": [
       "關鍵字：每分鐘…（單位率）。",
@@ -9207,11 +9881,11 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     "steps": [
       "距離=速率×時間。",
       "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：8×17。",
+      "列式：8×35。",
       "計算並寫出答案。",
       "檢查：時間越久距離越大。"
     ],
-    "explanation": "距離 = 8×17 = 136（公尺）。",
+    "explanation": "距離 = 8×35 = 280（公尺）。",
     "common_mistakes": [
       "把乘法寫成加法但只加一次。",
       "把『每分鐘』當成『總共』。"
@@ -9231,346 +9905,29 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_12",
+    "id": "g5lp2p_u10_rate_time_distance_29",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 10 公尺，要走 520 公尺，需要幾分鐘？",
-    "answer": "52",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 4 公尺，要走 544 公尺，需要幾分鐘？",
+    "answer": "136",
     "answer_mode": "number",
     "hints": [
       "關鍵字：需要幾分鐘（求時間）。",
       "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：520÷10。",
+      "列式：544÷4。",
       "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
       "時間=距離÷速率。",
-      "列式：520÷10。",
+      "列式：544÷4。",
       "計算並寫出答案。",
       "檢查：速率越快時間越短。"
     ],
-    "explanation": "時間 = 520÷10 = 52（分鐘）。",
+    "explanation": "時間 = 544÷4 = 136（分鐘）。",
     "common_mistakes": [
       "把除法寫成乘法，答案變得太大。",
       "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 10,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_13",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 15 公尺，走了 14 分鐘，一共走了多少公尺？",
-    "answer": "210",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：15×14。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 15×14 = 210（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 15,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_14",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，要走 520 公尺，需要幾分鐘？",
-    "answer": "104",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：需要幾分鐘（求時間）。",
-      "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：520÷5。",
-      "最後檢查：算出來應是整數分鐘。"
-    ],
-    "steps": [
-      "時間=距離÷速率。",
-      "列式：520÷5。",
-      "計算並寫出答案。",
-      "檢查：速率越快時間越短。"
-    ],
-    "explanation": "時間 = 520÷5 = 104（分鐘）。",
-    "common_mistakes": [
-      "把除法寫成乘法，答案變得太大。",
-      "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 5,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_15",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 10 公尺，走了 11 分鐘，一共走了多少公尺？",
-    "answer": "110",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：10×11。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 10×11 = 110（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 10,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_16",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 11 公尺，要走 352 公尺，需要幾分鐘？",
-    "answer": "32",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：需要幾分鐘（求時間）。",
-      "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：352÷11。",
-      "最後檢查：算出來應是整數分鐘。"
-    ],
-    "steps": [
-      "時間=距離÷速率。",
-      "列式：352÷11。",
-      "計算並寫出答案。",
-      "檢查：速率越快時間越短。"
-    ],
-    "explanation": "時間 = 352÷11 = 32（分鐘）。",
-    "common_mistakes": [
-      "把除法寫成乘法，答案變得太大。",
-      "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 11,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_17",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，走了 5 分鐘，一共走了多少公尺？",
-    "answer": "25",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：5×5。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 5×5 = 25（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 5,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_18",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 11 公尺，要走 495 公尺，需要幾分鐘？",
-    "answer": "45",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：需要幾分鐘（求時間）。",
-      "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：495÷11。",
-      "最後檢查：算出來應是整數分鐘。"
-    ],
-    "steps": [
-      "時間=距離÷速率。",
-      "列式：495÷11。",
-      "計算並寫出答案。",
-      "檢查：速率越快時間越短。"
-    ],
-    "explanation": "時間 = 495÷11 = 45（分鐘）。",
-    "common_mistakes": [
-      "把除法寫成乘法，答案變得太大。",
-      "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 11,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_19",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 7 公尺，走了 6 分鐘，一共走了多少公尺？",
-    "answer": "42",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：7×6。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 7×6 = 42（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 7,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_20",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 4 公尺，走了 4 分鐘，一共走了多少公尺？",
-    "answer": "16",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：4×4。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 4×4 = 16（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
     ],
     "tags": [
       "生活應用",
@@ -9583,153 +9940,33 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "rate": 4,
-      "mode": "d"
+      "mode": "t"
     }
   },
   {
-    "id": "g5lp2p_u10_rate_time_distance_21",
+    "id": "g5lp2p_u10_rate_time_distance_30",
     "kind": "u10_rate_time_distance",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，要走 135 公尺，需要幾分鐘？",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 12 公尺，要走 324 公尺，需要幾分鐘？",
     "answer": "27",
     "answer_mode": "number",
     "hints": [
       "關鍵字：需要幾分鐘（求時間）。",
       "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：135÷5。",
+      "列式：324÷12。",
       "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
       "時間=距離÷速率。",
-      "列式：135÷5。",
+      "列式：324÷12。",
       "計算並寫出答案。",
       "檢查：速率越快時間越短。"
     ],
-    "explanation": "時間 = 135÷5 = 27（分鐘）。",
+    "explanation": "時間 = 324÷12 = 27（分鐘）。",
     "common_mistakes": [
       "把除法寫成乘法，答案變得太大。",
       "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 5,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_22",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 9 公尺，走了 18 分鐘，一共走了多少公尺？",
-    "answer": "162",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：9×18。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 9×18 = 162（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 9,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_23",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 9 公尺，走了 16 分鐘，一共走了多少公尺？",
-    "answer": "144",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：9×16。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 9×16 = 144（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 9,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_24",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 12 公尺，走了 5 分鐘，一共走了多少公尺？",
-    "answer": "60",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：12×5。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 12×5 = 60（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
     ],
     "tags": [
       "生活應用",
@@ -9742,244 +9979,7 @@ window.G5_LIFE_PACK2PLUS_BANK = [
     ],
     "meta": {
       "rate": 12,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_25",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，走了 11 分鐘，一共走了多少公尺？",
-    "answer": "55",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：5×11。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 5×11 = 55（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 5,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_26",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 9 公尺，要走 234 公尺，需要幾分鐘？",
-    "answer": "26",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：需要幾分鐘（求時間）。",
-      "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：234÷9。",
-      "最後檢查：算出來應是整數分鐘。"
-    ],
-    "steps": [
-      "時間=距離÷速率。",
-      "列式：234÷9。",
-      "計算並寫出答案。",
-      "檢查：速率越快時間越短。"
-    ],
-    "explanation": "時間 = 234÷9 = 26（分鐘）。",
-    "common_mistakes": [
-      "把除法寫成乘法，答案變得太大。",
-      "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 9,
       "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_27",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 10 公尺，要走 160 公尺，需要幾分鐘？",
-    "answer": "16",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：需要幾分鐘（求時間）。",
-      "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：160÷10。",
-      "最後檢查：算出來應是整數分鐘。"
-    ],
-    "steps": [
-      "時間=距離÷速率。",
-      "列式：160÷10。",
-      "計算並寫出答案。",
-      "檢查：速率越快時間越短。"
-    ],
-    "explanation": "時間 = 160÷10 = 16（分鐘）。",
-    "common_mistakes": [
-      "把除法寫成乘法，答案變得太大。",
-      "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 10,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_28",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "easy",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，走了 18 分鐘，一共走了多少公尺？",
-    "answer": "90",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：5×18。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 5×18 = 90（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 5,
-      "mode": "d"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_29",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "hard",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 13 公尺，要走 468 公尺，需要幾分鐘？",
-    "answer": "36",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：需要幾分鐘（求時間）。",
-      "時間 = 距離 ÷ 每分鐘走的距離。",
-      "列式：468÷13。",
-      "最後檢查：算出來應是整數分鐘。"
-    ],
-    "steps": [
-      "時間=距離÷速率。",
-      "列式：468÷13。",
-      "計算並寫出答案。",
-      "檢查：速率越快時間越短。"
-    ],
-    "explanation": "時間 = 468÷13 = 36（分鐘）。",
-    "common_mistakes": [
-      "把除法寫成乘法，答案變得太大。",
-      "單位搞混（公尺/分鐘）。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 13,
-      "mode": "t"
-    }
-  },
-  {
-    "id": "g5lp2p_u10_rate_time_distance_30",
-    "kind": "u10_rate_time_distance",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "difficulty": "normal",
-    "question": "（生活應用｜速率）腳踏車每分鐘走 7 公尺，走了 7 分鐘，一共走了多少公尺？",
-    "answer": "49",
-    "answer_mode": "number",
-    "hints": [
-      "關鍵字：每分鐘…（單位率）。",
-      "若題目有『休息/停下』，休息時間不算前進。",
-      "距離 = 每分鐘走的距離 ×（真正前進的分鐘數）。",
-      "最後檢查單位：公尺。"
-    ],
-    "steps": [
-      "距離=速率×時間。",
-      "若有休息：先算真正前進時間=總時間−休息時間。",
-      "列式：7×7。",
-      "計算並寫出答案。",
-      "檢查：時間越久距離越大。"
-    ],
-    "explanation": "距離 = 7×7 = 49（公尺）。",
-    "common_mistakes": [
-      "把乘法寫成加法但只加一次。",
-      "把『每分鐘』當成『總共』。"
-    ],
-    "tags": [
-      "生活應用",
-      "速率",
-      "單位率"
-    ],
-    "core": [
-      "單位率",
-      "乘除"
-    ],
-    "meta": {
-      "rate": 7,
-      "mode": "d"
     }
   }
 ];

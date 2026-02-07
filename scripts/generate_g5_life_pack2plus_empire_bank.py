@@ -950,12 +950,10 @@ def generate(seed: int) -> List[Dict]:
 
         extra_n = int(EXTRA_BY_UNIT.get(unit_id, 0))
         if extra_n > 0:
-            extra_plan = _difficulty_plan()
-            r.shuffle(extra_plan)
-            extra_plan = extra_plan[:extra_n]
-            for j, diff in enumerate(extra_plan, start=len(plan) + 1):
+            # Plus add-ons: hard-only
+            for j in range(len(plan) + 1, len(plan) + extra_n + 1):
                 qid = f"g5lp2p_{unit_id}_{j:02d}"
-                q = GEN_BY_UNIT[unit_id](r, qid=qid, difficulty=diff)
+                q = GEN_BY_UNIT[unit_id](r, qid=qid, difficulty="hard")
                 bank.append(asdict(q))
 
     # global sanity
