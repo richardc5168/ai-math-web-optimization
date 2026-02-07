@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>互動小五小六核心題型｜四大板塊｜必殺技練習</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f1733; --card:#121c3d;
+      --text:#e6edf3; --muted:#9aa4b2; --line:#243055;
+      --accent:#58a6ff; --ok:#2ea043; --bad:#f85149; --warn:#d29922;
+    }
+    body{margin:0; font-family:Segoe UI,Helvetica,Arial; background:var(--bg); color:var(--text); line-height:1.7}
+    header{padding:18px 16px; border-bottom:1px solid var(--line); background:linear-gradient(180deg, rgba(88,166,255,.12), rgba(0,0,0,0));}
+    header .title{font-size:18px; font-weight:900}
+    header .sub{color:var(--muted); font-size:13px; margin-top:6px; line-height:1.5}
+    main{max-width:1100px; margin:0 auto; padding:16px}
+    .grid{display:grid; grid-template-columns:1.08fr .92fr; gap:12px}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px}
+    .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    label{color:var(--muted); font-size:13px}
+    select,input,textarea{background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.12); color:var(--text); border-radius:10px; padding:10px 10px}
+    input{min-width:220px}
+    .btn{display:inline-block; padding:10px 12px; border-radius:10px; border:1px solid rgba(88,166,255,.45); background:rgba(88,166,255,.12); color:var(--text); text-decoration:none; cursor:pointer; user-select:none}
+    .btn.primary{background:rgba(88,166,255,.22); border-color:rgba(88,166,255,.65)}
+    .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
+    .btn.bad{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
+    .btn.warn{border-color:rgba(210,153,34,.7); background:rgba(210,153,34,.10)}
+
+    .pill{display:inline-block; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.04); color:var(--muted); font-size:12px}
+    .q{font-size:18px; padding:12px 14px; border-radius:12px; background:#08102a; border:1px dashed rgba(88,166,255,.4); margin: 10px 0; white-space:pre-wrap}
+    .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px; white-space:pre-wrap}
+    .banner.muted{color:var(--muted)}
+    .banner.ok{border-color:rgba(46,160,67,.65); color:#b7f5c9; background:rgba(46,160,67,.10)}
+    .banner.bad{border-color:rgba(248,81,73,.65); color:#ffd2cf; background:rgba(248,81,73,.08)}
+    .hint{border-left:3px solid rgba(88,166,255,.55); padding:8px 10px; background:rgba(88,166,255,.06); border-radius:10px; margin:8px 0; white-space:pre-wrap}
+    .sol{border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:12px; margin-top:10px; white-space:pre-wrap}
+
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .tab{padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.04); color:var(--muted); cursor:pointer; user-select:none}
+    .tab.active{border-color:rgba(88,166,255,.8); color:var(--text); background:rgba(88,166,255,.15); font-weight:900}
+
+    a{color:var(--accent)}
+    .small{font-size:12px}
+    .stat{display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:12px}
+    .stat b{color:var(--text)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">互動小五小六核心題型｜四大板塊｜必殺技練習</div>
+    <div class="sub">四大板塊：數字規律、分數運算、幾何圖形、邏輯應用。每題 3 階提示（老師口吻）＋完整詳解。<br>口訣帶著走：<b>分小找公因，變大找公倍</b>／<b>分母不同要通分，除法反轉變乘法</b>。</div>
+    <div class="row" style="margin-top:10px">
+      <a class="btn" href="../">← 回到 AI MATH WEB</a>
+      <span class="pill" id="bankMeta">題庫載入中...</span>
+      <span class="pill" id="progressMeta" style="display:none"></span>
+    </div>
+    <div class="tabs" id="blockTabs" role="tablist" aria-label="四大板塊"></div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card" id="panelMain"></section>
+      <aside class="card" id="panelSide"></aside>
+    </div>
+  </main>
+
+  <script>
+    const PACK_ID = 'g56_core_foundation';
+    const LS_PROGRESS_KEY = `progress:${PACK_ID}:v1`;
+
+    const BLOCKS = [
+      { id:'numbers', name:'數字規律' },
+      { id:'fractions', name:'分數運算' },
+      { id:'geometry', name:'幾何圖形' },
+      { id:'logic', name:'邏輯應用' },
+    ];
+
+    const els = {
+      bankMeta: document.getElementById('bankMeta'),
+      progressMeta: document.getElementById('progressMeta'),
+      blockTabs: document.getElementById('blockTabs'),
+      panelMain: document.getElementById('panelMain'),
+      panelSide: document.getElementById('panelSide'),
+    };
+
+    const ls = {
+      get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+      set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+      del(k){ try{ localStorage.removeItem(k); } catch {} },
+    };
+
+    function normalizeText(s){ return String(s ?? ''); }
+
+    function gcd(a,b){ a = Math.abs(a); b = Math.abs(b); while (b){ const t=a%b; a=b; b=t; } return a || 1; }
+
+    function simplifyFraction(n, d){
+      n = Number(n); d = Number(d);
+      if (!Number.isInteger(n) || !Number.isInteger(d) || d === 0) throw new Error('分數格式錯誤');
+      if (d < 0){ n = -n; d = -d; }
+      const g = gcd(n,d);
+      return [n/g, d/g];
+    }
+
+    function parseFraction(text){
+      const s0 = normalizeText(text);
+      if (!s0) throw new Error('請輸入答案');
+      const s = s0.replace(/\s+/g,'').trim();
+      const frac = s.match(/^(-?\d+)\/(\d+)$/);
+      if (frac){
+        const n = Number(frac[1]);
+        const d = Number(frac[2]);
+        return simplifyFraction(n,d);
+      }
+      const v = Number(s);
+      if (Number.isFinite(v) && Number.isInteger(v)) return [v, 1];
+      throw new Error('分數答案請用 a/b（例如 3/4）');
+    }
+
+    function parseStudentNumber(text){
+      const s = normalizeText(text);
+      if (!s) throw new Error('請輸入答案');
+      const cleaned = s.replace(/,/g,'').trim();
+      const v = Number(cleaned);
+      if (!Number.isFinite(v)) throw new Error('答案請輸入數字（例如 7.5）');
+      return v;
+    }
+
+    function nearlyEqual(a,b,eps){ return Math.abs(a-b) <= (eps ?? 1e-6); }
+
+    function normalizeExact(text){
+      return normalizeText(text)
+        .trim()
+        .replace(/\s+/g,'')
+        .replace(/，/g,',')
+        .replace(/：/g,':');
+    }
+
+    function parseChickenRabbit(text){
+      const s = normalizeExact(text);
+      const mC = s.match(/雞=?(\d+)/);
+      const mR = s.match(/兔=?(\d+)/);
+      if (!mC || !mR) return null;
+      return { chicken: Number(mC[1]), rabbit: Number(mR[1]) };
+    }
+
+    function answerModeUI(q){
+      const mode = String(q?.answer_mode || 'number');
+      if (mode === 'fraction') return { pill:'分數（a/b）', placeholder:'例如：3/4' };
+      if (mode === 'exact') return { pill:'照格式（文字/符號）', placeholder:'照題目格式輸入' };
+      return { pill:'數字（可小數）', placeholder:'例如：12 或 7.5' };
+    }
+
+    function compareAnswer(studentText, correctText, mode){
+      const m = String(mode || 'number');
+      if (m === 'fraction'){
+        const [sn,sd] = parseFraction(studentText);
+        const [cn,cd] = parseFraction(correctText);
+        return sn === cn && sd === cd;
+      }
+      if (m === 'exact'){
+        const sCR = parseChickenRabbit(studentText);
+        const cCR = parseChickenRabbit(correctText);
+        if (sCR && cCR) return sCR.chicken === cCR.chicken && sCR.rabbit === cCR.rabbit;
+        return normalizeExact(studentText) === normalizeExact(correctText);
+      }
+      const sv = parseStudentNumber(studentText);
+      const cv = parseStudentNumber(correctText);
+      return nearlyEqual(sv, cv, 1e-6);
+    }
+
+    function defaultProgress(){
+      const perBlock = {};
+      for (const b of BLOCKS) perBlock[b.name] = { attempts:0, correct:0, solvedIds:[] };
+      return { v:1, activeBlock: BLOCKS[0].name, perBlock, lastQId:null, updatedAt: Date.now() };
+    }
+
+    const state = {
+      bank: [],
+      q: null,
+      revealHint: 0,
+      revealedSolution: false,
+      progress: ls.get(LS_PROGRESS_KEY, defaultProgress()),
+    };
+
+    function saveProgress(){
+      state.progress.updatedAt = Date.now();
+      ls.set(LS_PROGRESS_KEY, state.progress);
+      renderProgressPill();
+    }
+
+    function renderProgressPill(){
+      const p = state.progress;
+      let attempts = 0;
+      let correct = 0;
+      for (const b of Object.values(p.perBlock)){
+        attempts += (b.attempts||0);
+        correct += (b.correct||0);
+      }
+      els.progressMeta.style.display = '';
+      els.progressMeta.textContent = `本機進度：${correct}/${attempts}（正確/作答）`;
+    }
+
+    function renderTabs(){
+      els.blockTabs.innerHTML = '';
+      for (const b of BLOCKS){
+        const btn = document.createElement('div');
+        btn.className = 'tab' + (state.progress.activeBlock === b.name ? ' active' : '');
+        btn.textContent = b.name;
+        btn.setAttribute('role','tab');
+        btn.setAttribute('aria-selected', state.progress.activeBlock === b.name ? 'true':'false');
+        btn.addEventListener('click', () => {
+          state.progress.activeBlock = b.name;
+          saveProgress();
+          renderTabs();
+          newQuestion();
+        });
+        els.blockTabs.appendChild(btn);
+      }
+    }
+
+    function renderMain(){
+      els.panelMain.innerHTML = `
+        <div class="row">
+          <label>年級</label>
+          <select id="grade">
+            <option value="all" selected>全部</option>
+            <option value="5">小五</option>
+            <option value="6">小六</option>
+          </select>
+          <label>難度</label>
+          <select id="difficulty">
+            <option value="all" selected>全部</option>
+            <option value="easy">入門</option>
+            <option value="normal">標準</option>
+            <option value="hard">挑戰</option>
+          </select>
+          <button class="btn primary" id="btnNew">下一題</button>
+          <button class="btn" id="btnReset">重設本題</button>
+        </div>
+
+        <div class="q" id="qText">載入中...</div>
+
+        <div class="row">
+          <label>答案</label>
+          <input id="answer" placeholder="" />
+          <span class="pill" id="answerMode">答案格式：—</span>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <button class="btn good" id="btnCheck">檢查</button>
+          <button class="btn" id="btnHint1">提示 1</button>
+          <button class="btn" id="btnHint2">提示 2</button>
+          <button class="btn" id="btnHint3">提示 3</button>
+          <button class="btn warn" id="btnSolution">看完整詳解</button>
+        </div>
+
+        <div class="banner muted" id="banner">老師提醒：先判斷用哪個觀念，再列式。卡住時先看提示 1（方向），再往上加深。</div>
+        <div id="hints"></div>
+        <div id="solution"></div>
+      `;
+    }
+
+    function renderSide(){
+      els.panelSide.innerHTML = `
+        <b>本頁設定</b>
+        <div class="small" style="color:var(--muted); margin-top:6px">所有進度都只存這一頁的 localStorage，不會影響其他互動帝國/題庫。</div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn bad" id="btnClear">清除本頁進度</button>
+        </div>
+        <div class="banner muted" id="blockStat" style="margin-top:10px">載入中...</div>
+      `;
+    }
+
+    function currentFilters(){
+      const grade = document.getElementById('grade')?.value || 'all';
+      const difficulty = document.getElementById('difficulty')?.value || 'all';
+      return { grade, difficulty, block: state.progress.activeBlock };
+    }
+
+    function filteredBank(){
+      const f = currentFilters();
+      let items = state.bank.filter(q => q.block === f.block);
+      if (f.grade !== 'all') items = items.filter(q => String(q.grade) === String(f.grade));
+      if (f.difficulty !== 'all') items = items.filter(q => String(q.difficulty) === String(f.difficulty));
+      return items;
+    }
+
+    function pickQuestion(){
+      const items = filteredBank();
+      if (!items.length) return null;
+
+      const pb = state.progress.perBlock[state.progress.activeBlock] || { solvedIds:[] };
+      const solved = new Set(pb.solvedIds || []);
+      const unsolved = items.filter(q => !solved.has(q.id));
+      const pool = unsolved.length ? unsolved : items;
+
+      const idx = Math.floor(Math.random() * pool.length);
+      return pool[idx];
+    }
+
+    function renderBlockStat(){
+      const pb = state.progress.perBlock[state.progress.activeBlock];
+      const totalInBlock = state.bank.filter(q => q.block === state.progress.activeBlock).length;
+      const solved = (pb?.solvedIds?.length || 0);
+      const attempts = pb?.attempts || 0;
+      const correct = pb?.correct || 0;
+      const el = document.getElementById('blockStat');
+      if (el) el.textContent = `板塊：${state.progress.activeBlock}\n已解/總題：${solved}/${totalInBlock}\n本板塊作答：${correct}/${attempts}`;
+    }
+
+    function newQuestion(){
+      state.q = pickQuestion();
+      state.revealHint = 0;
+      state.revealedSolution = false;
+
+      const qText = document.getElementById('qText');
+      const answer = document.getElementById('answer');
+      const answerMode = document.getElementById('answerMode');
+      const banner = document.getElementById('banner');
+      const hints = document.getElementById('hints');
+      const solution = document.getElementById('solution');
+
+      if (!state.q){
+        if (qText) qText.textContent = '這個條件下沒有題目（請換年級/難度或切換板塊）。';
+        if (banner){ banner.className = 'banner warn'; banner.textContent = '提示：先把篩選條件放寬，再出題。'; }
+        if (hints) hints.innerHTML = '';
+        if (solution) solution.innerHTML = '';
+        return;
+      }
+
+      const ui = answerModeUI(state.q);
+      if (qText) qText.textContent = state.q.stem || state.q.question || '';
+      if (answer){ answer.value = ''; answer.placeholder = ui.placeholder; answer.focus(); }
+      if (answerMode) answerMode.textContent = `答案格式：${ui.pill}`;
+      if (banner){ banner.className = 'banner muted'; banner.textContent = '老師提醒：先判斷用哪個觀念，再列式。卡住時先看提示 1（方向），再往上加深。'; }
+      if (hints) hints.innerHTML = '';
+      if (solution) solution.innerHTML = '';
+
+      state.progress.lastQId = state.q.id;
+      saveProgress();
+      renderBlockStat();
+    }
+
+    function resetCurrent(){
+      state.revealHint = 0;
+      state.revealedSolution = false;
+      const banner = document.getElementById('banner');
+      const hints = document.getElementById('hints');
+      const solution = document.getElementById('solution');
+      const answer = document.getElementById('answer');
+      if (banner){ banner.className = 'banner muted'; banner.textContent = '老師提醒：先判斷用哪個觀念，再列式。卡住時先看提示 1（方向），再往上加深。'; }
+      if (hints) hints.innerHTML = '';
+      if (solution) solution.innerHTML = '';
+      if (answer) answer.value = '';
+    }
+
+    function addHint(level){
+      if (!state.q) return;
+      state.revealHint = Math.max(state.revealHint, level);
+      const hintsEl = document.getElementById('hints');
+      if (!hintsEl) return;
+      hintsEl.innerHTML = '';
+      const hs = Array.isArray(state.q.hints) ? state.q.hints : [];
+      for (let i=0; i<Math.min(state.revealHint, 3); i++){
+        const div = document.createElement('div');
+        div.className = 'hint';
+        div.textContent = `提示 ${i+1}：${hs[i] ?? '（本題提示缺少）'}`;
+        hintsEl.appendChild(div);
+      }
+    }
+
+    function showSolution(){
+      if (!state.q) return;
+      state.revealedSolution = true;
+      const solEl = document.getElementById('solution');
+      if (!solEl) return;
+      solEl.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'sol';
+      const common = state.q.commonMistake || (Array.isArray(state.q.common_mistakes) ? state.q.common_mistakes[0] : null);
+      div.textContent = (state.q.solution || state.q.explanation || '').trim() + (common ? `\n\n常見錯誤提醒：${common}` : '');
+      solEl.appendChild(div);
+    }
+
+    function onCheck(){
+      if (!state.q) return;
+      const banner = document.getElementById('banner');
+      const answer = document.getElementById('answer');
+      const pb = state.progress.perBlock[state.progress.activeBlock] || { attempts:0, correct:0, solvedIds:[] };
+
+      pb.attempts = (pb.attempts || 0) + 1;
+
+      let ok = false;
+      try{
+        ok = compareAnswer(answer?.value ?? '', state.q.answer, state.q.answer_mode);
+      } catch (err){
+        if (banner){
+          banner.className = 'banner warn';
+          banner.textContent = String(err?.message || err);
+        }
+        state.progress.perBlock[state.progress.activeBlock] = pb;
+        saveProgress();
+        renderBlockStat();
+        return;
+      }
+
+      if (ok){
+        pb.correct = (pb.correct || 0) + 1;
+        pb.solvedIds = Array.isArray(pb.solvedIds) ? pb.solvedIds : [];
+        if (!pb.solvedIds.includes(state.q.id)) pb.solvedIds.push(state.q.id);
+
+        if (banner){
+          banner.className = 'banner ok';
+          banner.textContent = '答對了！老師加一句：做題不要急，先選對觀念，速度自然會上來。按「下一題」繼續。';
+        }
+      } else {
+        const common = state.q.commonMistake || (Array.isArray(state.q.common_mistakes) ? state.q.common_mistakes[0] : null);
+        if (banner){
+          banner.className = 'banner bad';
+          banner.textContent = '還差一點！先別急著算，請按提示 1 找對觀念。' + (common ? `\n常見錯誤提醒：${common}` : '');
+        }
+      }
+
+      state.progress.perBlock[state.progress.activeBlock] = pb;
+      saveProgress();
+      renderBlockStat();
+    }
+
+    function wireEvents(){
+      document.getElementById('btnNew')?.addEventListener('click', newQuestion);
+      document.getElementById('btnReset')?.addEventListener('click', resetCurrent);
+      document.getElementById('btnCheck')?.addEventListener('click', onCheck);
+      document.getElementById('btnHint1')?.addEventListener('click', () => addHint(1));
+      document.getElementById('btnHint2')?.addEventListener('click', () => addHint(2));
+      document.getElementById('btnHint3')?.addEventListener('click', () => addHint(3));
+      document.getElementById('btnSolution')?.addEventListener('click', showSolution);
+      document.getElementById('btnClear')?.addEventListener('click', () => {
+        if (!confirm('確定要清除本頁進度嗎？（不影響其他頁）')) return;
+        ls.del(LS_PROGRESS_KEY);
+        state.progress = defaultProgress();
+        saveProgress();
+        renderTabs();
+        renderBlockStat();
+        newQuestion();
+      });
+      document.getElementById('grade')?.addEventListener('change', newQuestion);
+      document.getElementById('difficulty')?.addEventListener('change', newQuestion);
+
+      document.getElementById('answer')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') onCheck();
+      });
+    }
+
+    async function loadBank(){
+      const res = await fetch('./g56_core_foundation.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`題庫載入失敗：HTTP ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('題庫格式錯誤：應為陣列');
+      return data.map((q) => ({
+        ...q,
+        question: q.question ?? q.stem,
+        solution: q.solution ?? q.explanation,
+        common_mistakes: q.common_mistakes ?? (q.commonMistake ? [q.commonMistake] : []),
+      }));
+    }
+
+    async function main(){
+      renderTabs();
+      renderMain();
+      renderSide();
+      renderProgressPill();
+
+      try{
+        state.bank = await loadBank();
+        els.bankMeta.textContent = `題庫：${state.bank.length} 題｜獨立 pack：${PACK_ID}`;
+        wireEvents();
+        renderBlockStat();
+        newQuestion();
+      } catch (err){
+        els.bankMeta.textContent = '題庫載入失敗';
+        els.panelMain.innerHTML = `<div class="banner bad">${String(err?.message || err)}</div>`;
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>

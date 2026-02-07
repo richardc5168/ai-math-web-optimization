@@ -74,6 +74,12 @@
       "description": "第二包加強版：hard 佔比提高（3/9/8），並為指定單元加題（目前加強 Unit 7-10）。離線題庫共 240 題；闖關模式有分數；練習模式含 4 層提示、完整步驟、詳解與常見錯誤點。答對才擴張領地與累積工程點數，進度本機自動存檔（離線）。"
     },
     {
+      "id": "interactive-g56-core-foundation",
+      "title": "互動小五小六核心題型（四大板塊｜必殺技）（離線題庫）",
+      "path": "interactive-g56-core-foundation/",
+      "description": "四大板塊切換練習：數字規律（GCD/LCM/質數）、分數運算（通分/乘除/基準量）、幾何圖形（面積/圓/展開圖/割補）、邏輯應用（速度/比率百分率/雞兔同籠/植樹）。每題 3 階提示（老師口吻）＋完整詳解；本頁進度獨立存檔，不影響既有互動帝國。"
+    },
+    {
       "id": "interactive-g5-life-pack1plus-empire",
       "title": "互動小五生活應用帝國（第一包｜加強版｜更難 + 加題）（離線題庫）",
       "path": "interactive-g5-life-pack1plus-empire/",
