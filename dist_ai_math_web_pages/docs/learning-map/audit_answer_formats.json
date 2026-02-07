@@ -1,0 +1,693 @@
+{
+  "banks": [
+    "docs/decimal-unit4/bank.js",
+    "docs/fraction-g5/bank.js",
+    "docs/fraction-word-g5/bank.js",
+    "docs/g5-grand-slam/bank.js",
+    "docs/interactive-decimal-g5/bank.js",
+    "docs/interactive-g5-empire/bank.js",
+    "docs/interactive-g5-life-pack1-empire/bank.js",
+    "docs/interactive-g5-life-pack1plus-empire/bank.js",
+    "docs/interactive-g5-life-pack2-empire/bank.js",
+    "docs/interactive-g5-life-pack2plus-empire/bank.js",
+    "docs/life-applications-g5/bank.js",
+    "docs/ratio-percent-g5/bank.js",
+    "docs/volume-g5/bank.js"
+  ],
+  "totals": {
+    "plain_number_or_fraction": 2540,
+    "multi_space_numbers": 19,
+    "unknown_format": 86,
+    "symbolic_or_equation": 5
+  },
+  "per_module": {
+    "decimal-unit4": {
+      "plain_number_or_fraction": 94
+    },
+    "fraction-g5": {
+      "plain_number_or_fraction": 123,
+      "multi_space_numbers": 11
+    },
+    "fraction-word-g5": {
+      "plain_number_or_fraction": 160
+    },
+    "g5-grand-slam": {
+      "plain_number_or_fraction": 157,
+      "unknown_format": 26,
+      "symbolic_or_equation": 5,
+      "multi_space_numbers": 8
+    },
+    "interactive-decimal-g5": {
+      "plain_number_or_fraction": 240
+    },
+    "interactive-g5-empire": {
+      "plain_number_or_fraction": 280,
+      "unknown_format": 40
+    },
+    "interactive-g5-life-pack1-empire": {
+      "plain_number_or_fraction": 200
+    },
+    "interactive-g5-life-pack1plus-empire": {
+      "plain_number_or_fraction": 240
+    },
+    "interactive-g5-life-pack2-empire": {
+      "plain_number_or_fraction": 200
+    },
+    "interactive-g5-life-pack2plus-empire": {
+      "plain_number_or_fraction": 240
+    },
+    "life-applications-g5": {
+      "plain_number_or_fraction": 280,
+      "unknown_format": 20
+    },
+    "ratio-percent-g5": {
+      "plain_number_or_fraction": 179
+    },
+    "volume-g5": {
+      "plain_number_or_fraction": 147
+    }
+  },
+  "per_kind": {
+    "x10_shift": {
+      "plain_number_or_fraction": 42
+    },
+    "d_mul_int": {
+      "plain_number_or_fraction": 75
+    },
+    "d_div_int": {
+      "plain_number_or_fraction": 56
+    },
+    "d_mul_d": {
+      "plain_number_or_fraction": 58
+    },
+    "int_mul_d": {
+      "plain_number_or_fraction": 61
+    },
+    "int_div_int_to_decimal": {
+      "plain_number_or_fraction": 42
+    },
+    "simplify": {
+      "plain_number_or_fraction": 20
+    },
+    "add_like": {
+      "plain_number_or_fraction": 14
+    },
+    "mixed_convert": {
+      "plain_number_or_fraction": 16,
+      "multi_space_numbers": 11
+    },
+    "sub_unlike": {
+      "plain_number_or_fraction": 11
+    },
+    "mul_int": {
+      "plain_number_or_fraction": 12
+    },
+    "mul": {
+      "plain_number_or_fraction": 11
+    },
+    "add_unlike": {
+      "plain_number_or_fraction": 12
+    },
+    "sub_like": {
+      "plain_number_or_fraction": 13
+    },
+    "equivalent": {
+      "plain_number_or_fraction": 14
+    },
+    "remain_then_fraction": {
+      "plain_number_or_fraction": 22
+    },
+    "remaining_after_fraction": {
+      "plain_number_or_fraction": 28
+    },
+    "average_division": {
+      "plain_number_or_fraction": 10
+    },
+    "generic_fraction_word": {
+      "plain_number_or_fraction": 35
+    },
+    "fraction_of_quantity": {
+      "plain_number_or_fraction": 25
+    },
+    "fraction_of_fraction": {
+      "plain_number_or_fraction": 20
+    },
+    "reverse_fraction": {
+      "plain_number_or_fraction": 24
+    },
+    "ha_to_m2": {
+      "plain_number_or_fraction": 4
+    },
+    "area_congruent_tile": {
+      "plain_number_or_fraction": 3
+    },
+    "surface_area_rect_prism": {
+      "plain_number_or_fraction": 5
+    },
+    "time_sub_cross_day": {
+      "unknown_format": 4
+    },
+    "km2_to_ha": {
+      "plain_number_or_fraction": 4
+    },
+    "decimal_times_integer": {
+      "plain_number_or_fraction": 6
+    },
+    "find_percent": {
+      "plain_number_or_fraction": 3
+    },
+    "line_max_month": {
+      "unknown_format": 4
+    },
+    "decimal_times_decimal": {
+      "plain_number_or_fraction": 6
+    },
+    "remaining_by_fraction": {
+      "plain_number_or_fraction": 6
+    },
+    "reciprocal": {
+      "plain_number_or_fraction": 4
+    },
+    "fraction_sub_mixed": {
+      "plain_number_or_fraction": 6,
+      "multi_space_numbers": 2
+    },
+    "fraction_add_unlike": {
+      "plain_number_or_fraction": 6,
+      "multi_space_numbers": 3
+    },
+    "liter_to_ml": {
+      "plain_number_or_fraction": 4
+    },
+    "fraction_times_fraction": {
+      "plain_number_or_fraction": 4
+    },
+    "displacement": {
+      "plain_number_or_fraction": 5
+    },
+    "percent_discount": {
+      "plain_number_or_fraction": 15
+    },
+    "solve_x_plus_a": {
+      "plain_number_or_fraction": 4
+    },
+    "surface_area_contact_removed": {
+      "plain_number_or_fraction": 3
+    },
+    "time_add_cross_day": {
+      "unknown_format": 5
+    },
+    "area_triangle": {
+      "plain_number_or_fraction": 3
+    },
+    "perp_bisector_property": {
+      "symbolic_or_equation": 5
+    },
+    "percent_to_ppm": {
+      "plain_number_or_fraction": 3
+    },
+    "gcd_word": {
+      "plain_number_or_fraction": 4
+    },
+    "time_multiply": {
+      "plain_number_or_fraction": 3
+    },
+    "sector_central_angle": {
+      "plain_number_or_fraction": 6
+    },
+    "are_to_m2": {
+      "plain_number_or_fraction": 4
+    },
+    "clock_angle": {
+      "plain_number_or_fraction": 5
+    },
+    "prime_or_composite": {
+      "unknown_format": 4
+    },
+    "surface_area_cube": {
+      "plain_number_or_fraction": 3
+    },
+    "area_trapezoid": {
+      "plain_number_or_fraction": 4
+    },
+    "perp_bisector_converse": {
+      "unknown_format": 4
+    },
+    "cm3_to_ml": {
+      "plain_number_or_fraction": 3
+    },
+    "solve_x_div_d": {
+      "plain_number_or_fraction": 3
+    },
+    "int_times_fraction": {
+      "plain_number_or_fraction": 6,
+      "multi_space_numbers": 3
+    },
+    "place_value_truncate": {
+      "plain_number_or_fraction": 4
+    },
+    "place_value_yi_wan": {
+      "plain_number_or_fraction": 4
+    },
+    "lcm_word": {
+      "plain_number_or_fraction": 4
+    },
+    "line_omit_rule": {
+      "plain_number_or_fraction": 2
+    },
+    "place_value_digit": {
+      "plain_number_or_fraction": 4
+    },
+    "cheng_increase": {
+      "plain_number_or_fraction": 3
+    },
+    "solve_ax": {
+      "plain_number_or_fraction": 4
+    },
+    "line_trend": {
+      "unknown_format": 5
+    },
+    "area_parallelogram": {
+      "plain_number_or_fraction": 2
+    },
+    "symmetry_axes": {
+      "plain_number_or_fraction": 3
+    },
+    "volume_rect_prism": {
+      "plain_number_or_fraction": 40
+    },
+    "fraction_mul": {
+      "plain_number_or_fraction": 40
+    },
+    "unit_convert": {
+      "plain_number_or_fraction": 60
+    },
+    "time_add": {
+      "unknown_format": 60
+    },
+    "fraction_addsub": {
+      "plain_number_or_fraction": 40
+    },
+    "decimal_mul": {
+      "plain_number_or_fraction": 40
+    },
+    "percent_of": {
+      "plain_number_or_fraction": 40
+    },
+    "decimal_div": {
+      "plain_number_or_fraction": 40
+    },
+    "u1_avg_fraction": {
+      "plain_number_or_fraction": 80
+    },
+    "u2_frac_addsub_life": {
+      "plain_number_or_fraction": 80
+    },
+    "u3_frac_times_int": {
+      "plain_number_or_fraction": 80
+    },
+    "u4_money_decimal_addsub": {
+      "plain_number_or_fraction": 80
+    },
+    "u5_decimal_muldiv_price": {
+      "plain_number_or_fraction": 80
+    },
+    "u6_frac_dec_convert": {
+      "plain_number_or_fraction": 80
+    },
+    "u7_discount_percent": {
+      "plain_number_or_fraction": 100
+    },
+    "u8_ratio_recipe": {
+      "plain_number_or_fraction": 100
+    },
+    "u9_unit_convert_decimal": {
+      "plain_number_or_fraction": 100
+    },
+    "u10_rate_time_distance": {
+      "plain_number_or_fraction": 100
+    },
+    "buy_many": {
+      "plain_number_or_fraction": 28
+    },
+    "unit_price": {
+      "plain_number_or_fraction": 25
+    },
+    "discount": {
+      "plain_number_or_fraction": 25
+    },
+    "make_change": {
+      "plain_number_or_fraction": 22
+    },
+    "shopping_two_step": {
+      "plain_number_or_fraction": 22
+    },
+    "table_stats": {
+      "plain_number_or_fraction": 20
+    },
+    "area_tiling": {
+      "plain_number_or_fraction": 20
+    },
+    "proportional_split": {
+      "plain_number_or_fraction": 20
+    },
+    "perimeter_fence": {
+      "plain_number_or_fraction": 18
+    },
+    "volume_fill": {
+      "plain_number_or_fraction": 20
+    },
+    "temperature_change": {
+      "plain_number_or_fraction": 20
+    },
+    "fraction_remaining": {
+      "plain_number_or_fraction": 20
+    },
+    "ratio_part_total": {
+      "plain_number_or_fraction": 18
+    },
+    "fraction_to_percent": {
+      "plain_number_or_fraction": 5
+    },
+    "ratio_sub_decimal": {
+      "plain_number_or_fraction": 8
+    },
+    "percent_find_part": {
+      "plain_number_or_fraction": 16
+    },
+    "ratio_unit_rate": {
+      "plain_number_or_fraction": 8
+    },
+    "decimal_to_percent": {
+      "plain_number_or_fraction": 3
+    },
+    "percent_find_whole": {
+      "plain_number_or_fraction": 11
+    },
+    "percent_find_percent": {
+      "plain_number_or_fraction": 15
+    },
+    "percent_increase_decrease": {
+      "plain_number_or_fraction": 11
+    },
+    "percent_meaning": {
+      "plain_number_or_fraction": 8
+    },
+    "ratio_add_decimal": {
+      "plain_number_or_fraction": 12
+    },
+    "percent_tax_service": {
+      "plain_number_or_fraction": 8
+    },
+    "percent_interest": {
+      "plain_number_or_fraction": 10
+    },
+    "percent_to_decimal": {
+      "plain_number_or_fraction": 5
+    },
+    "ratio_missing_to_1": {
+      "plain_number_or_fraction": 13
+    },
+    "ratio_remaining": {
+      "plain_number_or_fraction": 16
+    },
+    "base_area_h": {
+      "plain_number_or_fraction": 20
+    },
+    "composite": {
+      "plain_number_or_fraction": 16
+    },
+    "cube_find_edge": {
+      "plain_number_or_fraction": 8
+    },
+    "mixed_units": {
+      "plain_number_or_fraction": 12
+    },
+    "cube_cm3": {
+      "plain_number_or_fraction": 13
+    },
+    "rect_find_height": {
+      "plain_number_or_fraction": 12
+    },
+    "cm3_to_m3": {
+      "plain_number_or_fraction": 6
+    },
+    "decimal_dims": {
+      "plain_number_or_fraction": 12
+    },
+    "composite3": {
+      "plain_number_or_fraction": 12
+    },
+    "rect_cm3": {
+      "plain_number_or_fraction": 30
+    },
+    "m3_to_cm3": {
+      "plain_number_or_fraction": 6
+    }
+  },
+  "samples": [
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "time_sub_cross_day",
+      "id": "g5gs_time_sub_005",
+      "answer": "03:50",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "line_max_month",
+      "id": "g5gs_line_max_011",
+      "answer": "4月",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "time_add_cross_day",
+      "id": "g5gs_time_add_001",
+      "answer": "01:15",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "perp_bisector_property",
+      "id": "g5gs_sym_bis_014",
+      "answer": "PE=PC",
+      "flags": [
+        "symbolic_or_equation"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "prime_or_composite",
+      "id": "g5gs_fac_prime_010",
+      "answer": "質數",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "perp_bisector_property",
+      "id": "g5gs_sym_bis_008",
+      "answer": "PB=PA",
+      "flags": [
+        "symbolic_or_equation"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "perp_bisector_converse",
+      "id": "g5gs_sym_bis2_003",
+      "answer": "是",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "perp_bisector_converse",
+      "id": "g5gs_sym_bis2_006",
+      "answer": "是",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "time_add_cross_day",
+      "id": "g5gs_time_add_010",
+      "answer": "01:00",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "prime_or_composite",
+      "id": "g5gs_fac_prime_004",
+      "answer": "合數",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "line_max_month",
+      "id": "g5gs_line_max_008",
+      "answer": "6月",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "line_max_month",
+      "id": "g5gs_line_max_002",
+      "answer": "1月",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "time_add_cross_day",
+      "id": "g5gs_time_add_013",
+      "answer": "02:00",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "line_trend",
+      "id": "g5gs_line_trend_010",
+      "answer": "下降",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "time_sub_cross_day",
+      "id": "g5gs_time_sub_008",
+      "answer": "23:35",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "time_sub_cross_day",
+      "id": "g5gs_time_sub_002",
+      "answer": "05:00",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "line_trend",
+      "id": "g5gs_line_trend_013",
+      "answer": "下降",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "perp_bisector_property",
+      "id": "g5gs_sym_bis_005",
+      "answer": "PB=PF",
+      "flags": [
+        "symbolic_or_equation"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "perp_bisector_converse",
+      "id": "g5gs_sym_bis2_012",
+      "answer": "是",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "line_trend",
+      "id": "g5gs_line_trend_007",
+      "answer": "下降",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "g5-grand-slam",
+      "kind": "prime_or_composite",
+      "id": "g5gs_fac_prime_007",
+      "answer": "合數",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "interactive-g5-empire",
+      "kind": "time_add",
+      "id": "g5e_time_add_013",
+      "answer": "11:38",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "interactive-g5-empire",
+      "kind": "time_add",
+      "id": "g5e_time_add_024",
+      "answer": "11:56",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "interactive-g5-empire",
+      "kind": "time_add",
+      "id": "g5e_time_add_030",
+      "answer": "18:59",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "life-applications-g5",
+      "kind": "time_add",
+      "id": "la5_time_241",
+      "answer": "07:15",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "life-applications-g5",
+      "kind": "time_add",
+      "id": "la5_time_242",
+      "answer": "12:45",
+      "flags": [
+        "unknown_format"
+      ]
+    },
+    {
+      "module_id": "life-applications-g5",
+      "kind": "time_add",
+      "id": "la5_time_243",
+      "answer": "15:40",
+      "flags": [
+        "unknown_format"
+      ]
+    }
+  ]
+}

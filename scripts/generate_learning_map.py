@@ -33,6 +33,104 @@ DIST = ROOT / "dist_ai_math_web_pages" / "docs"
 BANK_ASSIGN_RE = re.compile(r"^\s*window\.([A-Za-z0-9_]+)\s*=\s*\[", re.MULTILINE)
 
 
+def _load_audit_report() -> dict[str, Any] | None:
+    """Load answer-format audit JSON written under docs/learning-map/.
+
+    This keeps the learning-map page and the audit tooling consistent.
+    """
+
+    p = DOCS / "learning-map" / "audit_answer_formats.json"
+    if not p.exists():
+        return None
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except Exception:
+        return None
+
+
+def _render_audit_block(report: dict[str, Any] | None) -> str:
+    if not report:
+        return (
+            '<div class="box">'
+            '<b>判題覆蓋率 / 答案格式</b><br/>'
+            '<span class="k">尚未找到 audit_answer_formats.json（可執行 scripts/audit_bank_answer_formats.py 產生報表）</span>'
+            '</div>'
+        )
+
+    totals = report.get("totals") or {}
+    per_module = report.get("per_module") or {}
+
+    def g(key: str) -> int:
+        try:
+            return int(totals.get(key, 0))
+        except Exception:
+            return 0
+
+    base_items = sum(
+        g(k)
+        for k in (
+            "plain_number_or_fraction",
+            "numeric_expr",
+            "symbolic_or_equation",
+            "unknown_format",
+            "json_payload",
+            "empty",
+        )
+    )
+
+    # Focus modules: non-trivial formats / symbolic.
+    focus: list[tuple[str, int, dict[str, Any]]] = []
+    for mid, c in per_module.items():
+        if not isinstance(c, dict):
+            continue
+        score = 0
+        for key in ("symbolic_or_equation", "unknown_format", "numeric_expr", "json_payload", "empty"):
+            try:
+                score += int(c.get(key, 0))
+            except Exception:
+                pass
+        if score:
+            focus.append((str(mid), score, c))
+    focus.sort(key=lambda x: (-x[1], x[0]))
+
+    focus_lines = []
+    for mid, _, c in focus[:8]:
+        parts = []
+        for key in ("symbolic_or_equation", "unknown_format", "numeric_expr"):
+            if int(c.get(key, 0) or 0):
+                parts.append(f"{key}:{int(c[key])}")
+        if int(c.get("multi_space_numbers", 0) or 0):
+            parts.append(f"multi_space_numbers:{int(c['multi_space_numbers'])}")
+        focus_lines.append(f"<li><span class=\"k\">{_html_escape(mid)}</span> — {_html_escape(' / '.join(parts) or 'special')}</li>")
+
+    focus_html = "".join(focus_lines) if focus_lines else "<li>（目前題庫皆為純數值/分數格式）</li>"
+
+    return "\n".join(
+        [
+            '<div class="box">',
+            '  <b>判題覆蓋率 / 答案格式（由題庫自動掃描）</b>',
+            '  <div class="meta" style="margin-top:6px;">',
+            f'    <span class="pill lvl">總題數 {base_items}</span>',
+            f'    <span class="pill lvl mid">分數/數值 {g("plain_number_or_fraction")}</span>',
+            f'    <span class="pill lvl deep">等式/符號 {g("symbolic_or_equation")}</span>',
+            f'    <span class="pill">其他格式 {g("unknown_format")}</span>',
+            f'    <span class="pill">多值(空格) {g("multi_space_numbers")}</span>',
+            '  </div>',
+            '  <div class="k" style="margin-top:6px;">',
+            '    規則：小學算術優先用 Fraction/格式正規化；遇到代數/方程類才啟用 Guarded SymPy（安全限制）。',
+            '  </div>',
+            '  <div style="margin-top:10px;">',
+            '    <b>需要特殊判題/格式支援的模組（前 8）</b>',
+            '    <ul style="margin-top:6px;">',
+            f"      {focus_html}",
+            '    </ul>',
+            '  </div>',
+            '</div>',
+        ]
+    )
+
+
 def _load_bank_items(bank_js_path: Path) -> tuple[str | None, list[dict[str, Any]]]:
     text = bank_js_path.read_text(encoding="utf-8")
 
@@ -218,6 +316,7 @@ def _html_escape(s: str) -> str:
 
 def _render_html(mods: list[ModuleAgg]) -> str:
     gen_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+    audit_block = _render_audit_block(_load_audit_report())
 
     # Build TOC entries
     toc_items: list[str] = []
@@ -420,6 +519,8 @@ def _render_html(mods: list[ModuleAgg]) -> str:
             </ul>
         </div>
 
+        __AUDIT__
+
         __SECTIONS__
 
         <div class="footer">
@@ -476,6 +577,7 @@ def _render_html(mods: list[ModuleAgg]) -> str:
                 template.replace("__GEN_TIME__", gen_time)
                 .replace("__TOC__", toc_html)
                 .replace("__SECTIONS__", sections_html)
+            .replace("__AUDIT__", audit_block)
         )
 
 

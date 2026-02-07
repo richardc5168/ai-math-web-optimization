@@ -64,7 +64,7 @@
         <div class="sub">
             來源：自動掃描 <span class="k">docs/**/bank.js</span>，彙整每個模組的 <b>kind 題型</b>、<b>常見觀念</b>、<b>步驟要點</b> 與 <b>題數/難度分布</b>。<br/>
             使用方式：左側搜尋（中/英關鍵字皆可）→ 右側展開題型細節。<br/>
-            生成時間：2026-02-07 12:47
+            生成時間：2026-02-07 15:15
         </div>
         <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
             <a class="pill lvl" href="../">回首頁</a>
@@ -106,6 +106,26 @@
                 <li>教學備課：用題型統計抓出出題面向是否齊全。</li>
             </ul>
         </div>
+
+        <div class="box">
+  <b>判題覆蓋率 / 答案格式（由題庫自動掃描）</b>
+  <div class="meta" style="margin-top:6px;">
+    <span class="pill lvl">總題數 2631</span>
+    <span class="pill lvl mid">分數/數值 2540</span>
+    <span class="pill lvl deep">等式/符號 5</span>
+    <span class="pill">其他格式 86</span>
+    <span class="pill">多值(空格) 19</span>
+  </div>
+  <div class="k" style="margin-top:6px;">
+    規則：小學算術優先用 Fraction/格式正規化；遇到代數/方程類才啟用 Guarded SymPy（安全限制）。
+  </div>
+  <div style="margin-top:10px;">
+    <b>需要特殊判題/格式支援的模組（前 8）</b>
+    <ul style="margin-top:6px;">
+      <li><span class="k">interactive-g5-empire</span> — unknown_format:40</li><li><span class="k">g5-grand-slam</span> — symbolic_or_equation:5 / unknown_format:26 / multi_space_numbers:8</li><li><span class="k">life-applications-g5</span> — unknown_format:20</li>
+    </ul>
+  </div>
+</div>
 
         <section id="m_decimal-unit4" data-keywords="decimal-unit4 五下第4單元｜小數 DECIMAL_UNIT4_BANK">
   <h2>五下第4單元｜小數</h2>
