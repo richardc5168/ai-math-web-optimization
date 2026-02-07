@@ -39,6 +39,9 @@
         section > h2{margin:0 0 8px; font-size:16px; border-left:4px solid var(--accent); padding-left:10px}
         .meta{font-size:12px; color:var(--muted); margin:6px 0 0}
         .pill{display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); margin-right:6px; margin-bottom:6px}
+        button.pill{background:transparent; cursor:pointer}
+        .clickable:hover{background:rgba(125,211,252,0.08)}
+        .linklike{border:none; padding:0; background:transparent; text-decoration:underline; color:var(--accent); cursor:pointer}
         .lvl{border-color:rgba(125,211,252,0.35); color:var(--accent)}
         .lvl.mid{border-color:rgba(52,211,153,0.35); color:var(--accent2)}
         .lvl.deep{border-color:rgba(251,113,133,0.35); color:var(--bad)}
@@ -64,7 +67,7 @@
         <div class="sub">
             來源：自動掃描 <span class="k">docs/**/bank.js</span>，彙整每個模組的 <b>kind 題型</b>、<b>常見觀念</b>、<b>步驟要點</b> 與 <b>題數/難度分布</b>。<br/>
             使用方式：左側搜尋（中/英關鍵字皆可）→ 右側展開題型細節。<br/>
-            生成時間：2026-02-07 15:15
+            生成時間：2026-02-07 15:25
         </div>
         <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
             <a class="pill lvl" href="../">回首頁</a>
@@ -111,10 +114,10 @@
   <b>判題覆蓋率 / 答案格式（由題庫自動掃描）</b>
   <div class="meta" style="margin-top:6px;">
     <span class="pill lvl">總題數 2631</span>
-    <span class="pill lvl mid">分數/數值 2540</span>
-    <span class="pill lvl deep">等式/符號 5</span>
-    <span class="pill">其他格式 86</span>
-    <span class="pill">多值(空格) 19</span>
+    <button class="pill clickable" type="button" data-set-q="fraction">分數/數值 2540</button>
+    <button class="pill clickable" type="button" data-set-q="=">等式/符號 5</button>
+    <button class="pill clickable" type="button" data-set-q=":">其他格式 86</button>
+    <button class="pill clickable" type="button" data-set-q="LCM">多值(空格) 19</button>
   </div>
   <div class="k" style="margin-top:6px;">
     規則：小學算術優先用 Fraction/格式正規化；遇到代數/方程類才啟用 Guarded SymPy（安全限制）。
@@ -122,8 +125,9 @@
   <div style="margin-top:10px;">
     <b>需要特殊判題/格式支援的模組（前 8）</b>
     <ul style="margin-top:6px;">
-      <li><span class="k">interactive-g5-empire</span> — unknown_format:40</li><li><span class="k">g5-grand-slam</span> — symbolic_or_equation:5 / unknown_format:26 / multi_space_numbers:8</li><li><span class="k">life-applications-g5</span> — unknown_format:20</li>
+      <li><button class="k linklike" type="button" data-set-q="interactive-g5-empire">interactive-g5-empire</button> — unknown_format:40</li><li><button class="k linklike" type="button" data-set-q="g5-grand-slam">g5-grand-slam</button> — symbolic_or_equation:5 / unknown_format:26 / multi_space_numbers:8</li><li><button class="k linklike" type="button" data-set-q="life-applications-g5">life-applications-g5</button> — unknown_format:20</li>
     </ul>
+    <div class="hint">點上面的 pill / 模組名可自動套用左側搜尋。</div>
   </div>
 </div>
 
@@ -296,6 +300,7 @@
     const sections = Array.from(document.querySelectorAll('main section'));
     const detailsList = Array.from(document.querySelectorAll('main details'));
     const tocLinks = Array.from(document.querySelectorAll('#toc a'));
+    const setQButtons = Array.from(document.querySelectorAll('[data-set-q]'));
 
     function norm(s){ return (s||'').toLowerCase(); }
 
@@ -327,6 +332,15 @@
     }
 
     q.addEventListener('input', apply);
+
+    setQButtons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            const term = btn.getAttribute('data-set-q') || '';
+            q.value = term;
+            apply();
+            q.focus();
+        });
+    });
     apply();
 })();
 </script>

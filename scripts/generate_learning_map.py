@@ -67,6 +67,9 @@ def _render_audit_block(report: dict[str, Any] | None) -> str:
         except Exception:
             return 0
 
+    def pill(label: str, q: str, cls: str = "pill") -> str:
+        return f'<button class="{cls} clickable" type="button" data-set-q="{_html_escape(q)}">{_html_escape(label)}</button>'
+
     base_items = sum(
         g(k)
         for k in (
@@ -102,7 +105,18 @@ def _render_audit_block(report: dict[str, Any] | None) -> str:
                 parts.append(f"{key}:{int(c[key])}")
         if int(c.get("multi_space_numbers", 0) or 0):
             parts.append(f"multi_space_numbers:{int(c['multi_space_numbers'])}")
-        focus_lines.append(f"<li><span class=\"k\">{_html_escape(mid)}</span> — {_html_escape(' / '.join(parts) or 'special')}</li>")
+        qterm = mid
+        focus_lines.append(
+            "".join(
+                [
+                    "<li>",
+                    f'<button class="k linklike" type="button" data-set-q="{_html_escape(qterm)}">{_html_escape(mid)}</button>',
+                    " — ",
+                    _html_escape(" / ".join(parts) or "special"),
+                    "</li>",
+                ]
+            )
+        )
 
     focus_html = "".join(focus_lines) if focus_lines else "<li>（目前題庫皆為純數值/分數格式）</li>"
 
@@ -112,10 +126,10 @@ def _render_audit_block(report: dict[str, Any] | None) -> str:
             '  <b>判題覆蓋率 / 答案格式（由題庫自動掃描）</b>',
             '  <div class="meta" style="margin-top:6px;">',
             f'    <span class="pill lvl">總題數 {base_items}</span>',
-            f'    <span class="pill lvl mid">分數/數值 {g("plain_number_or_fraction")}</span>',
-            f'    <span class="pill lvl deep">等式/符號 {g("symbolic_or_equation")}</span>',
-            f'    <span class="pill">其他格式 {g("unknown_format")}</span>',
-            f'    <span class="pill">多值(空格) {g("multi_space_numbers")}</span>',
+            f'    {pill(f"分數/數值 {g("plain_number_or_fraction")}", "fraction")}',
+            f'    {pill(f"等式/符號 {g("symbolic_or_equation")}", "=")}',
+            f'    {pill(f"其他格式 {g("unknown_format")}", ":")}',
+            f'    {pill(f"多值(空格) {g("multi_space_numbers")}", "LCM")}',
             '  </div>',
             '  <div class="k" style="margin-top:6px;">',
             '    規則：小學算術優先用 Fraction/格式正規化；遇到代數/方程類才啟用 Guarded SymPy（安全限制）。',
@@ -125,6 +139,7 @@ def _render_audit_block(report: dict[str, Any] | None) -> str:
             '    <ul style="margin-top:6px;">',
             f"      {focus_html}",
             '    </ul>',
+            '    <div class="hint">點上面的 pill / 模組名可自動套用左側搜尋。</div>',
             '  </div>',
             '</div>',
         ]
@@ -463,6 +478,9 @@ def _render_html(mods: list[ModuleAgg]) -> str:
         section > h2{margin:0 0 8px; font-size:16px; border-left:4px solid var(--accent); padding-left:10px}
         .meta{font-size:12px; color:var(--muted); margin:6px 0 0}
         .pill{display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); margin-right:6px; margin-bottom:6px}
+        button.pill{background:transparent; cursor:pointer}
+        .clickable:hover{background:rgba(125,211,252,0.08)}
+        .linklike{border:none; padding:0; background:transparent; text-decoration:underline; color:var(--accent); cursor:pointer}
         .lvl{border-color:rgba(125,211,252,0.35); color:var(--accent)}
         .lvl.mid{border-color:rgba(52,211,153,0.35); color:var(--accent2)}
         .lvl.deep{border-color:rgba(251,113,133,0.35); color:var(--bad)}
@@ -535,6 +553,7 @@ def _render_html(mods: list[ModuleAgg]) -> str:
     const sections = Array.from(document.querySelectorAll('main section'));
     const detailsList = Array.from(document.querySelectorAll('main details'));
     const tocLinks = Array.from(document.querySelectorAll('#toc a'));
+    const setQButtons = Array.from(document.querySelectorAll('[data-set-q]'));
 
     function norm(s){ return (s||'').toLowerCase(); }
 
@@ -566,6 +585,15 @@ def _render_html(mods: list[ModuleAgg]) -> str:
     }
 
     q.addEventListener('input', apply);
+
+    setQButtons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            const term = btn.getAttribute('data-set-q') || '';
+            q.value = term;
+            apply();
+            q.focus();
+        });
+    });
     apply();
 })();
 </script>
