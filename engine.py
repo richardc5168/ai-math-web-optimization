@@ -57,6 +57,20 @@ try:
 except Exception:
     HAS_SYMPY = False
 
+if HAS_SYMPY:
+    try:
+        from sympy.parsing.sympy_parser import (
+            parse_expr,
+            standard_transformations,
+            implicit_multiplication_application,
+            convert_xor,
+        )
+        _HAS_SYMPY_PARSER = True
+    except Exception:
+        _HAS_SYMPY_PARSER = False
+else:
+    _HAS_SYMPY_PARSER = False
+
 try:
     from fraction_word_g5 import generate_fraction_word_problem_g5
 except Exception:
@@ -113,6 +127,329 @@ def parse_answer(text: str) -> Optional[Fraction]:
     except Exception:
         return None
 
+
+_NUMERIC_EXPR_MAX_LEN = 128
+_ALGEBRA_EXPR_MAX_LEN = 256
+
+_TIME_HHMM_RE = re.compile(r"^\s*(\d{1,2})\s*:\s*(\d{1,2})\s*$")
+_MONTH_RE = re.compile(r"^\s*(\d{1,2})\s*月\s*$")
+_IDENT_RE = re.compile(r"^[A-Za-z0-9_]+$")
+
+
+def _normalize_math_input(text: str) -> str:
+    s = (text or "").strip()
+    if not s:
+        return ""
+    # Common math symbols / fullwidth variants.
+    s = s.replace("×", "*")
+    s = s.replace("÷", "/")
+    s = s.replace("−", "-").replace("—", "-")
+    s = s.replace("＋", "+")
+    s = s.replace("（", "(").replace("）", ")")
+    s = s.replace("，", ",").replace("、", ",")
+    return s.strip()
+
+
+def _normalize_text_answer(text: str) -> str:
+    s = (text or "").strip()
+    if not s:
+        return ""
+    # Normalize common fullwidth punctuation/spaces; keep content otherwise.
+    s = s.replace("（", "(").replace("）", ")")
+    s = s.replace("＝", "=")
+    s = s.replace("　", " ")
+    s = re.sub(r"\s+", "", s)
+    return s
+
+
+def _normalize_ident(text: str) -> str:
+    s = _normalize_text_answer(text)
+    return s.upper()
+
+
+def _normalize_time_hhmm(text: str) -> Optional[str]:
+    s = (text or "").strip()
+    m = _TIME_HHMM_RE.match(s)
+    if not m:
+        return None
+    try:
+        hh = int(m.group(1))
+        mm = int(m.group(2))
+    except Exception:
+        return None
+    if not (0 <= hh <= 23 and 0 <= mm <= 59):
+        return None
+    return f"{hh:02d}:{mm:02d}"
+
+
+def _normalize_month(text: str) -> Optional[int]:
+    s = (text or "").strip()
+    m = _MONTH_RE.match(s)
+    if m:
+        try:
+            v = int(m.group(1))
+            return v if 1 <= v <= 12 else None
+        except Exception:
+            return None
+    if re.fullmatch(r"\d{1,2}", s):
+        v = int(s)
+        return v if 1 <= v <= 12 else None
+    return None
+
+
+def _canonical_choice(text: str) -> str:
+    """Map common categorical answers to canonical tokens."""
+    s = _normalize_text_answer(text)
+    if not s:
+        return ""
+
+    s_lower = s.lower()
+
+    yes_set = {"是", "對", "正确", "正確", "yes", "y", "true", "t", "1"}
+    no_set = {"否", "不", "错", "錯", "no", "n", "false", "f", "0"}
+    if s in yes_set or s_lower in yes_set:
+        return "YES"
+    if s in no_set or s_lower in no_set:
+        return "NO"
+
+    prime_set = {"質數", "质数", "prime"}
+    comp_set = {"合數", "合数", "composite"}
+    if s in prime_set or s_lower in prime_set:
+        return "PRIME"
+    if s in comp_set or s_lower in comp_set:
+        return "COMPOSITE"
+
+    up_set = {"上升", "增加", "變多", "up"}
+    down_set = {"下降", "減少", "變少", "down"}
+    flat_set = {"持平", "不變", "一樣", "flat"}
+    if s in up_set or s_lower in up_set:
+        return "UP"
+    if s in down_set or s_lower in down_set:
+        return "DOWN"
+    if s in flat_set or s_lower in flat_set:
+        return "FLAT"
+
+    return s
+
+
+def _eq_statement_equal(user_text: str, correct_text: str) -> Optional[bool]:
+    """Check simple equality statements like 'PB=PF' order-insensitively."""
+    u = _normalize_text_answer(user_text)
+    c = _normalize_text_answer(correct_text)
+    if not u or not c:
+        return None
+    if u.count("=") != 1 or c.count("=") != 1:
+        return None
+    u_left, u_right = u.split("=", 1)
+    c_left, c_right = c.split("=", 1)
+
+    # Only handle simple identifiers, not full algebra.
+    if not (_IDENT_RE.fullmatch(u_left) and _IDENT_RE.fullmatch(u_right)):
+        return None
+    if not (_IDENT_RE.fullmatch(c_left) and _IDENT_RE.fullmatch(c_right)):
+        return None
+
+    u_pair = sorted([_normalize_ident(u_left), _normalize_ident(u_right)])
+    c_pair = sorted([_normalize_ident(c_left), _normalize_ident(c_right)])
+    return u_pair == c_pair
+
+
+def _sympy_parse_numeric_expr(text: str):
+    """Parse a numeric-only expression into a SymPy Expr.
+
+    Safety goals:
+    - Refuse any letters/symbols (no variables, no functions).
+    - Refuse very long strings.
+    - Allow only digits, whitespace, + - * / ( ) .
+    """
+    if not HAS_SYMPY:
+        return None
+    s = _normalize_math_input(text)
+    # Treat 'x'/'X' as multiplication sign only in numeric contexts.
+    # Examples: 2x3, 2 x 3, 2x(3+4), (2+1)x3
+    s = re.sub(r"(?<=[0-9\)])\s*[xX]\s*(?=[0-9\(])", "*", s)
+    if not s or len(s) > _NUMERIC_EXPR_MAX_LEN:
+        return None
+    if re.search(r"[A-Za-z_]", s):
+        return None
+    if re.search(r"[^0-9\s\+\-\*/\(\)\.,]", s):
+        return None
+    try:
+        expr = sp.sympify(s, evaluate=True)
+        if getattr(expr, "free_symbols", None):
+            if len(expr.free_symbols) > 0:
+                return None
+        return expr
+    except Exception:
+        return None
+
+
+def _sympy_parse_algebra_expr(text: str):
+    """Parse an algebraic expression allowing only symbol x and basic safe functions.
+
+    This is intended for checking student answers like:
+      - "2x+2" vs "2*(x+1)"
+      - "(x-3)^2" (xor converted to **)
+
+    Safety constraints:
+    - Hard length cap.
+    - Forbid brackets/quotes/semicolons/colons/backslashes.
+    - Only allow letters for known identifiers (x, sqrt, etc).
+    """
+    if not (HAS_SYMPY and _HAS_SYMPY_PARSER):
+        return None
+    s = _normalize_math_input(text)
+    if not s or len(s) > _ALGEBRA_EXPR_MAX_LEN:
+        return None
+    # Disallow clearly dangerous / non-math tokens.
+    if any(ch in s for ch in ["[", "]", "{", "}", "'", '"', ";", ":", "\\", "`", "@"]):
+        return None
+    # Basic character allowlist: digits, letters, underscore, operators, parens, dot, comma, space.
+    if re.search(r"[^0-9A-Za-z_\s\+\-\*/\(\)\^\.=,]", s):
+        return None
+    # Quick reject double underscore / dunder patterns.
+    if "__" in s:
+        return None
+
+    try:
+        x = sp.Symbol("x")
+        safe_global = {
+            # Core constructors used by the parser's transformed code
+            "Integer": sp.Integer,
+            "Rational": sp.Rational,
+            "Float": sp.Float,
+            "Symbol": sp.Symbol,
+            "Pow": sp.Pow,
+            "Mul": sp.Mul,
+            "Add": sp.Add,
+        }
+        local_dict = {
+            "x": x,
+            "sqrt": sp.sqrt,
+            "abs": sp.Abs,
+            "Abs": sp.Abs,
+            "pi": sp.pi,
+            "E": sp.E,
+        }
+        transformations = (
+            standard_transformations
+            + (implicit_multiplication_application, convert_xor)
+        )
+        expr = parse_expr(
+            s,
+            local_dict=local_dict,
+            global_dict=safe_global,
+            transformations=transformations,
+            evaluate=True,
+        )
+        # Only allow symbol x (no other symbols).
+        if getattr(expr, "free_symbols", None):
+            for sym in expr.free_symbols:
+                if str(sym) != "x":
+                    return None
+        return expr
+    except Exception:
+        return None
+
+
+def _sympy_parse_equation(text: str):
+    """Parse an equation string into (lhs, rhs) expressions."""
+    s = _normalize_math_input(text)
+    if not s or "=" not in s:
+        return None
+    if s.count("=") != 1:
+        return None
+    lhs_s, rhs_s = s.split("=", 1)
+    lhs = _sympy_parse_algebra_expr(lhs_s)
+    rhs = _sympy_parse_algebra_expr(rhs_s)
+    if lhs is None or rhs is None:
+        return None
+    return lhs, rhs
+
+
+def _sympy_symbolic_equiv(user_text: str, correct_text: str) -> Optional[bool]:
+    """Symbolic equivalence for expressions or equations (x only)."""
+    if not HAS_SYMPY:
+        return None
+
+    # Equation solving: correct can be equation, user can be numeric or expression.
+    correct_eq = _sympy_parse_equation(correct_text)
+    if correct_eq is not None:
+        lhs, rhs = correct_eq
+        try:
+            x = sp.Symbol("x")
+            sols = sp.solve(sp.Eq(lhs, rhs), x)
+        except Exception:
+            return None
+
+        # Normalize user into sympy expr (prefer numeric-only first, then algebra).
+        u_num = _sympy_parse_numeric_expr(user_text)
+        u_expr = u_num if u_num is not None else _sympy_parse_algebra_expr(user_text)
+        if u_expr is None:
+            return None
+
+        # If user provided an expression in x, check whether it matches a solution form.
+        if getattr(u_expr, "free_symbols", None) and len(u_expr.free_symbols) > 0:
+            for s in sols:
+                try:
+                    if sp.simplify(u_expr - s) == 0:
+                        return True
+                except Exception:
+                    pass
+            return False
+
+        # User numeric: check membership.
+        for s in sols:
+            try:
+                if sp.simplify(u_expr - s) == 0:
+                    return True
+            except Exception:
+                continue
+        return False
+
+    # Expression equivalence (require both sides to involve x).
+    u_expr = _sympy_parse_algebra_expr(user_text)
+    c_expr = _sympy_parse_algebra_expr(correct_text)
+    if u_expr is None or c_expr is None:
+        return None
+
+    u_syms = getattr(u_expr, "free_symbols", set()) or set()
+    c_syms = getattr(c_expr, "free_symbols", set()) or set()
+    if not u_syms and not c_syms:
+        return None
+    if u_syms != c_syms:
+        return False
+
+    try:
+        return bool(sp.simplify(u_expr - c_expr) == 0)
+    except Exception:
+        return None
+
+
+def _sympy_numeric_equal(a_expr, b_expr) -> Optional[bool]:
+    if a_expr is None or b_expr is None or not HAS_SYMPY:
+        return None
+    try:
+        diff = sp.simplify(a_expr - b_expr)
+        if diff == 0:
+            return True
+        # For Float-y cases, fall back to numeric tolerance.
+        try:
+            return bool(abs(float(sp.N(diff))) < 1e-9)
+        except Exception:
+            return False
+    except Exception:
+        return None
+
+
+def _split_multi(text: str) -> List[str]:
+    s = _normalize_math_input(text)
+    if not s:
+        return []
+    if "," in s:
+        return [p.strip() for p in s.split(",") if p.strip()]
+    return []
+
 def check(user_answer: str, correct_answer: str) -> Optional[int]:
     """
     return:
@@ -143,11 +480,111 @@ def check(user_answer: str, correct_answer: str) -> Optional[int]:
     if correct_clean.count(' ') > 0:
         return 1 if ' '.join(user_clean.split()) == ' '.join(correct_clean.split()) else 0
 
+    # Comma-separated multi answers (e.g., roots: "1,2").
+    c_parts = _split_multi(correct)
+    if c_parts:
+        u_parts = _split_multi(user)
+        if not u_parts:
+            return None
+
+        # Parse each part as Fraction first; if that fails, try safe SymPy numeric expr.
+        def _parse_part(p: str):
+            f = parse_answer(p)
+            if f is not None:
+                return ("frac", f)
+            e = _sympy_parse_numeric_expr(p)
+            if e is not None:
+                return ("sym", e)
+            return None
+
+        u_vals = []
+        c_vals = []
+        for p in u_parts:
+            pv = _parse_part(p)
+            if pv is None:
+                return None
+            u_vals.append(pv)
+        for p in c_parts:
+            pv = _parse_part(p)
+            if pv is None:
+                return None
+            c_vals.append(pv)
+
+        if len(u_vals) != len(c_vals):
+            return 0
+
+        # If all Fractions, compare as unordered multiset.
+        if all(t == "frac" for t, _ in u_vals) and all(t == "frac" for t, _ in c_vals):
+            u_sorted = sorted([v for _, v in u_vals])
+            c_sorted = sorted([v for _, v in c_vals])
+            return 1 if u_sorted == c_sorted else 0
+
+        # Mixed: compare by canonical SymPy form (order-insensitive).
+        def _canon(tv):
+            t, v = tv
+            if t == "frac":
+                return (0, str(v))
+            return (1, sp.srepr(v) if HAS_SYMPY else str(v))
+
+        u_sorted = sorted(u_vals, key=_canon)
+        c_sorted = sorted(c_vals, key=_canon)
+        for (ut, uv), (ct, cv) in zip(u_sorted, c_sorted):
+            if ut == "frac" and ct == "frac":
+                if uv != cv:
+                    return 0
+                continue
+            # Compare via SymPy numeric equivalence if possible.
+            u_expr = uv if ut == "sym" else sp.Rational(uv.numerator, uv.denominator)
+            c_expr = cv if ct == "sym" else sp.Rational(cv.numerator, cv.denominator)
+            eq = _sympy_numeric_equal(u_expr, c_expr)
+            if eq is not True:
+                return 0
+        return 1
+
     u = parse_answer(user)
     c = parse_answer(correct)
-    if u is None or c is None:
+    if u is not None and c is not None:
+        return 1 if u == c else 0
+
+    # Non-numeric formats (time / month / categorical / simple equality statements)
+    t_u = _normalize_time_hhmm(user)
+    t_c = _normalize_time_hhmm(correct)
+    if t_u is not None or t_c is not None:
+        if t_u is None or t_c is None:
+            return None
+        return 1 if t_u == t_c else 0
+
+    m_c = _normalize_month(correct)
+    if m_c is not None:
+        m_u = _normalize_month(user)
+        if m_u is None:
+            return None
+        return 1 if m_u == m_c else 0
+
+    eq_stmt = _eq_statement_equal(user, correct)
+    if eq_stmt is not None:
+        return 1 if eq_stmt else 0
+
+    cu = _canonical_choice(user)
+    cc = _canonical_choice(correct)
+    if cc in {"YES", "NO", "PRIME", "COMPOSITE", "UP", "DOWN", "FLAT"}:
+        return 1 if cu == cc else 0
+
+    # Guarded SymPy symbolic equivalence for algebra-type answers.
+    if HAS_SYMPY and _HAS_SYMPY_PARSER:
+        # Only try when it looks symbolic/equation-like.
+        if re.search(r"[A-Za-z_]", user) or re.search(r"[A-Za-z_]", correct) or ("=" in user) or ("=" in correct) or ("^" in user) or ("^" in correct):
+            sym_ok = _sympy_symbolic_equiv(user, correct)
+            if sym_ok is not None:
+                return 1 if sym_ok else 0
+
+    # Safe SymPy fallback for numeric expressions like "(1/2)+(1/3)".
+    u_expr = _sympy_parse_numeric_expr(user)
+    c_expr = _sympy_parse_numeric_expr(correct)
+    eq = _sympy_numeric_equal(u_expr, c_expr)
+    if eq is None:
         return None
-    return 1 if u == c else 0
+    return 1 if eq else 0
 
 
 # -------------------------
