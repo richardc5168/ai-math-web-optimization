@@ -180,7 +180,9 @@
     _interval: null,
     hintLevel: 0,  // 0 hidden, 1/2/3/full
     hintBundle: null,
-    explanation: ''
+    explanation: '',
+    tutorRules: null,  // optional JSON ruleset for A3 factoring
+    problemType: null  // e.g. 'factoring' | 'formula'
   };
 
   // DOM
@@ -222,6 +224,67 @@
     videoLink: document.getElementById('videoLink'),
     topicBadge: document.getElementById('topicBadge')
   };
+
+  const DEFAULT_HINT_LABELS = {
+    h1: els.btnHint1 ? els.btnHint1.innerText : '提示 1',
+    h2: els.btnHint2 ? els.btnHint2.innerText : '提示 2',
+    h3: els.btnHint3 ? els.btnHint3.innerText : '提示 3',
+    full: els.btnHintFull ? els.btnHintFull.innerText : '完整詳解'
+  };
+
+  function resetHintButtonLabels() {
+    if (els.btnHint1) els.btnHint1.innerText = DEFAULT_HINT_LABELS.h1;
+    if (els.btnHint2) els.btnHint2.innerText = DEFAULT_HINT_LABELS.h2;
+    if (els.btnHint3) els.btnHint3.innerText = DEFAULT_HINT_LABELS.h3;
+    if (els.btnHintFull) els.btnHintFull.innerText = DEFAULT_HINT_LABELS.full;
+  }
+
+  function isRulesApplicableNow() {
+    return !!(state.tutorRules && els.topic.value === 'A3' && state.problemType === 'factoring');
+  }
+
+  function applyHintButtonLabelsFromRules() {
+    if (!isRulesApplicableNow()) {
+      resetHintButtonLabels();
+      return;
+    }
+    const tiers = state.tutorRules?.hint_ladder?.tiers;
+    if (!Array.isArray(tiers) || tiers.length < 3) return;
+    if (tiers[0]?.label && els.btnHint1) els.btnHint1.innerText = String(tiers[0].label);
+    if (tiers[1]?.label && els.btnHint2) els.btnHint2.innerText = String(tiers[1].label);
+    if (tiers[2]?.label && els.btnHint3) els.btnHint3.innerText = String(tiers[2].label);
+  }
+
+  function substitutePlaceholders(template, ctx) {
+    let out = String(template || '');
+    const pairs = {
+      '{a}': ctx?.a,
+      '{b}': ctx?.b,
+      '{c}': ctx?.c,
+      '{equation}': ctx?.equation,
+      '{factored}': ctx?.factored,
+      '{roots}': ctx?.roots
+    };
+    for (const [k, v] of Object.entries(pairs)) {
+      if (v === undefined || v === null) continue;
+      out = out.split(k).join(String(v));
+    }
+    return out;
+  }
+
+  async function loadTutorRulesA3Factoring() {
+    // Optional: if the JSON is absent, everything should keep working.
+    try {
+      const res = await fetch('./tutor_rules_A3_factoring.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const j = await res.json();
+      if (!j || j.schema !== 'aimath.tutor_rules.v1') return;
+      if (j.ruleset_id !== 'quadratic.A3.factoring.tw.v1') return;
+      state.tutorRules = j;
+    } catch (_) {
+      // ignore (offline / 404)
+    }
+  }
 
   function safeParseNumber(s) {
     if (typeof s !== 'string') return null;
@@ -322,6 +385,14 @@
     const fac = findIntegerFactorization(a, b, c);
     const D = b * b - 4 * a * c;
 
+    const rulesTiers = isRulesApplicableNow() ? (state.tutorRules?.hint_ladder?.tiers || null) : null;
+    const ctx = {
+      a,
+      b,
+      c,
+      equation: `${formatPoly(a, b, c)} = 0`
+    };
+
     const factoringHint = (() => {
       if (fac) {
         const f1 = `${fac.m === 1 ? '' : (fac.m === -1 ? '-' : fac.m)}x${fac.n >= 0 ? '+' : ''}${fac.n}`;
@@ -343,11 +414,20 @@
 
     const formulaHint = `公式解（最後手段）：D=b^2-4ac=${D}，x=(-b±√D)/(2a)=(${-b}±√${D})/${2 * a}。`;
 
-    return {
-      h1: factoringHint,
-      h2: completingSquareHint,
-      h3: formulaHint,
-    };
+    // If a ruleset is loaded for A3 factoring, prepend its templates but keep the
+    // existing dynamic hints (factorization / repeated-root details) as a 2nd line.
+    if (Array.isArray(rulesTiers) && rulesTiers.length >= 3) {
+      const h1t = substitutePlaceholders(rulesTiers[0]?.template, ctx).trim();
+      const h2t = substitutePlaceholders(rulesTiers[1]?.template, ctx).trim();
+      const h3t = substitutePlaceholders(rulesTiers[2]?.template, ctx).trim();
+      return {
+        h1: (h1t ? (h1t + '\n' + factoringHint) : factoringHint),
+        h2: (h2t ? (h2t + '\n' + completingSquareHint) : completingSquareHint),
+        h3: (h3t ? (h3t + '\n' + formulaHint) : formulaHint)
+      };
+    }
+
+    return { h1: factoringHint, h2: completingSquareHint, h3: formulaHint };
   }
 
   function renderHintText(text) {
@@ -620,6 +700,7 @@
 
       const data = await apiCall('/v1/quadratic/next', {topic_id: topic, difficulty: diff});
       state.q = data;
+      state.problemType = (data && data.type) ? String(data.type) : (topic === 'A3' ? 'factoring' : null);
       state.stage = 1;
       state.fails = 0;
       state.cooldownActive = false;
@@ -653,6 +734,8 @@
         h3: String(backendHints[2] || ''),
       } : buildHintBundle({ topicId: els.topic.value, coefficients: data.coefficients });
       state.hintLevel = 0;
+
+      applyHintButtonLabelsFromRules();
 
       // Context
       if(data.knowledge_context) {
@@ -782,8 +865,16 @@
     els.btnHintFull.onclick = () => revealHint(4);
     els.btnHideHints.onclick = hideHints;
 
+  els.topic.addEventListener('change', () => {
+    // Reset labels immediately; newGame() will apply rules again if relevant.
+    resetHintButtonLabels();
+  });
+
   // Init
-  newGame();
+  (async function init() {
+    await loadTutorRulesA3Factoring();
+    await newGame();
+  })();
 
 </script>
 </body>
