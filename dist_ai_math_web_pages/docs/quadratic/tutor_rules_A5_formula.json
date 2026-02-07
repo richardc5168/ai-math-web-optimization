@@ -1,0 +1,99 @@
+{
+  "ruleset_id": "quadratic.A5.formula.tw.v1",
+  "schema": "aimath.tutor_rules.v1",
+  "version": 1,
+  "updated_at": "2026-02-07",
+  "applies_to": {
+    "engine": "quadratic",
+    "topic_id": "A5",
+    "type": "formula",
+    "language": "zh-TW"
+  },
+  "scope_guard": {
+    "must_not_change_other_topics": true,
+    "notes": "This ruleset is for Quadratic A5 (formula) only."
+  },
+  "behavior": {
+    "primary_goal": "Coach learners to use the quadratic formula correctly, while still encouraging quick checks (perfect square / factoring) when the discriminant is a square.",
+    "method_order": [
+      "identify_a_b_c",
+      "compute_discriminant",
+      "simplify_sqrtD",
+      "apply_formula",
+      "simplify_roots",
+      "check_by_substitution"
+    ],
+    "style": {
+      "productive_struggle": true,
+      "ask_before_tell": true,
+      "keep_steps_short": true,
+      "avoid_latex": true
+    }
+  },
+  "ui_contract": {
+    "hint_buttons": [
+      {
+        "button": "Hint1",
+        "must_map_to": "hints[0]",
+        "method": "discriminant"
+      },
+      {
+        "button": "Hint2",
+        "must_map_to": "hints[1]",
+        "method": "formula_substitution"
+      },
+      {
+        "button": "Hint3",
+        "must_map_to": "hints[2]",
+        "method": "simplify_and_check"
+      }
+    ]
+  },
+  "hint_ladder": {
+    "tiers": [
+      {
+        "id": "H1",
+        "label": "提示1（先找 a,b,c 並算 D）",
+        "template": "先把方程式整理成 ax^2+bx+c=0，標出 a、b、c。接著算判別式 D=b平方減4ac。若 D 是完全平方，通常也代表可回頭再試因式分解。"
+      },
+      {
+        "id": "H2",
+        "label": "提示2（代入公式）",
+        "template": "把 D 算好後，代入公式：x = (負b 加減 根號D) 除以 2a。小心括號：負b 要整個帶負號，2a 是整個分母。"
+      },
+      {
+        "id": "H3",
+        "label": "提示3（化簡與驗算）",
+        "template": "把兩個根各自化簡（能約分就約分，根號能化簡就先化簡）。最後把你的 x 值代回 ax^2+bx+c 檢查是否等於0。"
+      }
+    ],
+    "full_solution_policy": {
+      "when": ["student_requests_full_solution", "three_failed_attempts"],
+      "must_include": ["identify_coefficients", "compute_D", "apply_formula", "final_roots", "check_by_substitution"]
+    }
+  },
+  "diagnosis": {
+    "error_taxonomy": [
+      {
+        "code": "A5_E1_COEFF",
+        "name": "a,b,c 辨識錯",
+        "coach": "先整理成 ax^2+bx+c=0 再讀係數。尤其注意 b 的符號（bx 的係數）。"
+      },
+      {
+        "code": "A5_E2_DISCRIMINANT",
+        "name": "判別式計算錯",
+        "coach": "D=b^2-4ac：先算 b^2，再算 4ac，再做減法。注意 b^2 一定非負。"
+      },
+      {
+        "code": "A5_E3_SIGN_FORMULA",
+        "name": "公式代入符號錯",
+        "coach": "公式是 (-b ± √D)/(2a)。請把 b 整個加括號再取負：-(b)。"
+      },
+      {
+        "code": "A5_E4_SQRT_SIMPLIFY",
+        "name": "根號化簡錯",
+        "coach": "若 D 有平方因數，先拆出來再化簡。例如 √12 = √(4·3)=2√3。"
+      }
+    ]
+  }
+}

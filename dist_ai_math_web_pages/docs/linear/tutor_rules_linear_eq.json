@@ -1,0 +1,123 @@
+{
+  "ruleset_id": "linear.linear_eq.tw.v1",
+  "schema": "aimath.tutor_rules.v1",
+  "version": 1,
+  "updated_at": "2026-02-07",
+  "applies_to": {
+    "engine": "linear",
+    "topic_id": "linear_eq",
+    "type": "linear",
+    "language": "zh-TW"
+  },
+  "scope_guard": {
+    "must_not_change_other_topics": true,
+    "notes": "This ruleset is for one-variable linear equations only."
+  },
+  "problem_kinds": [
+    {
+      "id": "L1_one_step",
+      "levels": [1],
+      "examples": ["x + b = c", "ax = c"],
+      "goal": "Use inverse operations to isolate x in one move."
+    },
+    {
+      "id": "L2_two_step",
+      "levels": [2],
+      "examples": ["ax + b = c"],
+      "goal": "Move constant first, then divide by coefficient."
+    },
+    {
+      "id": "L3_var_both_sides",
+      "levels": [3],
+      "examples": ["ax + b = cx + d"],
+      "goal": "Collect x terms on one side, constants on the other."
+    },
+    {
+      "id": "L4_parentheses",
+      "levels": [4],
+      "examples": ["a(x+b)=c", "a(x+b)=c(x+d)"],
+      "goal": "Use distributive property (or divide first when safe), then solve linear."
+    },
+    {
+      "id": "L5_rational_reducible",
+      "levels": [5],
+      "examples": ["A/(x-B)=C/(x-D)", "(ax+b)/k = r"],
+      "goal": "Clear denominators carefully, track domain restrictions, then solve linear."
+    }
+  ],
+  "behavior": {
+    "primary_goal": "Coach students to solve linear equations with clean, reversible steps and quick self-check.",
+    "method_order": [
+      "simplify_both_sides",
+      "move_x_terms_one_side",
+      "move_constants_other_side",
+      "divide_by_coefficient",
+      "check_by_substitution"
+    ],
+    "style": {
+      "productive_struggle": true,
+      "ask_before_tell": true,
+      "keep_steps_short": true,
+      "avoid_latex": true
+    }
+  },
+  "hint_ladder": {
+    "tiers": [
+      {
+        "id": "H1",
+        "label": "提示1（目標：讓 x 單獨）",
+        "intent": "Orient: what the next reversible move should accomplish.",
+        "template": "先看等號左邊：x 旁邊還黏著什麼？（常數項 / 係數 / 括號 / 分母）你的目標是讓 x 單獨留在一邊。"
+      },
+      {
+        "id": "H2",
+        "label": "提示2（讓 x 回家，數字分家）",
+        "intent": "Strategy: collect like terms and move systematically.",
+        "template": "口訣：讓 x 回家、讓數字分家。通常把所有含 x 的項移到同一邊，把常數移到另一邊；每做一步都要等號兩邊同做。"
+      },
+      {
+        "id": "H3",
+        "label": "提示3（最後一步：除以係數並驗算）",
+        "intent": "Finish: isolate x and verify.",
+        "template": "把式子整理成 kx = m 後，兩邊同除以 k 得 x = m/k。最後把你的 x 代回原式快速驗算。若有分母，先確認分母不為0。"
+      }
+    ],
+    "full_solution_policy": {
+      "when": ["student_requests_full_solution", "three_failed_attempts"],
+      "must_include": ["reversible_steps", "final_isolation", "check_by_substitution"]
+    }
+  },
+  "diagnosis": {
+    "error_taxonomy": [
+      {
+        "code": "LIN_E1_SIGN",
+        "name": "移項變號錯",
+        "coach": "移項其實是『等號兩邊同加/同減』。建議你把想移走的那一項，兩邊都做相反運算，再重寫一次。"
+      },
+      {
+        "code": "LIN_E2_DISTRIBUTIVE",
+        "name": "分配律/去括號錯",
+        "coach": "去括號時要每一項都乘到，尤其注意負號。你可以先把括號內每一項寫成乘法再展開。"
+      },
+      {
+        "code": "LIN_E3_COMBINE_LIKE_TERMS",
+        "name": "合併同類項錯",
+        "coach": "把含 x 的項放一起、純數字放一起。先把係數（x 前面的數）加總，再處理常數。"
+      },
+      {
+        "code": "LIN_E4_DIVIDE_COEFF",
+        "name": "除以係數錯",
+        "coach": "最後一步是把 kx 變成 x：兩邊同除以 k。若 k 是負數，結果符號也要一起跟著變。"
+      },
+      {
+        "code": "LIN_E5_DOMAIN",
+        "name": "分母為0未檢查",
+        "coach": "若題目有分母（例如 1/(x-2)），要先寫出限制條件：分母不能等於0。解完再檢查是否違反限制。"
+      }
+    ]
+  },
+  "placeholders": {
+    "supported": ["{equation}", "{level}"],
+    "notes": "Placeholders are optional. If not substituted, templates must still read naturally."
+  }
+}

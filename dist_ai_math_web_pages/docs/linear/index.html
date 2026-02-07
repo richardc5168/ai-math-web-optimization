@@ -210,6 +210,51 @@
   let currentQ = null;
   let currentStep = 0;
   let steps = [];
+  let tutorRules = null;
+
+  function safeStr(v) {
+    return String(v == null ? '' : v);
+  }
+
+  function extractEquationText(questionText) {
+    const s = safeStr(questionText).trim();
+    const idx = s.indexOf('：');
+    if (idx >= 0 && idx < s.length - 1) return s.slice(idx + 1).trim();
+    return s;
+  }
+
+  async function loadTutorRulesLinear() {
+    try {
+      const res = await fetch('./tutor_rules_linear_eq.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const j = await res.json();
+      if (!j || j.schema !== 'aimath.tutor_rules.v1') return;
+      if (j.ruleset_id !== 'linear.linear_eq.tw.v1') return;
+      tutorRules = j;
+    } catch (_) {
+      // ignore
+    }
+  }
+
+  function buildRuleHintSteps(level, questionText) {
+    const tiers = tutorRules?.hint_ladder?.tiers;
+    if (!Array.isArray(tiers) || tiers.length < 3) return [];
+    const equation = extractEquationText(questionText);
+    const ctx = {
+      '{equation}': equation,
+      '{level}': String(level)
+    };
+    const out = [];
+    for (let i = 0; i < 3; i++) {
+      const t = tiers[i];
+      const label = safeStr(t?.label).trim();
+      let body = safeStr(t?.template).trim();
+      if (!body) continue;
+      for (const [k, v] of Object.entries(ctx)) body = body.split(k).join(v);
+      out.push(label ? (label + '：' + body) : body);
+    }
+    return out;
+  }
 
   async function newGame() {
       const diff = els.diff.value;
@@ -245,8 +290,10 @@
         els.inter.style.display = 'block';
         els.hintSec.style.display = 'block';
       
-        // Parse steps
-        steps = (data.explanation || "").split('\n');
+          // Parse steps (prepend tiered hint ladder if rules exist)
+          const baseSteps = (data.explanation || "").split('\n').map(s => s.trim()).filter(Boolean);
+          const ruleSteps = tutorRules ? buildRuleHintSteps(parseInt(diff), data.question_text) : [];
+          steps = [...ruleSteps, ...baseSteps];
         els.btnHint.style.display = 'block';
         els.btnHint.innerText = "💡 顯示解題提示 (共 " + steps.length + " 步)";
   }
@@ -305,7 +352,10 @@
   els.btnHint.onclick = showNextStep;
 
   // Init
-  newGame();
+  (async function init(){
+    await loadTutorRulesLinear();
+    await newGame();
+  })();
 </script>
 </body>
 </html>
