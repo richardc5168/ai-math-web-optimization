@@ -67,7 +67,6 @@ offline_bundle_*.zip
 
 # Scratch notes/scripts (local)
 web.txt
-write_index.py
 
 # Local helper scripts/docs (not part of product)
 FIX_404_GITHUB_PAGES.md

@@ -1,0 +1,122 @@
+
+import os
+
+content = """<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Math RAG System - SageMath & NVIDIA Powered</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #58a6ff;
+      --btn-bg: #238636;
+      --btn-hover: #2ea043;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; color: var(--accent); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 20px; transition: transform 0.2s; display: flex; flex-direction: column; }
+    .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+    .card h2 { margin-top: 0; font-size: 1.5rem; color: #fff; }
+    .card p { font-size: 0.95rem; color: #8b949e; flex-grow: 1; }
+    .tag { display: inline-block; background: rgba(56,139,253,0.15); color: #58a6ff; font-size: 12px; padding: 2px 8px; border-radius: 12px; margin-right: 5px; margin-bottom: 5px; border: 1px solid rgba(56,139,253,0.3); text-decoration: none; }
+    .tag:hover { filter: brightness(1.08); }
+    .tag-nvidia { background: rgba(46, 160, 67, 0.15); color: #3fb950; border-color: rgba(46, 160, 67, 0.3); } 
+    .tag-math { background: rgba(210, 153, 34, 0.15); color: #d29922; border-color: rgba(210, 153, 34, 0.3); }
+    .btn { display: inline-block; background: var(--btn-bg); color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; }
+    .btn:hover { background: var(--btn-hover); }
+    .tech-stack { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; }
+    .tech-item { margin-bottom: 15px; }
+    .tech-title { font-weight: bold; color: #fff; text-decoration: none; }
+    a.tech-title:hover { text-decoration: underline; }
+    footer { text-align: center; margin-top: 50px; font-size: 0.8rem; color: #8b949e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI 數學智能練習系統</h1>
+    <p style="text-align: center; max-width: 700px; margin: 0 auto;">
+      整合 <strong>MATH Dataset (Levels 1-5)</strong> 難度體系與 <strong>OpenMathInstruct</strong> 逐步引導引擎。
+      <br>由 <strong>SymPy (SageMath Core)</strong> 提供最強大的開源運算支持。
+    </p>
+
+    <div class="grid">
+      <!-- 模組 1: 一元一次方程式 -->
+      <div class="card">
+        <h2>一元一次方程式</h2>
+        <div>
+          <a class="tag tag-math" href="./linear/" title="前往一元一次（Level 1-5）">MATH Dataset: Levels 1-5</a>
+        </div>
+        <p>
+          從基礎的移項法則到複雜的有理方程式。支援適應性測驗 (Adaptive Test) 選題模式。
+        </p>
+        <ul style="padding-left: 20px; font-size: 0.9rem; color: #8b949e;">
+          <li>Level 1-2: 基礎移項與括號運算</li>
+          <li>Level 3-4: 雙邊變數整合與分數</li>
+          <li>Level 5: 競賽級繁分數與含參方程</li>
+        </ul>
+        <a href="./linear/" class="btn">進入練習 (Linear)</a>
+      </div>
+
+      <!-- 模組 2: 一元二次方程式 -->
+      <div class="card">
+        <h2>一元二次方程式</h2>
+        <div>
+          <a class="tag tag-nvidia" href="./quadratic/" title="前往一元二次（Step-by-step）">OpenMathInstruct: Step-by-step</a>
+        </div>
+        <p>
+          AI 虛擬助教提供百萬級別的步驟解釋。涵蓋因式分解、配方法、公式解。
+        </p>
+        <ul style="padding-left: 20px; font-size: 0.9rem; color: #8b949e;">
+          <li>Level 1-3: 十字交乘法 (Factorization)</li>
+          <li>Level 4: 標準配方法 (Completing Square)</li>
+          <li>Level 5: 雙二次與根號運算 (Competition)</li>
+        </ul>
+        <a href="./quadratic/" class="btn">進入練習 (Quadratic)</a>
+      </div>
+    </div>
+
+    <div class="tech-stack">
+        <h3 style="color:var(--text); text-align:center;">核心競爭力 (Key Competencies)</h3>
+        
+        <div class="tech-item">
+          <a class="tag tag-math" href="./linear/" title="前往一元一次（Level 1-5）">MATH Dataset</a>
+          <a class="tech-title" href="./linear/" title="前往一元一次（Level 1-5）">分級標籤 (Level 1-5)</a>
+            <span style="font-size:0.9rem; color:#8b949e; display:block; margin-top:5px;">
+                包含 12,500 個高中競賽題目。其核心競爭力在於細緻的難度分級，非常適合用來做「適應性測驗（Adaptive Test）」的題庫基礎。
+            </span>
+        </div>
+
+        <div class="tech-item">
+          <a class="tag tag-nvidia" href="./quadratic/" title="前往一元二次（Step-by-step）">OpenMathInstruct</a>
+          <a class="tech-title" href="./quadratic/" title="前往一元二次（Step-by-step）">AI 逐步引導 (Step-by-step)</a>
+            <span style="font-size:0.9rem; color:#8b949e; display:block; margin-top:5px;">
+                關鍵競爭力：百萬級別的步驟解釋。專門用於訓練 AI 如何給出「逐步引導」而非直接給答案，是開發「AI 虛擬助教」的絕佳素材。
+            </span>
+        </div>
+
+        <div class="tech-item">
+            <span class="tag">SageMath / SymPy</span>
+            <span class="tech-title">開源數學界的「大百科全書」</span>
+            <span style="font-size:0.9rem; color:#8b949e; display:block; margin-top:5px;">
+                整合了 NumPy, SciPy, SymPy, R 等數十個專業數學包，是目前最強大的免費、開源數學計算環境，可替代付費的 Mathematica 或 MATLAB。
+            </span>
+        </div>
+    </div>
+
+    <footer>
+      Environment: Localhost | Engine: SymPy (SageMath) | Dataset: MATH + OpenMathInstruct
+    </footer>
+  </div>
+</body>
+</html>
+"""
+
+with open('docs/index.html', 'w', encoding='utf-8') as f:
+    f.write(content)
