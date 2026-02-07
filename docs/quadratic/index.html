@@ -141,7 +141,13 @@
         </div>
 
         <div id="hintToggleArea" style="margin-top:20px; display:none">
-          <button class="btn" id="btnShowHint" style="width:100%">💡 顯示/隱藏 完整解題步驟</button>
+          <div class="row" style="margin:0">
+            <button class="btn" id="btnHint1">提示 1（先試因式分解）</button>
+            <button class="btn" id="btnHint2">提示 2（配方法）</button>
+            <button class="btn" id="btnHint3">提示 3（公式解準備）</button>
+            <button class="btn primary" id="btnHintFull">完整詳解</button>
+            <button class="btn" id="btnHideHints" style="margin-left:auto">隱藏提示</button>
+          </div>
         </div>
 
       </section>
@@ -171,7 +177,10 @@
     fails: 0,      // consecutive fails in current step
     cooldownUntil: 0,
     cooldownActive: false,
-    _interval: null
+    _interval: null,
+    hintLevel: 0,  // 0 hidden, 1/2/3/full
+    hintBundle: null,
+    explanation: ''
   };
 
   // DOM
@@ -193,8 +202,12 @@
     // AI Hints
     aiHintArea: document.getElementById('aiHintArea'),
     hintSteps: document.getElementById('hintSteps'),
-    btnShowHint: document.getElementById('btnShowHint'),
     hintToggleArea: document.getElementById('hintToggleArea'),
+    btnHint1: document.getElementById('btnHint1'),
+    btnHint2: document.getElementById('btnHint2'),
+    btnHint3: document.getElementById('btnHint3'),
+    btnHintFull: document.getElementById('btnHintFull'),
+    btnHideHints: document.getElementById('btnHideHints'),
 
     // Cooldown
     cdBox: document.getElementById('cooldownBox'),
@@ -209,6 +222,167 @@
     videoLink: document.getElementById('videoLink'),
     topicBadge: document.getElementById('topicBadge')
   };
+
+  function safeParseNumber(s) {
+    if (typeof s !== 'string') return null;
+    const t = s.trim();
+    if (!t) return null;
+    const n = Number(t);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function stripOuterParens(s) {
+    let t = s.trim();
+    if (t.startsWith('(') && t.endsWith(')')) t = t.slice(1, -1).trim();
+    return t;
+  }
+
+  function parseRootExpr(expr) {
+    if (typeof expr !== 'string') return null;
+    let s = expr.trim();
+    if (!s) return null;
+    s = s.replace(/\s+/g, '');
+
+    // plain number
+    if (/^[+-]?\d+(?:\.\d+)?$/.test(s)) return Number(s);
+
+    // fraction a/b
+    if (/^[+-]?\d+(?:\.\d+)?\/[+-]?\d+(?:\.\d+)?$/.test(s)) {
+      const [aStr, bStr] = s.split('/');
+      const a = Number(aStr);
+      const b = Number(bStr);
+      if (!Number.isFinite(a) || !Number.isFinite(b) || b === 0) return null;
+      return a / b;
+    }
+
+    // (p±√q)/r or (p±sqrt(q))/r
+    const slashPos = s.lastIndexOf('/');
+    if (slashPos > 0) {
+      const numStr = stripOuterParens(s.slice(0, slashPos));
+      const denStr = s.slice(slashPos + 1);
+      const den = safeParseNumber(denStr);
+      if (den === null || den === 0) return null;
+
+      const m = numStr.match(/^([+-]?\d+(?:\.\d+)?)([+-])(.*)$/);
+      if (!m) return null;
+      const p = Number(m[1]);
+      const sign = m[2] === '+' ? 1 : -1;
+      let rest = m[3];
+      if (!Number.isFinite(p)) return null;
+
+      let q = null;
+      if (rest.startsWith('√')) {
+        q = safeParseNumber(rest.slice(1));
+      } else if (rest.startsWith('sqrt')) {
+        rest = rest.slice(4);
+        rest = stripOuterParens(rest);
+        q = safeParseNumber(rest);
+      }
+      if (q === null || q < 0) return null;
+      return (p + sign * Math.sqrt(q)) / den;
+    }
+
+    return null;
+  }
+
+  function parseRootsInput(input) {
+    if (typeof input !== 'string') return null;
+    const parts = input.split(',').map(x => x.trim()).filter(Boolean);
+    if (parts.length === 0) return null;
+    const roots = [];
+    for (const p of parts) {
+      const v = parseRootExpr(p);
+      if (v === null) return null;
+      roots.push(v);
+    }
+    return roots;
+  }
+
+  function polyValue(a, b, c, x) {
+    return a * x * x + b * x + c;
+  }
+
+  function isRoot(a, b, c, x, tol = 1e-6) {
+    const v = polyValue(a, b, c, x);
+    return Number.isFinite(v) && Math.abs(v) <= tol;
+  }
+
+  function buildHintBundle({ topicId, coefficients }) {
+    const a = coefficients?.a;
+    const b = coefficients?.b;
+    const c = coefficients?.c;
+    if (![a, b, c].every(Number.isFinite)) {
+      return {
+        h1: '先把題目整理成 ax^2+bx+c=0，標出 a、b、c。',
+        h2: '若能因式分解：找兩數乘積=ac、和=b（或 a=1 時乘積=c、和=b）。',
+        h3: '配方法：把常數移到右邊，左邊補成完全平方，再開根號。',
+      };
+    }
+
+    const fac = findIntegerFactorization(a, b, c);
+    const D = b * b - 4 * a * c;
+
+    const base = `先確認標準型：${formatPoly(a, b, c)} = 0\n係數：a=${a}, b=${b}, c=${c}`;
+    if (topicId === 'A3') {
+      if (fac) {
+        const f1 = `${fac.m === 1 ? '' : (fac.m === -1 ? '-' : fac.m)}x${fac.n >= 0 ? '+' : ''}${fac.n}`;
+        const f2 = `${fac.r === 1 ? '' : (fac.r === -1 ? '-' : fac.r)}x${fac.s >= 0 ? '+' : ''}${fac.s}`;
+        return {
+          h1: `${base}\nHint：先試因式分解（找兩個一次因式）。`,
+          h2: `觀察可分解：${formatPoly(a, b, c)} = (${f1})(${f2})`,
+          h3: `令每個因式為 0：(${f1})=0 或 (${f2})=0，再各自解出 x。`,
+          factoring: { f1, f2 }
+        };
+      }
+      return {
+        h1: `${base}\nHint：先嘗試因式分解（若卡住再改配方法）。`,
+        h2: `配方法：把常數移到右邊，在左邊補成完全平方。`,
+        h3: `若要公式解：先算判別式 D=b^2-4ac = ${D}，再代入 x=(-b±√D)/(2a)。`
+      };
+    }
+
+    // Non-A3 topics: still prefer flexible approaches before formula
+    return {
+      h1: `${base}\nHint：先觀察能否配方法補成平方。`,
+      h2: `配方法：把常數移到右邊，在左邊補成完全平方，再開根號。`,
+      h3: `最後才用公式解：D=${D}，x=(-b±√D)/(2a)。`
+    };
+  }
+
+  function renderHintText(text) {
+    els.hintSteps.innerHTML = '';
+    const lines = String(text || '').split('\n').map(s => s.trim()).filter(Boolean);
+    if (lines.length === 0) {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border-left:3px solid #58a6ff; font-family:monospace;";
+      div.innerText = '（暫無提示）';
+      els.hintSteps.appendChild(div);
+      return;
+    }
+    lines.forEach((line, idx) => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border-left:3px solid #58a6ff; font-family:monospace;";
+      div.innerHTML = `<span style="font-weight:bold; color:#58a6ff; margin-right:8px;">Step ${idx + 1}</span> ${line}`;
+      els.hintSteps.appendChild(div);
+    });
+  }
+
+  function revealHint(level) {
+    state.hintLevel = level;
+    if (!state.q) return;
+    if (!state.hintBundle) state.hintBundle = buildHintBundle({ topicId: els.topic.value, coefficients: state.q.coefficients });
+    els.aiHintArea.style.display = 'block';
+
+    if (level === 1) renderHintText(state.hintBundle.h1);
+    else if (level === 2) renderHintText(state.hintBundle.h2);
+    else if (level === 3) renderHintText(state.hintBundle.h3);
+    else renderHintText(state.explanation);
+  }
+
+  function hideHints() {
+    state.hintLevel = 0;
+    els.aiHintArea.style.display = 'none';
+  }
 
   function isPerfectSquare(n) {
     if (!Number.isFinite(n) || n < 0) return false;
@@ -467,15 +641,9 @@
         coefficients: data.coefficients,
         questionText: data.question_text
       }) || data.explanation || "此題暫無詳細步驟。";
-      
-      // Parse Explanation into steps
-      const lines = state.explanation.split('\n');
-      lines.forEach((line, idx) => {
-         const div = document.createElement('div');
-         div.style.cssText = "padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border-left:3px solid #58a6ff; font-family:monospace;";
-         div.innerHTML = `<span style="font-weight:bold; color:#58a6ff; margin-right:8px;">Step ${idx+1}</span> ${line}`;
-         els.hintSteps.appendChild(div);
-      });
+
+      state.hintBundle = buildHintBundle({ topicId: els.topic.value, coefficients: data.coefficients });
+      state.hintLevel = 0;
 
       // Context
       if(data.knowledge_context) {
@@ -496,6 +664,12 @@
       const ua = parseInt(els.s1a.value);
       const ub = parseInt(els.s1b.value);
       const uc = parseInt(els.s1c.value);
+
+      if (![ua, ub, uc].every(Number.isFinite)) {
+        els.banner.className = 'banner muted';
+        els.banner.innerText = '請先填完 a、b、c 再檢查。';
+        return;
+      }
       
       const truth = state.q.coefficients;
       // Allow multiplier (e.g. 2x^2+4x+2=0 vs x^2+2x+1=0) -- simplest is exact match for now, or proportional
@@ -519,7 +693,8 @@
           state.fails++;
           els.banner.className = 'banner bad';
           els.banner.innerText = "係數不對喔，再檢查正負號或有無移項。";
-          if(state.fails >= 2) startCooldown();
+          if (state.fails === 1) revealHint(1);
+          if(state.fails >= 2) { revealHint(2); startCooldown(); }
       }
   }
 
@@ -554,22 +729,34 @@
               throw new Error("API fail");
           }
       } catch(e) {
-          // Fallback check (Text match)
-          // Simple string inclusion check for offline demo
-          const ca = state.q.correct_answer || "";
-          // Weak check
-          const firstAns = val.split(',')[0].trim();
-          if(val.length > 0 && ca.includes(firstAns)) { 
-             els.banner.className = 'banner ok';
-             els.banner.innerText = "答案正確 (Offline Check)！";
-             state.stage = 3; 
-             updateUI();
-          } else {
-             state.fails++;
-             els.banner.className = 'banner bad';
-             els.banner.innerText = "答案不正確。試著再算算看。";
-             if(state.fails >= 2) startCooldown();
+         // Fallback check (offline): parse roots and verify by substitution
+         const coeffs = state.q.coefficients || {};
+         const a = coeffs.a, b = coeffs.b, c = coeffs.c;
+         const roots = parseRootsInput(val);
+         const D = (Number.isFinite(a) && Number.isFinite(b) && Number.isFinite(c)) ? (b*b - 4*a*c) : null;
+
+         let ok = false;
+         if (roots && Number.isFinite(a) && Number.isFinite(b) && Number.isFinite(c)) {
+          if (roots.length >= 2) {
+            ok = isRoot(a, b, c, roots[0]) && isRoot(a, b, c, roots[1]);
+          } else if (roots.length === 1 && D !== null) {
+            ok = isRoot(a, b, c, roots[0]) && Math.abs(D) <= 1e-8;
           }
+         }
+
+         if(ok) {
+           els.banner.className = 'banner ok';
+           els.banner.innerText = "答案正確（離線代入檢查）！";
+           state.stage = 3; 
+           updateUI();
+           revealHint(4);
+         } else {
+           state.fails++;
+           els.banner.className = 'banner bad';
+           els.banner.innerText = "答案不正確。先試因式分解；卡住再配方法；最後才用公式解。";
+           if (state.fails === 1) revealHint(1);
+           if(state.fails >= 2) { revealHint(2); startCooldown(); }
+         }
       }
   }
 
@@ -580,10 +767,11 @@
   els.btnResetSteps = document.getElementById('btnResetSteps');
   els.btnResetSteps.onclick = () => { state.stage=1; state.fails=0; els.banner.className='banner muted'; els.banner.innerText=''; updateUI(); };
   
-  els.btnShowHint.onclick = () => {
-     const isHidden = els.aiHintArea.style.display === 'none';
-     els.aiHintArea.style.display = isHidden ? 'block' : 'none';
-  };
+    els.btnHint1.onclick = () => revealHint(1);
+    els.btnHint2.onclick = () => revealHint(2);
+    els.btnHint3.onclick = () => revealHint(3);
+    els.btnHintFull.onclick = () => revealHint(4);
+    els.btnHideHints.onclick = hideHints;
 
   // Init
   newGame();
