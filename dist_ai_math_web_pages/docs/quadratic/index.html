@@ -181,7 +181,8 @@
     hintLevel: 0,  // 0 hidden, 1/2/3/full
     hintBundle: null,
     explanation: '',
-    tutorRules: null,  // optional JSON ruleset for A3 factoring
+    tutorRulesA3: null,  // optional JSON ruleset for A3 factoring
+    tutorRulesA5: null,  // optional JSON ruleset for A5 formula
     problemType: null  // e.g. 'factoring' | 'formula'
   };
 
@@ -239,8 +240,16 @@
     if (els.btnHintFull) els.btnHintFull.innerText = DEFAULT_HINT_LABELS.full;
   }
 
+  function getActiveTutorRules() {
+    const topic = els.topic?.value;
+    const t = state.problemType;
+    if (topic === 'A3' && t === 'factoring') return state.tutorRulesA3;
+    if (topic === 'A5' && t === 'formula') return state.tutorRulesA5;
+    return null;
+  }
+
   function isRulesApplicableNow() {
-    return !!(state.tutorRules && els.topic.value === 'A3' && state.problemType === 'factoring');
+    return !!getActiveTutorRules();
   }
 
   function applyHintButtonLabelsFromRules() {
@@ -248,7 +257,7 @@
       resetHintButtonLabels();
       return;
     }
-    const tiers = state.tutorRules?.hint_ladder?.tiers;
+    const tiers = getActiveTutorRules()?.hint_ladder?.tiers;
     if (!Array.isArray(tiers) || tiers.length < 3) return;
     if (tiers[0]?.label && els.btnHint1) els.btnHint1.innerText = String(tiers[0].label);
     if (tiers[1]?.label && els.btnHint2) els.btnHint2.innerText = String(tiers[1].label);
@@ -280,7 +289,21 @@
       const j = await res.json();
       if (!j || j.schema !== 'aimath.tutor_rules.v1') return;
       if (j.ruleset_id !== 'quadratic.A3.factoring.tw.v1') return;
-      state.tutorRules = j;
+      state.tutorRulesA3 = j;
+    } catch (_) {
+      // ignore (offline / 404)
+    }
+  }
+
+  async function loadTutorRulesA5Formula() {
+    // Optional: if the JSON is absent, everything should keep working.
+    try {
+      const res = await fetch('./tutor_rules_A5_formula.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const j = await res.json();
+      if (!j || j.schema !== 'aimath.tutor_rules.v1') return;
+      if (j.ruleset_id !== 'quadratic.A5.formula.tw.v1') return;
+      state.tutorRulesA5 = j;
     } catch (_) {
       // ignore (offline / 404)
     }
@@ -385,13 +408,36 @@
     const fac = findIntegerFactorization(a, b, c);
     const D = b * b - 4 * a * c;
 
-    const rulesTiers = isRulesApplicableNow() ? (state.tutorRules?.hint_ladder?.tiers || null) : null;
+    const rulesTiers = isRulesApplicableNow() ? (getActiveTutorRules()?.hint_ladder?.tiers || null) : null;
     const ctx = {
       a,
       b,
       c,
       equation: `${formatPoly(a, b, c)} = 0`
     };
+
+    const isA5 = (topicId === 'A5') || (state.problemType === 'formula');
+    if (isA5) {
+      const coeffLine = `先整理成 ax^2+bx+c=0，標出 a=${a}、b=${b}、c=${c}。`;
+      const squareNote = isPerfectSquare(D) ? '（D 是完全平方：也可以回頭再試因式分解）' : '';
+      const dLine = `判別式 D=b^2-4ac=${D}。${squareNote}`;
+      const h1Base = `${coeffLine}\n${dLine}`;
+      const h2Base = `代入公式：x=(-b±√D)/(2a)=(${-b}±√${D})/${2 * a}。`;
+      const h3Base = '把兩個根各自化簡（能約分就約分、根號能化簡就先化簡），最後代回 ax^2+bx+c 檢查是否=0。';
+
+      if (Array.isArray(rulesTiers) && rulesTiers.length >= 3) {
+        const h1t = substitutePlaceholders(rulesTiers[0]?.template, ctx).trim();
+        const h2t = substitutePlaceholders(rulesTiers[1]?.template, ctx).trim();
+        const h3t = substitutePlaceholders(rulesTiers[2]?.template, ctx).trim();
+        return {
+          h1: (h1t ? (h1t + '\n' + h1Base) : h1Base),
+          h2: (h2t ? (h2t + '\n' + h2Base) : h2Base),
+          h3: (h3t ? (h3t + '\n' + h3Base) : h3Base)
+        };
+      }
+
+      return { h1: h1Base, h2: h2Base, h3: h3Base };
+    }
 
     const factoringHint = (() => {
       if (fac) {
@@ -700,7 +746,7 @@
 
       const data = await apiCall('/v1/quadratic/next', {topic_id: topic, difficulty: diff});
       state.q = data;
-      state.problemType = (data && data.type) ? String(data.type) : (topic === 'A3' ? 'factoring' : null);
+      state.problemType = (data && data.type) ? String(data.type) : (topic === 'A3' ? 'factoring' : (topic === 'A5' ? 'formula' : null));
       state.stage = 1;
       state.fails = 0;
       state.cooldownActive = false;
@@ -872,7 +918,7 @@
 
   // Init
   (async function init() {
-    await loadTutorRulesA3Factoring();
+    await Promise.all([loadTutorRulesA3Factoring(), loadTutorRulesA5Formula()]);
     await newGame();
   })();
 
