@@ -847,7 +847,38 @@
       saveEmpire();
       renderEmpire(null);
 
-      gBanner('warn', `結束！分數 ${g.score}｜正確 ${g.correct}/${g.total}（${g.total?Math.round((g.correct/g.total)*100):0}%）\n你可以再挑戰一次，或切到練習模式用「小數點工坊」練最容易錯的地方。`);
+      const msg = (g._endMsg)
+        ? g._endMsg
+        : `結束！分數 ${g.score}｜正確 ${g.correct}/${g.total}（${g.total?Math.round((g.correct/g.total)*100):0}%）\n你可以再挑戰一次，或切到練習模式用「小數點工坊」練最容易錯的地方。`;
+      const kind = g._endKind || 'warn';
+      g._endMsg = null;
+      g._endKind = null;
+      gBanner(kind, msg);
+    }
+
+    const GAME_TOTAL_SECONDS = 90;
+    const GAME_ROUNDS = 5;
+    const GAME_ROUND_TARGET = 5; // minimum questions per round (attempts)
+    const GAME_ROUND_SECONDS = Math.floor(GAME_TOTAL_SECONDS / GAME_ROUNDS);
+
+    function gRoundDoneCount(){
+      return Math.max(0, (g.total || 0) - (g.roundStartTotal || 0));
+    }
+
+    function gFailRound(){
+      const done = gRoundDoneCount();
+      g._endKind = 'bad';
+      g._endMsg = `失敗：第 ${g.round}/${GAME_ROUNDS} 回合未達標（${done}/${GAME_ROUND_TARGET} 題）。\n規則：90 秒分 5 回合（每回合 ${GAME_ROUND_SECONDS} 秒），每回合至少完成 ${GAME_ROUND_TARGET} 題。\n本次成績：分數 ${g.score}｜正確 ${g.correct}/${g.total}。`;
+      g.t = 0;
+      gUpdate();
+      gStop();
+    }
+
+    function gAdvanceRound(){
+      g.round += 1;
+      g.roundStartTotal = g.total || 0;
+      g.roundEndAtMs += GAME_ROUND_SECONDS * 1000;
+      gBanner('muted', `進入第 ${g.round}/${GAME_ROUNDS} 回合：每回合 ${GAME_ROUND_SECONDS} 秒，至少 ${GAME_ROUND_TARGET} 題。`);
     }
 
     function gStart(){
@@ -856,7 +887,26 @@
         gBanner('bad', '沒有符合條件的題目（請改成「全部」或換難度）');
         return;
       }
-      g = { running:true, t:90, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:g.pool, hintUsedThisQ:false };
+      const startedAt = Date.now();
+      g = {
+        running:true,
+        t:GAME_TOTAL_SECONDS,
+        timer:null,
+        score:0,
+        streak:0,
+        correct:0,
+        total:0,
+        q:null,
+        pool:g.pool,
+        hintUsedThisQ:false,
+
+        round:1,
+        roundStartTotal:0,
+        roundEndAtMs: startedAt + (GAME_ROUND_SECONDS * 1000),
+        endAtMs: startedAt + (GAME_TOTAL_SECONDS * 1000),
+        _endMsg:null,
+        _endKind:null,
+      };
       els.btnStart.disabled = true;
       els.btnStop.disabled = false;
       els.btnSubmit.disabled = false;
@@ -864,8 +914,19 @@
       gPick();
       renderEmpire(null);
       gUpdate();
+      gBanner('muted', `開始！90 秒分 5 回合（每回合 ${GAME_ROUND_SECONDS} 秒），每回合至少完成 ${GAME_ROUND_TARGET} 題；任一回合沒達標就結束。`);
       g.timer = setInterval(() => {
-        g.t -= 1;
+        const now = Date.now();
+        const leftOverall = Math.max(0, Math.ceil((g.endAtMs - now) / 1000));
+        g.t = leftOverall;
+
+        // Round boundary check (fail-fast)
+        if (now >= g.roundEndAtMs) {
+          const done = gRoundDoneCount();
+          if (done < GAME_ROUND_TARGET) return gFailRound();
+          if (g.round < GAME_ROUNDS) gAdvanceRound();
+        }
+
         if (g.t <= 0){
           g.t = 0;
           gUpdate();
@@ -873,7 +934,7 @@
           return;
         }
         gUpdate();
-      }, 1000);
+      }, 250);
     }
 
     function gSubmit(){
