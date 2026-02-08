@@ -80,6 +80,14 @@
       </div>
 
       <div id="banner" class="banner warn" style="display:none"></div>
+
+      <div class="row" style="margin-top:12px">
+        <button id="btnHint" class="btnGhost">提示 +1（L1→L3）</button>
+        <button id="btnNextStep" class="btnGhost">下一步</button>
+        <button id="btnSolution" class="btnGhost">完整解答</button>
+        <span id="txtHelpStat" class="small"></span>
+      </div>
+      <div id="helpBox" class="banner warn" style="display:none"></div>
     </div>
 
     <div class="card">
@@ -137,7 +145,105 @@
     }
 
     const sessionId = newId('sess');
-    let cur = { unit: null, q: null, startedAtMs: null, attemptId: null, attemptsCount: 0 };
+
+    const COACH_META_URL = '../coaching_meta/grade5.sample.json';
+    const coachMetaByQuestionId = new Map();
+
+    let help = null;
+    let cur = {
+      unit: null,
+      q: null,
+      startedAtMs: null,
+      attemptId: null,
+      attemptsCount: 0,
+      lastUserAnswer: '',
+      everCorrect: false,
+    };
+
+    function newHelpState(){
+      return {
+        currentHintLevel: 0,
+        shownLevels: new Set(),
+        shownCount: 0,
+        firstShownAt: null,
+        totalHintMs: 0,
+        timerStart: null,
+        usedNextStep: false,
+        shownSolution: false,
+        nextStepIndex: 0,
+      };
+    }
+
+    function startHelpTimer(){
+      if (!help) return;
+      if (help.timerStart == null) help.timerStart = Date.now();
+    }
+
+    function pauseHelpTimer(){
+      if (!help) return;
+      if (help.timerStart != null){
+        help.totalHintMs = Math.max(0, Number(help.totalHintMs || 0)) + Math.max(0, Date.now() - help.timerStart);
+        help.timerStart = null;
+      }
+    }
+
+    function liveHelpMs(){
+      if (!help) return 0;
+      const base = Math.max(0, Number(help.totalHintMs || 0));
+      if (help.timerStart == null) return base;
+      return base + Math.max(0, Date.now() - help.timerStart);
+    }
+
+    function updateHelpStat(){
+      const el = $('txtHelpStat');
+      if (!el) return;
+      if (!help){
+        el.textContent = '';
+        return;
+      }
+      const levels = Array.from(help.shownLevels || []).sort((a,b)=>a-b).map(n => `L${n}`).join(',');
+      const ms = liveHelpMs();
+      const s = Math.round(ms / 1000);
+      const parts = [];
+      parts.push(`已看提示：${levels || '無'}`);
+      parts.push(`點擊：${String(help.shownCount || 0)}`);
+      parts.push(`提示時間：${String(s)}s`);
+      if (help.usedNextStep) parts.push('已用「下一步」');
+      if (help.shownSolution) parts.push('已看「完整解答」');
+      el.textContent = parts.join(' ｜ ');
+    }
+
+    function showHelpBox(kind, title, body){
+      const el = $('helpBox');
+      if (!el) return;
+      el.className = 'banner ' + (kind === 'ok' ? 'ok' : 'warn');
+      el.innerHTML = `<div style="font-weight:700; margin-bottom:6px"></div><div></div>`;
+      el.children[0].textContent = String(title || '');
+      el.children[1].textContent = String(body || '');
+      el.style.display = 'block';
+    }
+
+    function clearHelpBox(){
+      const el = $('helpBox');
+      if (!el) return;
+      el.style.display = 'none';
+      el.textContent = '';
+    }
+
+    async function loadCoachMeta(){
+      try{
+        const resp = await fetch(COACH_META_URL, { cache: 'no-store' });
+        if (!resp.ok) return;
+        const arr = await resp.json();
+        if (!Array.isArray(arr)) return;
+        for (const item of arr){
+          const qid = item && item.question_id;
+          if (qid) coachMetaByQuestionId.set(String(qid), item);
+        }
+      } catch (e) {
+        // optional; fallback will use bank hints
+      }
+    }
 
     function pickRandom(arr){
       if (!Array.isArray(arr) || !arr.length) return null;
@@ -163,8 +269,141 @@
       $('banner').textContent = '';
     }
 
+    function normalizeAnswer(s){
+      return String(s || '').trim().replace(/\s+/g, '');
+    }
+
+    function expectedAnswer(){
+      if (!cur.q) return '';
+      return (cur.q && cur.q.answer != null) ? String(cur.q.answer).trim() : '';
+    }
+
+    function computeCorrect(userAns){
+      const expected = expectedAnswer();
+      if (!expected) return false;
+      return normalizeAnswer(userAns) === normalizeAnswer(expected);
+    }
+
+    function hintEntryForLevel(level){
+      const qid = cur.q && (cur.q.id || null);
+      const meta = qid ? coachMetaByQuestionId.get(String(qid)) : null;
+      if (meta && Array.isArray(meta.hint_ladder)){
+        const found = meta.hint_ladder.find(x => Number(x && x.level) === Number(level));
+        if (found) return { title: found.title || `L${level} 提示`, body: found.body || '' };
+      }
+      const hints = cur.q && Array.isArray(cur.q.hints) ? cur.q.hints : null;
+      if (hints && hints[level - 1]){
+        return { title: `L${level} 提示`, body: String(hints[level - 1]) };
+      }
+      // fallback templates by unit
+      if (cur.unit === 'fraction'){
+        if (level === 1) return { title: 'L1 提示｜先看分母', body: '先確認分母是否相同；同分母先加分子。' };
+        if (level === 2) return { title: 'L2 提示｜列式再約分', body: '把算式寫成「分子運算 / 原分母」，最後記得約分到最簡。' };
+        return { title: 'L3 提示｜檢查', body: '檢查：分母是否保持？結果是否最簡？是否合理（介於 0 和 1 或大於 1）？' };
+      }
+      if (cur.unit === 'decimal'){
+        if (level === 1) return { title: 'L1 提示｜先判斷變大變小', body: '先看乘除的數 >1 或 <1，判斷答案大概變大或變小。' };
+        if (level === 2) return { title: 'L2 提示｜小數點規則', body: '乘以 10/100/1000 或 0.1/0.01/0.001 時，小數點左右移動對應格數。' };
+        return { title: 'L3 提示｜估算檢查', body: '用估算檢查小數點位置是否合理（例如大約是原數的幾倍）。' };
+      }
+      if (cur.unit === 'ratio'){
+        if (level === 1) return { title: 'L1 提示｜先找部分/全體', body: '先標出「部分」和「全體」，再決定是要算比率還是百分率。' };
+        if (level === 2) return { title: 'L2 提示｜公式', body: '比率 = 部分 ÷ 全體；百分率 = 比率 × 100%。' };
+        return { title: 'L3 提示｜檢查', body: '檢查：部分 < 全體 → 比率 < 1；百分率通常在 0%~100%（除非超過 1）。' };
+      }
+      return { title: `L${level} 提示`, body: '先把題目條件整理成清楚的算式，再用估算檢查答案合理性。' };
+    }
+
+    function recordHintShown(level){
+      if (!help) return;
+      startHelpTimer();
+      if (help.firstShownAt == null) help.firstShownAt = Date.now();
+      help.shownCount = Math.max(0, Number(help.shownCount || 0)) + 1;
+      help.shownLevels.add(Number(level));
+      window.AIMathCoachLog?.appendEvent?.({
+        type: window.AIMathCoachLog.EventType.HINT_SHOWN,
+        unit: cur.unit,
+        question_id: (cur.q && cur.q.id) ? String(cur.q.id) : null,
+        ts_ms: Date.now(),
+        hint_level: Number(level),
+        payload: { attempt_id: cur.attemptId || null },
+      });
+      updateHelpStat();
+    }
+
+    function finalizeAttempt(reason){
+      if (!cur.q) return;
+      if (Math.max(0, Number(cur.attemptsCount || 0)) <= 0) return;
+
+      pauseHelpTimer();
+      updateHelpStat();
+
+      const uid = window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
+      const expected = expectedAnswer();
+      const allowContinue = window.AIMathCoachLog?.allowContinueAlways?.() !== false;
+      const endedAt = Date.now();
+
+      window.AIMathAttemptTelemetry?.appendAttempt?.(uid, {
+        attempt_id: cur.attemptId || newId('att'),
+        user_id: uid,
+        session_id: sessionId,
+        ts_start: Number(cur.startedAtMs || endedAt),
+        ts_end: endedAt,
+
+        pack_id: '',
+        module_id: 'coach',
+        unit_id: cur.unit,
+        kind: String(cur.q?.kind || 'unknown'),
+        topic_tags: [],
+        difficulty: String(cur.q?.difficulty || ''),
+
+        question_id: String(cur.q?.id || ''),
+        correct_answer: expected,
+        user_answer: String(cur.lastUserAnswer || ''),
+
+        is_correct: !!cur.everCorrect,
+        judge_type: 'regex',
+        attempts_count: Math.max(1, Number(cur.attemptsCount || 1)),
+
+        hint: {
+          shown_levels: Array.from((help && help.shownLevels) ? help.shownLevels : []).sort((a,b)=>a-b),
+          shown_count: Math.max(0, Number(help?.shownCount || 0)),
+          total_hint_ms: Math.max(0, Number(help?.totalHintMs || 0)),
+          first_shown_at: help?.firstShownAt != null ? Number(help.firstShownAt) : undefined,
+        },
+        steps: {
+          used_next_step: !!help?.usedNextStep,
+          shown_solution: !!help?.shownSolution,
+        },
+        device: {
+          platform: (typeof navigator !== 'undefined' ? navigator.platform : ''),
+          ua: (typeof navigator !== 'undefined' ? navigator.userAgent : ''),
+        },
+      });
+
+      window.AIMathCoachLog?.appendEvent?.({
+        type: window.AIMathCoachLog.EventType.ATTEMPT_COMPLETED,
+        unit: cur.unit,
+        question_id: cur.q.id || null,
+        ts_ms: Date.now(),
+        allow_continue: allowContinue,
+        payload: {
+          attempt_id: cur.attemptId || null,
+          reason: String(reason || 'next'),
+          attempts_count: Math.max(1, Number(cur.attemptsCount || 1)),
+          is_correct: !!cur.everCorrect,
+        },
+      });
+    }
+
     function startNext(){
       clearBanner();
+      clearHelpBox();
+      updateHelpStat();
+
+      // close previous attempt (one AttemptEvent per question)
+      finalizeAttempt('next');
+
       const unit = $('selBank').value;
       const bank = bankMap[unit] ? bankMap[unit]() : [];
       const q = pickRandom(bank);
@@ -174,6 +413,10 @@
       cur.startedAtMs = Date.now();
       cur.attemptId = newId('att');
       cur.attemptsCount = 0;
+      cur.lastUserAnswer = '';
+      cur.everCorrect = false;
+      help = newHelpState();
+      updateHelpStat();
 
       if (!q){
         $('qText').textContent = '題庫為空或尚未載入。';
@@ -192,7 +435,7 @@
         unit,
         question_id: q.id || null,
         ts_ms: Date.now(),
-        payload: {},
+        payload: { attempt_id: cur.attemptId },
       });
 
       refreshStats();
@@ -205,13 +448,15 @@
         return;
       }
 
+      pauseHelpTimer();
+
       const userAns = String($('inpAns').value || '').trim();
       cur.attemptsCount = Math.max(0, Number(cur.attemptsCount || 0)) + 1;
+      cur.lastUserAnswer = userAns;
       const durationMs = Math.max(0, Date.now() - (cur.startedAtMs || Date.now()));
 
-      const expected = (cur.q && cur.q.answer != null) ? String(cur.q.answer).trim() : '';
-      const normalize = (s) => String(s || '').trim().replace(/\s+/g, '');
-      const isCorrect = expected ? (normalize(userAns) === normalize(expected)) : false;
+      const isCorrectNow = computeCorrect(userAns);
+      if (isCorrectNow) cur.everCorrect = true;
 
       // Coach Mode policy: always allow continue.
       const allowContinue = window.AIMathCoachLog?.allowContinueAlways?.() !== false;
@@ -223,66 +468,82 @@
         ts_ms: Date.now(),
         allow_continue: allowContinue,
         payload: {
+          attempt_id: cur.attemptId,
+          attempts_count: Math.max(1, Number(cur.attemptsCount || 1)),
+          is_correct_now: !!isCorrectNow,
           user_answer: userAns,
           duration_ms: durationMs,
         },
       });
 
-      // AttemptEvent (question-level) telemetry for weekly parent report.
-      const uid = window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
-      window.AIMathAttemptTelemetry?.appendAttempt?.(uid, {
-        attempt_id: cur.attemptId || newId('att'),
-        user_id: uid,
-        session_id: sessionId,
-        ts_start: Number(cur.startedAtMs || Date.now()),
-        ts_end: Date.now(),
-
-        pack_id: '',
-        module_id: 'coach',
-        unit_id: cur.unit,
-        kind: String(cur.q?.kind || 'unknown'),
-        topic_tags: [],
-        difficulty: String(cur.q?.difficulty || ''),
-
-        question_id: String(cur.q?.id || ''),
-        correct_answer: expected,
-        user_answer: userAns,
-
-        is_correct: isCorrect,
-        judge_type: 'regex',
-        attempts_count: Math.max(1, Number(cur.attemptsCount || 1)),
-
-        hint: {
-          shown_levels: [],
-          shown_count: 0,
-          total_hint_ms: 0,
-        },
-        steps: {
-          used_next_step: false,
-          shown_solution: false,
-        },
-        device: {
-          platform: (typeof navigator !== 'undefined' ? navigator.platform : ''),
-          ua: (typeof navigator !== 'undefined' ? navigator.userAgent : ''),
-        },
-      });
-
-      window.AIMathCoachLog?.appendEvent?.({
-        type: window.AIMathCoachLog.EventType.ATTEMPT_COMPLETED,
-        unit: cur.unit,
-        question_id: cur.q.id || null,
-        ts_ms: Date.now(),
-        allow_continue: allowContinue,
-        payload: {
-          completed: true,
-        },
-      });
-
-      showBanner('ok', isCorrect
-        ? '答對了！已記錄：也可以直接按「開始 / 下一題」繼續。'
-        : '已提交（目前判定未答對）。已記錄：不論對錯，都可以直接按「開始 / 下一題」繼續。'
+      updateHelpStat();
+      showBanner('ok', isCorrectNow
+        ? '這次答對了！你也可以直接按「開始 / 下一題」繼續。'
+        : '已提交（目前判定未答對）。你可以再試一次，或直接按「開始 / 下一題」繼續。'
       );
       refreshStats();
+    }
+
+    function onHintClick(){
+      clearBanner();
+      if (!cur.q){
+        showBanner('warn', '請先按「開始 / 下一題」出題。');
+        return;
+      }
+      if (!help) help = newHelpState();
+      const nextLevel = Math.min(3, Math.max(0, Number(help.currentHintLevel || 0)) + 1);
+      help.currentHintLevel = nextLevel;
+      recordHintShown(nextLevel);
+      const entry = hintEntryForLevel(nextLevel);
+      showHelpBox('warn', entry.title, entry.body);
+    }
+
+    function onNextStepClick(){
+      clearBanner();
+      if (!cur.q){
+        showBanner('warn', '請先按「開始 / 下一題」出題。');
+        return;
+      }
+      if (!help) help = newHelpState();
+      help.usedNextStep = true;
+      startHelpTimer();
+
+      const steps = (cur.q && Array.isArray(cur.q.steps)) ? cur.q.steps : null;
+      if (!steps || !steps.length){
+        showHelpBox('warn', '下一步', '這題目前沒有提供分步提示（steps）。你可以改用「提示 +1」或「完整解答」。');
+        updateHelpStat();
+        return;
+      }
+      const idx = Math.min(steps.length - 1, Math.max(0, Number(help.nextStepIndex || 0)));
+      const stepText = String(steps[idx]);
+      help.nextStepIndex = idx + 1;
+      showHelpBox('warn', `下一步（${idx + 1}/${steps.length}）`, stepText);
+      updateHelpStat();
+    }
+
+    function onSolutionClick(){
+      clearBanner();
+      if (!cur.q){
+        showBanner('warn', '請先按「開始 / 下一題」出題。');
+        return;
+      }
+      if (!help) help = newHelpState();
+      help.shownSolution = true;
+      startHelpTimer();
+      const expected = expectedAnswer();
+      const steps = (cur.q && Array.isArray(cur.q.steps)) ? cur.q.steps : null;
+      const stepBlock = (steps && steps.length) ? `\n\n分步：\n- ${steps.map(s => String(s)).join('\n- ')}` : '';
+      const body = expected ? `參考答案：${expected}${stepBlock}` : `參考答案：（題庫未提供 answer）${stepBlock}`;
+      showHelpBox('warn', '完整解答（參考）', body);
+      window.AIMathCoachLog?.appendEvent?.({
+        type: window.AIMathCoachLog.EventType.HINT_SHOWN,
+        unit: cur.unit,
+        question_id: (cur.q && cur.q.id) ? String(cur.q.id) : null,
+        ts_ms: Date.now(),
+        hint_level: 99,
+        payload: { attempt_id: cur.attemptId || null, solution: true },
+      });
+      updateHelpStat();
     }
 
     function exportJson(){
@@ -298,10 +559,14 @@
 
     $('btnStart').addEventListener('click', startNext);
     $('btnSubmit').addEventListener('click', submit);
+    $('btnHint').addEventListener('click', onHintClick);
+    $('btnNextStep').addEventListener('click', onNextStepClick);
+    $('btnSolution').addEventListener('click', onSolutionClick);
     $('btnExport').addEventListener('click', exportJson);
     $('btnClear').addEventListener('click', clearLog);
 
     // init
+    loadCoachMeta();
     refreshStats();
     exportJson();
   })();
