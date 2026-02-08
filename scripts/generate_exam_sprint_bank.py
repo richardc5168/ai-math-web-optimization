@@ -57,6 +57,58 @@ ADV_KEYWORDS = (
 )
 
 
+def _len_score(text: str) -> int:
+    s = str(text or "")
+    s = re.sub(r"\s+", "", s)
+    return len(s)
+
+
+def _count_keywords(text: str) -> int:
+    s = str(text or "")
+    return sum(1 for k in ADV_KEYWORDS if k in s)
+
+
+def _item_quality_score(q: Dict[str, Any], source_id: str) -> float:
+    """Higher is better (more application-heavy, multi-step, longer stem)."""
+    diff = str(q.get("difficulty") or "").lower().strip()
+    base = float(_difficulty_rank(diff))
+
+    qtext = str(q.get("question") or "")
+    steps = q.get("steps") or []
+    hints = q.get("hints") or []
+    expl = str(q.get("explanation") or "")
+
+    qlen = _len_score(qtext)
+    elen = _len_score(expl)
+    step_n = len(steps) if isinstance(steps, list) else 0
+    hint_n = len(hints) if isinstance(hints, list) else 0
+    kw = _count_keywords(qtext)
+
+    source_boost = 0.0
+    if source_id in (
+        "fraction-word-g5",
+        "life-applications-g5",
+        "ratio-percent-g5",
+        "volume-g5",
+        "interactive-g5-life-pack1-empire",
+        "interactive-g5-life-pack1plus-empire",
+        "interactive-g5-life-pack2-empire",
+        "interactive-g5-life-pack2plus-empire",
+    ):
+        source_boost = 0.4
+
+    # Prefer long stems and multi-step structure.
+    return (
+        base * 10.0
+        + min(60, qlen) * 0.06
+        + min(120, elen) * 0.03
+        + min(8, step_n) * 0.55
+        + min(6, hint_n) * 0.18
+        + kw * 0.35
+        + source_boost
+    )
+
+
 def _extract_json_array_from_bank_js(text: str) -> List[Dict[str, Any]]:
     s = str(text)
 
@@ -130,18 +182,42 @@ def _is_advanced_item(q: Dict[str, Any], source_id: str) -> bool:
     if diff in ("hard", "advanced"):
         return True
 
-    # Some modules are application-heavy even at "medium".
-    if diff == "medium" and source_id in (
+    # We still allow a controlled amount of "medium" for sprint warm-up,
+    # but only when it's clearly application-heavy / multi-step.
+    if diff == "normal":
+        diff = "medium"
+
+    if diff != "medium":
+        return False
+
+    qtext = str(q.get("question") or "")
+    qlen = _len_score(qtext)
+    kw = _count_keywords(qtext)
+    steps = q.get("steps") or []
+    step_n = len(steps) if isinstance(steps, list) else 0
+
+    # Hard filter: avoid short, drill-like stems.
+    if qlen < 18 and kw == 0:
+        return False
+
+    # Multi-step or keyword-rich medium problems qualify.
+    if step_n >= 4:
+        return True
+    if kw >= 2 and qlen >= 22:
+        return True
+
+    # Application-heavy sources get a slightly lower bar.
+    if source_id in (
         "fraction-word-g5",
         "life-applications-g5",
         "ratio-percent-g5",
         "volume-g5",
-        "interactive-g56-core-foundation",
+        "interactive-g5-life-pack1-empire",
+        "interactive-g5-life-pack1plus-empire",
+        "interactive-g5-life-pack2-empire",
+        "interactive-g5-life-pack2plus-empire",
     ):
-        qt = str(q.get("question") or "")
-        if len(qt) >= 24:
-            return True
-        if any(k in qt for k in ADV_KEYWORDS):
+        if qlen >= 26 and (kw >= 1 or step_n >= 3):
             return True
 
     return False
@@ -195,7 +271,11 @@ def _is_valid_item(q: Dict[str, Any]) -> bool:
     return True
 
 
-def build_exam_sprint_bank(max_items: int = 240, seed: int = 20260209) -> List[Dict[str, Any]]:
+def build_exam_sprint_bank(
+    max_items: int = 240,
+    seed: int = 20260209,
+    target_hard: int = 180,
+) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
 
     for source_id, path in SOURCE_BANKS:
@@ -219,26 +299,31 @@ def build_exam_sprint_bank(max_items: int = 240, seed: int = 20260209) -> List[D
         seen.add(key)
         uniq.append(it)
 
-    # Sort by difficulty desc then stable fields.
-    uniq.sort(
-        key=lambda x: (
-            -_difficulty_rank(str(x.get("difficulty"))),
-            str(x.get("topic") or ""),
-            str(x.get("kind") or ""),
-            str(x.get("id") or ""),
-        )
-    )
-
-    # Light shuffle within each difficulty bucket so it's not too repetitive but still deterministic.
-    rng = random.Random(int(seed))
-    buckets: Dict[int, List[Dict[str, Any]]] = {3: [], 2: [], 1: [], 0: []}
+    # Score, then select with a hard/medium mix.
+    scored: List[Tuple[float, Dict[str, Any]]] = []
     for it in uniq:
-        buckets[_difficulty_rank(str(it.get("difficulty")))].append(it)
-    for k in buckets:
-        rng.shuffle(buckets[k])
+        scored.append((_item_quality_score(it, str(it.get("meta", {}).get("source_module") or "")), it))
 
-    ordered = buckets[3] + buckets[2] + buckets[1] + buckets[0]
-    return ordered[: int(max_items)]
+    # Deterministic jitter so ties don't always cluster.
+    rng = random.Random(int(seed))
+    scored.sort(key=lambda x: (x[0], rng.random()), reverse=True)
+
+    hard_items: List[Dict[str, Any]] = []
+    med_items: List[Dict[str, Any]] = []
+    for _, it in scored:
+        r = _difficulty_rank(str(it.get("difficulty")))
+        if r >= 3:
+            hard_items.append(it)
+        elif r == 2:
+            med_items.append(it)
+
+    hard_take = min(int(target_hard), int(max_items), len(hard_items))
+    med_take = min(int(max_items) - hard_take, len(med_items))
+    picked = hard_items[:hard_take] + med_items[:med_take]
+
+    # Final light shuffle for variety but deterministic.
+    rng.shuffle(picked)
+    return picked[: int(max_items)]
 
 
 def write_bank_js(items: List[Dict[str, Any]], out_path: Path) -> None:
