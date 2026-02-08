@@ -240,7 +240,7 @@
 
     function check(){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       try{
@@ -259,7 +259,7 @@
 
     function showHint(){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       const level = Number(els.hintLevel.value);
@@ -271,7 +271,7 @@
 
     function showSteps(){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       const parts = [];

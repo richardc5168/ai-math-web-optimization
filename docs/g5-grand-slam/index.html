@@ -505,7 +505,7 @@
 
     function check(){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       try{
@@ -558,7 +558,7 @@
 
     function showHint(level){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       const idx = level - 1;
@@ -569,7 +569,7 @@
 
     function showSteps(){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       const lines = [];
@@ -590,7 +590,7 @@
 
     function toggleFav(){
       if (!state.q){
-        setBanner('bad','請先出新題。');
+        setBanner('bad','請先按「出新題」出一題。');
         return;
       }
       const id = state.q.id;

@@ -339,7 +339,7 @@
 
     els.btnHint.addEventListener('click', () => {
       const q = state.q;
-      if (!q){ setBannerBad('請先出新題。'); return; }
+      if (!q){ setBannerBad('請先按「出新題」出一題。'); return; }
       const level = Number(els.hintLevel.value || 1);
       const text = getHintText(q, level);
       els.hints.appendChild(renderHint(`Level ${level}：${text}`));
@@ -349,7 +349,7 @@
 
     els.btnNext.addEventListener('click', () => {
       const q = state.q;
-      if (!q){ setBannerBad('請先出新題。'); return; }
+      if (!q){ setBannerBad('請先按「出新題」出一題。'); return; }
       const level = Number(els.hintLevel.value || 1);
       const h = getNextStepHint(q, els.studentState.value, level);
       els.nextHint.style.display = 'block';
@@ -359,14 +359,14 @@
 
     els.btnShowSteps.addEventListener('click', () => {
       const q = state.q;
-      if (!q){ setBannerBad('請先出新題。'); return; }
+      if (!q){ setBannerBad('請先按「出新題」出一題。'); return; }
       showFullSolution(q);
       setBannerMuted('已顯示完整解題（含答案）。');
     });
 
     els.btnCheck.addEventListener('click', () => {
       const q = state.q;
-      if (!q){ setBannerBad('請先出新題。'); return; }
+      if (!q){ setBannerBad('請先按「出新題」出一題。'); return; }
 
       let student;
       let correct;
