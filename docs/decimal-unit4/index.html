@@ -446,7 +446,7 @@
           showBanner('bad', `❌ 還差一點。建議先估算，再看提示 Level ${Math.min(3, (state.hintUsed||0)+1)}。`);
         }
       } catch (e){
-        showBanner('bad', String(e?.message || e));
+        showBanner('bad', '格式或輸入有誤：' + String(e?.message || e || '答案格式錯誤'));
       }
     });
 
