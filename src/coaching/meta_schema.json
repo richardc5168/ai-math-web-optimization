@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aimath.local/schema/coaching-meta-g5-v1.json",
+  "title": "AI Math Web — Grade 5 Coaching Meta (Sidecar)",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "question_id",
+      "grade",
+      "unit",
+      "skill_tags",
+      "hint_ladder",
+      "common_mistakes",
+      "similar_question_ids"
+    ],
+    "properties": {
+      "question_id": { "type": "string", "minLength": 1 },
+      "grade": { "const": 5 },
+      "unit": { "type": "string", "enum": ["fraction", "decimal", "ratio", "life"] },
+      "skill_tags": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 },
+        "minItems": 1
+      },
+      "hint_ladder": {
+        "type": "array",
+        "minItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["level", "title", "body"],
+          "properties": {
+            "level": { "type": "integer", "enum": [1, 2, 3] },
+            "title": { "type": "string", "minLength": 1 },
+            "body": { "type": "string", "minLength": 1 }
+          }
+        }
+      },
+      "common_mistakes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "message", "fix"],
+          "properties": {
+            "type": { "type": "string", "enum": ["calc", "reading", "concept", "strategy"] },
+            "message": { "type": "string", "minLength": 1 },
+            "fix": { "type": "string", "minLength": 1 }
+          }
+        }
+      },
+      "similar_question_ids": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 },
+        "default": []
+      }
+    }
+  }
+}

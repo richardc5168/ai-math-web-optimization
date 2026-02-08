@@ -1,0 +1,110 @@
+[
+  {
+    "question_id": "fg5_add_like_001",
+    "grade": 5,
+    "unit": "fraction",
+    "skill_tags": ["fraction_add", "same_denominator", "simplify"],
+    "hint_ladder": [
+      {
+        "level": 1,
+        "title": "Step 1｜辨認同分母",
+        "body": "看到分母一樣：分母不變，先處理分子。"
+      },
+      {
+        "level": 2,
+        "title": "Step 2｜列式",
+        "body": "把分子相加： (a+b)/d，最後再約分成最簡分數。"
+      },
+      {
+        "level": 3,
+        "title": "Step 3｜檢查",
+        "body": "算完檢查：分母是否保持不變？結果是否已約分？"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "type": "concept",
+        "message": "把分母也相加了（同分母加法不需要改分母）。",
+        "fix": "分母相同時，分母不變；只加分子。"
+      },
+      {
+        "type": "calc",
+        "message": "分子加對了，但忘記約分。",
+        "fix": "找分子分母最大公因數，約分到最簡。"
+      }
+    ],
+    "similar_question_ids": ["fg5_add_like_002", "fg5_add_like_003"]
+  },
+  {
+    "question_id": "d4_x10_shift_008",
+    "grade": 5,
+    "unit": "decimal",
+    "skill_tags": ["decimal_shift", "multiply_by_0.001", "estimate"],
+    "hint_ladder": [
+      {
+        "level": 1,
+        "title": "Step 1｜判斷方向",
+        "body": "乘以 0.001（小於 1），結果一定比原數小。"
+      },
+      {
+        "level": 2,
+        "title": "Step 2｜小數點移動",
+        "body": "乘以 0.001 等於小數點往左移 3 格；不夠就補 0。"
+      },
+      {
+        "level": 3,
+        "title": "Step 3｜合理性檢查",
+        "body": "把答案跟原數比：應該小很多；再看小數點位置是否移對。"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "type": "strategy",
+        "message": "把 0.001 當成乘 1000，方向做反了。",
+        "fix": "先判斷倍率：0.001 < 1，所以答案要變小。"
+      },
+      {
+        "type": "calc",
+        "message": "小數點移動格數不對。",
+        "fix": "0.001 有 3 個小數位 → 往左移 3 格。"
+      }
+    ],
+    "similar_question_ids": ["d4_x10_shift_001", "d4_x10_shift_002"]
+  },
+  {
+    "question_id": "rp5_ratio_pt_014",
+    "grade": 5,
+    "unit": "ratio",
+    "skill_tags": ["ratio", "part_over_total", "less_than_1_check"],
+    "hint_ladder": [
+      {
+        "level": 1,
+        "title": "Step 1｜找部分與全體",
+        "body": "先圈出：紅色是『部分』，總共 25 是『全體』。"
+      },
+      {
+        "level": 2,
+        "title": "Step 2｜列式",
+        "body": "比率 = 部分 ÷ 全體，所以列：24 ÷ 25（寫成小數）。"
+      },
+      {
+        "level": 3,
+        "title": "Step 3｜檢查",
+        "body": "部分 < 全體，所以比率一定 < 1；若算出 >1 就要回頭檢查。"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "type": "reading",
+        "message": "把 25/24（全體/部分）寫反了。",
+        "fix": "比率要用『部分/全體』，先確認誰是部分、誰是全體。"
+      },
+      {
+        "type": "calc",
+        "message": "除法小數計算失誤。",
+        "fix": "先用估算檢查：24/25 接近 1 但小於 1；可把 25 看成 100 的 1/4。"
+      }
+    ],
+    "similar_question_ids": ["rp5_ratio_pt_001", "rp5_ratio_pt_002"]
+  }
+]
