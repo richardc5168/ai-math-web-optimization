@@ -267,6 +267,10 @@
   <div class="expand-toast" id="expandToast" aria-live="polite"></div>
 
   <script src="./bank.js"></script>
+  <script src="../shared/coach_event_log.js"></script>
+  <script src="../shared/attempt_telemetry.js"></script>
+  <script src="../shared/report/aggregate.js"></script>
+  <script src="../shared/report/unit_report_widget.js"></script>
   <script>
     // ---------- UI skeleton ----------
     const tabGame = document.getElementById('tabGame');
@@ -377,6 +381,10 @@
       <div class="small" style="color:var(--muted); margin-top:10px" id="empireSummary">載入中...</div>
       <div class="small" style="color:var(--muted); margin-top:6px" id="empireMeta">下一塊領地：0 / 72</div>
       <div class="empire-grid" id="empireGrid" style="margin-top:12px"></div>
+      <div class="empire">
+        <h3>作答報告</h3>
+        <div id="unitReport" class="small"></div>
+      </div>
     `;
 
     function activateTab(which){
@@ -496,7 +504,20 @@
 
     // ---------- bank/state ----------
     const bank = Array.isArray(window.G5_LIFE_PACK2_BANK) ? window.G5_LIFE_PACK2_BANK : [];
-    const state = { q:null, revealed:false, hintUsed:0, practiceStreak:0, shownHintLevels:{1:false,2:false,3:false,4:false} };
+    const UNIT_ID = 'interactive-g5-life-pack2-empire';
+    const state = {
+      q:null,
+      revealed:false,
+      hintUsed:0,
+      practiceStreak:0,
+      shownHintLevels:{1:false,2:false,3:false,4:false},
+      startedAt:null,
+      attemptsCount:0,
+      hintShownCount:0,
+      hintStartAt:null,
+      shownSolution:false,
+      attemptLogged:false,
+    };
 
     const ls = {
       get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -564,6 +585,8 @@
       empireGridBig: document.getElementById('empireGridBig'),
       btnEmpireReset: document.getElementById('btnEmpireReset'),
       btnEmpireResetAll: document.getElementById('btnEmpireResetAll'),
+
+      unitReport: document.getElementById('unitReport'),
 
       // victory
       victoryModal: document.getElementById('victoryModal'),
@@ -673,6 +696,8 @@
       state.revealed = false;
       state.hintUsed = 0;
       state.shownHintLevels = {1:false,2:false,3:false,4:false};
+      if (q) startAttempt();
+      else state.attemptLogged = false;
       if (els.answer) els.answer.value = '';
       if (els.studentState) els.studentState.value = '';
       if (els.hints) els.hints.innerHTML = '';
@@ -711,14 +736,14 @@
       const text = currentHint(lv);
       if (!text) return false;
       els.hints?.appendChild(renderHint(text, lv));
-      state.shownHintLevels[lv] = true;
-      state.hintUsed = Math.max(state.hintUsed, lv);
+      markHint(lv);
       return true;
     }
 
     function showSolution(){
       const q = state.q;
       if (!q) return;
+      markSolution();
       const div = document.createElement('div');
       div.className = 'sol';
       const lines = [];
@@ -736,6 +761,73 @@
         els.solution.innerHTML = '';
         els.solution.appendChild(div);
       }
+    }
+
+    function getUid(){
+      return window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
+    }
+
+    function startAttempt(){
+      state.startedAt = Date.now();
+      state.attemptsCount = 0;
+      state.hintShownCount = 0;
+      state.hintStartAt = null;
+      state.shownSolution = false;
+      state.attemptLogged = false;
+    }
+
+    function markHint(level){
+      if (!state.hintStartAt) state.hintStartAt = Date.now();
+      const lv = clampHintLevel(level);
+      if (!state.shownHintLevels[lv]){
+        state.shownHintLevels[lv] = true;
+      }
+      state.hintShownCount += 1;
+      state.hintUsed = Math.max(state.hintUsed, lv);
+    }
+
+    function markSolution(){
+      state.shownSolution = true;
+      if (!state.hintStartAt) state.hintStartAt = Date.now();
+    }
+
+    function commitAttempt(isCorrect, reason, studentAnswer){
+      if (!state.q || state.attemptLogged) return;
+      const tsEnd = Date.now();
+      const shown = Object.keys(state.shownHintLevels || {})
+        .filter(k => state.shownHintLevels[k])
+        .map(k => Number(k) || 0)
+        .filter(n => n > 0)
+        .sort((a,b) => a-b);
+      const totalHintMs = state.hintStartAt ? Math.max(0, tsEnd - state.hintStartAt) : 0;
+      const q = state.q || {};
+      const evt = {
+        unit_id: UNIT_ID,
+        kind: String(q.kind || 'unknown'),
+        question_id: String(q.id || q.question || ''),
+        ts_start: Number(state.startedAt || tsEnd),
+        ts_end: Number(tsEnd),
+        is_correct: !!isCorrect,
+        attempts_count: Math.max(1, Number(state.attemptsCount || 1)),
+        hint: {
+          shown_levels: shown,
+          shown_count: Math.max(0, Number(state.hintShownCount || 0)),
+          total_hint_ms: totalHintMs,
+        },
+        steps: {
+          shown_solution: !!state.shownSolution,
+        },
+        student_answer: String(studentAnswer || ''),
+        correct_answer: q.answer != null ? String(q.answer) : null,
+        extra: {
+          question: q.question || '',
+          difficulty: q.difficulty || '',
+          reason: String(reason || ''),
+          mode: 'practice',
+        },
+      };
+      window.AIMathAttemptTelemetry?.appendAttempt?.(getUid(), evt, { maxAttempts: 5000 });
+      state.attemptLogged = true;
     }
 
     function nextStepHintByUnit(unitId, studentState){
@@ -1074,6 +1166,9 @@
 
     // ---------- practice events ----------
     els.btnNew?.addEventListener('click', () => {
+      if (state.q && !state.revealed && !state.attemptLogged){
+        commitAttempt(false, 'skip', els.answer?.value || '');
+      }
       const pool = filteredBank(String(els.unit.value||'all'), String(els.difficulty.value||'all'));
       const q = pickFromPool(pool, { avoidId: state.q?.id });
       showQuestion(q);
@@ -1097,11 +1192,15 @@
     els.btnShowSteps?.addEventListener('click', () => {
       showSolution();
       state.revealed = true;
+      if (!state.attemptLogged){
+        commitAttempt(false, 'show_solution', els.answer?.value || '');
+      }
     });
 
     els.btnCheck?.addEventListener('click', () => {
       const q = state.q;
       if (!q){ showBanner('warn', '請先按「出題」。'); return; }
+      state.attemptsCount = Math.max(0, Number(state.attemptsCount || 0)) + 1;
       try {
         const ok = compareByMode(els.answer.value, q.answer, q.answer_mode);
         if (ok){
@@ -1130,6 +1229,9 @@
             showBanner('ok', `答對了！+${PRACTICE_XP_CORRECT} 工程點數（練習也能擴張）\n連對 ${state.practiceStreak}：擴張 ${res.claimed || 0} 格。你可以出下一題。`);
           }
 
+          state.revealed = true;
+          commitAttempt(true, 'correct', els.answer.value);
+
           renderEmpire(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
           if (empireBigOpen) renderEmpireBig(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
         } else {
@@ -1152,7 +1254,7 @@
     });
 
     // ---------- game mode ----------
-    let g = { running:false, t:0, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:[], hintUsedThisQ:false, activeUnit:UNITS[0].id, startedAtMs:0, qStartAtMs:0, recentSolveSec:[], lastStreakPraiseAt:0, lastSpeedPraiseAtMs:0 };
+    let g = { running:false, t:0, timer:null, score:0, streak:0, correct:0, total:0, q:null, pool:[], hintUsedThisQ:false, activeUnit:UNITS[0].id, startedAtMs:0, qStartAtMs:0, recentSolveSec:[], lastStreakPraiseAt:0, lastSpeedPraiseAtMs:0, hintShownLevels:new Set(), hintShownCount:0, hintStartAt:null };
 
     const GAME_TICK_MS = 250;
     const PRAISE_QUICK_SECONDS = 60;
@@ -1187,9 +1289,47 @@
       const q = pickFromPool(g.pool, { avoidId: g.q?.id });
       g.q = q;
       g.qStartAtMs = Date.now();
+      g.hintUsedThisQ = false;
+      g.hintShownLevels = new Set();
+      g.hintShownCount = 0;
+      g.hintStartAt = null;
       if (els.gQ) els.gQ.textContent = q ? q.question : '（沒有題目）';
       if (els.gAnswer) els.gAnswer.value = '';
       applyAnswerUI(q, 'game');
+    }
+
+    function commitGameAttempt(isCorrect, reason, studentAnswer){
+      const q = g.q;
+      if (!q) return;
+      const tsEnd = Date.now();
+      const shown = Array.from(g.hintShownLevels || []).filter(n => Number(n) > 0).sort((a,b)=>a-b);
+      const totalHintMs = g.hintStartAt ? Math.max(0, tsEnd - g.hintStartAt) : 0;
+      const evt = {
+        unit_id: UNIT_ID,
+        kind: String(q.kind || 'unknown'),
+        question_id: String(q.id || q.question || ''),
+        ts_start: Number(g.qStartAtMs || tsEnd),
+        ts_end: Number(tsEnd),
+        is_correct: !!isCorrect,
+        attempts_count: 1,
+        hint: {
+          shown_levels: shown,
+          shown_count: Math.max(0, Number(g.hintShownCount || 0)),
+          total_hint_ms: totalHintMs,
+        },
+        steps: {
+          shown_solution: false,
+        },
+        student_answer: String(studentAnswer || ''),
+        correct_answer: q.answer != null ? String(q.answer) : null,
+        extra: {
+          question: q.question || '',
+          difficulty: q.difficulty || '',
+          reason: String(reason || ''),
+          mode: 'game',
+        },
+      };
+      window.AIMathAttemptTelemetry?.appendAttempt?.(getUid(), evt, { maxAttempts: 5000 });
     }
 
     function gStart(){
@@ -1249,6 +1389,7 @@
       try {
         const ok = compareByMode(els.gAnswer.value, q.answer, q.answer_mode);
         g.total += 1;
+        commitGameAttempt(ok, ok ? 'correct' : 'wrong', els.gAnswer.value);
         if (ok){
           g.correct += 1;
           g.streak += 1;
@@ -1326,6 +1467,9 @@
       const q = g.q;
       if (!q) return;
       g.hintUsedThisQ = true;
+      if (!g.hintStartAt) g.hintStartAt = Date.now();
+      g.hintShownLevels.add(1);
+      g.hintShownCount += 1;
       const t = nextStepHintByUnit(q.kind, '');
       gBanner('warn', `提示方向：${t}\n（先寫算式，再算）`);
     }
@@ -1385,6 +1529,7 @@
     els.empireUnit.value = empire.selected;
     renderEmpire();
     saveEmpire();
+    window.AIMathUnitReportWidget?.render(els.unitReport, UNIT_ID, { days: 7 });
   </script>
 </body>
 </html>
