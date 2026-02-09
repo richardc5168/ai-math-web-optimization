@@ -59,29 +59,31 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_146",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 2 公尺、寬 3 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "96",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u5_decimal_muldiv_price_20",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）5 瓶飲料共 35.75 元，平均每瓶多少元？",
+    "answer": "7.15",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：200×300 = 60000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：60000÷625 = 96（塊）"
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
     ],
-    "explanation": "房間面積 60000（cm²），每塊 625（cm²），所以需要 96（塊）。",
+    "explanation": "35.75 ÷ 5 = 7.15（元）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_146"
+      "unit_cents": 715,
+      "qty": 5,
+      "mode": "div",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u5_decimal_muldiv_price_20"
     }
   },
   {
@@ -113,35 +115,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u4_money_decimal_addsub_09",
-    "topic": "小五生活應用題｜第二包｜帝國",
-    "kind": "u4_money_decimal_addsub",
+    "id": "exam_life-applications-g5__la5_area_143",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 明信片 9 元、紙膠帶 5.1 元、貼紙包 4.5 元，共 18.6 元。付了 25.6 元，要找回多少元？",
-    "answer": "7",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 7 公尺、寬 7 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "196",
+    "answer_unit": "number",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：700×700 = 490000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：490000÷2500 = 196（塊）"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "找零：25.6 − 18.6 = 7（元）。",
+    "explanation": "房間面積 490000（cm²），每塊 2500（cm²），所以需要 196（塊）。",
     "meta": {
-      "prices_cents": [
-        900,
-        510,
-        450
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack2-empire",
-      "source_id": "g5lp2_u4_money_decimal_addsub_09"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_143"
     }
   },
   {
@@ -234,29 +230,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_158",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 7 公尺、寬 3 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "84",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u5_decimal_muldiv_price_13",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）13 瓶飲料共 107.25 元，平均每瓶多少元？",
+    "answer": "8.25",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：700×300 = 210000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：210000÷2500 = 84（塊）"
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
     ],
-    "explanation": "房間面積 210000（cm²），每塊 2500（cm²），所以需要 84（塊）。",
+    "explanation": "107.25 ÷ 13 = 8.25（元）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_158"
+      "unit_cents": 825,
+      "qty": 13,
+      "mode": "div",
+      "people": null,
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u5_decimal_muldiv_price_13"
     }
   },
   {
@@ -468,28 +467,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_114",
+    "id": "exam_life-applications-g5__la5_area_156",
     "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（兩段式購物）橡皮擦 每盒 8.5 元，買 2 盒；筆記本 每包 20.5 元，買 2 包。結帳時用了 10 元折價券，實付多少元？（可寫小數）",
-    "answer": "48",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 5 公尺、寬 3 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "166",
+    "answer_unit": "number",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(8.5×2) + (20.5×2) − 10。",
-      "Level 3｜步驟\n1) 小計1：8.5×2 = 17\n2) 小計2：20.5×2 = 41\n3) 合計：58\n4) 減折價券：58-10 = 48（元）"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：500×300 = 150000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：150000÷900 = 166（塊）"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "先算各自小計再合計 58，最後減 10 得 48（元）。",
+    "explanation": "房間面積 150000（cm²），每塊 900（cm²），所以需要 166（塊）。",
     "meta": {
-      "unit": "元",
+      "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_2st_114"
+      "source_id": "la5_area_156"
     }
   },
   {
@@ -521,29 +521,31 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_157",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 4 公尺、寬 4 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "213",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u10_rate_time_distance_11",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 4 公尺，要走 172 公尺，需要幾分鐘？",
+    "answer": "43",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：400×480 = 192000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：192000÷900 = 213（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：172÷4。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：172÷4。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 192000（cm²），每塊 900（cm²），所以需要 213（塊）。",
+    "explanation": "時間 = 172÷4 = 43（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_157"
+      "rate": 4,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u10_rate_time_distance_11"
     }
   },
   {
@@ -690,17 +692,46 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_154",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u5_decimal_muldiv_price_07",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）13 瓶飲料共 202.15 元，平均每瓶多少元？",
+    "answer": "15.55",
+    "answer_unit": "money2",
+    "hints": [
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
+    ],
+    "steps": [
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
+    ],
+    "explanation": "202.15 ÷ 13 = 15.55（元）。",
+    "meta": {
+      "unit_cents": 1555,
+      "qty": 13,
+      "mode": "div",
+      "people": null,
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u5_decimal_muldiv_price_07"
+    }
+  },
+  {
+    "id": "exam_life-applications-g5__la5_area_160",
     "topic": "國小五年級｜生活應用題（講義+練習）",
     "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 4 公尺、寬 3 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "48",
+    "question": "（面積鋪地磚）房間長 3 公尺、寬 3 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "130",
     "answer_unit": "number",
     "hints": [
       "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
       "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：400×300 = 120000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：120000÷2500 = 48（塊）"
+      "Level 3｜步驟\n1) 房間：300×390 = 117000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：117000÷900 = 130（塊）"
     ],
     "steps": [
       "公尺換算成公分",
@@ -708,68 +739,40 @@ window.EXAM_SPRINT_BANK = [
       "地磚面積 = 邊長×邊長",
       "用除法求塊數"
     ],
-    "explanation": "房間面積 120000（cm²），每塊 2500（cm²），所以需要 48（塊）。",
+    "explanation": "房間面積 117000（cm²），每塊 900（cm²），所以需要 130（塊）。",
     "meta": {
       "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_area_154"
+      "source_id": "la5_area_160"
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u4_money_decimal_addsub_20",
-    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
-    "kind": "u4_money_decimal_addsub",
-    "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 果汁 7.8 元、麵包 2.8 元、餅乾 4.3 元，共 14.9 元。付了 15.9 元，要找回多少元？",
-    "answer": "1",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_30",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件外套原價 80.6 元，打 折扣 0.95，省下多少元？",
+    "answer": "4.03",
     "answer_unit": "money2",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "找零：15.9 − 14.9 = 1（元）。",
+    "explanation": "折後價 76.57，省下 80.6 − 76.57 = 4.03。",
     "meta": {
-      "prices_cents": [
-        780,
-        280,
-        430
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack1plus-empire",
-      "source_id": "g5lp1p_u4_money_decimal_addsub_20"
-    }
-  },
-  {
-    "id": "exam_life-applications-g5__la5_2st_122",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）橡皮擦 每瓶 12.5 元，買 5 瓶；果凍 每本 36.5 元，買 3 本。結帳時用了 30 元折價券，實付多少元？（可寫小數）",
-    "answer": "142",
-    "answer_unit": "money2",
-    "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(12.5×5) + (36.5×3) − 30。",
-      "Level 3｜步驟\n1) 小計1：12.5×5 = 62.5\n2) 小計2：36.5×3 = 109.5\n3) 合計：172\n4) 減折價券：172-30 = 142（元）"
-    ],
-    "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
-    ],
-    "explanation": "先算各自小計再合計 172，最後減 30 得 142（元）。",
-    "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_122"
+      "price_cents": 8060,
+      "disc": 0.95,
+      "sale_cents": 7657,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_30"
     }
   },
   {
@@ -1070,31 +1073,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u1_avg_fraction_17",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "kind": "u1_avg_fraction",
+    "id": "exam_life-applications-g5__la5_area_148",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜平均分配｜社團活動）有 6/5 個壽司捲，平均分給 6 人，每人得到多少個？（用最簡分數 a/b 表示）",
-    "answer": "1/5",
-    "answer_unit": "fraction",
+    "question": "（面積鋪地磚）房間長 7 公尺、寬 3 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "233",
+    "answer_unit": "number",
     "hints": [
-      "觀念：平均分配就是『總量 ÷ 人數』。",
-      "把除法改成乘法：除以 n 等於乘以 1/n。",
-      "列式：6/5 × 1/6。先算分母：5×6。",
-      "最後要記得把分數約分到最簡。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：700×300 = 210000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：210000÷900 = 233（塊）"
     ],
     "steps": [
-      "把『平均分給 6 人』寫成 ÷6",
-      "列式：6/5 ÷ 6",
-      "等於 1/5（最簡分數）",
-      "檢查：人數越多，每人分到應越少。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "平均分配：6/5 ÷ 6 = 1/5。",
+    "explanation": "房間面積 210000（cm²），每塊 900（cm²），所以需要 233（塊）。",
     "meta": {
-      "people": 6,
-      "total": "6/5",
-      "source_module": "interactive-g5-life-pack2plus-empire",
-      "source_id": "g5lp2p_u1_avg_fraction_17"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_148"
     }
   },
   {
@@ -1156,28 +1157,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_105",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）牛奶 每個 18.8 元，買 6 個；麵包 每張 16.5 元，買 6 張。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "191.8",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_27",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件外套原價 84.3 元，打 折扣 0.78，省下多少元？",
+    "answer": "18.55",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(18.8×6) + (16.5×6) − 20。",
-      "Level 3｜步驟\n1) 小計1：18.8×6 = 112.8\n2) 小計2：16.5×6 = 99\n3) 合計：211.8\n4) 減折價券：211.8-20 = 191.8（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 211.8，最後減 20 得 191.8（元）。",
+    "explanation": "折後價 65.75，省下 84.3 − 65.75 = 18.55。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_105"
+      "price_cents": 8430,
+      "disc": 0.78,
+      "sale_cents": 6575,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_27"
     }
   },
   {
@@ -1544,28 +1549,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_115",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）鉛筆 每包 25.6 元，買 6 包；貼紙 每包 16.5 元，買 4 包。結帳時用了 10 元折價券，實付多少元？（可寫小數）",
-    "answer": "209.6",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_26",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 88.1 元，打 折扣 0.78，省下多少元？",
+    "answer": "19.38",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(25.6×6) + (16.5×4) − 10。",
-      "Level 3｜步驟\n1) 小計1：25.6×6 = 153.6\n2) 小計2：16.5×4 = 66\n3) 合計：219.6\n4) 減折價券：219.6-10 = 209.6（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 219.6，最後減 10 得 209.6（元）。",
+    "explanation": "折後價 68.72，省下 88.1 − 68.72 = 19.38。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_115"
+      "price_cents": 8810,
+      "disc": 0.78,
+      "sale_cents": 6872,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_26"
     }
   },
   {
@@ -1686,60 +1695,61 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_111",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）橡皮擦 每盒 15.2 元，買 6 盒；果凍 每包 45 元，買 2 包。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "161.2",
+    "id": "exam_interactive-g5-life-pack1-empire__g5lp1_u7_discount_percent_14",
+    "topic": "小五生活應用題｜第一包｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件玩具原價 24.4 元，打 折扣 0.95，省下多少元？",
+    "answer": "1.22",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(15.2×6) + (45×2) − 20。",
-      "Level 3｜步驟\n1) 小計1：15.2×6 = 91.2\n2) 小計2：45×2 = 90\n3) 合計：181.2\n4) 減折價券：181.2-20 = 161.2（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 181.2，最後減 20 得 161.2（元）。",
+    "explanation": "折後價 23.18，省下 24.4 − 23.18 = 1.22。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_111"
+      "price_cents": 2440,
+      "disc": 0.95,
+      "sale_cents": 2318,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack1-empire",
+      "source_id": "g5lp1_u7_discount_percent_14"
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u4_money_decimal_addsub_04",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u5_decimal_muldiv_price_05",
     "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "kind": "u4_money_decimal_addsub",
-    "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 貼紙 2.4 元、筆記本 3.3 元、原子筆 6.7 元，共 12.4 元。付了 18.9 元，要找回多少元？",
-    "answer": "6.5",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）20 瓶飲料共 208 元，平均每瓶多少元？",
+    "answer": "10.4",
     "answer_unit": "money2",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
     ],
-    "explanation": "找零：18.9 − 12.4 = 6.5（元）。",
+    "explanation": "208 ÷ 20 = 10.4（元）。",
     "meta": {
-      "prices_cents": [
-        240,
-        330,
-        670
-      ],
-      "scenario": "找零",
+      "unit_cents": 1040,
+      "qty": 20,
+      "mode": "div",
+      "people": null,
       "source_module": "interactive-g5-life-pack2plus-empire",
-      "source_id": "g5lp2p_u4_money_decimal_addsub_04"
+      "source_id": "g5lp2p_u5_decimal_muldiv_price_05"
     }
   },
   {
@@ -1773,35 +1783,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u4_money_decimal_addsub_06",
-    "topic": "小五生活應用題｜第二包｜帝國",
-    "kind": "u4_money_decimal_addsub",
-    "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 資料夾 5.2 元、修正帶 1.9 元、便利貼 0.7 元，共 7.8 元。付了 18.8 元，要找回多少元？",
-    "answer": "11",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_12",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件外套原價 66.3 元，打 折扣 0.72，省下多少元？",
+    "answer": "18.56",
     "answer_unit": "money2",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "找零：18.8 − 7.8 = 11（元）。",
+    "explanation": "折後價 47.74，省下 66.3 − 47.74 = 18.56。",
     "meta": {
-      "prices_cents": [
-        520,
-        190,
-        70
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack2-empire",
-      "source_id": "g5lp2_u4_money_decimal_addsub_06"
+      "price_cents": 6630,
+      "disc": 0.72,
+      "sale_cents": 4774,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_12"
     }
   },
   {
@@ -1955,28 +1962,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_101",
+    "id": "exam_life-applications-g5__la5_area_154",
     "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（兩段式購物）牛奶 每個 8.5 元，買 2 個；巧克力 每本 16.5 元，買 2 本。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "30",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 4 公尺、寬 3 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "48",
+    "answer_unit": "number",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(8.5×2) + (16.5×2) − 20。",
-      "Level 3｜步驟\n1) 小計1：8.5×2 = 17\n2) 小計2：16.5×2 = 33\n3) 合計：50\n4) 減折價券：50-20 = 30（元）"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：400×300 = 120000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：120000÷2500 = 48（塊）"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "先算各自小計再合計 50，最後減 20 得 30（元）。",
+    "explanation": "房間面積 120000（cm²），每塊 2500（cm²），所以需要 48（塊）。",
     "meta": {
-      "unit": "元",
+      "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_2st_101"
+      "source_id": "la5_area_154"
     }
   },
   {
@@ -2310,17 +2318,48 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_160",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u2_frac_addsub_life_15",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u2_frac_addsub_life",
+    "difficulty": "hard",
+    "question": "（生活應用｜分數減法）原本有 2/3 公升油，用掉 3/5 公升油，還剩多少 公升油？（最簡分數）",
+    "answer": "1/15",
+    "answer_unit": "fraction",
+    "hints": [
+      "觀念：分母不同要先通分，才能加/減分子。",
+      "先找最小公倍數：LCM(3,10)。",
+      "把兩個分數都改成分母 30，再做 -。",
+      "最後把答案約分成最簡。"
+    ],
+    "steps": [
+      "判斷分母是否相同，不同就通分。",
+      "通分後做分子加/減。",
+      "把結果約分成最簡分數。",
+      "檢查：加法結果應比其中一個大；減法結果應變小且不為負。"
+    ],
+    "explanation": "通分後相減：2/3-3/5=1/15。",
+    "meta": {
+      "op": "-",
+      "a": "2/3",
+      "b": "3/5",
+      "d1": 3,
+      "d2": 10,
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u2_frac_addsub_life_15"
+    }
+  },
+  {
+    "id": "exam_life-applications-g5__la5_area_144",
     "topic": "國小五年級｜生活應用題（講義+練習）",
     "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 3 公尺、寬 3 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "130",
+    "question": "（面積鋪地磚）房間長 5 公尺、寬 6 公尺，要鋪 40 公分×40 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "187",
     "answer_unit": "number",
     "hints": [
       "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
       "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：300×390 = 117000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：117000÷900 = 130（塊）"
+      "Level 3｜步驟\n1) 房間：500×600 = 300000（平方公分）\n2) 地磚：40×40 = 1600（平方公分）\n3) 需要：300000÷1600 = 187（塊）"
     ],
     "steps": [
       "公尺換算成公分",
@@ -2328,43 +2367,11 @@ window.EXAM_SPRINT_BANK = [
       "地磚面積 = 邊長×邊長",
       "用除法求塊數"
     ],
-    "explanation": "房間面積 117000（cm²），每塊 900（cm²），所以需要 130（塊）。",
+    "explanation": "房間面積 300000（cm²），每塊 1600（cm²），所以需要 187（塊）。",
     "meta": {
       "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_area_160"
-    }
-  },
-  {
-    "id": "exam_interactive-g5-life-pack1-empire__g5lp1_u4_money_decimal_addsub_15",
-    "topic": "小五生活應用題｜第一包｜帝國",
-    "kind": "u4_money_decimal_addsub",
-    "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 貼紙 9 元、筆記本 1.5 元、原子筆 1.7 元，共 12.2 元。付了 19.7 元，要找回多少元？",
-    "answer": "7.5",
-    "answer_unit": "money2",
-    "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
-    ],
-    "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
-    ],
-    "explanation": "找零：19.7 − 12.2 = 7.5（元）。",
-    "meta": {
-      "prices_cents": [
-        900,
-        150,
-        170
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack1-empire",
-      "source_id": "g5lp1_u4_money_decimal_addsub_15"
+      "source_id": "la5_area_144"
     }
   },
   {
@@ -2396,54 +2403,59 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_108",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）果汁 每盒 25.6 元，買 4 盒；筆記本 每張 20.5 元，買 3 張。結帳時用了 30 元折價券，實付多少元？（可寫小數）",
-    "answer": "133.9",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u5_decimal_muldiv_price_03",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）19 瓶飲料共 24.7 元，平均每瓶多少元？",
+    "answer": "1.3",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(25.6×4) + (20.5×3) − 30。",
-      "Level 3｜步驟\n1) 小計1：25.6×4 = 102.4\n2) 小計2：20.5×3 = 61.5\n3) 合計：163.9\n4) 減折價券：163.9-30 = 133.9（元）"
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
     ],
-    "explanation": "先算各自小計再合計 163.9，最後減 30 得 133.9（元）。",
+    "explanation": "24.7 ÷ 19 = 1.3（元）。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_108"
+      "unit_cents": 130,
+      "qty": 19,
+      "mode": "div",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u5_decimal_muldiv_price_03"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_151",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 3 公尺、寬 4 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "192",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u10_rate_time_distance_08",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 10 公尺，要走 160 公尺，需要幾分鐘？",
+    "answer": "16",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：300×400 = 120000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：120000÷625 = 192（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：160÷10。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：160÷10。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 120000（cm²），每塊 625（cm²），所以需要 192（塊）。",
+    "explanation": "時間 = 160÷10 = 16（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_151"
+      "rate": 10,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u10_rate_time_distance_08"
     }
   },
   {
@@ -2927,28 +2939,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_frac_294",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "fraction_remaining",
-    "difficulty": "medium",
-    "question": "（分數應用）一條長 47 公尺的木條，用掉了 2/3，還剩多少公尺？",
-    "answer": "15.66666666666666666666666667",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_29",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 37.9 元，打 折扣 0.66，省下多少元？",
+    "answer": "12.89",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：『用掉了幾分之幾』＝用掉 全體×分數；剩下＝全體−用掉。",
-      "列式：用掉 = 47×2/3；剩下 = 47 − 用掉。",
-      "Level 3｜步驟\n1) 用掉：47×2/3 = 31.33333333333333333333333333\n2) 剩下：47 − 31.33333333333333333333333333 = 15.66666666666666666666666667\n3) 所以剩下 15.66666666666666666666666667 公尺"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "用掉 = 全體 × 分數",
-      "剩下 = 全體 − 用掉",
-      "寫上單位：公尺"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "用掉 47×2/3=31.33333333333333333333333333；剩下 47-31.33333333333333333333333333=15.66666666666666666666666667（公尺）。",
+    "explanation": "折後價 25.01，省下 37.9 − 25.01 = 12.89。",
     "meta": {
-      "unit": "公尺",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_frac_294"
+      "price_cents": 3790,
+      "disc": 0.66,
+      "sale_cents": 2501,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_29"
     }
   },
   {
@@ -3010,28 +3026,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_112",
+    "id": "exam_life-applications-g5__la5_area_157",
     "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（兩段式購物）橡皮擦 每支 25.6 元，買 2 支；筆記本 每個 9.6 元，買 3 個。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "60",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 4 公尺、寬 4 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "213",
+    "answer_unit": "number",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(25.6×2) + (9.6×3) − 20。",
-      "Level 3｜步驟\n1) 小計1：25.6×2 = 51.2\n2) 小計2：9.6×3 = 28.8\n3) 合計：80\n4) 減折價券：80-20 = 60（元）"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：400×480 = 192000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：192000÷900 = 213（塊）"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "先算各自小計再合計 80，最後減 20 得 60（元）。",
+    "explanation": "房間面積 192000（cm²），每塊 900（cm²），所以需要 213（塊）。",
     "meta": {
-      "unit": "元",
+      "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_2st_112"
+      "source_id": "la5_area_157"
     }
   },
   {
@@ -3212,28 +3229,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_frac_290",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "fraction_remaining",
-    "difficulty": "medium",
-    "question": "（分數應用）一條長 82 公尺的布條，用掉了 1/3，還剩多少公尺？",
-    "answer": "54.66666666666666666666666667",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_22",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 80.8 元，打 折扣 0.82，省下多少元？",
+    "answer": "14.54",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：『用掉了幾分之幾』＝用掉 全體×分數；剩下＝全體−用掉。",
-      "列式：用掉 = 82×1/3；剩下 = 82 − 用掉。",
-      "Level 3｜步驟\n1) 用掉：82×1/3 = 27.33333333333333333333333333\n2) 剩下：82 − 27.33333333333333333333333333 = 54.66666666666666666666666667\n3) 所以剩下 54.66666666666666666666666667 公尺"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "用掉 = 全體 × 分數",
-      "剩下 = 全體 − 用掉",
-      "寫上單位：公尺"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "用掉 82×1/3=27.33333333333333333333333333；剩下 82-27.33333333333333333333333333=54.66666666666666666666666667（公尺）。",
+    "explanation": "折後價 66.26，省下 80.8 − 66.26 = 14.54。",
     "meta": {
-      "unit": "公尺",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_frac_290"
+      "price_cents": 8080,
+      "disc": 0.82,
+      "sale_cents": 6626,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_22"
     }
   },
   {
@@ -3354,31 +3375,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u1_avg_fraction_19",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "kind": "u1_avg_fraction",
+    "id": "exam_life-applications-g5__la5_area_150",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜平均分配｜社團活動）有 7/4 個壽司捲，平均分給 3 人，每人得到多少個？（用最簡分數 a/b 表示）",
-    "answer": "7/12",
-    "answer_unit": "fraction",
+    "question": "（面積鋪地磚）房間長 7 公尺、寬 3 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "336",
+    "answer_unit": "number",
     "hints": [
-      "觀念：平均分配就是『總量 ÷ 人數』。",
-      "把除法改成乘法：除以 n 等於乘以 1/n。",
-      "列式：7/4 × 1/3。先算分母：4×3。",
-      "最後要記得把分數約分到最簡。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：700×300 = 210000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：210000÷625 = 336（塊）"
     ],
     "steps": [
-      "把『平均分給 3 人』寫成 ÷3",
-      "列式：7/4 ÷ 3",
-      "等於 7/12（最簡分數）",
-      "檢查：人數越多，每人分到應越少。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "平均分配：7/4 ÷ 3 = 7/12。",
+    "explanation": "房間面積 210000（cm²），每塊 625（cm²），所以需要 336（塊）。",
     "meta": {
-      "people": 3,
-      "total": "7/4",
-      "source_module": "interactive-g5-life-pack2plus-empire",
-      "source_id": "g5lp2p_u1_avg_fraction_19"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_150"
     }
   },
   {
@@ -3584,42 +3603,17 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_116",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）餅乾 每瓶 8.5 元，買 6 瓶；麵包 每本 16.5 元，買 4 本。結帳時用了 40 元折價券，實付多少元？（可寫小數）",
-    "answer": "77",
-    "answer_unit": "money2",
-    "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(8.5×6) + (16.5×4) − 40。",
-      "Level 3｜步驟\n1) 小計1：8.5×6 = 51\n2) 小計2：16.5×4 = 66\n3) 合計：117\n4) 減折價券：117-40 = 77（元）"
-    ],
-    "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
-    ],
-    "explanation": "先算各自小計再合計 117，最後減 40 得 77（元）。",
-    "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_116"
-    }
-  },
-  {
-    "id": "exam_life-applications-g5__la5_area_150",
+    "id": "exam_life-applications-g5__la5_area_149",
     "topic": "國小五年級｜生活應用題（講義+練習）",
     "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 7 公尺、寬 3 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "336",
+    "question": "（面積鋪地磚）房間長 7 公尺、寬 6 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "536",
     "answer_unit": "number",
     "hints": [
       "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
       "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：700×300 = 210000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：210000÷625 = 336（塊）"
+      "Level 3｜步驟\n1) 房間：700×690 = 483000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：483000÷900 = 536（塊）"
     ],
     "steps": [
       "公尺換算成公分",
@@ -3627,37 +3621,67 @@ window.EXAM_SPRINT_BANK = [
       "地磚面積 = 邊長×邊長",
       "用除法求塊數"
     ],
-    "explanation": "房間面積 210000（cm²），每塊 625（cm²），所以需要 336（塊）。",
+    "explanation": "房間面積 483000（cm²），每塊 900（cm²），所以需要 536（塊）。",
     "meta": {
       "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_area_150"
+      "source_id": "la5_area_149"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_159",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 5 公尺、寬 2 公尺，要鋪 40 公分×40 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "87",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u10_rate_time_distance_05",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 15 公尺，要走 135 公尺，需要幾分鐘？",
+    "answer": "9",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：500×280 = 140000（平方公分）\n2) 地磚：40×40 = 1600（平方公分）\n3) 需要：140000÷1600 = 87（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：135÷15。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：135÷15。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 140000（cm²），每塊 1600（cm²），所以需要 87（塊）。",
+    "explanation": "時間 = 135÷15 = 9（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_159"
+      "rate": 15,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u10_rate_time_distance_05"
+    }
+  },
+  {
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u10_rate_time_distance_10",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 6 公尺，要走 366 公尺，需要幾分鐘？",
+    "answer": "61",
+    "answer_unit": "number",
+    "hints": [
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：366÷6。",
+      "最後檢查：算出來應是整數分鐘。"
+    ],
+    "steps": [
+      "時間=距離÷速率。",
+      "列式：366÷6。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
+    ],
+    "explanation": "時間 = 366÷6 = 61（分鐘）。",
+    "meta": {
+      "rate": 6,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u10_rate_time_distance_10"
     }
   },
   {
@@ -3689,28 +3713,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_110",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）餅乾 每盒 18.8 元，買 2 盒；果凍 每包 36.5 元，買 4 包。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "163.6",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u7_discount_percent_12",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 31.6 元，打 折扣 0.66，省下多少元？",
+    "answer": "10.74",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(18.8×2) + (36.5×4) − 20。",
-      "Level 3｜步驟\n1) 小計1：18.8×2 = 37.6\n2) 小計2：36.5×4 = 146\n3) 合計：183.6\n4) 減折價券：183.6-20 = 163.6（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 183.6，最後減 20 得 163.6（元）。",
+    "explanation": "折後價 20.86，省下 31.6 − 20.86 = 10.74。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_110"
+      "price_cents": 3160,
+      "disc": 0.66,
+      "sale_cents": 2086,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u7_discount_percent_12"
     }
   },
   {
@@ -3742,35 +3770,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u4_money_decimal_addsub_08",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "kind": "u4_money_decimal_addsub",
-    "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 礦泉水 7.2 元、三明治 4.6 元、優格 4.6 元，共 16.4 元。付了 20.9 元，要找回多少元？",
-    "answer": "4.5",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u7_discount_percent_19",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件文具組原價 68.8 元，打 折扣 0.78，省下多少元？",
+    "answer": "15.14",
     "answer_unit": "money2",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "找零：20.9 − 16.4 = 4.5（元）。",
+    "explanation": "折後價 53.66，省下 68.8 − 53.66 = 15.14。",
     "meta": {
-      "prices_cents": [
-        720,
-        460,
-        460
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack2plus-empire",
-      "source_id": "g5lp2p_u4_money_decimal_addsub_08"
+      "price_cents": 6880,
+      "disc": 0.78,
+      "sale_cents": 5366,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u7_discount_percent_19"
     }
   },
   {
@@ -3974,54 +3999,60 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_148",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 7 公尺、寬 3 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "233",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u10_rate_time_distance_13",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 7 公尺，要走 245 公尺，需要幾分鐘？",
+    "answer": "35",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：700×300 = 210000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：210000÷900 = 233（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：245÷7。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：245÷7。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 210000（cm²），每塊 900（cm²），所以需要 233（塊）。",
+    "explanation": "時間 = 245÷7 = 35（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_148"
+      "rate": 7,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u10_rate_time_distance_13"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_119",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）橡皮擦 每瓶 18.8 元，買 3 瓶；巧克力 每本 9.6 元，買 3 本。結帳時用了 10 元折價券，實付多少元？（可寫小數）",
-    "answer": "75.2",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u7_discount_percent_04",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件文具組原價 60.2 元，打 折扣 0.66，省下多少元？",
+    "answer": "20.47",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(18.8×3) + (9.6×3) − 10。",
-      "Level 3｜步驟\n1) 小計1：18.8×3 = 56.4\n2) 小計2：9.6×3 = 28.8\n3) 合計：85.2\n4) 減折價券：85.2-10 = 75.2（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 85.2，最後減 10 得 75.2（元）。",
+    "explanation": "折後價 39.73，省下 60.2 − 39.73 = 20.47。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_119"
+      "price_cents": 6020,
+      "disc": 0.66,
+      "sale_cents": 3973,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u7_discount_percent_04"
     }
   },
   {
@@ -4084,29 +4115,34 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_145",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 2 公尺、寬 7 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "56",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u2_frac_addsub_life_12",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u2_frac_addsub_life",
+    "difficulty": "hard",
+    "question": "（生活應用｜分數減法）原本有 2/3 公升水，用掉 1/2 公升水，還剩多少 公升水？（最簡分數）",
+    "answer": "1/6",
+    "answer_unit": "fraction",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：200×700 = 140000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：140000÷2500 = 56（塊）"
+      "觀念：分母不同要先通分，才能加/減分子。",
+      "先找最小公倍數：LCM(12,4)。",
+      "把兩個分數都改成分母 12，再做 -。",
+      "最後把答案約分成最簡。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "判斷分母是否相同，不同就通分。",
+      "通分後做分子加/減。",
+      "把結果約分成最簡分數。",
+      "檢查：加法結果應比其中一個大；減法結果應變小且不為負。"
     ],
-    "explanation": "房間面積 140000（cm²），每塊 2500（cm²），所以需要 56（塊）。",
+    "explanation": "通分後相減：2/3-1/2=1/6。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_145"
+      "op": "-",
+      "a": "2/3",
+      "b": "1/2",
+      "d1": 12,
+      "d2": 4,
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u2_frac_addsub_life_12"
     }
   },
   {
@@ -4232,28 +4268,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_121",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）橡皮擦 每包 8.5 元，買 3 包；麵包 每包 16.5 元，買 4 包。結帳時用了 40 元折價券，實付多少元？（可寫小數）",
-    "answer": "51.5",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_03",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 24.5 元，打 折扣 0.66，省下多少元？",
+    "answer": "8.33",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(8.5×3) + (16.5×4) − 40。",
-      "Level 3｜步驟\n1) 小計1：8.5×3 = 25.5\n2) 小計2：16.5×4 = 66\n3) 合計：91.5\n4) 減折價券：91.5-40 = 51.5（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 91.5，最後減 40 得 51.5（元）。",
+    "explanation": "折後價 16.17，省下 24.5 − 16.17 = 8.33。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_121"
+      "price_cents": 2450,
+      "disc": 0.66,
+      "sale_cents": 1617,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_03"
     }
   },
   {
@@ -4375,28 +4415,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_113",
+    "id": "exam_life-applications-g5__la5_area_162",
     "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（兩段式購物）鉛筆 每盒 15.2 元，買 3 盒；麵包 每個 45 元，買 3 個。結帳時用了 30 元折價券，實付多少元？（可寫小數）",
-    "answer": "150.6",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 5 公尺、寬 6 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "480",
+    "answer_unit": "number",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(15.2×3) + (45×3) − 30。",
-      "Level 3｜步驟\n1) 小計1：15.2×3 = 45.6\n2) 小計2：45×3 = 135\n3) 合計：180.6\n4) 減折價券：180.6-30 = 150.6（元）"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：500×600 = 300000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：300000÷625 = 480（塊）"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "先算各自小計再合計 180.6，最後減 30 得 150.6（元）。",
+    "explanation": "房間面積 300000（cm²），每塊 625（cm²），所以需要 480（塊）。",
     "meta": {
-      "unit": "元",
+      "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_2st_113"
+      "source_id": "la5_area_162"
     }
   },
   {
@@ -4522,31 +4563,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u1_avg_fraction_03",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "kind": "u1_avg_fraction",
+    "id": "exam_life-applications-g5__la5_area_146",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜平均分配｜園遊會）有 9/5 個果汁，平均分給 6 人，每人得到多少個？（用最簡分數 a/b 表示）",
-    "answer": "3/10",
-    "answer_unit": "fraction",
+    "question": "（面積鋪地磚）房間長 2 公尺、寬 3 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "96",
+    "answer_unit": "number",
     "hints": [
-      "觀念：平均分配就是『總量 ÷ 人數』。",
-      "把除法改成乘法：除以 n 等於乘以 1/n。",
-      "列式：9/5 × 1/6。先算分母：5×6。",
-      "最後要記得把分數約分到最簡。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：200×300 = 60000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：60000÷625 = 96（塊）"
     ],
     "steps": [
-      "把『平均分給 6 人』寫成 ÷6",
-      "列式：9/5 ÷ 6",
-      "等於 3/10（最簡分數）",
-      "檢查：人數越多，每人分到應越少。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "平均分配：9/5 ÷ 6 = 3/10。",
+    "explanation": "房間面積 60000（cm²），每塊 625（cm²），所以需要 96（塊）。",
     "meta": {
-      "people": 6,
-      "total": "9/5",
-      "source_module": "interactive-g5-life-pack2plus-empire",
-      "source_id": "g5lp2p_u1_avg_fraction_03"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_146"
     }
   },
   {
@@ -4607,29 +4646,31 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_149",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 7 公尺、寬 6 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "536",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u5_decimal_muldiv_price_18",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）8 瓶飲料共 108.4 元，平均每瓶多少元？",
+    "answer": "13.55",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：700×690 = 483000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：483000÷900 = 536（塊）"
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
     ],
-    "explanation": "房間面積 483000（cm²），每塊 900（cm²），所以需要 536（塊）。",
+    "explanation": "108.4 ÷ 8 = 13.55（元）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_149"
+      "unit_cents": 1355,
+      "qty": 8,
+      "mode": "div",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u5_decimal_muldiv_price_18"
     }
   },
   {
@@ -4901,35 +4942,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u4_money_decimal_addsub_07",
-    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
-    "kind": "u4_money_decimal_addsub",
+    "id": "exam_life-applications-g5__la5_area_159",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 鉛筆 4.2 元、橡皮擦 2.6 元、尺 4.3 元，共 11.1 元。付了 21.1 元，要找回多少元？",
-    "answer": "10",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 5 公尺、寬 2 公尺，要鋪 40 公分×40 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "87",
+    "answer_unit": "number",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：500×280 = 140000（平方公分）\n2) 地磚：40×40 = 1600（平方公分）\n3) 需要：140000÷1600 = 87（塊）"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "找零：21.1 − 11.1 = 10（元）。",
+    "explanation": "房間面積 140000（cm²），每塊 1600（cm²），所以需要 87（塊）。",
     "meta": {
-      "prices_cents": [
-        420,
-        260,
-        430
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack1plus-empire",
-      "source_id": "g5lp1p_u4_money_decimal_addsub_07"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_159"
     }
   },
   {
@@ -4995,35 +5030,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u4_money_decimal_addsub_09",
-    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
-    "kind": "u4_money_decimal_addsub",
+    "id": "exam_life-applications-g5__la5_area_151",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 鉛筆 3.8 元、橡皮擦 7.1 元、尺 5.5 元，共 16.4 元。付了 22.9 元，要找回多少元？",
-    "answer": "6.5",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 3 公尺、寬 4 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "192",
+    "answer_unit": "number",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：300×400 = 120000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：120000÷625 = 192（塊）"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "找零：22.9 − 16.4 = 6.5（元）。",
+    "explanation": "房間面積 120000（cm²），每塊 625（cm²），所以需要 192（塊）。",
     "meta": {
-      "prices_cents": [
-        380,
-        710,
-        550
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack2plus-empire",
-      "source_id": "g5lp2p_u4_money_decimal_addsub_09"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_151"
     }
   },
   {
@@ -5269,17 +5298,45 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_156",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u10_rate_time_distance_19",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 4 公尺，走了 8 分鐘，一共走了多少公尺？",
+    "answer": "32",
+    "answer_unit": "number",
+    "hints": [
+      "關鍵字：每分鐘…（單位率）。",
+      "距離 = 每分鐘走的距離 × 分鐘數。",
+      "列式：4×8。",
+      "最後檢查單位：公尺。"
+    ],
+    "steps": [
+      "距離=速率×時間。",
+      "列式：4×8。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
+    ],
+    "explanation": "距離 = 4×8 = 32（公尺）。",
+    "meta": {
+      "rate": 4,
+      "mode": "d",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u10_rate_time_distance_19"
+    }
+  },
+  {
+    "id": "exam_life-applications-g5__la5_area_155",
     "topic": "國小五年級｜生活應用題（講義+練習）",
     "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 5 公尺、寬 3 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "166",
+    "question": "（面積鋪地磚）房間長 3 公尺、寬 4 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "48",
     "answer_unit": "number",
     "hints": [
       "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
       "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：500×300 = 150000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：150000÷900 = 166（塊）"
+      "Level 3｜步驟\n1) 房間：300×400 = 120000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：120000÷2500 = 48（塊）"
     ],
     "steps": [
       "公尺換算成公分",
@@ -5287,39 +5344,11 @@ window.EXAM_SPRINT_BANK = [
       "地磚面積 = 邊長×邊長",
       "用除法求塊數"
     ],
-    "explanation": "房間面積 150000（cm²），每塊 900（cm²），所以需要 166（塊）。",
+    "explanation": "房間面積 120000（cm²），每塊 2500（cm²），所以需要 48（塊）。",
     "meta": {
       "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_area_156"
-    }
-  },
-  {
-    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u1_avg_fraction_19",
-    "topic": "小五生活應用題｜第二包｜帝國",
-    "kind": "u1_avg_fraction",
-    "difficulty": "medium",
-    "question": "（生活應用｜平均分配｜社團活動）有 5/4 個蛋糕，平均分給 7 人，每人得到多少個？（用最簡分數 a/b 表示）",
-    "answer": "5/28",
-    "answer_unit": "fraction",
-    "hints": [
-      "觀念：平均分配就是『總量 ÷ 人數』。",
-      "把除法改成乘法：除以 n 等於乘以 1/n。",
-      "列式：5/4 × 1/7。先算分母：4×7。",
-      "最後要記得把分數約分到最簡。"
-    ],
-    "steps": [
-      "把『平均分給 7 人』寫成 ÷7",
-      "列式：5/4 ÷ 7",
-      "等於 5/28（最簡分數）",
-      "檢查：人數越多，每人分到應越少。"
-    ],
-    "explanation": "平均分配：5/4 ÷ 7 = 5/28。",
-    "meta": {
-      "people": 7,
-      "total": "5/4",
-      "source_module": "interactive-g5-life-pack2-empire",
-      "source_id": "g5lp2_u1_avg_fraction_19"
+      "source_id": "la5_area_155"
     }
   },
   {
@@ -5353,35 +5382,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack1-empire__g5lp1_u4_money_decimal_addsub_09",
-    "topic": "小五生活應用題｜第一包｜帝國",
-    "kind": "u4_money_decimal_addsub",
+    "id": "exam_life-applications-g5__la5_area_153",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 鉛筆 5.8 元、橡皮擦 6.1 元、尺 4.5 元，共 16.4 元。付了 20.9 元，要找回多少元？",
-    "answer": "4.5",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 6 公尺、寬 6 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "144",
+    "answer_unit": "number",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：600×600 = 360000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：360000÷2500 = 144（塊）"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "找零：20.9 − 16.4 = 4.5（元）。",
+    "explanation": "房間面積 360000（cm²），每塊 2500（cm²），所以需要 144（塊）。",
     "meta": {
-      "prices_cents": [
-        580,
-        610,
-        450
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack1-empire",
-      "source_id": "g5lp1_u4_money_decimal_addsub_09"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_153"
     }
   },
   {
@@ -5413,53 +5436,61 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_frac_284",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "fraction_remaining",
-    "difficulty": "medium",
-    "question": "（分數應用）一條長 20 公尺的繩子，用掉了 1/3，還剩多少公尺？",
-    "answer": "13.33333333333333333333333333",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_06",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件外套原價 85.8 元，打 折扣 0.66，省下多少元？",
+    "answer": "29.17",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：『用掉了幾分之幾』＝用掉 全體×分數；剩下＝全體−用掉。",
-      "列式：用掉 = 20×1/3；剩下 = 20 − 用掉。",
-      "Level 3｜步驟\n1) 用掉：20×1/3 = 6.666666666666666666666666667\n2) 剩下：20 − 6.666666666666666666666666667 = 13.33333333333333333333333333\n3) 所以剩下 13.33333333333333333333333333 公尺"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "用掉 = 全體 × 分數",
-      "剩下 = 全體 − 用掉",
-      "寫上單位：公尺"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "用掉 20×1/3=6.666666666666666666666666667；剩下 20-6.666666666666666666666666667=13.33333333333333333333333333（公尺）。",
+    "explanation": "折後價 56.63，省下 85.8 − 56.63 = 29.17。",
     "meta": {
-      "unit": "公尺",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_frac_284"
+      "price_cents": 8580,
+      "disc": 0.66,
+      "sale_cents": 5663,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_06"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_109",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）餅乾 每盒 18.8 元，買 3 盒；麵包 每本 16.5 元，買 2 本。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "69.4",
+    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u7_discount_percent_09",
+    "topic": "小五生活應用題｜第二包｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 62.6 元，打 折扣 0.88，省下多少元？",
+    "answer": "7.51",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(18.8×3) + (16.5×2) − 20。",
-      "Level 3｜步驟\n1) 小計1：18.8×3 = 56.4\n2) 小計2：16.5×2 = 33\n3) 合計：89.4\n4) 減折價券：89.4-20 = 69.4（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 89.4，最後減 20 得 69.4（元）。",
+    "explanation": "折後價 55.09，省下 62.6 − 55.09 = 7.51。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_109"
+      "price_cents": 6260,
+      "disc": 0.88,
+      "sale_cents": 5509,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2-empire",
+      "source_id": "g5lp2_u7_discount_percent_09"
     }
   },
   {
@@ -5495,28 +5526,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_frac_289",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "fraction_remaining",
-    "difficulty": "medium",
-    "question": "（分數應用）一條長 62 公尺的木條，用掉了 1/3，還剩多少公尺？",
-    "answer": "41.33333333333333333333333333",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_23",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件球鞋原價 41.7 元，打 折扣 0.95，省下多少元？",
+    "answer": "2.08",
+    "answer_unit": "money2",
     "hints": [
-      "觀念：『用掉了幾分之幾』＝用掉 全體×分數；剩下＝全體−用掉。",
-      "列式：用掉 = 62×1/3；剩下 = 62 − 用掉。",
-      "Level 3｜步驟\n1) 用掉：62×1/3 = 20.66666666666666666666666667\n2) 剩下：62 − 20.66666666666666666666666667 = 41.33333333333333333333333333\n3) 所以剩下 41.33333333333333333333333333 公尺"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "用掉 = 全體 × 分數",
-      "剩下 = 全體 − 用掉",
-      "寫上單位：公尺"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "用掉 62×1/3=20.66666666666666666666666667；剩下 62-20.66666666666666666666666667=41.33333333333333333333333333（公尺）。",
+    "explanation": "折後價 39.62，省下 41.7 − 39.62 = 2.08。",
     "meta": {
-      "unit": "公尺",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_frac_289"
+      "price_cents": 4170,
+      "disc": 0.95,
+      "sale_cents": 3962,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_23"
     }
   },
   {
@@ -5548,55 +5583,59 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_162",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 5 公尺、寬 6 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "480",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u10_rate_time_distance_12",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，要走 540 公尺，需要幾分鐘？",
+    "answer": "108",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：500×600 = 300000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：300000÷625 = 480（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：540÷5。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：540÷5。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 300000（cm²），每塊 625（cm²），所以需要 480（塊）。",
+    "explanation": "時間 = 540÷5 = 108（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_162"
+      "rate": 5,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u10_rate_time_distance_12"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_153",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 6 公尺、寬 6 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "144",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u10_rate_time_distance_24",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 12 公尺，要走 480 公尺，需要幾分鐘？",
+    "answer": "40",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：600×600 = 360000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：360000÷2500 = 144（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：480÷12。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：480÷12。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 360000（cm²），每塊 2500（cm²），所以需要 144（塊）。",
+    "explanation": "時間 = 480÷12 = 40（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_153"
+      "rate": 12,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u10_rate_time_distance_24"
     }
   },
   {
@@ -5779,28 +5818,32 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_120",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）牛奶 每支 25.6 元，買 6 支；果凍 每個 9.6 元，買 6 個。結帳時用了 30 元折價券，實付多少元？（可寫小數）",
-    "answer": "181.2",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u7_discount_percent_21",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件書包原價 80.2 元，打 折扣 0.88，省下多少元？",
+    "answer": "9.62",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(25.6×6) + (9.6×6) − 30。",
-      "Level 3｜步驟\n1) 小計1：25.6×6 = 153.6\n2) 小計2：9.6×6 = 57.6\n3) 合計：211.2\n4) 減折價券：211.2-30 = 181.2（元）"
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
     ],
-    "explanation": "先算各自小計再合計 211.2，最後減 30 得 181.2（元）。",
+    "explanation": "折後價 70.58，省下 80.2 − 70.58 = 9.62。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_120"
+      "price_cents": 8020,
+      "disc": 0.88,
+      "sale_cents": 7058,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u7_discount_percent_21"
     }
   },
   {
@@ -5922,35 +5965,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u4_money_decimal_addsub_09",
-    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
-    "kind": "u4_money_decimal_addsub",
+    "id": "exam_life-applications-g5__la5_area_161",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 鉛筆 1.4 元、橡皮擦 6.5 元、尺 5.2 元，共 13.1 元。付了 19.1 元，要找回多少元？",
-    "answer": "6",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 6 公尺、寬 4 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "320",
+    "answer_unit": "number",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：600×480 = 288000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：288000÷900 = 320（塊）"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "找零：19.1 − 13.1 = 6（元）。",
+    "explanation": "房間面積 288000（cm²），每塊 900（cm²），所以需要 320（塊）。",
     "meta": {
-      "prices_cents": [
-        140,
-        650,
-        520
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack1plus-empire",
-      "source_id": "g5lp1p_u4_money_decimal_addsub_09"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_161"
     }
   },
   {
@@ -6218,28 +6255,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_118",
+    "id": "exam_life-applications-g5__la5_area_147",
     "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（兩段式購物）果汁 每包 8.5 元，買 4 包；果凍 每本 20.5 元，買 3 本。結帳時用了 20 元折價券，實付多少元？（可寫小數）",
-    "answer": "75.5",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 7 公尺、寬 5 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "560",
+    "answer_unit": "number",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(8.5×4) + (20.5×3) − 20。",
-      "Level 3｜步驟\n1) 小計1：8.5×4 = 34\n2) 小計2：20.5×3 = 61.5\n3) 合計：95.5\n4) 減折價券：95.5-20 = 75.5（元）"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：700×500 = 350000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：350000÷625 = 560（塊）"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "先算各自小計再合計 95.5，最後減 20 得 75.5（元）。",
+    "explanation": "房間面積 350000（cm²），每塊 625（cm²），所以需要 560（塊）。",
     "meta": {
-      "unit": "元",
+      "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_2st_118"
+      "source_id": "la5_area_147"
     }
   },
   {
@@ -6276,79 +6314,91 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_106",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）果汁 每支 15.2 元，買 6 支；貼紙 每盒 36.5 元，買 5 盒。結帳時用了 40 元折價券，實付多少元？（可寫小數）",
-    "answer": "233.7",
+    "id": "exam_interactive-g5-life-pack1-empire__g5lp1_u5_decimal_muldiv_price_05",
+    "topic": "小五生活應用題｜第一包｜帝國",
+    "kind": "u5_decimal_muldiv_price",
+    "difficulty": "hard",
+    "question": "（生活應用｜平均/單價）3 瓶飲料共 14.1 元，平均每瓶多少元？",
+    "answer": "4.7",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(15.2×6) + (36.5×5) − 40。",
-      "Level 3｜步驟\n1) 小計1：15.2×6 = 91.2\n2) 小計2：36.5×5 = 182.5\n3) 合計：273.7\n4) 減折價券：273.7-40 = 233.7（元）"
+      "關鍵字：平均每瓶。",
+      "用除法：總價÷瓶數。",
+      "先把總價換成『分』，再除以瓶數。",
+      "最後換回『元』（÷100）。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "列式：總價÷瓶數=每瓶單價。",
+      "用『分』計算避免小數誤差。",
+      "檢查：平均單價應比總價小。"
     ],
-    "explanation": "先算各自小計再合計 273.7，最後減 40 得 233.7（元）。",
+    "explanation": "14.1 ÷ 3 = 4.7（元）。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_106"
+      "unit_cents": 470,
+      "qty": 3,
+      "mode": "div",
+      "source_module": "interactive-g5-life-pack1-empire",
+      "source_id": "g5lp1_u5_decimal_muldiv_price_05"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_2st_117",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）牛奶 每包 12.5 元，買 2 包；貼紙 每盒 36.5 元，買 5 盒。結帳時用了 10 元折價券，實付多少元？（可寫小數）",
-    "answer": "197.5",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u7_discount_percent_21",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件文具組原價 51.3 元，打 折扣 0.72，折後價是多少元？",
+    "answer": "36.94",
     "answer_unit": "money2",
     "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(12.5×2) + (36.5×5) − 10。",
-      "Level 3｜步驟\n1) 小計1：12.5×2 = 25\n2) 小計2：36.5×5 = 182.5\n3) 合計：207.5\n4) 減折價券：207.5-10 = 197.5（元）"
+      "關鍵字：打折後要付多少。",
+      "折後價 = 原價 × 折扣倍率。",
+      "折扣 0.72 對應倍率約是 0.72。",
+      "最後檢查：打折後價格應比原價小。"
     ],
     "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
+      "把『x折』換成小數倍率（例如 8 折=0.8）。",
+      "列式：原價×倍率=折後價。",
+      "用『分』計算再換回元。"
     ],
-    "explanation": "先算各自小計再合計 207.5，最後減 10 得 197.5（元）。",
+    "explanation": "折後價：51.3×0.72=36.94（元）。",
     "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_117"
+      "price_cents": 5130,
+      "disc": 0.72,
+      "sale_cents": 3694,
+      "ask": "sale",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u7_discount_percent_21"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_155",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 3 公尺、寬 4 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "48",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u2_frac_addsub_life_19",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u2_frac_addsub_life",
+    "difficulty": "hard",
+    "question": "（生活應用｜分數減法）原本有 7/8 公升油，用掉 3/4 公升油，還剩多少 公升油？（最簡分數）",
+    "answer": "1/8",
+    "answer_unit": "fraction",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：300×400 = 120000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：120000÷2500 = 48（塊）"
+      "觀念：分母不同要先通分，才能加/減分子。",
+      "先找最小公倍數：LCM(8,8)。",
+      "把兩個分數都改成分母 8，再做 -。",
+      "最後把答案約分成最簡。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "判斷分母是否相同，不同就通分。",
+      "通分後做分子加/減。",
+      "把結果約分成最簡分數。",
+      "檢查：加法結果應比其中一個大；減法結果應變小且不為負。"
     ],
-    "explanation": "房間面積 120000（cm²），每塊 2500（cm²），所以需要 48（塊）。",
+    "explanation": "通分後相減：7/8-3/4=1/8。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_155"
+      "op": "-",
+      "a": "7/8",
+      "b": "3/4",
+      "d1": 8,
+      "d2": 8,
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u2_frac_addsub_life_19"
     }
   },
   {
@@ -6440,35 +6490,29 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u4_money_decimal_addsub_15",
-    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
-    "kind": "u4_money_decimal_addsub",
+    "id": "exam_life-applications-g5__la5_area_152",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 鉛筆 8.6 元、橡皮擦 1.4 元、尺 6.7 元，共 16.7 元。付了 20.7 元，要找回多少元？",
-    "answer": "4",
-    "answer_unit": "money2",
+    "question": "（面積鋪地磚）房間長 3 公尺、寬 5 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "240",
+    "answer_unit": "number",
     "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：300×500 = 150000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：150000÷625 = 240（塊）"
     ],
     "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
     ],
-    "explanation": "找零：20.7 − 16.7 = 4（元）。",
+    "explanation": "房間面積 150000（cm²），每塊 625（cm²），所以需要 240（塊）。",
     "meta": {
-      "prices_cents": [
-        860,
-        140,
-        670
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack1plus-empire",
-      "source_id": "g5lp1p_u4_money_decimal_addsub_15"
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_152"
     }
   },
   {
@@ -6528,29 +6572,31 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_144",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 5 公尺、寬 6 公尺，要鋪 40 公分×40 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "187",
+    "id": "exam_interactive-g5-life-pack1-empire__g5lp1_u10_rate_time_distance_11",
+    "topic": "小五生活應用題｜第一包｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 5 公尺，走了 10 分鐘，一共走了多少公尺？",
+    "answer": "50",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：500×600 = 300000（平方公分）\n2) 地磚：40×40 = 1600（平方公分）\n3) 需要：300000÷1600 = 187（塊）"
+      "關鍵字：每分鐘…（單位率）。",
+      "距離 = 每分鐘走的距離 × 分鐘數。",
+      "列式：5×10。",
+      "最後檢查單位：公尺。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "距離=速率×時間。",
+      "列式：5×10。",
+      "計算並寫出答案。",
+      "檢查：時間越久距離越大。"
     ],
-    "explanation": "房間面積 300000（cm²），每塊 1600（cm²），所以需要 187（塊）。",
+    "explanation": "距離 = 5×10 = 50（公尺）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_144"
+      "rate": 5,
+      "mode": "d",
+      "source_module": "interactive-g5-life-pack1-empire",
+      "source_id": "g5lp1_u10_rate_time_distance_11"
     }
   },
   {
@@ -6612,102 +6658,17 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u1_avg_fraction_17",
-    "topic": "小五生活應用題｜第二包｜帝國",
-    "kind": "u1_avg_fraction",
-    "difficulty": "medium",
-    "question": "（生活應用｜平均分配｜家庭分享）有 3/2 個果汁，平均分給 4 人，每人得到多少個？（用最簡分數 a/b 表示）",
-    "answer": "3/8",
-    "answer_unit": "fraction",
-    "hints": [
-      "觀念：平均分配就是『總量 ÷ 人數』。",
-      "把除法改成乘法：除以 n 等於乘以 1/n。",
-      "列式：3/2 × 1/4。先算分母：2×4。",
-      "最後要記得把分數約分到最簡。"
-    ],
-    "steps": [
-      "把『平均分給 4 人』寫成 ÷4",
-      "列式：3/2 ÷ 4",
-      "等於 3/8（最簡分數）",
-      "檢查：人數越多，每人分到應越少。"
-    ],
-    "explanation": "平均分配：3/2 ÷ 4 = 3/8。",
-    "meta": {
-      "people": 4,
-      "total": "3/2",
-      "source_module": "interactive-g5-life-pack2-empire",
-      "source_id": "g5lp2_u1_avg_fraction_17"
-    }
-  },
-  {
-    "id": "exam_interactive-g5-life-pack2-empire__g5lp2_u4_money_decimal_addsub_12",
-    "topic": "小五生活應用題｜第二包｜帝國",
-    "kind": "u4_money_decimal_addsub",
-    "difficulty": "medium",
-    "question": "（生活應用｜金錢找零）買了 資料夾 7.6 元、修正帶 8.2 元、便利貼 6.8 元，共 22.6 元。付了 24.6 元，要找回多少元？",
-    "answer": "2",
-    "answer_unit": "money2",
-    "hints": [
-      "先把所有價格加起來得到總價。",
-      "找零 = 付的錢 − 總價。",
-      "也可以先都換成『分』再做減法。",
-      "最後檢查：找零加總價是否等於付的錢。"
-    ],
-    "steps": [
-      "先算總價（把小數點對齊相加）。",
-      "列式：付的金額 − 總價 = 找零。",
-      "用『分』計算可避免小數誤差。",
-      "檢查：付的金額應大於總價，找零應為正。"
-    ],
-    "explanation": "找零：24.6 − 22.6 = 2（元）。",
-    "meta": {
-      "prices_cents": [
-        760,
-        820,
-        680
-      ],
-      "scenario": "找零",
-      "source_module": "interactive-g5-life-pack2-empire",
-      "source_id": "g5lp2_u4_money_decimal_addsub_12"
-    }
-  },
-  {
-    "id": "exam_life-applications-g5__la5_2st_104",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "shopping_two_step",
-    "difficulty": "medium",
-    "question": "（兩段式購物）果汁 每包 8.5 元，買 4 包；麵包 每包 9.6 元，買 4 包。結帳時用了 40 元折價券，實付多少元？（可寫小數）",
-    "answer": "32.4",
-    "answer_unit": "money2",
-    "hints": [
-      "觀念：兩段式＝先算各自小計，再合計，最後做加/減。",
-      "列式：(8.5×4) + (9.6×4) − 40。",
-      "Level 3｜步驟\n1) 小計1：8.5×4 = 34\n2) 小計2：9.6×4 = 38.4\n3) 合計：72.4\n4) 減折價券：72.4-40 = 32.4（元）"
-    ],
-    "steps": [
-      "分別算小計：單價×數量",
-      "合計：小計相加",
-      "實付：合計 − 折價券"
-    ],
-    "explanation": "先算各自小計再合計 72.4，最後減 40 得 32.4（元）。",
-    "meta": {
-      "unit": "元",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_2st_104"
-    }
-  },
-  {
-    "id": "exam_life-applications-g5__la5_area_161",
+    "id": "exam_life-applications-g5__la5_area_158",
     "topic": "國小五年級｜生活應用題（講義+練習）",
     "kind": "area_tiling",
     "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 6 公尺、寬 4 公尺，要鋪 30 公分×30 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "320",
+    "question": "（面積鋪地磚）房間長 7 公尺、寬 3 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "84",
     "answer_unit": "number",
     "hints": [
       "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
       "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：600×480 = 288000（平方公分）\n2) 地磚：30×30 = 900（平方公分）\n3) 需要：288000÷900 = 320（塊）"
+      "Level 3｜步驟\n1) 房間：700×300 = 210000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：210000÷2500 = 84（塊）"
     ],
     "steps": [
       "公尺換算成公分",
@@ -6715,11 +6676,94 @@ window.EXAM_SPRINT_BANK = [
       "地磚面積 = 邊長×邊長",
       "用除法求塊數"
     ],
-    "explanation": "房間面積 288000（cm²），每塊 900（cm²），所以需要 320（塊）。",
+    "explanation": "房間面積 210000（cm²），每塊 2500（cm²），所以需要 84（塊）。",
     "meta": {
       "unit": "塊",
       "source_module": "life-applications-g5",
-      "source_id": "la5_area_161"
+      "source_id": "la5_area_158"
+    }
+  },
+  {
+    "id": "exam_interactive-g5-life-pack1-empire__g5lp1_u7_discount_percent_04",
+    "topic": "小五生活應用題｜第一包｜帝國",
+    "kind": "u7_discount_percent",
+    "difficulty": "hard",
+    "question": "（生活應用｜折扣）一件文具組原價 44.1 元，打 折扣 0.72，省下多少元？",
+    "answer": "12.35",
+    "answer_unit": "money2",
+    "hints": [
+      "先求折後價，再求省下多少。",
+      "省下 = 原價 − 折後價。",
+      "或用省下倍率：1−折扣倍率。",
+      "檢查：省下 + 折後價 = 原價。"
+    ],
+    "steps": [
+      "先算折後價：原價×倍率。",
+      "省下 = 原價 − 折後價。",
+      "用『分』計算避免小數誤差。"
+    ],
+    "explanation": "折後價 31.75，省下 44.1 − 31.75 = 12.35。",
+    "meta": {
+      "price_cents": 4410,
+      "disc": 0.72,
+      "sale_cents": 3175,
+      "ask": "save",
+      "source_module": "interactive-g5-life-pack1-empire",
+      "source_id": "g5lp1_u7_discount_percent_04"
+    }
+  },
+  {
+    "id": "exam_life-applications-g5__la5_area_145",
+    "topic": "國小五年級｜生活應用題（講義+練習）",
+    "kind": "area_tiling",
+    "difficulty": "medium",
+    "question": "（面積鋪地磚）房間長 2 公尺、寬 7 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
+    "answer": "56",
+    "answer_unit": "number",
+    "hints": [
+      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
+      "方法：把公尺換成公分後，用 面積=長×寬。",
+      "Level 3｜步驟\n1) 房間：200×700 = 140000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：140000÷2500 = 56（塊）"
+    ],
+    "steps": [
+      "公尺換算成公分",
+      "房間面積 = 長×寬",
+      "地磚面積 = 邊長×邊長",
+      "用除法求塊數"
+    ],
+    "explanation": "房間面積 140000（cm²），每塊 2500（cm²），所以需要 56（塊）。",
+    "meta": {
+      "unit": "塊",
+      "source_module": "life-applications-g5",
+      "source_id": "la5_area_145"
+    }
+  },
+  {
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u10_rate_time_distance_26",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 7 公尺，要走 217 公尺，需要幾分鐘？",
+    "answer": "31",
+    "answer_unit": "number",
+    "hints": [
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：217÷7。",
+      "最後檢查：算出來應是整數分鐘。"
+    ],
+    "steps": [
+      "時間=距離÷速率。",
+      "列式：217÷7。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
+    ],
+    "explanation": "時間 = 217÷7 = 31（分鐘）。",
+    "meta": {
+      "rate": 7,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u10_rate_time_distance_26"
     }
   },
   {
@@ -6839,55 +6883,62 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_152",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 3 公尺、寬 5 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "240",
-    "answer_unit": "number",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u2_frac_addsub_life_13",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u2_frac_addsub_life",
+    "difficulty": "hard",
+    "question": "（生活應用｜分數減法）原本有 1/2 公升湯，用掉 1/2 公升湯，還剩多少 公升湯？（最簡分數）",
+    "answer": "0/1",
+    "answer_unit": "fraction",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：300×500 = 150000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：150000÷625 = 240（塊）"
+      "觀念：分母不同要先通分，才能加/減分子。",
+      "先找最小公倍數：LCM(6,6)。",
+      "把兩個分數都改成分母 6，再做 -。",
+      "最後把答案約分成最簡。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "判斷分母是否相同，不同就通分。",
+      "通分後做分子加/減。",
+      "把結果約分成最簡分數。",
+      "檢查：加法結果應比其中一個大；減法結果應變小且不為負。"
     ],
-    "explanation": "房間面積 150000（cm²），每塊 625（cm²），所以需要 240（塊）。",
+    "explanation": "通分後相減：1/2-1/2=0/1。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_152"
+      "op": "-",
+      "a": "1/2",
+      "b": "1/2",
+      "d1": 6,
+      "d2": 6,
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u2_frac_addsub_life_13"
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_143",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 7 公尺、寬 7 公尺，要鋪 50 公分×50 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "196",
+    "id": "exam_interactive-g5-life-pack1plus-empire__g5lp1p_u10_rate_time_distance_27",
+    "topic": "小五生活應用題｜第一包｜加強版｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 14 公尺，要走 238 公尺，需要幾分鐘？",
+    "answer": "17",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：700×700 = 490000（平方公分）\n2) 地磚：50×50 = 2500（平方公分）\n3) 需要：490000÷2500 = 196（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：238÷14。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：238÷14。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 490000（cm²），每塊 2500（cm²），所以需要 196（塊）。",
+    "explanation": "時間 = 238÷14 = 17（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_143"
+      "rate": 14,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack1plus-empire",
+      "source_id": "g5lp1p_u10_rate_time_distance_27"
     }
   },
   {
@@ -6921,29 +6972,31 @@ window.EXAM_SPRINT_BANK = [
     }
   },
   {
-    "id": "exam_life-applications-g5__la5_area_147",
-    "topic": "國小五年級｜生活應用題（講義+練習）",
-    "kind": "area_tiling",
-    "difficulty": "medium",
-    "question": "（面積鋪地磚）房間長 7 公尺、寬 5 公尺，要鋪 25 公分×25 公分的正方形地磚，至少需要幾塊？（只寫數字）",
-    "answer": "560",
+    "id": "exam_interactive-g5-life-pack2plus-empire__g5lp2p_u10_rate_time_distance_29",
+    "topic": "小五生活應用題｜第二包（加強版）｜帝國",
+    "kind": "u10_rate_time_distance",
+    "difficulty": "hard",
+    "question": "（生活應用｜速率）腳踏車每分鐘走 4 公尺，要走 544 公尺，需要幾分鐘？",
+    "answer": "136",
     "answer_unit": "number",
     "hints": [
-      "觀念：先算房間面積，再算每塊地磚面積，最後用除法。",
-      "方法：把公尺換成公分後，用 面積=長×寬。",
-      "Level 3｜步驟\n1) 房間：700×500 = 350000（平方公分）\n2) 地磚：25×25 = 625（平方公分）\n3) 需要：350000÷625 = 560（塊）"
+      "關鍵字：需要幾分鐘（求時間）。",
+      "時間 = 距離 ÷ 每分鐘走的距離。",
+      "列式：544÷4。",
+      "最後檢查：算出來應是整數分鐘。"
     ],
     "steps": [
-      "公尺換算成公分",
-      "房間面積 = 長×寬",
-      "地磚面積 = 邊長×邊長",
-      "用除法求塊數"
+      "時間=距離÷速率。",
+      "列式：544÷4。",
+      "計算並寫出答案。",
+      "檢查：速率越快時間越短。"
     ],
-    "explanation": "房間面積 350000（cm²），每塊 625（cm²），所以需要 560（塊）。",
+    "explanation": "時間 = 544÷4 = 136（分鐘）。",
     "meta": {
-      "unit": "塊",
-      "source_module": "life-applications-g5",
-      "source_id": "la5_area_147"
+      "rate": 4,
+      "mode": "t",
+      "source_module": "interactive-g5-life-pack2plus-empire",
+      "source_id": "g5lp2p_u10_rate_time_distance_29"
     }
   }
 ];

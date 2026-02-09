@@ -180,6 +180,15 @@ def _difficulty_rank(diff: str) -> int:
 def _is_advanced_item(q: Dict[str, Any], source_id: str) -> bool:
     diff = str(q.get("difficulty") or "").lower().strip()
     if diff in ("hard", "advanced"):
+        qtext = str(q.get("question") or "")
+        qlen = _len_score(qtext)
+        kw = _count_keywords(qtext)
+        steps = q.get("steps") or []
+        step_n = len(steps) if isinstance(steps, list) else 0
+
+        # Keep hard items, but avoid pure short drills.
+        if qlen < 16 and step_n < 3 and kw == 0:
+            return False
         return True
 
     # We still allow a controlled amount of "medium" for sprint warm-up,
@@ -274,7 +283,7 @@ def _is_valid_item(q: Dict[str, Any]) -> bool:
 def build_exam_sprint_bank(
     max_items: int = 240,
     seed: int = 20260209,
-    target_hard: int = 180,
+    target_hard: int = 220,
 ) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
 
@@ -319,9 +328,24 @@ def build_exam_sprint_bank(
 
     hard_take = min(int(target_hard), int(max_items), len(hard_items))
     med_take = min(int(max_items) - hard_take, len(med_items))
-    picked = hard_items[:hard_take] + med_items[:med_take]
 
-    # Final light shuffle for variety but deterministic.
+    # Prefer medium that still looks multi-step.
+    def is_elite_medium(it: Dict[str, Any]) -> bool:
+        qtext = str(it.get("question") or "")
+        qlen = _len_score(qtext)
+        kw = _count_keywords(qtext)
+        steps = it.get("steps") or []
+        step_n = len(steps) if isinstance(steps, list) else 0
+        return (step_n >= 4) or (qlen >= 30 and kw >= 2 and step_n >= 3)
+
+    elite_medium = [it for it in med_items if is_elite_medium(it)]
+    rest_medium = [it for it in med_items if not is_elite_medium(it)]
+
+    picked = hard_items[:hard_take] + elite_medium[:med_take]
+    if len(picked) < int(max_items):
+        need = int(max_items) - len(picked)
+        picked.extend(rest_medium[:need])
+
     rng.shuffle(picked)
     return picked[: int(max_items)]
 
