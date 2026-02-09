@@ -263,12 +263,19 @@
           <div class="small">這份題庫是離線 bank.js，自動亂數抽題；提交後可看完整詳解。</div>
         </div>
       </aside>
+
+      <aside class="card">
+        <h2 style="margin:0 0 10px 0">作答報告</h2>
+        <div id="unitReport" class="small"></div>
+      </aside>
     </div>
   </main>
 
   <script src="./bank.js"></script>
   <script src="../shared/coach_event_log.js"></script>
   <script src="../shared/attempt_telemetry.js"></script>
+  <script src="../shared/report/aggregate.js"></script>
+  <script src="../shared/report/unit_report_widget.js"></script>
   <script>
     // ---------- tabs ----------
     const tabLesson = document.getElementById('tabLesson');
@@ -672,6 +679,7 @@
     // init
     updateBankMeta();
     if (bank.length) showQuestion(bank[0]);
+    window.AIMathUnitReportWidget?.render(document.getElementById('unitReport'), UNIT_ID, { days: 7 });
   </script>
 </body>
 </html>

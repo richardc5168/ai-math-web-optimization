@@ -125,12 +125,19 @@
           <div class="small">這份題庫由後端題庫離線生成（見 bank.js），但本頁可完全離線運作。</div>
         </div>
       </aside>
+
+      <aside class="card">
+        <h2 style="margin:0 0 10px 0">作答報告</h2>
+        <div id="unitReport" class="small"></div>
+      </aside>
     </div>
   </main>
 
   <script src="./bank.js"></script>
   <script src="../shared/coach_event_log.js"></script>
   <script src="../shared/attempt_telemetry.js"></script>
+  <script src="../shared/report/aggregate.js"></script>
+  <script src="../shared/report/unit_report_widget.js"></script>
   <script>
     // --------- helpers ---------
     function normalizeText(s){
@@ -490,6 +497,7 @@
     });
 
     updateBankMeta();
+    window.AIMathUnitReportWidget?.render(document.getElementById('unitReport'), UNIT_ID, { days: 7 });
   </script>
 </body>
 </html>

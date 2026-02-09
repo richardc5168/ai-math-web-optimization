@@ -68,6 +68,7 @@
           <div id="txtRangeDates" class="small" style="margin-top:4px"></div>
         </div>
         <div class="row" style="gap:8px">
+          <span id="pillUnit" class="tag pill">單元：全部</span>
           <span id="pillStuck" class="tag pill warn">卡關提示階：—</span>
           <span id="pillWeak" class="tag pill warn">弱點：—</span>
         </div>
@@ -110,6 +111,18 @@
       <div style="font-weight:800">作答趨勢（最近 30 題）</div>
       <div class="small">綠色=答對，紅色=答錯；折線代表最近 30 題的正確率變化。</div>
       <div id="trendBox" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:800">對錯趨勢（長條｜最近 30 題）</div>
+      <div class="small">每一條代表一題，綠=答對、紅=答錯。</div>
+      <div id="barTrend" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:800">作對/作錯題目摘要（最近 30 題）</div>
+      <div class="small">列出題目、耗時、提示次數，方便快速回顧。</div>
+      <div id="questionSummary" style="margin-top:10px"></div>
     </div>
 
     <div class="card" style="margin-top:12px">
@@ -179,11 +192,19 @@
   (function(){
     'use strict';
     const $ = (id) => document.getElementById(id);
+    const params = new URLSearchParams(window.location.search || '');
+    const unitFilter = params.get('unit') || '';
+    const daysParam = params.get('days');
 
     function pct(x){
       const v = Number(x);
       if (!Number.isFinite(v)) return '0%';
       return Math.round(v * 100) + '%';
+    }
+
+    function safeStr(s){
+      return String(s ?? '')
+        .replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
     function sec(ms){
@@ -327,6 +348,61 @@
       `;
 
       el.innerHTML = svg;
+    }
+
+    function renderBarTrend(attempts){
+      const el = $('barTrend');
+      if (!el) return;
+      const items = Array.isArray(attempts) ? attempts.slice(-30) : [];
+      if (!items.length){
+        el.innerHTML = '<div class="small">（尚無作答紀錄）</div>';
+        return;
+      }
+
+      const bars = items.map((evt) => {
+        const ok = !!evt?.is_correct;
+        const color = ok ? '#2ea043' : '#f85149';
+        return `<div style="width:8px;height:36px;background:${color};border-radius:4px"></div>`;
+      }).join('');
+
+      el.innerHTML = `
+        <div style="display:flex;gap:4px;align-items:flex-end;flex-wrap:wrap">${bars}</div>
+      `;
+    }
+
+    function renderQuestionSummary(attempts){
+      const el = $('questionSummary');
+      if (!el) return;
+      const items = Array.isArray(attempts) ? attempts.slice(-30).reverse() : [];
+      if (!items.length){
+        el.innerHTML = '<div class="small">（尚無作答紀錄）</div>';
+        return;
+      }
+
+      const okList = [];
+      const badList = [];
+
+      for (const evt of items){
+        const ok = !!evt?.is_correct;
+        const cost = Math.max(0, Number(evt?.ts_end || 0) - Number(evt?.ts_start || 0));
+        const hints = Math.max(0, Number(evt?.hint?.shown_count || 0));
+        const qText = safeStr(evt?.extra?.question || evt?.question || evt?.question_id || '(題目)');
+        const line = `<li><span class="tag ${ok ? 'ok':'bad'}">${ok ? '對':'錯'}</span> ${qText} <span class="small">｜耗時 ${sec(cost)}｜提示 ${hints}</span></li>`;
+        (ok ? okList : badList).push(line);
+      }
+
+      el.innerHTML = `
+        <div class="row" style="gap:16px;align-items:flex-start">
+          <div style="flex:1">
+            <div style="font-weight:700">作對題目</div>
+            <ol style="margin:6px 0 0 18px; padding:0">${okList.slice(0, 10).join('') || '<li class="small">—</li>'}</ol>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:700">作錯題目</div>
+            <ol style="margin:6px 0 0 18px; padding:0">${badList.slice(0, 10).join('') || '<li class="small">—</li>'}</ol>
+          </div>
+        </div>
+      `;
     }
 
     function renderAttemptTable(attempts){
@@ -506,11 +582,21 @@
       const uid = window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
       $('txtUid').textContent = uid;
 
+      if (daysParam){
+        const v = String(daysParam);
+        if ([...$('selRange').options].some(o => o.value === v)) $('selRange').value = v;
+      }
+
       const days = Number($('selRange').value || '7');
       const sinceMs = (days >= 99999) ? null : (Date.now() - days * 24 * 60 * 60 * 1000);
 
-      const attempts = window.AIMathAttemptTelemetry?.listAttempts?.(uid, sinceMs != null ? { sinceMs } : {}) || [];
+      let attempts = window.AIMathAttemptTelemetry?.listAttempts?.(uid, sinceMs != null ? { sinceMs } : {}) || [];
+      if (unitFilter){
+        attempts = attempts.filter(x => String(x?.unit_id || '') === unitFilter);
+      }
       const agg = window.AIMathReportAggregate?.aggregate?.(attempts) || { overall: {n:0}, by_kind: [], kpi: {} };
+
+      $('pillUnit').textContent = unitFilter ? `單元：${unitName(unitFilter)}` : '單元：全部';
 
       $('txtRangeDays').textContent = String(days);
       if (sinceMs != null){
@@ -627,7 +713,9 @@
       }, null, 2);
 
       renderTrend(attempts);
+      renderBarTrend(attempts);
       renderAttemptTable(attempts);
+      renderQuestionSummary(attempts);
     }
 
     function exportAttempts(){
