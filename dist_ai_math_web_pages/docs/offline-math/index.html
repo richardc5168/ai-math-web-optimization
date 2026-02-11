@@ -178,6 +178,7 @@
   </div>
 
   <script>
+    window.__bootDone = false;
     function showBootError(msg){
       var overlay = document.getElementById('bootOverlay');
       var err = document.getElementById('bootError');
@@ -190,6 +191,11 @@
     window.addEventListener('unhandledrejection', function(e){
       showBootError('Promise 錯誤：' + (e && e.reason ? e.reason : 'unknown'));
     });
+    setTimeout(function(){
+      if(!window.__bootDone){
+        showBootError('載入超時：請確認 bank.js 與瀏覽器快取');
+      }
+    }, 3000);
   </script>
   <script src="../shared/attempt_telemetry.js"></script>
   <script src="../shared/report/aggregate.js"></script>
@@ -197,6 +203,7 @@
   <script>
   (function(){
     'use strict';
+    try {
 
     const UNIT_ID = 'offline-math';
 
@@ -582,9 +589,13 @@
       if(boot) boot.style.display = 'none';
       const overlay = document.getElementById('bootOverlay');
       if(overlay) overlay.style.display = 'none';
+      window.__bootDone = true;
     }
 
     init();
+    } catch (e) {
+      showBootError('初始化失敗：' + (e && e.message ? e.message : e));
+    }
   })();
   </script>
 </body>
