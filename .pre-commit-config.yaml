@@ -10,7 +10,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: '^(gpt_key_.*\.txt|streamlit\.log|.*\.log|20251123_OK/.*|app_20251123.*\.txt)$'
       - id: end-of-file-fixer
+        exclude: '^(gpt_key_.*\.txt|streamlit\.log|.*\.log|20251123_OK/.*|app_20251123.*\.txt)$'
       - id: check-merge-conflict
       - id: check-json
       - id: check-yaml

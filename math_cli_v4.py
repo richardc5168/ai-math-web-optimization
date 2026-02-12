@@ -137,7 +137,7 @@ def _fraction_core(a1, b1, a2, b2, op):
     """
     f1 = Fraction(a1, b1)
     f2 = Fraction(a2, b2)
-    
+
     # 避免負數結果
     if op == "-":
         if f1 < f2:
@@ -157,11 +157,11 @@ def _fraction_core(a1, b1, a2, b2, op):
     # 1. 計算 GCD 和 LCM (最小公倍數作為公分母)
     gcd_val = math.gcd(b1, b2)
     lcm_val = (b1 * b2) // gcd_val
-    
+
     # 2. 計算擴分倍數
     m1 = lcm_val // b1
     m2 = lcm_val // b2
-    
+
     # 3. 擴分
     na1 = a1 * m1
     na2 = a2 * m2
@@ -198,7 +198,7 @@ def gen_fraction_add():
 
     result, expl = _fraction_core(a1, b1, a2, b2, op)
     question = f"{a1}/{b1} {op} {a2}/{b2} = ?"
-    
+
     return {
         "topic": "分數加減",
         "difficulty": "medium",
@@ -247,16 +247,16 @@ def gen_fraction_mixed():
 
 def gen_gcd_lcm():
     """最大公因數 (GCD) 和 最小公倍數 (LCM) 題 (小學 5 年級)"""
-    
+
     # 選擇兩個或三個數字
     count = random.choice([2, 3])
     if count == 2:
         a = random.randint(10, 50)
         b = random.randint(10, 50)
-        
+
         gcd_val = math.gcd(a, b)
         lcm_val = (a * b) // gcd_val
-        
+
         question = f"數字 {a} 和 {b} 的最大公因數(GCD)和最小公倍數(LCM)各是多少？\n請依序輸入：GCD LCM"
         topic = "GCD/LCM (二數)"
     else: # 3 個數字
@@ -264,26 +264,26 @@ def gen_gcd_lcm():
         a = random.randint(5, 20)
         b = random.randint(5, 20)
         c = random.randint(5, 20)
-        
+
         # 計算 GCD
         gcd_val = math.gcd(a, math.gcd(b, c))
-        
+
         # 計算 LCM
         if HAS_SYMPY:
             lcm_val = sp.lcm(a, b, c)
         else:
             lcm_val = (a * b) // math.gcd(a, b)
             lcm_val = (lcm_val * c) // math.gcd(lcm_val, c)
-            
+
         question = f"數字 {a}, {b}, {c} 的最大公因數(GCD)和最小公倍數(LCM)各是多少？\n請依序輸入：GCD LCM"
         topic = "GCD/LCM (三數)"
-        
+
     answer = f"{gcd_val} {lcm_val}"
     explanation = [
         f"最大公因數 (GCD) = {gcd_val}",
         f"最小公倍數 (LCM) = {lcm_val}"
     ]
-        
+
     return {
         "topic": topic,
         "difficulty": "medium",
@@ -313,7 +313,7 @@ def gen_decimal_arith():
         ans = a / b
 
     final_ans = round(ans, 2)
-    
+
     question = f"計算並將結果四捨五入到小數點後兩位：\n{a} {op} {b} = ?"
     explanation = [
         f"精確計算結果: {ans}",
@@ -334,12 +334,12 @@ def gen_volume_area():
     length = random.randint(2, 10)
     width = random.randint(2, 10)
     height = random.randint(2, 10)
-    
+
     q_type = random.choice(["volume", "surface_area"])
-    
+
     if length == width == height:
         shape = "正方體"
-        
+
         if q_type == "volume":
             ans = length ** 3
             q_text = f"邊長為 {length} 公分的{shape}，體積是多少立方公分？"
@@ -348,11 +348,11 @@ def gen_volume_area():
             ans = 6 * (length ** 2)
             q_text = f"邊長為 {length} 公分的{shape}，表面積是多少平方公分？"
             expl = f"表面積 = 6 × (邊長 × 邊長) = 6 × {length * length} = {ans}"
-            
+
     else:
         shape = "長方體"
         dims = f"長 {length}、寬 {width}、高 {height}"
-        
+
         if q_type == "volume":
             ans = length * width * height
             q_text = f"{dims} 公分的{shape}，體積是多少立方公分？"
@@ -377,7 +377,7 @@ def gen_linear_equation():
     a = random.randint(2, 9)
     b = random.randint(-10, 10)
     c = a * x_val + b
-    
+
     question = f"{a}x + {b} = {c}, 求 x"
     expl = [
         f"{a}x + {b} = {c}",
@@ -412,7 +412,7 @@ def get_random_generator(topic_filter=None):
     """根據篩選器回傳出題函數。"""
     if topic_filter and topic_filter in GENERATORS:
         return GENERATORS[topic_filter][1]
-    
+
     keys = list(GENERATORS.keys())
     k = random.choice(keys)
     return GENERATORS[k][1]
@@ -434,7 +434,7 @@ def parse_answer(text: str) -> Fraction | None:
                 f = Fraction(parts[1])
                 # 處理帶分數 w a/b = w + a/b
                 return (Fraction(w, 1) + f) if w >= 0 else (Fraction(w, 1) - f)
-        
+
         # 處理純分數/小數/整數
         return Fraction(text)
     except Exception:
@@ -453,14 +453,14 @@ def check_correct(user: str, correct: str) -> int | None:
         if user.upper().replace(' ', '') == correct.upper().replace(' ', ''): # 忽略空格和大小寫
             return 1
         return 0
-        
+
     # 處理分數/小數/整數
     u = parse_answer(user)
     c = parse_answer(correct)
 
     if u is None or c is None:
         return None
-        
+
     return 1 if u == c else 0
 
 
@@ -470,7 +470,7 @@ def check_correct(user: str, correct: str) -> int | None:
 def simple_solver(question_text):
     """嘗試解析並計算自訂題目的答案。"""
     q = question_text.strip()
-    
+
     # 1. 處理方程式 (含有 =)
     if "=" in q:
         if not HAS_SYMPY:
@@ -492,7 +492,7 @@ def simple_solver(question_text):
     # 2. 處理一般算式
     try:
         clean_q = q.replace("×", "*").replace("÷", "/").replace(",", "")
-        
+
         if HAS_SYMPY:
             expr = sp.sympify(clean_q)
             f_ans = Fraction(expr).limit_denominator()
@@ -503,7 +503,7 @@ def simple_solver(question_text):
             f_ans = Fraction(ans).limit_denominator()
             ans_str = f"{f_ans.numerator}/{f_ans.denominator}"
             return ans_str, f"系統自動計算 (Fraction): {ans_str}"
-            
+
     except Exception as e:
         return None, f"無法計算: {e}"
 

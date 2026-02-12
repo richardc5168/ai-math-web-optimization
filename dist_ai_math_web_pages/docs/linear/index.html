@@ -16,34 +16,34 @@
     header .sub{color:var(--muted); font-size:13px; margin-top:6px; line-height:1.5}
     main{max-width:1000px; margin:0 auto; padding:16px}
     .grid{display:grid; grid-template-columns:1fr; gap:12px}
-    
+
     .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px}
     .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin: 10px 0}
     label{color:var(--muted); font-size:14px}
     select,input{background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.12); color:var(--text); border-radius:10px; padding:10px 14px; font-size:16px}
     .btn{padding:10px 16px; border-radius:10px; border:1px solid var(--accent); background:rgba(46,160,67,.12); color:var(--accent); cursor:pointer; font-weight:bold;}
     .btn:hover{background:rgba(46,160,67,.2)}
-    
+
     .eq{font-size:28px; padding:20px; text-align:center; border-radius:12px; background:#08102a; border:1px dashed var(--accent); margin: 20px 0; font-family: monospace;}
-    
+
     .step-card {
-        padding: 12px 16px; 
-        background: rgba(0,0,0,0.2); 
-        border-radius: 8px; 
-        border-left: 4px solid var(--accent); 
-        font-family: monospace; 
+        padding: 12px 16px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 8px;
+        border-left: 4px solid var(--accent);
+        font-family: monospace;
         margin-bottom: 10px;
         line-height: 1.6;
         animation: slideIn 0.3s ease-out;
     }
     .step-num { font-weight: bold; color: var(--accent); margin-right: 8px; }
-    
+
     @keyframes slideIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
-    
+
     .banner{padding:12px; border-radius:8px; margin-top:10px; text-align:center; font-weight:bold;}
     .banner.ok{background:rgba(46,160,67,.2); color:#b7f5c9; border:1px solid var(--ok);}
     .banner.bad{background:rgba(248,81,73,.2); color:#ffd2cf; border:1px solid var(--bad);}
-    
+
     a{color:var(--accent); text-decoration:none; margin-right: 10px;}
   </style>
 </head>
@@ -74,7 +74,7 @@
         </div>
 
         <div class="eq" id="qText">請按「出新題」開始</div>
-        
+
         <div id="interactionArea" style="display:none; text-align:center; margin-top:20px;">
             <div style="font-size:18px; margin-bottom:10px;">你的答案 x = </div>
             <input type="text" id="ansInput" placeholder="例如: 5 或 3/2" style="width:200px; text-align:center;">
@@ -289,7 +289,7 @@
         els.qText.innerText = data.question_text;
         els.inter.style.display = 'block';
         els.hintSec.style.display = 'block';
-      
+
           // Parse steps (prepend tiered hint ladder if rules exist)
           const baseSteps = (data.explanation || "").split('\n').map(s => s.trim()).filter(Boolean);
           const ruleSteps = tutorRules ? buildRuleHintSteps(parseInt(diff), data.question_text) : [];
@@ -325,7 +325,7 @@
               body: JSON.stringify({user_answer: ans, question_data: currentQ})
           });
           const j = await res.json();
-          
+
           if(j.correct) {
               els.banner.className = 'banner ok';
               els.banner.innerText = "🎉 正確！太棒了！已展開全部步驟。按「出新題」再來一題。";

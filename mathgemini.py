@@ -17,7 +17,7 @@ print("正在初始化系統，請稍候...")
 # ANSI 顏色定義
 # =========================
 class Colors:
-    GOLD = '\033[38;2;218;165;32m' 
+    GOLD = '\033[38;2;218;165;32m'
     YELLOW = '\033[93m'
     GREEN = '\033[92m'
     RED = '\033[91m'
@@ -35,13 +35,13 @@ def init_db():
         CREATE TABLE IF NOT EXISTS records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ts TEXT,
-            mode TEXT, 
-            topic TEXT, 
-            difficulty TEXT, 
+            mode TEXT,
+            topic TEXT,
+            difficulty TEXT,
             question TEXT,
             correct_answer TEXT,
             user_answer TEXT,
-            is_correct INTEGER, 
+            is_correct INTEGER,
             explanation TEXT
         )
     """)
@@ -104,7 +104,7 @@ GENERATORS = {
 def show_report(conn):
     cur = conn.cursor()
     data = cur.execute("SELECT topic, COUNT(*), SUM(is_correct) FROM records WHERE is_correct IS NOT NULL GROUP BY topic").fetchall()
-    
+
     print(f"\n{Colors.GOLD}--- 📊 學習進度與計畫 ---{Colors.END}")
     if not data:
         print("目前還沒有作答紀錄喔！先去練習幾題吧。")
@@ -116,7 +116,7 @@ def show_report(conn):
         status = "✅ 優秀" if acc >= 80 else "⚠️ 需注意"
         print(f"[{topic}] 練習: {total} | 正確: {correct} | 正確率: {acc:.1f}% -> {status}")
         if acc < 75: weak_topics.append(topic)
-    
+
     if weak_topics:
         print(f"\n{Colors.YELLOW}【下週改進計畫建議】{Colors.END}")
         for t in weak_topics:
@@ -127,7 +127,7 @@ def show_report(conn):
 def practice(conn, tid=None):
     gen_func = GENERATORS[tid][1] if tid in GENERATORS else random.choice(list(GENERATORS.values()))[1]
     qobj = gen_func()
-    
+
     print(f"\n{Colors.YELLOW}題目：{qobj['question']}{Colors.END}")
     user = input("請輸入答案 (s 跳過): ").strip()
     if user.lower() == 's': return
@@ -153,9 +153,9 @@ def main():
         print(" 2. 選擇特定題型")
         print(" 3. 查看分析報告與改進計畫")
         print(" 0. 離開程式")
-        
+
         choice = input("\n請選擇功能 (0-3): ").strip()
-        
+
         if choice == '1':
             practice(conn)
         elif choice == '2':

@@ -15,7 +15,7 @@ KNOWLEDGE_GRAPH = {
         "prereqs": [],
         "khan_mapped_id": "linear-equations-basics"
     },
-    
+
     # --- Algebra: Factoring ---
     "A2": {
         "id": "A2",
@@ -24,7 +24,7 @@ KNOWLEDGE_GRAPH = {
         "prereqs": ["A1"],
         "khan_mapped_id": "factoring-common-factor"
     },
-    
+
     # --- Algebra: Quadratic Equations ---
     "A3": {
         "id": "A3",

@@ -170,7 +170,7 @@ def main() -> int:
 
     with out_csv.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["pack_id", "code", "valid_days", "expires_utc", "max_uses_per_device", "label"]) 
+        w.writerow(["pack_id", "code", "valid_days", "expires_utc", "max_uses_per_device", "label"])
         for c in codes:
             w.writerow([args.pack_id, c, valid_days if valid_days is not None else "", expires_utc or "", args.max_uses, args.label])
 

@@ -178,7 +178,7 @@ def gen_fraction_add():
 
     result, expl = _fraction_core(a1, b1, a2, b2, op)
     question = f"{a1}/{b1} {op} {a2}/{b2} = ?"
-    
+
     return {
         "topic": "分數加減",
         "difficulty": "medium",
@@ -232,7 +232,7 @@ def gen_linear_equation():
     a = random.randint(2, 9)
     b = random.randint(-10, 10)
     c = a * x_val + b
-    
+
     question = f"{a}x + {b} = {c}, 求 x"
     expl = [
         f"{a}x + {b} = {c}",
@@ -267,7 +267,7 @@ def get_random_generator(topic_filter=None):
     """
     if topic_filter and topic_filter in GENERATORS:
         return GENERATORS[topic_filter][1]
-    
+
     # 隨機選擇
     keys = list(GENERATORS.keys())
     k = random.choice(keys)
@@ -290,7 +290,7 @@ def parse_answer(text: str) -> Fraction | None:
                 w = int(parts[0])
                 f = Fraction(parts[1])
                 return (Fraction(w, 1) + f) if w >= 0 else (Fraction(w, 1) - f)
-        
+
         # 處理小數或整數或分數
         return Fraction(text)
     except Exception:
@@ -310,7 +310,7 @@ def check_correct(user: str, correct: str) -> int | None:
 
     if u is None or c is None:
         return None
-        
+
     return 1 if u == c else 0
 
 
@@ -322,7 +322,7 @@ def simple_solver(question_text):
     嘗試解析並計算自訂題目的答案。
     """
     q = question_text.strip()
-    
+
     # 1. 處理方程式 (含有 =)
     if "=" in q:
         if not HAS_SYMPY:
@@ -348,7 +348,7 @@ def simple_solver(question_text):
     try:
         # 替換常見符號
         clean_q = q.replace("*", "*").replace("/", "/") # 保持 ASCII 符號
-        
+
         # 嘗試利用 sympy 計算 (最準確，支援分數)
         if HAS_SYMPY:
             expr = sp.sympify(clean_q)
@@ -363,7 +363,7 @@ def simple_solver(question_text):
             f_ans = Fraction(ans).limit_denominator()
             ans_str = f"{f_ans.numerator}/{f_ans.denominator}"
             return ans_str, f"系統自動計算 (Fraction): {ans_str}"
-            
+
     except Exception as e:
         return None, f"無法計算: {e}"
 
@@ -384,7 +384,7 @@ def show_recent_wrong(conn: sqlite3.Connection):
     if not rows:
         print("沒有錯誤紀錄。")
         return
-        
+
     for r in rows:
         print(f"[{r[0]}] {r[1]} | 正解: {r[2]} | 你答: {r[3]}")
     print()
@@ -397,18 +397,18 @@ def practice_auto(conn: sqlite3.Connection, topic_key=None):
     """自動出題模式"""
     gen_func = get_random_generator(topic_key)
     qobj = gen_func()
-    
+
     print("\n--------------------------------")
     print(f"【{qobj['topic']}】 題目： {qobj['question']}")
     print("--------------------------------")
-    
+
     user = input("請作答 (輸入 's' 跳過): ").strip()
     if user.lower() == 's':
         print("已跳過。")
         return
 
     is_correct = check_correct(user, qobj["answer"])
-    
+
     # 替換了原本的特殊符號
     if is_correct == 1:
         print("V 答對了！")
@@ -416,10 +416,10 @@ def practice_auto(conn: sqlite3.Connection, topic_key=None):
         print(f"X 答錯了。標準答案是：{qobj['answer']}")
     else:
         print(f"! 格式無法判斷或答案無效。標準答案是：{qobj['answer']}")
-        
+
     print(f"\n[詳解]\n{qobj['explanation']}\n")
-    
-    log_record(conn, "auto", qobj['topic'], qobj['difficulty'], qobj['question'], 
+
+    log_record(conn, "auto", qobj['topic'], qobj['difficulty'], qobj['question'],
                qobj['answer'], user, is_correct, qobj['explanation'])
 
 
@@ -428,7 +428,7 @@ def custom_question_mode(conn: sqlite3.Connection):
     print("\n=== 自訂題目與解題 ===")
     print("說明：您可以輸入算式（如 1/2 + 1/3）或方程式（如 2*x + 3 = 9）。")
     print("注意：乘法請用 *，除法用 /。")
-    
+
     q_text = input("請輸入題目: ").strip()
     if not q_text:
         return
@@ -436,7 +436,7 @@ def custom_question_mode(conn: sqlite3.Connection):
     # 嘗試自動解題
     print("系統正在計算答案...")
     auto_ans, auto_expl = simple_solver(q_text)
-    
+
     if auto_ans:
         print(f"系統算出答案為: {auto_ans}")
         use_auto = input("是否使用此答案作為標準答案? (y/n): ").strip().lower()
@@ -453,7 +453,7 @@ def custom_question_mode(conn: sqlite3.Connection):
 
     # 讓使用者作答 (選用)
     user_ans = input("您的作答 (直接按 Enter 可略過): ").strip()
-    
+
     is_correct = None
     if user_ans and final_ans:
         is_correct = check_correct(user_ans, final_ans)
@@ -466,7 +466,7 @@ def custom_question_mode(conn: sqlite3.Connection):
 
 def main():
     conn = init_db()
-    
+
     while True:
         print("\n===========================")
         print(" 數學練習系統 V2 (修正版)")
@@ -476,9 +476,9 @@ def main():
         print(" 3. 自訂題目 (含自動解題)")
         print(" 4. 查看錯題與統計")
         print(" 0. 離開")
-        
+
         c = input("請選擇: ").strip()
-        
+
         if c == '1':
             practice_auto(conn, None)
         elif c == '2':

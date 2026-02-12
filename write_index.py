@@ -27,7 +27,7 @@ content = """<!DOCTYPE html>
     .card p { font-size: 0.95rem; color: #8b949e; flex-grow: 1; }
     .tag { display: inline-block; background: rgba(56,139,253,0.15); color: #58a6ff; font-size: 12px; padding: 2px 8px; border-radius: 12px; margin-right: 5px; margin-bottom: 5px; border: 1px solid rgba(56,139,253,0.3); text-decoration: none; }
     .tag:hover { filter: brightness(1.08); }
-    .tag-nvidia { background: rgba(46, 160, 67, 0.15); color: #3fb950; border-color: rgba(46, 160, 67, 0.3); } 
+    .tag-nvidia { background: rgba(46, 160, 67, 0.15); color: #3fb950; border-color: rgba(46, 160, 67, 0.3); }
     .tag-math { background: rgba(210, 153, 34, 0.15); color: #d29922; border-color: rgba(210, 153, 34, 0.3); }
     .btn { display: inline-block; background: var(--btn-bg); color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; }
     .btn:hover { background: var(--btn-hover); }
@@ -84,7 +84,7 @@ content = """<!DOCTYPE html>
 
     <div class="tech-stack">
         <h3 style="color:var(--text); text-align:center;">核心競爭力 (Key Competencies)</h3>
-        
+
         <div class="tech-item">
           <a class="tag tag-math" href="./linear/" title="前往一元一次（Level 1-5）">MATH Dataset</a>
           <a class="tech-title" href="./linear/" title="前往一元一次（Level 1-5）">分級標籤 (Level 1-5)</a>

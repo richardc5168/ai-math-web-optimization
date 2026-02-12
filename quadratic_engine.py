@@ -132,7 +132,7 @@ class QuadraticEngine:
         """
         x = self.x
         explanation_steps = []
-        
+
         if level <= 1:
             # Simple x(x-a)=0
             # Step 1: Logic
@@ -143,19 +143,19 @@ class QuadraticEngine:
             explanation_steps.append(f"提取公因式 x: x(x - {r2}) = 0")
             explanation_steps.append(f"令每一項為 0: x = 0 或 x - {r2} = 0")
             explanation_steps.append(f"解得: x = 0, {r2}")
-            
+
         elif level == 2:
             # Monic: (x-r1)(x-r2)=0
             r1 = random.randint(1, 12) * random.choice([1, -1])
             r2 = random.randint(1, 12) * random.choice([1, -1])
             expr = expand((x - r1) * (x - r2))
-            
+
             explanation_steps.append(f"原始方程式: {self._fmt(expr)} = 0")
             explanation_steps.append(f"尋找兩個數，乘積為 {r1*r2}，和為 {-(r1+r2)}。")
             explanation_steps.append(f"這兩個數為 {-r1} 和 {-r2}。")
             explanation_steps.append(f"因式分解: (x - {r1})(x - {r2}) = 0")
             explanation_steps.append(f"解得: x = {r1}, {r2}")
-            
+
         else: # level >= 3
             # Non-monic: (a1x - b1)(a2x - b2) = 0
             # Cross multiplication logic
@@ -164,7 +164,7 @@ class QuadraticEngine:
             a2 = random.randint(1, 5)
             b2 = random.randint(1, 5) * random.choice([1, -1])
             expr = expand((a1*x - b1) * (a2*x - b2))
-            
+
             explanation_steps.append(f"原始方程式: {self._fmt(expr)} = 0")
             explanation_steps.append(f"使用十字交乘法分解。")
             explanation_steps.append(f"分解: ({a1}x - {b1})({a2}x - {b2}) = 0")
@@ -178,10 +178,10 @@ class QuadraticEngine:
         a = int(expr.coeff(x, 2))
         b = int(expr.coeff(x, 1))
         c = int(expr.coeff(x, 0))
-        
+
         equation_latex = latex(Eq(expr, 0))
         equation_str = self._fmt(expr) + " = 0"
-        
+
         solutions = solve(expr, x)
         solutions_str = ", ".join([str(s) for s in solutions])
 
@@ -210,7 +210,7 @@ class QuadraticEngine:
         Generates problems suited for Quadratic Formula.
         """
         x = self.x
-        
+
         # Construct valid quadratic
         while True:
             if level <= 4:
@@ -221,21 +221,21 @@ class QuadraticEngine:
                 a = random.randint(2, 9)
                 b = random.randint(10, 30) * random.choice([1, -1])
                 c = random.randint(5, 20) * random.choice([1, -1])
-            
+
             D = b**2 - 4*a*c
             if D > 0: # Real roots
                 break
-        
+
         expr = a*x**2 + b*x + c
         equation_str = f"{self._fmt(expr)} = 0"
-        
+
         # Explanation
         steps = []
         steps.append(f"方程式: {equation_str}")
         steps.append(f"辨識係數: a={a}, b={b}, c={c}")
         steps.append(f"計算判別式 D = b^2 - 4ac")
         steps.append(f"D = ({b})^2 - 4({a})({c}) = {b**2} - {4*a*c} = {D}")
-        
+
         sqrtD = sqrt(D)
         if sqrtD.is_integer:
              steps.append(f"因為 D={D} 是完全平方數，根號 D = {int(sqrtD)}")
@@ -243,9 +243,9 @@ class QuadraticEngine:
         else:
              steps.append(f"D={D} 不是完全平方數，保留根號。")
              steps.append(f"x = (-({b}) ± √{D}) / {2*a}")
-        
+
         sol = solve(expr, x)
-        sol_str = ", ".join([str(s).replace('sqrt', '√') for s in sol]) 
+        sol_str = ", ".join([str(s).replace('sqrt', '√') for s in sol])
         steps.append(f"最終答案: {sol_str}")
 
         return {
@@ -267,11 +267,11 @@ class QuadraticEngine:
         try:
             # 1. Parse user input: remove 'x=', allow 'sqrt', normalizes
             raw = user_input.replace('x', '').replace('=', '').replace(' ', '')
-            
+
             # Simple splitter for comma
             user_parts = raw.split(',')
             user_set = set()
-            
+
             for p in user_parts:
                 if not p: continue
                 # Use SymPy parse_expr for safety if trusted, strictly we should use standard parsing
@@ -291,13 +291,13 @@ class QuadraticEngine:
             a, b, c = coeffs['a'], coeffs['b'], coeffs['c']
             truth = solve(a*self.x**2 + b*self.x + c, self.x)
             truth_set = set(truth)
-            
+
             # 3. Compare sets
             # Checking subset or equality? Equality for full credit.
             # But floating point issues? SymPy handles exact well.
             if len(user_set) != len(truth_set):
                  return False
-            
+
             # Check each user val is in truth
             for uv in user_set:
                 matched = False
@@ -307,13 +307,13 @@ class QuadraticEngine:
                         break
                 if not matched:
                     return False
-            
+
             return True
 
         except Exception as e:
             print(f"Check Error: {e}")
             return False
-            
+
     def _fmt(self, expr):
         return str(expr).replace('**', '^').replace('*', '')
 

@@ -150,7 +150,7 @@
     .btn.victory-btn { background: linear-gradient(90deg, #d29922, #f9c513); border: none; color: #000; font-weight: 900; padding: 14px 32px; font-size: 18px; box-shadow: 0 4px 15px rgba(210,153,34,0.4); transform-origin: center; transition: transform .2s; }
     .btn.victory-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
     .btn.victory-btn:active { transform: scale(0.95); }
-    
+
     .firework { position: absolute; pointer-events: none; }
   </style>
 </head>
@@ -2113,7 +2113,7 @@
         els.timeCarryHint.textContent = 'Step 2 正確！';
         els.timeCarryHint.style.color = 'var(--ok)';
       } else {
-        els.timeCarryHint.textContent = `提示：${ex.totalMin} 分 = ${ex.carryH} 小時 + ${ex.remainM} 分`; 
+        els.timeCarryHint.textContent = `提示：${ex.totalMin} 分 = ${ex.carryH} 小時 + ${ex.remainM} 分`;
         els.timeCarryHint.style.color = 'var(--warn)';
       }
     });
@@ -2704,9 +2704,9 @@
       // simple CSS particle explosion
       const modal = els.victoryModal;
       if (!modal) return;
-      const count = 30; 
+      const count = 30;
       const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff'];
-      
+
       for(let i=0; i<count; i++){
         setTimeout(() => createParticle(modal, colors), Math.random() * 600);
         setTimeout(() => createParticle(modal, colors), Math.random() * 600 + 400);
@@ -2727,15 +2727,15 @@
       const startY = window.innerHeight / 2;
       p.style.left = startX + 'px';
       p.style.top = startY + 'px';
-      
+
       const angle = Math.random() * Math.PI * 2;
       const velocity = Math.random() * 200 + 100;
       const tx = Math.cos(angle) * velocity;
       const ty = Math.sin(angle) * velocity;
-      
+
       p.style.transition = 'transform 1s ease-out, opacity 1s ease-out';
       parent.appendChild(p);
-      
+
       requestAnimationFrame(()=>{
         p.style.transform = `translate(${tx}px, ${ty}px) scale(0)`;
         p.style.opacity = '0';

@@ -400,13 +400,13 @@ def q_make_change(i: int) -> Q:
 
 
 def q_two_step_shopping(i: int) -> Q:
-    item1 = random.choice(["果汁", "牛奶", "餅乾", "橡皮擦", "鉛筆"]) 
-    unit1 = random.choice(["瓶", "盒", "包", "個", "支"]) 
+    item1 = random.choice(["果汁", "牛奶", "餅乾", "橡皮擦", "鉛筆"])
+    unit1 = random.choice(["瓶", "盒", "包", "個", "支"])
     p1 = Decimal(random.choice(["8.5", "12.5", "15.2", "18.8", "25.6"]))
     q1 = random.randint(2, 6)
 
-    item2 = random.choice(["麵包", "巧克力", "筆記本", "貼紙", "果凍"]) 
-    unit2 = random.choice(["個", "包", "本", "張", "盒"]) 
+    item2 = random.choice(["麵包", "巧克力", "筆記本", "貼紙", "果凍"])
+    unit2 = random.choice(["個", "包", "本", "張", "盒"])
     p2 = Decimal(random.choice(["9.6", "16.5", "20.5", "36.5", "45.0"]))
     q2 = random.randint(2, 6)
 

@@ -685,7 +685,7 @@ def get_question_hints(qobj: Dict[str, Any]) -> Dict[str, str]:
             h3 = steps[2]
         else:
             h3 = "請完成計算檢查答案。"
-        
+
         return {
             "level1": h1,
             "level2": h2,
@@ -1370,7 +1370,7 @@ def _get_rag_enhanced_hints(topic: str, text: str, default_hints: List[str]) -> 
 
         # We assume Retriever() initialization is relatively cheap or handles its own caching
         # In a real app, this should be a reliable global instance
-        retriever = Retriever() 
+        retriever = Retriever()
         results = retriever.search(topic + " " + text, topk=1)
         if results:
             rag_text = results[0].get('text', '')
@@ -1827,22 +1827,22 @@ def gen_linear_equation():
     b = random.randint(-10, 10)
     c = a * x_val + b
     question = f"{a}x + {b} = {c}, 求 x"
-    
+
     rhs = c - b
-    
+
     explanation = f"移項：{a}x = {c} - ({b}) = {c - b}\n兩邊除以 {a}：x = {x_val}"
-    
+
     steps = [
         f"步驟 1: 將常數項移到等號右邊。 {a}x = {c} - ({b})",
         f"步驟 2: 計算右邊的值。 {a}x = {rhs}",
         f"步驟 3: 將兩邊同除以 x 的係數 {a}。 x = {rhs} ÷ {a} = {x_val}"
     ]
-    
+
     return {
-        "topic": "一元一次方程", 
-        "difficulty": "medium", 
-        "question": question, 
-        "answer": str(x_val), 
+        "topic": "一元一次方程",
+        "difficulty": "medium",
+        "question": question,
+        "answer": str(x_val),
         "explanation": explanation,
         "steps": steps
     }
@@ -1853,10 +1853,10 @@ def gen_quadratic_equation():
     r2 = random.randint(-5, 5)
     if r1 == 0: r1 = 1
     if r2 == 0: r2 = 2
-    
+
     b = -(r1 + r2)
     c = r1 * r2
-    
+
     # Format: x^2 + bx + c = 0
     # Simplify signs
     def fmt(n, var=""):
@@ -1868,26 +1868,26 @@ def gen_quadratic_equation():
 
     term_b = fmt(b, "x")
     term_c = fmt(c)
-    
+
     eq = f"x^2 {term_b} {term_c} = 0".replace(" +", " +").replace(" -", " -").strip()
     if eq.startswith("+"): eq = eq[1:]
-    
+
     question = f"解方程式: {eq}"
     ans = f"{min(r1,r2)},{max(r1,r2)}" if r1!=r2 else f"{r1}"
     explanation = f"因式分解: (x - ({r1}))(x - ({r2})) = 0\n根為: {r1}, {r2}"
-    
+
     steps = [
         "步驟 1: 觀察方程式形式，嘗試使用因式分解法。",
         f"步驟 2: 尋找兩個數，相乘為 {c}，相加為 {b}。",
         f"步驟 3: 這兩個數是 {-r1} 和 {-r2}。所以分解為 (x {fmt(-r1)}) (x {fmt(-r2)}) = 0。",
         f"步驟 4: 令每個括號為 0。 x = {r1} 或 x = {r2}。"
     ]
-    
+
     return {
-        "topic": "一元二次方程式", 
-        "difficulty": "hard", 
-        "question": question, 
-        "answer": ans, 
+        "topic": "一元二次方程式",
+        "difficulty": "hard",
+        "question": question,
+        "answer": ans,
         "explanation": explanation,
         "steps": steps
     }

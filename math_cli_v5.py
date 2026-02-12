@@ -16,7 +16,7 @@ from datetime import datetime
 import os
 import sys
 import re
-import math 
+import math
 
 # =========================
 # 全局變數 (即時計數器)
@@ -142,7 +142,7 @@ def _fraction_core(a1, b1, a2, b2, op):
     """
     f1 = Fraction(a1, b1)
     f2 = Fraction(a2, b2)
-    
+
     # 避免負數結果
     if op == "-":
         if f1 < f2:
@@ -163,7 +163,7 @@ def _fraction_core(a1, b1, a2, b2, op):
     lcm_val = (b1 * b2) // gcd_val
     m1 = lcm_val // b1
     m2 = lcm_val // b2
-    
+
     na1 = a1 * m1
     na2 = a2 * m2
 
@@ -196,7 +196,7 @@ def gen_fraction_add():
 
     result, expl = _fraction_core(a1, b1, a2, b2, op)
     question = f"{a1}/{b1} {op} {a2}/{b2} = ?"
-    
+
     return {
         "topic": "分數加減",
         "difficulty": "medium",
@@ -246,34 +246,34 @@ def gen_gcd_lcm():
     if count == 2:
         a = random.randint(10, 50)
         b = random.randint(10, 50)
-        
+
         gcd_val = math.gcd(a, b)
         lcm_val = (a * b) // gcd_val
-        
+
         question = f"數字 {a} 和 {b} 的最大公因數(GCD)和最小公倍數(LCM)各是多少？\n請依序輸入：GCD LCM"
         topic = "GCD/LCM (二數)"
-    else: 
+    else:
         a = random.randint(5, 20)
         b = random.randint(5, 20)
         c = random.randint(5, 20)
-        
+
         gcd_val = math.gcd(a, math.gcd(b, c))
-        
+
         if HAS_SYMPY:
             lcm_val = sp.lcm(a, b, c)
         else:
             lcm_val = (a * b) // math.gcd(a, b)
             lcm_val = (lcm_val * c) // math.gcd(lcm_val, c)
-            
+
         question = f"數字 {a}, {b}, {c} 的最大公因數(GCD)和最小公倍數(LCM)各是多少？\n請依序輸入：GCD LCM"
         topic = "GCD/LCM (三數)"
-        
+
     answer = f"{gcd_val} {lcm_val}"
     explanation = [
         f"最大公因數 (GCD) = {gcd_val}",
         f"最小公倍數 (LCM) = {lcm_val}"
     ]
-        
+
     return {
         "topic": topic,
         "difficulty": "medium",
@@ -302,7 +302,7 @@ def gen_decimal_arith():
         ans = a / b
 
     final_ans = round(ans, 2)
-    
+
     question = f"計算並將結果四捨五入到小數點後兩位：\n{a} {op} {b} = ?"
     explanation = [
         f"精確計算結果: {ans}",
@@ -323,12 +323,12 @@ def gen_volume_area():
     length = random.randint(2, 10)
     width = random.randint(2, 10)
     height = random.randint(2, 10)
-    
+
     q_type = random.choice(["volume", "surface_area"])
-    
+
     if length == width == height:
         shape = "正方體"
-        
+
         if q_type == "volume":
             ans = length ** 3
             q_text = f"邊長為 {length} 公分的{shape}，體積是多少立方公分？"
@@ -337,11 +337,11 @@ def gen_volume_area():
             ans = 6 * (length ** 2)
             q_text = f"邊長為 {length} 公分的{shape}，表面積是多少平方公分？"
             expl = f"表面積 = 6 × (邊長 × 邊長) = 6 × {length * length} = {ans}"
-            
+
     else:
         shape = "長方體"
         dims = f"長 {length}、寬 {width}、高 {height}"
-        
+
         if q_type == "volume":
             ans = length * width * height
             q_text = f"{dims} 公分的{shape}，體積是多少立方公分？"
@@ -366,7 +366,7 @@ def gen_linear_equation():
     a = random.randint(2, 9)
     b = random.randint(-10, 10)
     c = a * x_val + b
-    
+
     question = f"{a}x + {b} = {c}, 求 x"
     expl = [
         f"{a}x + {b} = {c}",
@@ -401,7 +401,7 @@ def get_random_generator(topic_filter=None):
     """根據篩選器回傳出題函數。"""
     if topic_filter and topic_filter in GENERATORS:
         return GENERATORS[topic_filter][1]
-    
+
     keys = list(GENERATORS.keys())
     k = random.choice(keys)
     return GENERATORS[k][1]
@@ -422,7 +422,7 @@ def parse_answer(text: str) -> Fraction | None:
                 w = int(parts[0])
                 f = Fraction(parts[1])
                 return (Fraction(w, 1) + f) if w >= 0 else (Fraction(w, 1) - f)
-        
+
         return Fraction(text)
     except Exception:
         return None
@@ -437,17 +437,17 @@ def check_correct(user: str, correct: str) -> int | None:
 
     # 處理 GCD/LCM 格式 ("X Y")
     if " " in correct:
-        if user.upper().replace(' ', '') == correct.upper().replace(' ', ''): 
+        if user.upper().replace(' ', '') == correct.upper().replace(' ', ''):
             return 1
         return 0
-        
+
     # 處理分數/小數/整數
     u = parse_answer(user)
     c = parse_answer(correct)
 
     if u is None or c is None:
         return None
-        
+
     return 1 if u == c else 0
 
 
@@ -457,7 +457,7 @@ def check_correct(user: str, correct: str) -> int | None:
 def simple_solver(question_text):
     """嘗試解析並計算自訂題目的答案。"""
     q = question_text.strip()
-    
+
     # 1. 處理方程式 (含有 =)
     if "=" in q:
         if not HAS_SYMPY:
@@ -479,7 +479,7 @@ def simple_solver(question_text):
     # 2. 處理一般算式
     try:
         clean_q = q.replace("×", "*").replace("÷", "/").replace(",", "")
-        
+
         if HAS_SYMPY:
             expr = sp.sympify(clean_q)
             f_ans = Fraction(expr).limit_denominator()
@@ -490,7 +490,7 @@ def simple_solver(question_text):
             f_ans = Fraction(ans).limit_denominator()
             ans_str = f"{f_ans.numerator}/{f_ans.denominator}"
             return ans_str, f"系統自動計算 (Fraction): {ans_str}"
-            
+
     except Exception as e:
         return None, f"無法計算: {e}"
 
@@ -512,7 +512,7 @@ def display_reward():
     if CORRECT_COUNT > 0 and CORRECT_COUNT % 5 == 0:
         index = (CORRECT_COUNT // 5 - 1) % len(REWARDS)
         icon, message = REWARDS[index]
-        
+
         # 顯示一個簡單的獎勵圖形
         print("\n" + "═"*40)
         print(f"║ {icon*3} 達成里程碑！{icon*3} ║")
@@ -522,7 +522,7 @@ def display_reward():
 def update_counters(is_correct: int | None):
     """更新全局計數器"""
     global TOTAL_COUNT, CORRECT_COUNT
-    
+
     TOTAL_COUNT += 1
     if is_correct == 1:
         CORRECT_COUNT += 1
@@ -546,7 +546,7 @@ def show_recent_wrong(conn: sqlite3.Connection):
     if not rows:
         print("沒有錯誤紀錄。")
         return
-        
+
     for r in rows:
         print(f"[{r[0]}] {r[1]} | 正解: {r[2]} | 你答: {r[3]}")
     print()
@@ -559,18 +559,18 @@ def practice_auto(conn: sqlite3.Connection, topic_key=None):
     """自動出題模式"""
     gen_func = get_random_generator(topic_key)
     qobj = gen_func()
-    
+
     print("\n--------------------------------")
     print(f"【{qobj['topic']}】 題目： {qobj['question']}")
     print("--------------------------------")
-    
+
     user = input("請作答 (輸入 's' 跳過): ").strip()
     if user.lower() == 's':
         print("已跳過。")
         return
 
     is_correct = check_correct(user, qobj["answer"])
-    
+
     # 顯示結果
     if is_correct == 1:
         print("V 答對了！")
@@ -578,14 +578,14 @@ def practice_auto(conn: sqlite3.Connection, topic_key=None):
         print(f"X 答錯了。標準答案是：{qobj['answer']}")
     else:
         print(f"! 格式無法判斷或答案無效。標準答案是：{qobj['answer']}")
-        
+
     print(f"\n[詳解]\n{qobj['explanation']}\n")
-    
+
     # 遊戲化更新
     update_counters(is_correct)
     display_reward()
-    
-    log_record(conn, "auto", qobj['topic'], qobj['difficulty'], qobj['question'], 
+
+    log_record(conn, "auto", qobj['topic'], qobj['difficulty'], qobj['question'],
                qobj['answer'], user, is_correct, qobj['explanation'])
 
 
@@ -594,17 +594,17 @@ def custom_question_mode(conn: sqlite3.Connection):
     print("\n=== 自訂題目與解題 ===")
     print("說明：您可以輸入算式（如 1/2 + 1/3）或方程式（如 2*x + 3 = 9）。")
     print("注意：乘法請用 *，除法用 /。分數請用 a/b 格式。")
-    
+
     q_text = input("請輸入題目: ").strip()
     if not q_text:
         return
 
     print("系統正在計算答案...")
     auto_ans, auto_expl = simple_solver(q_text)
-    
+
     final_ans = ""
     explanation = ""
-    
+
     if auto_ans:
         print(f"系統算出答案為: {auto_ans}")
         use_auto = input("是否使用此答案作為標準答案? (y/n): ").strip().lower()
@@ -620,7 +620,7 @@ def custom_question_mode(conn: sqlite3.Connection):
         explanation = "系統無法解題，手動輸入"
 
     user_ans = input("您的作答 (直接按 Enter 可略過): ").strip()
-    
+
     is_correct = None
     if user_ans and final_ans:
         is_correct = check_correct(user_ans, final_ans)
@@ -636,7 +636,7 @@ def main():
     # -----------------------------------
 
     conn = init_db()
-    
+
     while True:
         print("\n===========================")
         print(" 數學練習系統 V5 (遊戲化)")
@@ -646,9 +646,9 @@ def main():
         print(" 3. 自訂題目 (含自動解題)")
         print(" 4. 查看錯題與統計")
         print(" 0. 離開")
-        
+
         c = input("請選擇: ").strip()
-        
+
         if c == '1':
             practice_auto(conn, None)
         elif c == '2':

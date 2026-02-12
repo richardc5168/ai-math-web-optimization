@@ -9,7 +9,7 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
 
 Write-Host "== Smoke: bootstrap ==" -ForegroundColor Cyan
-$boot = Invoke-RestMethod -Method Post "$BaseUrl/admin/bootstrap?name=Smoke" 
+$boot = Invoke-RestMethod -Method Post "$BaseUrl/admin/bootstrap?name=Smoke"
 $apiKey = $boot.api_key
 
 $headers = @{ "X-API-Key" = $apiKey }

@@ -164,12 +164,12 @@ class HintNextRequest(BaseModel):
 def next_quadratic(req: QuadraticGenRequest):
     if not quadratic_engine:
         raise HTTPException(status_code=500, detail="Quadratic Engine not loaded")
-    
+
     # Map Khan Topic to difficulty logic if needed, or pass through
     # Engine handles A3/A4/A5
     try:
         q = quadratic_engine.generate_problem(req.topic_id, req.difficulty)
-        
+
         # Add Knowledge Graph Context
         info = KNOWLEDGE_GRAPH.get(req.topic_id, {})
         q["knowledge_context"] = {
@@ -185,7 +185,7 @@ def next_quadratic(req: QuadraticGenRequest):
 def check_quadratic(req: QuadraticCheckRequest):
     if not quadratic_engine:
         raise HTTPException(status_code=500, detail="Quadratic Engine not loaded")
-    
+
     is_correct = quadratic_engine.check_answer(req.user_answer, req.question_data)
     return {"correct": is_correct}
 
@@ -206,25 +206,25 @@ def next_linear(req: LinearGenRequest):
         q = linear_engine.generate_problem(req.difficulty)
         # q: { question_text, explanation(steps), ... }
         # Map to DB schema: topic, difficulty, question, correct_answer, explanation, hints_json
-        
+
         # We need to extract correct_answer. linear_engine generates 'sol'.
         # But wait, linear_engine.generate_problem returns Dict[str, Any] with:
         # question_text, explanation (list of strings).
-        # It needs to return the answer too! 
+        # It needs to return the answer too!
         # I should check linear_engine.py output format.
-        
+
         # Assuming linear_engine also returns 'answer' or 'sol'.
         # Let's inspect linear_engine.generate_problem output.
         # But for now I'll persist standard fields.
-        
+
         # NOTE: linear_engine as I saw earlier returns `explanation_steps`.
         # I'll convert steps to text.
-        
+
         topic = "linear_eq"
         question_text = q.get("question_text", "Unknown Question")
         ans = str(q.get("sol", "")) # Check logic below
         explanation_str = "\n".join(q.get("explanation_steps", []))
-        
+
         conn = db()
         cur = conn.cursor()
         cur.execute("""
@@ -234,7 +234,7 @@ def next_linear(req: LinearGenRequest):
         q_id = cur.lastrowid
         conn.commit()
         conn.close()
-        
+
         q["question_id"] = q_id
         return q
     except Exception as e:
@@ -301,19 +301,19 @@ def _diagnose_via_llm(prompt: str) -> str:
 def get_student_report(student_id: int):
     # Just run the reporting job on the fly for MVP
     try:
-        # Assuming scripts/reporting_job.py can be imported as module 
+        # Assuming scripts/reporting_job.py can be imported as module
         # or we just reimplement simple logic here
         conn = db()
         st = conn.execute("SELECT * FROM students WHERE id=?", (student_id,)).fetchone()
         if not st:
             return JSONResponse(status_code=404, content={"error": "Student not found"})
-            
+
         attempts = conn.execute("SELECT * FROM attempts WHERE student_id=? ORDER BY ts DESC", (student_id,)).fetchall()
-        
+
         total = len(attempts)
         correct = sum(1 for a in attempts if a["is_correct"]==1)
         acc = round(correct/total*100, 1) if total>0 else 0
-        
+
         # Weak topics
         topic_stats = {}
         for a in attempts:
@@ -321,12 +321,12 @@ def get_student_report(student_id: int):
             if t not in topic_stats: topic_stats[t] = {"total":0, "correct":0}
             topic_stats[t]["total"] += 1
             if a["is_correct"]==1: topic_stats[t]["correct"] += 1
-            
+
         weak_topics = []
         for t, stats in topic_stats.items():
             t_acc = stats["correct"] / stats["total"]
             if t_acc < 0.7: weak_topics.append({"topic": t, "acc": round(t_acc*100,1)})
-            
+
         return {
             "student": st["display_name"],
             "total_attempts": total,
@@ -1811,18 +1811,18 @@ async def submit_answer(request: Request, x_api_key: str = Header(..., alias="X-
     if is_correct != 1:
          # Count consecutive errors for this topic
         last_attempts = conn.execute("""
-            SELECT is_correct FROM attempts 
-            WHERE student_id=? AND topic=? 
+            SELECT is_correct FROM attempts
+            WHERE student_id=? AND topic=?
             ORDER BY ts DESC LIMIT 5
         """, (student_id, q["topic"])).fetchall()
-        
+
         con_errors = 1 # current one is wrong
         for r in last_attempts:
             if r["is_correct"] != 1:
                 con_errors += 1
             else:
                 break
-        
+
         try:
             import recommender
             rec_sys = recommender.Recommender()

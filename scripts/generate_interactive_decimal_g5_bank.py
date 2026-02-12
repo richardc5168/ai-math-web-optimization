@@ -71,8 +71,8 @@ def _mk_mul_meta(a: Decimal, b: Decimal) -> Dict[str, Any]:
 
 
 def q_d_mul_int(i: int) -> Q:
-    unit = random.choice(["公升", "公斤", "公尺"]) 
-    item = random.choice(["果汁", "白米", "緞帶", "繩子"]) 
+    unit = random.choice(["公升", "公斤", "公尺"])
+    item = random.choice(["果汁", "白米", "緞帶", "繩子"])
     per = Decimal(random.randint(15, 320)) / Decimal(100)  # 0.15~3.20
     count = random.randint(2, 12)
     raw = per * Decimal(count)
@@ -117,7 +117,7 @@ def q_d_mul_int(i: int) -> Q:
 def q_int_mul_d(i: int) -> Q:
     base = Decimal(random.randrange(40, 501, 5))
     rate = Decimal(random.choice(["0.2", "0.25", "0.3", "0.4", "0.5", "0.6", "0.75", "0.8", "0.9"]))
-    item = random.choice(["書包", "球鞋", "外套", "玩具"]) 
+    item = random.choice(["書包", "球鞋", "外套", "玩具"])
     raw = base * rate
 
     question = f"（互動）{item}原價 {to_str(base)} 元，打 {to_str(rate)} 倍（= 付 {int(rate*100)}%），要付多少元？"
@@ -216,8 +216,8 @@ def q_d_div_int(i: int) -> Q:
     base = Decimal(random.randint(12, 980)) / (Decimal(10) ** dp)
     dividend = base * Decimal(divisor)
 
-    unit = random.choice(["公升", "公斤", "公尺", "元"]) 
-    thing = random.choice(["果汁", "糖果", "緞帶", "零用錢"]) 
+    unit = random.choice(["公升", "公斤", "公尺", "元"])
+    thing = random.choice(["果汁", "糖果", "緞帶", "零用錢"])
 
     question = f"（互動）把 {to_str(dividend)} {unit} 的{thing}平均分給 {divisor} 人，每人多少 {unit}？"
     answer = to_str(base)

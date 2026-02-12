@@ -22,7 +22,7 @@ import math
 # ANSI 顏色定義
 # =========================
 class Colors:
-    GOLD = '\033[38;2;218;165;32m' 
+    GOLD = '\033[38;2;218;165;32m'
     YELLOW = '\033[93m'
     GREEN = '\033[92m'
     RED = '\033[91m'
@@ -71,7 +71,7 @@ def gen_ratio_percentage():
     # 換算成折數
     discount_rate = (100 - discount_off)
     ans = int(original_price * (discount_rate / 100))
-    
+
     q_type = random.choice(["percent", "discount"])
     if q_type == "percent":
         question = f"商品原價 {original_price} 元，打 {discount_rate} 折後的售價是多少元？"
@@ -79,7 +79,7 @@ def gen_ratio_percentage():
     else:
         question = f"商品原價 {original_price} 元，若提供 {discount_off}% 的折扣 (off)，售價是多少元？"
         topic = "百分比與折數"
-        
+
     explanation = [
         f"步驟 1: 理解折扣意義。打 {discount_rate} 折代表售價是原價的 {discount_rate}%。",
         f"  -> 計算式: {original_price} × {discount_rate}/100",
@@ -96,7 +96,7 @@ def gen_time_conversion():
     hours = random.randint(1, 5)
     minutes = random.randint(1, 55)
     total_minutes = hours * 60 + minutes
-    
+
     q_type = random.choice(["to_min", "to_hour_min"])
     if q_type == "to_min":
         question = f"{hours} 小時 {minutes} 分鐘等於多少分鐘？"
@@ -106,14 +106,14 @@ def gen_time_conversion():
         question = f"{total_minutes} 分鐘等於幾小時幾分鐘？\n請依序輸入：小時 分鐘"
         ans = f"{hours} {minutes}"
         expl = f"計算: {total_minutes} ÷ 60 = {hours} 餘 {minutes}。所以是 {hours} 小時 {minutes} 分鐘。"
-        
+
     return {
         "topic": "時間換算", "difficulty": "easy", "question": question,
         "answer": ans, "explanation": expl
     }
 
 # --- 舊有題型整合 (略，保持原有函數) ---
-# [gen_order_of_ops_arith, gen_fraction_commondenom, gen_fraction_reduction, 
+# [gen_order_of_ops_arith, gen_fraction_commondenom, gen_fraction_reduction,
 #  gen_fraction_add, gen_fraction_mixed, gen_gcd_lcm, gen_decimal_arith, gen_volume_area]
 
 # =========================
@@ -125,18 +125,18 @@ def generate_learning_plan(topic_stats):
     plan = []
     weak_topics = [t for t, total, acc in topic_stats if acc < 75 and total >= 3]
     mastered_topics = [t for t, total, acc in topic_stats if acc >= 90 and total >= 5]
-    
+
     plan.append(f"\n{Colors.BLUE}┌────────────────學習改進建議────────────────┐{Colors.END}")
-    
+
     if not weak_topics and not mastered_topics:
         plan.append(f"│ 目前數據尚不足，請繼續完成更多練習以利診斷。 │")
-    
+
     if weak_topics:
         plan.append(f"│ {Colors.RED}針對性加強：{Colors.END}                                 │")
         for topic in weak_topics[:2]:
             plan.append(f"│ • {topic.ljust(15)} : 建議回到課本重新複習基本概念。 │")
             plan.append(f"│   {get_smart_hint(topic).ljust(40)} │")
-            
+
     if mastered_topics:
         plan.append(f"│ {Colors.GREEN}優勢保持：{Colors.END}                                   │")
         for topic in mastered_topics[:1]:
@@ -157,19 +157,19 @@ def show_analysis_report(conn: sqlite3.Connection):
     FROM records WHERE is_correct IS NOT NULL GROUP BY topic
     """
     topic_data = cur.execute(query).fetchall()
-    
+
     stats_for_plan = []
     print(f"\n{Colors.GOLD}📊 深度學習分析報告{Colors.END}")
     print("-" * 60)
     print(f"{'主題':<15} | {'題數':<5} | {'正確率':<8} | {'狀況'}")
-    
+
     for topic, total, correct in topic_data:
         acc = (correct / total) * 100
         stats_for_plan.append((topic, total, acc))
         status = f"{Colors.GREEN}優良{Colors.END}" if acc >= 85 else f"{Colors.YELLOW}尚可{Colors.END}"
         if acc < 70: status = f"{Colors.RED}需加強{Colors.END}"
         print(f"{topic:<15} | {total:<5} | {acc:>6.1f}% | {status}")
-    
+
     # 顯示改進計畫
     print(generate_learning_plan(stats_for_plan))
 

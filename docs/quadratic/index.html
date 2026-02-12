@@ -26,20 +26,20 @@
     .btn:hover{background:rgba(88,166,255,.2); border-color:rgba(88,166,255,.8);}
     .btn.primary{background:rgba(88,166,255,.22); border-color:rgba(88,166,255,.65)}
     .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
-    
+
     .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px}
     .banner.muted{color:var(--muted)}
     .banner.ok{border-color:rgba(46,160,67,.65); color:#b7f5c9; background:rgba(46,160,67,.10)}
     .banner.bad{border-color:rgba(248,81,73,.65); color:#ffd2cf; background:rgba(248,81,73,.08)}
-    
+
     .eq{font-size:24px; padding:12px 16px; border-radius:12px; background:#08102a; border:1px dashed rgba(88,166,255,.4); margin: 10px 0; font-family: ui-monospace, monospace;}
-    
+
     /* Pacing Visuals */
     .stepInput{min-width:60px; width: 60px; text-align: center; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.18);}
     .stepInput:disabled{opacity:.4; cursor:not-allowed; border-color:transparent; background:rgba(0,0,0,.08); transform:scale(0.98);}
     .stepInput.current{
-      border-color:rgba(88,166,255,1); 
-      box-shadow:0 0 15px rgba(88,166,255,.3), 0 0 0 2px rgba(88,166,255,.2); 
+      border-color:rgba(88,166,255,1);
+      box-shadow:0 0 15px rgba(88,166,255,.3), 0 0 0 2px rgba(88,166,255,.2);
       background:rgba(88,166,255,.05);
       transform:scale(1.05);
     }
@@ -121,9 +121,9 @@
                   <input id="step2_ans" style="flex:1" placeholder="例如: 3, -5 或 (3+√5)/2">
               <button class="btn good" id="btnCheckStep2" style="margin-left:auto">送出答案</button>
            </div>
-           
+
            <div id="statusBanner" class="banner muted"></div>
-           
+
            <!-- Cooldown UI -->
            <div id="cooldownBox" class="cooldown" role="status">
             <div class="title">🔒 學習緩衝機制啟動</div>
@@ -201,7 +201,7 @@
     btnCheck2: document.getElementById('btnCheckStep2'),
     banner: document.getElementById('statusBanner'),
     pills: document.getElementById('teacherPills'),
-    
+
     // AI Hints
     aiHintArea: document.getElementById('aiHintArea'),
     hintSteps: document.getElementById('hintSteps'),
@@ -704,7 +704,7 @@
       } else {
           els.s1a.classList.remove('current'); els.s1b.classList.remove('current'); els.s1c.classList.remove('current');
       }
-      
+
       if(state.stage===2 && !isCD) els.s2ans.classList.add('current');
       else els.s2ans.classList.remove('current');
   }
@@ -740,7 +740,7 @@
   async function newGame() {
       const topic = els.topic.value;
       const diff = parseInt(els.diff.value);
-      
+
       els.qText.innerText = "題目生成中...";
       els.pacingArea.style.display = 'none';
 
@@ -754,14 +754,14 @@
       // Render
       els.qText.innerText = data.question_text;
       els.pacingArea.style.display = 'block';
-      
+
       // Clear inputs
       els.s1a.value=''; els.s1b.value=''; els.s1c.value=''; els.s2ans.value='';
       els.banner.className = 'banner muted'; els.banner.innerText = '請開始 Step 1';
       els.aiHintArea.style.display = 'none';
       els.hintToggleArea.style.display = 'block';
       els.hintSteps.innerHTML = '';
-      
+
       // Prefer backend-provided tiered hints/solution (integrates with the API hint system).
       // Fallback to local builders when backend doesn't provide them.
       const backendHints = (data && Array.isArray(data.hints) && data.hints.length >= 3) ? data.hints : null;
@@ -791,7 +791,7 @@
           els.kgKhanId.innerText = k.khan_mapped_id || "-";
           els.videoLink.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(k.title)}`;
       }
-      
+
       els.topicBadge.innerText = `Level ${diff}`;
 
       updateUI();
@@ -808,12 +808,12 @@
         els.banner.innerText = '請先填完 a、b、c 再檢查。';
         return;
       }
-      
+
       const truth = state.q.coefficients;
       // Allow multiplier (e.g. 2x^2+4x+2=0 vs x^2+2x+1=0) -- simplest is exact match for now, or proportional
       // But engine often gives simplified. Let's do exact or proportional.
       const ratioA = ua / truth.a;
-      
+
       let correct = false;
       if (ratioA && (ub === truth.b * ratioA) && (uc === truth.c * ratioA)) {
           correct = true;
@@ -842,11 +842,11 @@
       if(!val.trim()) return;
 
       els.banner.innerText = "檢查中...";
-      
+
       // Call backend check if online
       try {
           const res = await fetch('/v1/quadratic/check', {
-                method: 'POST', 
+                method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({user_answer: val, question_data: state.q})
           });
@@ -885,7 +885,7 @@
          if(ok) {
            els.banner.className = 'banner ok';
            els.banner.innerText = "答案正確（離線代入檢查）！做得好！";
-           state.stage = 3; 
+           state.stage = 3;
            updateUI();
            revealHint(4);
          } else {
@@ -904,7 +904,7 @@
   els.btnCheck2.onclick = checkStep2;
   els.btnResetSteps = document.getElementById('btnResetSteps');
   els.btnResetSteps.onclick = () => { state.stage=1; state.fails=0; els.banner.className='banner muted'; els.banner.innerText=''; updateUI(); };
-  
+
     els.btnHint1.onclick = () => revealHint(1);
     els.btnHint2.onclick = () => revealHint(2);
     els.btnHint3.onclick = () => revealHint(3);

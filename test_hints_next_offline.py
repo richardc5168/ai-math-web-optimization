@@ -99,7 +99,7 @@ def test_hints_next_offline_8plus_cases():
     h = _next_hint(
         api_key,
         question_data={"topic": "分數應用題(五年級)", "question": "一本書有 120 頁，先看了 1/4，剩下的又看了 3/5，還剩多少頁？"},
-        student_state="先算第一次剩下", 
+        student_state="先算第一次剩下",
         level=2,
     )
     _assert_no_direct_answer_leak(h["hint"])
@@ -117,7 +117,7 @@ def test_hints_next_offline_8plus_cases():
     h = _next_hint(
         api_key,
         question_data={"topic": "分數應用題(五年級)", "question": "一條繩子長 24 公尺，用了 5/8，剩下多少公尺？"},
-        student_state="我先算 1 - 5/8", 
+        student_state="我先算 1 - 5/8",
         level=2,
     )
     _assert_no_direct_answer_leak(h["hint"])
@@ -126,7 +126,7 @@ def test_hints_next_offline_8plus_cases():
     h = _next_hint(
         api_key,
         question_data={"topic": "分數應用題(五年級)", "question": "全程 60 公里，小明走了其中的 3/5，他走了多少公里？"},
-        student_state="我想用 60 × 3/5", 
+        student_state="我想用 60 × 3/5",
         level=2,
     )
     _assert_no_direct_answer_leak(h["hint"])
@@ -135,7 +135,7 @@ def test_hints_next_offline_8plus_cases():
     h = _next_hint(
         api_key,
         question_data={"topic": "分數", "question": "有 5/6 的同學參加活動，問參加的比例。"},
-        student_state="", 
+        student_state="",
         level=1,
     )
     _assert_no_direct_answer_leak(h["hint"])

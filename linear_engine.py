@@ -36,7 +36,7 @@ class LinearEngine:
         """
         x = self.x
         explanation_steps = []
-        
+
         # Strategy: Pick a solution x first, then construct the equation backwards to ensure integer solutions (mostly).
         sol = random.randint(-10, 10)
         # Avoid 0 sometimes to make it strictly signed, but 0 is valid.
@@ -44,7 +44,7 @@ class LinearEngine:
 
         question_latex = ""
         question_text = ""
-        
+
         if level == 1:
             # Level 1: One-step equations (ax = b or x + a = b)
             # Concept: Inverse operation
@@ -55,7 +55,7 @@ class LinearEngine:
                 target = sol + a
                 expr = x + a - target
                 question_text = f"解方程式：x {self._sign(a)} = {target}"
-                
+
                 explanation_steps.append(f"🏁 題目: {question_text}")
                 explanation_steps.append(self._hint(f"我們的目標是讓 x 單獨留在左邊！觀察看看，左邊除了 x 還有什麼？ 是 {a}！"))
                 explanation_steps.append(self._step(f"啟動移項法則：把 {a} 移到右邊去。記得口訣：『加變減，減變加』喔！"))
@@ -68,7 +68,7 @@ class LinearEngine:
                 target = a * sol
                 expr = a * x - target
                 question_text = f"解方程式：{a}x = {target}"
-                
+
                 explanation_steps.append(f"🏁 題目: {question_text}")
                 explanation_steps.append(self._hint(f"觀察發現 x 黏著一個係數 {a}。它們之間是乘法關係喔！"))
                 explanation_steps.append(self._step(f"使用等量公理：為了抵銷乘法，我們將等號兩邊同時『除以 {a}』。"))
@@ -84,7 +84,7 @@ class LinearEngine:
             c = a * sol + b
             expr = a * x + b - c
             question_text = f"解方程式：{a}x {self._sign(b)} = {c}"
-            
+
             explanation_steps.append(f"🏁 題目: {question_text}")
             explanation_steps.append(self._hint("這題需要兩個步驟！想像這是剝洋蔥，要先剝外面（常數項），再剝裡面（係數）。"))
             explanation_steps.append(self._step(f"第一步：先處理常數項 {b}。把它踢到等號右邊變號！"))
@@ -100,15 +100,15 @@ class LinearEngine:
             c = random.randint(2, 5) * random.choice([1, -1])
             a = c + random.choice([2, 3, 4]) * random.choice([1, -1]) # Ensure a != c
             if a == c: a += 1
-            
+
             # ax + b = cx + d
             b = random.randint(1, 10) * random.choice([1, -1])
             lhs_val = a * sol + b
             d = lhs_val - c * sol
-            
+
             expr = (a*x + b) - (c*x + d)
             question_text = f"解方程式：{a}x {self._sign(b)} = {c}x {self._sign(d)}"
-            
+
             explanation_steps.append(f"🏁 題目: {question_text}")
             explanation_steps.append(self._hint("哇！兩邊都有 x，好像在拔河！除此之外還有常數項。"))
             explanation_steps.append(self._step("策略：『讓 x 回家，讓數字分家』。通常把有 x 的都趕到左邊，沒有 x 的都趕到右邊。"))
@@ -125,10 +125,10 @@ class LinearEngine:
             b = random.randint(1, 5) * random.choice([1, -1])
             # a(x+b) = result
             rhs_val = a * (sol + b)
-            
+
             question_text = f"解方程式：{a}(x {self._sign(b)}) = {rhs_val}"
             expr = a*(x+b) - rhs_val
-            
+
             explanation_steps.append(f"題目: {question_text}")
             explanation_steps.append(f"第一步：等號兩邊同除以 {a}，先把係數消掉。")
             explanation_steps.append(f"x {self._sign(b)} = {rhs_val} / ({a})")
@@ -142,17 +142,17 @@ class LinearEngine:
             # Level 5: Rational Equations reducible to Linear (Competition style)
             # Example: A / (x - B) = C / (x - D)
             # A(x - D) = C(x - B) -> Ax - AD = Cx - CB -> (A-C)x = AD - CB
-            
+
             # Ensure solution is integer and valid (not B or D)
             while True:
                 A = random.choice([2, 3, 4, 5])
                 C = random.choice([1, 2, 3])
                 if A == C: C += 1
-                
+
                 # Pick solution first
                 sol = random.randint(-10, 10)
                 if abs(sol) < 2: sol = 5
-                
+
                 # Pick B and D such that they don't equal sol
                 B = sol - random.choice([1, 2, 3])
                 # We need equation to hold: A(sol - D) = C(sol - B)
@@ -162,27 +162,27 @@ class LinearEngine:
                 k = random.choice([1, 2]) * random.choice([1, -1])
                 # sol - B = k * A  => B = sol - k*A
                 B = sol - k * A
-                
+
                 # Then D = sol - C*k
                 D = sol - C * k
-                
+
                 # Check validity
                 if D != sol and B != sol and B != D:
                    break
-            
+
             question_text = f"解方程式：{A} / (x {self._sign(-B)}) = {C} / (x {self._sign(-D)})"
             # Cross multiplication form for easy checking logic if needed, but we output text
-            
+
             explanation_steps.append(f"【題目】 {question_text} (Level 5 分式方程式)")
             explanation_steps.append(f"【觀察】 咦？未知數 x 躲在分母裡面？")
             explanation_steps.append(f"【小撇步】 當兩個分數相等時，它們的「交叉相乘」也會相等喔！")
             explanation_steps.append(f"【步驟 1】 交叉相乘把分母變不見：\n   {A} * (x {self._sign(-D)}) = {C} * (x {self._sign(-B)})")
-            
+
             # Expand
             lhs_const = -A*D
             rhs_const = -C*B
             explanation_steps.append(f"【步驟 2】 用分配律把括號炸開 (小心負號)：\n   {A}x {self._sign(lhs_const)} = {C}x {self._sign(rhs_const)}")
-            
+
             # Solve
             explanation_steps.append(f"【步驟 3】 讓 x 站左邊，數字站右邊 (移項)：")
             explanation_steps.append(f"   {A}x - ({C}x) = {rhs_const} - ({lhs_const})")
@@ -208,20 +208,20 @@ class LinearEngine:
         try:
             # Basic parsing provided user doesn't input malicious code
             correct = question_data['correct_answer']
-            
+
             # Simple string check first
             if user_input.strip() == correct.strip():
                 return True
-                
+
             # SymPy check (handle x=5 vs 5)
             u_str = user_input.replace('x', '').replace('=', '').strip()
             if not u_str: return False
-            
+
             u_val = sp.sympify(u_str)
             c_val = sp.sympify(correct)
-            
+
             return abs(u_val - c_val) < 1e-9
-            
+
         except Exception:
             return False
 
