@@ -200,6 +200,7 @@
   </script>
   <script src="../shared/attempt_telemetry.js"></script>
   <script src="../shared/report/aggregate.js"></script>
+  <script src="./bank.js?v=3"></script>
   <script>
   function startOfflineMath(){
     (function(){
@@ -603,10 +604,7 @@
   if (Array.isArray(window.OFFLINE_MATH_BANK) && window.OFFLINE_MATH_BANK.length) {
     startOfflineMath();
   } else {
-    fetch('./bank.js?v=3', { cache: 'no-store' })
-      .then(r => r.text())
-      .then(t => { Function(t)(); startOfflineMath(); })
-      .catch(e => showBootError('bank.js 載入失敗：' + (e && e.message ? e.message : e)));
+    showBootError('題庫載入失敗：OFFLINE_MATH_BANK 為空（請重新載入）');
   }
   </script>
 </body>
