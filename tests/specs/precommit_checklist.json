@@ -48,6 +48,21 @@
       ]
     },
     {
+      "id": "offline_math_no_eval_bank_loader",
+      "type": "forbid_string",
+      "enabled": true,
+      "globs": [
+        "docs/offline-math/index.html",
+        "dist_ai_math_web_pages/docs/offline-math/index.html"
+      ],
+      "forbid": [
+        "Function(t)()",
+        "fetch('./bank.js",
+        "fetch(\"./bank.js"
+      ],
+      "message": "Do not load bank.js via fetch+Function/eval style. Use a script tag to avoid CSP/compat blank-screen regressions."
+    },
+    {
       "id": "offline_math_no_optional_chaining",
       "type": "forbid_string",
       "enabled": true,

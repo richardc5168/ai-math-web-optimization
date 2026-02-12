@@ -67,6 +67,12 @@ Date: 2026-02-12
 - `C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe scripts/run_checklist.py --spec tests/specs/precommit_checklist.json`
 - `C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe -m pre_commit run --all-files`
 
+預設流程（已自動化）
+- 直接執行 `git commit` 時，會由 `.githooks/pre-commit` 自動跑：
+  - pre-commit hooks（whitespace/json/yaml/merge conflict）
+  - strict checklist（docs/dist 同步、API smoke、forbid patterns、offline-math 黑屏防呆、debug_note 必備）
+- 若任何一項 FAIL，commit 會被阻擋，直到修正後重新 commit。
+
 六、回朔前一版（保留彈性）
 推薦：git revert（安全、保留歷史）
 - 查 commit：`git log --oneline -n 20`
