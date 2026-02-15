@@ -868,7 +868,11 @@ def get_next_step_hint(qobj: Dict[str, Any], student_state: str = "", level: int
         kind = "average_division"
     elif re.search(r"(原來|原價|全程(長|需要)|原本)", qtext) and re.search(r"(還剩|折後|剩)", qtext):
         kind = "reverse_fraction"
-    elif re.search(r"剩下的又", qtext):
+    elif re.search(r"剩下的又", qtext) or (
+        re.search(r"剩下的", qtext)
+        and re.search(r"(又|再)", qtext)
+        and re.search(r"\d+\s*/\s*\d+", qtext)
+    ):
         kind = "remain_then_fraction"
     elif re.search(r"(先|又).*(吃|用|看|走).*(先|又)", qtext):
         kind = "two_steps_used"
@@ -949,14 +953,14 @@ def get_next_step_hint(qobj: Dict[str, Any], student_state: str = "", level: int
 
     if kind == "two_steps_used":
         hint = _sanitize_hint_text(_base(
-            "這題有兩次變化：先用掉一些，再用掉一些（可能是剩下的）。",
-            "先判斷第二次是『用掉原來的一部分』還是『用掉剩下的一部分』；看題目有沒有寫『剩下的又...』。",
-            "若都是『同一個整體』，就先把用掉的分數加起來再用 1 去減；若是『剩下的又...』則用乘法做第二次。",
+            "這題是『同一個整體』連續兩次用掉（先…又…），先把兩次用掉分開看。",
+            "列式（不急著算）：總用掉 = 第一次用掉分數 + 第二次用掉分數（先通分再相加）。",
+            "看題目問什麼：若問『剩下』→ 剩下 = 1 − 總用掉；若問『用掉』→ 答案就是總用掉（都要約分）。",
         ))
         if stage >= 2:
             hint = _sanitize_hint_text(_base(
-                "你已判斷題型了，下一步是把分數加減或乘法算完並約分。",
-                "如果要先通分：用 LCM 當共同分母再加減分子。",
+                "你已列式了，下一步是先通分再相加，算出『總用掉』並約分。",
+                "若題目問『剩下』，再做 1 − 總用掉（把 1 通分成同分母再減）。",
                 "最後確認答案是『剩下幾分之幾』或『用掉幾分之幾』，不要寫反。",
             ))
         return {"hint": hint, "level": level_int, "mode": "offline_rule"}

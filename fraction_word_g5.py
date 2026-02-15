@@ -402,8 +402,14 @@ def _infer_kind(qtext: str) -> str:
         return "average_division"
     if re.search(r"(原來|原價|全程(長|需要)|原本)", qtext) and re.search(r"(還剩|折後|剩)", qtext):
         return "reverse_fraction"
-    if re.search(r"剩下的又", qtext):
+    if re.search(r"剩下的又", qtext) or (
+        re.search(r"剩下的", qtext)
+        and re.search(r"(又|再)", qtext)
+        and re.search(r"\d+\s*/\s*\d+", qtext)
+    ):
         return "remain_then_fraction"
+    if re.search(r"(先|又).*(吃|用|看|走).*(先|又)", qtext):
+        return "two_steps_used"
     if re.search(r"其中的", qtext) and re.search(r"占", qtext):
         return "fraction_of_fraction"
     if re.search(r"(倒出|用了|吃了|看了|走了).*(剩下多少|還剩|剩多少)", qtext):
@@ -425,6 +431,9 @@ def _scaffold_steps(kind: str) -> List[str]:
     elif kind == "remain_then_fraction":
         s2 = "判斷題型：『先用掉一些 → 剩下一些 → 再用掉剩下的一部分』，分兩段。"
         s3 = "列式：第一次剩下 = 1 − 第一次用掉分數；第二次用掉 = 第一次剩下 × 第二次用掉分數；最後剩下 = 第一次剩下 − 第二次用掉（或 第一次剩下 × (1 − 第二次用掉分數)）。"
+    elif kind == "two_steps_used":
+        s2 = "判斷題型：『同一個整體』先用掉一些（第一次），又用掉一些（第二次），兩次都是針對原來的整體。"
+        s3 = "列式：總用掉 = 第一次用掉分數 + 第二次用掉分數（先通分再相加）；若問『剩下』：剩下 = 1 − 總用掉；若問『用掉』：答案就是總用掉。"
     elif kind == "fraction_of_fraction":
         s2 = "判斷題型：『其中的…』是『分數的分數』，用乘法。"
         s3 = "先列式（不急著算）：占全體 = 第一個分數 × 第二個分數。"

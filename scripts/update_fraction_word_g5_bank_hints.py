@@ -6,8 +6,26 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 
-NEW_S2 = "判斷題型：『先用掉一些 → 剩下一些 → 再用掉剩下的一部分』，分兩段。"
-NEW_S3 = "列式：第一次剩下 = 1 − 第一次用掉分數；第二次用掉 = 第一次剩下 × 第二次用掉分數；最後剩下 = 第一次剩下 − 第二次用掉（或 第一次剩下 × (1 − 第二次用掉分數)）。"
+REMAIN_S2 = "判斷題型：『先用掉一些 → 剩下一些 → 再用掉剩下的一部分』，分兩段。"
+REMAIN_S3 = "列式：第一次剩下 = 1 − 第一次用掉分數；第二次用掉 = 第一次剩下 × 第二次用掉分數；最後剩下 = 第一次剩下 − 第二次用掉（或 第一次剩下 × (1 − 第二次用掉分數)）。"
+
+TWO_STEPS_S2 = "判斷題型：『同一個整體』先用掉一些（第一次），又用掉一些（第二次），兩次都是針對原來的整體。"
+TWO_STEPS_S3 = "列式：總用掉 = 第一次用掉分數 + 第二次用掉分數（先通分再相加）；若問『剩下』：剩下 = 1 − 總用掉；若問『用掉』：答案就是總用掉。"
+
+
+def _looks_like_remain_then_fraction(q: str) -> bool:
+    q = str(q or "")
+    if re.search(r"剩下的又", q):
+        return True
+    return bool(re.search(r"剩下的", q) and re.search(r"(又|再)", q) and re.search(r"\d+\s*/\s*\d+", q))
+
+
+def _looks_like_two_steps_used(q: str) -> bool:
+    q = str(q or "")
+    # Exclude remain-then-fraction first; that has its own pattern.
+    if _looks_like_remain_then_fraction(q):
+        return False
+    return bool(re.search(r"(先|又).*(吃|用|看|走).*(先|又)", q) and re.search(r"\d+\s*/\s*\d+", q))
 
 
 def _extract_json_array_from_bank_js(text: str) -> List[Dict[str, Any]]:
@@ -63,16 +81,25 @@ def _rewrite_bank(path: Path) -> int:
     for it in items:
         if not isinstance(it, dict):
             continue
-        if str(it.get("kind") or "") != "remain_then_fraction":
+        q = str(it.get("question") or "")
+        kind = str(it.get("kind") or "")
+
+        target_s2 = None
+        target_s3 = None
+        if kind == "remain_then_fraction" or _looks_like_remain_then_fraction(q):
+            target_s2, target_s3 = REMAIN_S2, REMAIN_S3
+        elif kind == "two_steps_used" or _looks_like_two_steps_used(q):
+            target_s2, target_s3 = TWO_STEPS_S2, TWO_STEPS_S3
+        else:
             continue
 
         steps = list(it.get("steps") or [])
         if len(steps) < 3:
             continue
 
-        if steps[1] != NEW_S2 or steps[2] != NEW_S3:
-            steps[1] = NEW_S2
-            steps[2] = NEW_S3
+        if steps[1] != target_s2 or steps[2] != target_s3:
+            steps[1] = target_s2
+            steps[2] = target_s3
             it["steps"] = steps
             it["explanation"] = "\n".join([f"步驟 {i + 1}：{s}" for i, s in enumerate(steps)])
             changed += 1
