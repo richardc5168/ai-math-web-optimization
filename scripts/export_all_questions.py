@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import random
 import sys
@@ -171,7 +172,11 @@ def export_all_questions(
             md_lines.append(f"## {t.template_id} — {t.name}")
 
             for i in range(int(per_template)):
-                item_seed = int(seed) + (abs(hash((t.template_id, i))) % 1_000_000_000)
+                # Derive a deterministic per-item seed (do NOT use Python's built-in hash()).
+                seed_material = f"{int(seed)}::{t.template_id}::{int(i)}".encode("utf-8")
+                seed_hash = hashlib.sha256(seed_material).digest()
+                seed_offset = int.from_bytes(seed_hash[:8], "big") % 1_000_000_000
+                item_seed = int(seed) + seed_offset
 
                 with _with_seed(item_seed):
                     q = engine.next_question(t.template_id)  # type: ignore[union-attr]
