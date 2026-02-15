@@ -21,6 +21,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Dict, Any, List
+import random
 
 from adaptive_mastery import (
     AttemptEvent,
@@ -77,11 +78,20 @@ except Exception:
 try:
     from learning.db import connect as learning_connect, ensure_learning_schema
     from learning.parent_report import generate_parent_weekly_report
+    from learning.parent_report import compute_skill_status
+    from learning.analytics import get_student_analytics as learning_get_student_analytics
+    from learning.remediation import get_practice_items_for_skill
+    from learning.teaching import get_teaching_guide, suggested_engine_topic_key
     from learning.service import recordAttempt as learning_record_attempt
 except Exception:
     learning_connect = None
     ensure_learning_schema = None
     generate_parent_weekly_report = None
+    compute_skill_status = None
+    learning_get_student_analytics = None
+    get_practice_items_for_skill = None
+    get_teaching_guide = None
+    suggested_engine_topic_key = None
     learning_record_attempt = None
 
 DB_PATH = os.environ.get("DB_PATH", "app.db")
@@ -177,6 +187,53 @@ class WeeklyReportRequest(BaseModel):
     window_days: int = Field(default=7, ge=1, le=60)
     top_k: int = Field(default=3, ge=1, le=5)
     questions_per_skill: int = Field(default=3, ge=1, le=8)
+
+
+class PracticeNextRequest(BaseModel):
+    student_id: int = Field(..., ge=1)
+    skill_tag: str = Field(..., min_length=1)
+    window_days: int = Field(default=14, ge=1, le=60)
+    topic_key: Optional[str] = Field(default=None, description="Optional override for engine generator key")
+    seed: Optional[int] = Field(default=None, description="Optional deterministic seed for question generation")
+
+
+def _with_random_seed(seed: Optional[int]):
+    """Context manager-like helper without importing contextlib (keep server.py simple)."""
+
+    class _Seed:
+        def __enter__(self):
+            self._state = random.getstate()
+            if seed is not None:
+                random.seed(int(seed))
+
+        def __exit__(self, exc_type, exc, tb):
+            random.setstate(self._state)
+            return False
+
+    return _Seed()
+
+
+def _skill_snapshot_from_analytics(analytics: Dict[str, Any], *, skill_tag: str) -> Dict[str, Any]:
+    for it in (analytics.get("by_skill") or []):
+        if not isinstance(it, dict):
+            continue
+        if str(it.get("skill_tag") or "") == str(skill_tag):
+            return {
+                "attempts": int(it.get("attempts") or 0),
+                "correct": int(it.get("correct") or 0),
+                "accuracy": float(it.get("accuracy") or 0.0),
+                "hint_dependency": float(it.get("hint_dependency") or 0.0),
+                "top_mistake_code": it.get("top_mistake_code"),
+                "top_mistake_count": int(it.get("top_mistake_count") or 0),
+            }
+    return {
+        "attempts": 0,
+        "correct": 0,
+        "accuracy": 0.0,
+        "hint_dependency": 0.0,
+        "top_mistake_code": None,
+        "top_mistake_count": 0,
+    }
 
 
 def _skill_tags_from_topic(topic: str) -> List[str]:
@@ -1784,6 +1841,100 @@ def learning_weekly_report(req: WeeklyReportRequest, x_api_key: str = Header(...
             lconn.close()
         except Exception:
             pass
+
+
+@app.post("/v1/learning/practice_next", summary="Targeted practice: next question + mastery status")
+def learning_practice_next(req: PracticeNextRequest, x_api_key: str = Header(..., alias="X-API-Key")):
+    acc = get_account_by_api_key(x_api_key)
+    ensure_subscription_active(acc["id"])
+
+    if (
+        learning_connect is None
+        or ensure_learning_schema is None
+        or learning_get_student_analytics is None
+        or compute_skill_status is None
+        or get_practice_items_for_skill is None
+        or get_teaching_guide is None
+        or suggested_engine_topic_key is None
+    ):
+        raise HTTPException(status_code=500, detail="Learning module not available")
+
+    if engine is None:
+        raise HTTPException(status_code=500, detail="engine.py not found")
+
+    # Verify student belongs to account.
+    conn = db()
+    st = conn.execute("SELECT * FROM students WHERE id=? AND account_id=?", (int(req.student_id), acc["id"])).fetchone()
+    conn.close()
+    if not st:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    lconn = learning_connect(DB_PATH)
+    try:
+        ensure_learning_schema(lconn)
+        analytics = learning_get_student_analytics(lconn, student_id=str(req.student_id), window_days=int(req.window_days))
+        snapshot = _skill_snapshot_from_analytics(analytics, skill_tag=str(req.skill_tag))
+        status = compute_skill_status(
+            attempts=int(snapshot.get("attempts") or 0),
+            accuracy=float(snapshot.get("accuracy") or 0.0),
+            hint_dependency=float(snapshot.get("hint_dependency") or 0.0),
+            skill_tag=str(req.skill_tag),
+        )
+    finally:
+        try:
+            lconn.close()
+        except Exception:
+            pass
+
+    guide = get_teaching_guide(str(req.skill_tag))
+    practice_items = get_practice_items_for_skill(str(req.skill_tag))
+
+    topic_key = str(req.topic_key) if req.topic_key not in (None, "") else (suggested_engine_topic_key(str(req.skill_tag)) or None)
+    if topic_key is None:
+        # Fallback: use a general fraction word problem set (broad coverage) to keep endpoint usable.
+        topic_key = "11"
+
+    # Generate a question and cache it so /v1/answers/submit can reference it.
+    with _with_random_seed(req.seed):
+        q = engine.next_question(topic_key)
+    hints = _build_hints(q)
+
+    conn = db()
+    cur = conn.cursor()
+    cur.execute(
+        """INSERT INTO question_cache(topic,difficulty,question,correct_answer,explanation,created_at)
+                   VALUES (?,?,?,?,?,?)""",
+        (q.get("topic"), q.get("difficulty"), q.get("question"), q.get("answer"), q.get("explanation"), now_iso()),
+    )
+    qid = int(cur.lastrowid)
+    try:
+        cur.execute("UPDATE question_cache SET hints_json=? WHERE id=?", (json.dumps(hints, ensure_ascii=False), qid))
+    except Exception:
+        pass
+    conn.commit()
+    conn.close()
+
+    return {
+        "ok": True,
+        "student": {"id": int(st["id"]), "display_name": st["display_name"], "grade": st["grade"]},
+        "skill_tag": str(req.skill_tag),
+        "window_days": int(req.window_days),
+        "topic_key": topic_key,
+        "mastery": {"snapshot": snapshot, "status": status},
+        "recommendations": {
+            "practice_items": practice_items,
+            "teaching_guide": guide.__dict__,
+        },
+        "question": {
+            "question_id": qid,
+            "topic": q.get("topic"),
+            "difficulty": q.get("difficulty"),
+            "question": q.get("question"),
+            "hints": hints,
+            "policy": {"reveal_answer_after_submit": True, "max_hint_level": 3},
+            "explanation_preview": "（交卷後顯示）",
+        },
+    }
 
 
 @app.post("/v1/hints/next", summary="Next-step hint (3 levels, student-aware)")

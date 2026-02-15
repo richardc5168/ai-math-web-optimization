@@ -85,6 +85,15 @@ _SKILL_PRACTICE_MAP: Dict[str, List[Dict[str, Any]]] = {
 }
 
 
+def get_practice_items_for_skill(skill_tag: str) -> List[Dict[str, Any]]:
+    """Return suggested practice item definitions for a skill tag (stable order)."""
+
+    skill_tag = str(skill_tag or "unknown")
+    items = _SKILL_PRACTICE_MAP.get(skill_tag) or _SKILL_PRACTICE_MAP.get("unknown") or []
+    # defensive copy
+    return [dict(x) for x in items]
+
+
 def _score_weak_item(item: Dict[str, Any], *, blueprint: Optional[DatasetBlueprint]) -> float:
     inp = item.get("score_inputs") or {}
     acc = float(inp.get("accuracy") or 0.0)

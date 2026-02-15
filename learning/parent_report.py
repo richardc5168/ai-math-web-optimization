@@ -77,6 +77,12 @@ def _mastery_targets(*, skill_tag: str) -> Dict[str, Any]:
     }
 
 
+def mastery_targets_for_skill(skill_tag: str) -> Dict[str, Any]:
+    """Public wrapper for mastery targets used by parent report and practice endpoint."""
+
+    return _mastery_targets(skill_tag=str(skill_tag or "unknown"))
+
+
 def _skill_status(
     *,
     attempts: int,
@@ -100,6 +106,37 @@ def _skill_status(
         return "IMPROVING"
 
     return "NEED_FOCUS"
+
+
+def compute_skill_status(
+    *,
+    attempts: int,
+    accuracy: float,
+    hint_dependency: float,
+    skill_tag: str,
+) -> Dict[str, Any]:
+    """Compute status + targets in one place for consistent UX."""
+
+    targets = mastery_targets_for_skill(skill_tag)
+    code = _skill_status(attempts=attempts, accuracy=accuracy, hint_dependency=hint_dependency, targets=targets)
+    label = {
+        "NEED_FOCUS": "需要加強",
+        "IMPROVING": "改善中",
+        "MASTERED": "已掌握",
+        "NOT_ENOUGH_DATA": "資料不足（先多做幾題觀察）",
+    }.get(code, str(code))
+    targets_line = (
+        f"掌握門檻：最近作答 ≥{int(targets['min_attempts'])} 題，"
+        f"正確率 ≥{int(float(targets['min_accuracy']) * 100)}%，"
+        f"提示依賴 ≤{int(float(targets['max_hint_dependency']) * 100)}%"
+    )
+    return {
+        "code": code,
+        "label": label,
+        "targets": targets,
+        "targets_line": targets_line,
+        "is_mastered": bool(code == "MASTERED"),
+    }
 
 
 def _kpi_summary(analytics: Dict[str, Any]) -> Dict[str, Any]:
