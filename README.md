@@ -81,6 +81,23 @@ macOS / Linux / WSL:
 python -m pytest test_ragweb_api.py -q
 ```
 
+## 匯出「所有題型」題目/提示/答案（給外部模型做 QA）
+用途：把 `engine.GENERATORS` 內所有題型都掃過，為每個題型生成多題（可固定 seed 可重現），並輸出成 JSONL + Markdown。
+
+PowerShell（Windows）:
+```powershell
+./.venv/Scripts/python.exe scripts/export_all_questions.py --per_template 50 --seed 12345
+```
+
+輸出位置：
+- `artifacts/questions_dump.jsonl`（一行一題，方便丟給 Gemini/GPT 做批次檢查）
+- `artifacts/questions_dump.md`（人眼快速瀏覽）
+
+參數：
+- `--per_template N`：每個題型生成 N 題
+- `--seed S`：固定 base seed（可重現）
+- `--out_jsonl PATH` / `--out_md PATH`：指定輸出路徑
+
 ## 常見問題
 - 如果 PowerShell 阻止執行 `.ps1`，暫時允許（僅當前 shell）：
   ```powershell

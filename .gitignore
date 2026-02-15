@@ -25,6 +25,9 @@ rag_cli_log.jsonl
 # Generated QA outputs
 outputs/
 
+# Local artifacts (exports/dumps) - DO NOT COMMIT
+artifacts/
+
 # Local databases (DO NOT COMMIT)
 *.db
 *.sqlite

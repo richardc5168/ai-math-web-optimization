@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Question Dump Item",
+  "type": "object",
+  "required": [
+    "topic_id",
+    "template_id",
+    "seed",
+    "question",
+    "answer",
+    "hints",
+    "solution_steps",
+    "checks"
+  ],
+  "properties": {
+    "topic_id": { "type": "string", "minLength": 1 },
+    "template_id": { "type": "string", "minLength": 1 },
+    "seed": { "type": "integer" },
+    "question": { "type": "string", "minLength": 1 },
+    "answer": { "type": "string" },
+    "hints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "solution_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_index", "text"],
+        "properties": {
+          "step_index": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "checks": {
+      "type": "object",
+      "required": ["answer_ok", "hint_ladder_ok"],
+      "properties": {
+        "answer_ok": { "type": "boolean" },
+        "hint_ladder_ok": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
