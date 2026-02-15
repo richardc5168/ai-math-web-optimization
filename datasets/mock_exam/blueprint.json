@@ -1,0 +1,9 @@
+{
+  "skill_weights": {
+    "分數/小數": 1.4,
+    "比例": 1.2,
+    "四則運算": 1.1
+  },
+  "topic_weights": {},
+  "sample_question_ids": ["Q1", "Q2"]
+}

@@ -1,0 +1,66 @@
+{
+  "dataset": {
+    "name": "mock_exam",
+    "version": "1"
+  },
+  "generated_at": "2026-02-15T00:00:00",
+  "student_id": "s1",
+  "student_selectable_goals": [
+    {
+      "id": "goal_improve_分數/小數",
+      "title": "加強：分數/小數"
+    },
+    {
+      "id": "goal_reduce_hints",
+      "title": "降低對提示的依賴（同題不看提示也能做）"
+    },
+    {
+      "id": "goal_speed",
+      "title": "提升速度（時間內保持正確）"
+    }
+  ],
+  "suggested_practice_sequence": [
+    {
+      "example_applications": [
+        "discount",
+        "percentage"
+      ],
+      "id": "frac_discount",
+      "rationale": "連結折扣、百分比與小數。",
+      "skill_tag": "分數/小數",
+      "title": "折扣與百分比（分數/小數互換）"
+    },
+    {
+      "example_applications": [
+        "measurement",
+        "unit conversion"
+      ],
+      "id": "frac_measurement",
+      "rationale": "把分數理解成量的分割。",
+      "skill_tag": "分數/小數",
+      "title": "測量與單位（分數刻度）"
+    }
+  ],
+  "weak_skills_top3": [
+    {
+      "evidence": {
+        "reasons": [
+          "high_hint_dependency",
+          "low_accuracy",
+          "repeated_mistake_code"
+        ],
+        "score_inputs": {
+          "accuracy": 0.5,
+          "attempts": 6,
+          "hint_dependency": 0.6666666666666666,
+          "top_mistake_code": "concept",
+          "top_mistake_count": 3
+        },
+        "skill_tag": "分數/小數"
+      },
+      "score": 1.563333,
+      "skill_tag": "分數/小數"
+    }
+  ],
+  "window_days": 30
+}
