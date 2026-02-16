@@ -302,6 +302,7 @@
     attemptsCount: 0,
     hintShownLevels: new Set(),
     hintShownCount: 0,
+    renderedHints: new Set(),
     hintStartAt: null,
     shownSolution: false,
     attemptLogged: false,
@@ -321,6 +322,7 @@
     state.attemptsCount = 0;
     state.hintShownLevels = new Set();
     state.hintShownCount = 0;
+    state.renderedHints = new Set();
     state.hintStartAt = null;
     state.shownSolution = false;
     state.attemptLogged = false;
@@ -483,6 +485,7 @@
     state.startedAt = 0;
     state.maxHint = 0;
     state.showedSteps = false;
+    state.renderedHints = new Set();
     els.qText.textContent = '（按「出新題」開始）';
     els.answer.value = '';
     els.hints.innerHTML = '';
@@ -507,6 +510,7 @@
     startAttempt();
     state.maxHint = 0;
     state.showedSteps = false;
+    state.renderedHints = new Set();
     els.hints.innerHTML = '';
     els.solution.innerHTML = '';
     els.answer.value = '';
@@ -522,9 +526,15 @@
     const hints = Array.isArray(q.hints) ? q.hints : [];
     const idx = Math.max(1, Math.min(3, Number(level||1))) - 1;
     const text = safeStr(hints[idx] || hints[hints.length-1] || '（此題沒有提示）');
+    const hintKey = `${idx+1}::${text}`;
+    if (state.renderedHints.has(hintKey)){
+      setBanner('muted', `提示 ${idx+1} 已顯示過。`);
+      return;
+    }
     state.maxHint = Math.max(state.maxHint, idx+1);
 
     markHint(idx + 1);
+    state.renderedHints.add(hintKey);
 
     const div = renderHint(text);
     els.hints.appendChild(div);
@@ -538,8 +548,17 @@
     markSolution();
     const lines = [];
     if (Array.isArray(q.steps) && q.steps.length){
+      const uniqSteps = [];
+      const seen = new Set();
+      for (const step of q.steps){
+        const t = safeStr(step).trim();
+        if (!t) continue;
+        if (seen.has(t)) continue;
+        seen.add(t);
+        uniqSteps.push(t);
+      }
       lines.push('【解題步驟】');
-      for (let i=0;i<q.steps.length;i++) lines.push(`${i+1}) ${q.steps[i]}`);
+      for (let i=0;i<uniqSteps.length;i++) lines.push(`${i+1}) ${uniqSteps[i]}`);
     }
     if (safeStr(q.explanation).trim()){
       lines.push('');

@@ -144,18 +144,23 @@ def q_u1_avg_fraction(r: random.Random, qid: str, difficulty: str) -> Q:
     scene = _pick(r, ["班級點心", "家庭分享", "社團活動", "園遊會"])
     q = f"（生活應用｜平均分配｜{scene}）有 {total_s} 個{item}，平均分給 {people} 人，每人得到多少個？（用最簡分數 a/b 表示）"
 
+    raw_den = total_den * people
+    raw_frac = f"{total_num}/{raw_den}"
+
     steps = [
-        f"把『平均分給 {people} 人』寫成 ÷{people}",
-        f"列式：{total_s} ÷ {people}",
-        f"等於 {ans}（最簡分數）",
-        "檢查：人數越多，每人分到應越少。",
+        f"讀題：總量是 {total_s} 個{item}，平均分給 {people} 人。",
+        f"關鍵句『平均分給 {people} 人』要先寫成除法：{total_s} ÷ {people}",
+        f"把除法改成乘法：{total_s} ÷ {people} = {total_s} × 1/{people}",
+        f"做分數乘法：分子乘分子、分母乘分母，得到 {raw_frac}",
+        f"約分成最簡分數：{ans}",
+        "合理性檢查：人數變多，每人分到要變少。",
     ]
 
     hints = [
-        "觀念：平均分配就是『總量 ÷ 人數』。",
-        "把除法改成乘法：除以 n 等於乘以 1/n。",
-        f"列式：{total_s} × 1/{people}。先算分母：{total_den}×{people}。",
-        "最後要記得把分數約分到最簡。",
+        f"提示1（先抓觀念）：這題是『平均分配』，固定用『總量 ÷ 人數』。先寫 {total_s} ÷ {people}。",
+        f"提示2（列式不急算）：把 ÷{people} 改寫成 × 1/{people}，所以是 {total_s} × 1/{people}。",
+        f"提示3（完成計算）：把 {total_s} 和 1/{people} 相乘，先乘分子、再乘分母，最後約分到最簡就是答案。",
+        "提示4（最後檢查）：答案要是最簡分數，且意思是『每人分到多少』；人越多，每人應該越少。",
     ]
 
     return Q(
@@ -168,10 +173,14 @@ def q_u1_avg_fraction(r: random.Random, qid: str, difficulty: str) -> Q:
         answer_mode="fraction",
         hints=hints,
         steps=steps,
-        explanation=f"平均分配：{total_s} ÷ {people} = {ans}。",
+        explanation=(
+            f"平均分配：{total_s} ÷ {people} = {total_s} × 1/{people} = {raw_frac}，"
+            f"約分後得到 {ans}。"
+        ),
         common_mistakes=[
             "把 ÷n 誤寫成 ×n（人越多反而變大）。",
-            "忘記約分或分母算錯（沒有乘到人數）。",
+            "直接把分母加上人數（例如 1/3 ÷ 7 寫成 1/10）。",
+            "算完沒約分，或忘了檢查『每人應該變少』。",
         ],
         tags=["生活應用", "分數", "平均分配"],
         core=["分數意義", "平均分配=除法", "最簡分數"],
