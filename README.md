@@ -154,4 +154,27 @@ git apply artifacts/review_apply/hint_overrides_candidates.patch
   ```
 - 若 port 被占用，請改用其他 port（例：8002）或找出並結束占用的 PID。
 
+## 考前衝刺：錯題診斷 Gate
+`docs/exam-sprint/index.html` 已加入錯題強制流程：
+
+- 錯答後不可直接下一題（`Next` 會鎖住）
+- 先看「錯誤診斷（Explain）」再看「補救提示（Ladder）」
+- 必須按「我理解了」或按 `Enter` 才能繼續
+- 錯題詳細記錄（錯誤類型、說明、補救提示、ack 行為）會存到既有本機紀錄，並出現在可複製報告內容
+
+關鍵測試 selector：
+- `data-testid="submit"`
+- `data-testid="next"`
+- `data-testid="wrong-diagnosis"`
+- `data-testid="remedial-hints"`
+- `data-testid="acknowledge"`
+
+執行測試：
+```powershell
+npm install
+node --test tests_js/diagnoseWrongAnswer.test.mjs
+npx playwright install chromium
+npm run test:e2e
+```
+
 如果要我把這些變更 commit，或再產生更詳細的使用手冊，請告訴我 `commit` 或 `more`。

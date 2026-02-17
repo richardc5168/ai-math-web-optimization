@@ -1,0 +1,12 @@
+{
+  "name": "ragweb-exam-sprint-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:diagnosis": "node --test tests_js/diagnoseWrongAnswer.test.mjs",
+    "test:e2e": "playwright test tests_js/exam-sprint-gate.spec.mjs --reporter=line"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
+  }
+}

@@ -98,7 +98,7 @@
           <option value="hard">hard</option>
         </select>
 
-        <button class="btn primary" id="btnNew">出新題</button>
+        <button class="btn primary" id="btnNew" data-testid="next">出新題</button>
         <button class="btn" id="btnReset">清空</button>
       </div>
 
@@ -108,7 +108,7 @@
       <div class="row">
         <label>你的答案</label>
         <input id="answer" placeholder="支援：整數/小數、分數 a/b、百分率 35% 或 0.35、文字" />
-        <button class="btn primary" id="btnCheck">送出/檢查</button>
+        <button class="btn primary" id="btnCheck" data-testid="submit">送出/檢查</button>
       </div>
 
       <div class="row">
@@ -120,6 +120,15 @@
 
       <div id="banner" class="banner muted">提示：先自己試算 10–20 秒；卡住再看提示（1→2→3）。</div>
       <div id="hints"></div>
+      <div id="wrongGate" class="card" style="margin-top:10px; display:none; border-color:rgba(248,81,73,.5)">
+        <h3 style="margin:0 0 8px 0; color:#ffd2cf">錯誤診斷（請先看完，理解後才能下一題）</h3>
+        <div id="wrongDiagnosis" class="banner bad" data-testid="wrong-diagnosis"></div>
+        <div id="remedialHints" class="banner warn" style="margin-top:10px" data-testid="remedial-hints"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn primary" id="btnAcknowledge" data-testid="acknowledge">我理解了（可按 Enter）</button>
+          <span class="small">錯題流程：診斷 → 補救提示 → 確認理解，之後才能出下一題。</span>
+        </div>
+      </div>
       <div id="solution"></div>
 
       <details style="margin-top:12px;">
@@ -168,6 +177,7 @@
 </main>
 
 <script src="./bank.js"></script>
+<script src="./diagnosis.js"></script>
 <script src="../shared/coach_event_log.js"></script>
 <script src="../shared/attempt_telemetry.js"></script>
 <script>
@@ -278,6 +288,10 @@
     btnShowSteps: document.getElementById('btnShowSteps'),
     banner: document.getElementById('banner'),
     hints: document.getElementById('hints'),
+    wrongGate: document.getElementById('wrongGate'),
+    wrongDiagnosis: document.getElementById('wrongDiagnosis'),
+    remedialHints: document.getElementById('remedialHints'),
+    btnAcknowledge: document.getElementById('btnAcknowledge'),
     solution: document.getElementById('solution'),
     chips: document.getElementById('chips'),
     studentState: document.getElementById('studentState'),
@@ -295,6 +309,7 @@
 
   const state = {
     q: null,
+    phase: 'QUESTION',
     startedAt: 0,
     maxHint: 0,
     showedSteps: false,
@@ -306,6 +321,9 @@
     hintStartAt: null,
     shownSolution: false,
     attemptLogged: false,
+    ackRequired: false,
+    ackDone: false,
+    pendingAttemptId: null,
     store: {
       attempts: []
     }
@@ -317,7 +335,76 @@
     return window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
   }
 
+  function setNextEnabled(enabled){
+    const ok = !!enabled;
+    els.btnNew.disabled = !ok;
+    if (ok) els.btnNew.classList.remove('ghost');
+    else els.btnNew.classList.add('ghost');
+  }
+
+  function hideWrongGate(){
+    els.wrongGate.style.display = 'none';
+    els.wrongDiagnosis.textContent = '';
+    els.remedialHints.textContent = '';
+  }
+
+  function showWrongGate(diagnosis, studentAnswerRaw){
+    const q = state.q || {};
+    state.phase = 'REMEDIAL_HINTS';
+    const hints = Array.isArray(diagnosis?.remediation_hints) ? diagnosis.remediation_hints : [];
+    const steps = Array.isArray(diagnosis?.remediation_steps) ? diagnosis.remediation_steps : [];
+
+    const diagLines = [
+      `你的答案：${safeStr(studentAnswerRaw) || '（空白）'}`,
+      `正確答案：${safeStr(q.answer)}`,
+      `錯誤類型：${safeStr(diagnosis?.error_type || 'other')}`,
+      `診斷說明：${safeStr(diagnosis?.error_detail || '請回到題意，先判斷要用哪個運算。')}`,
+    ];
+    els.wrongDiagnosis.textContent = diagLines.join('\n');
+
+    const remedial = ['【補救提示（Ladder）】'];
+    for (let i = 0; i < Math.max(3, hints.length); i++) {
+      const text = safeStr(hints[i] || hints[hints.length - 1] || '先把題意翻成算式，再一步一步算。');
+      remedial.push(`${i+1}) ${text}`);
+    }
+    if (steps.length) {
+      remedial.push('');
+      remedial.push('【建議練習步驟】');
+      for (const st of steps) {
+        const idx = Number(st?.step || 0);
+        const action = safeStr(st?.action || '');
+        if (idx > 0 && action) remedial.push(`${idx}) ${action}`);
+      }
+    }
+    els.remedialHints.textContent = remedial.join('\n');
+    els.wrongGate.style.display = 'block';
+  }
+
+  function acknowledgeWrong(method){
+    if (!state.ackRequired || state.ackDone) return;
+    state.ackDone = true;
+    state.ackRequired = false;
+    state.phase = 'ACKNOWLEDGE';
+    setNextEnabled(true);
+
+    const ts = nowMs();
+    const id = state.pendingAttemptId;
+    if (id){
+      for (let i = state.store.attempts.length - 1; i >= 0; i--){
+        const a = state.store.attempts[i];
+        if (String(a.attempt_id || '') === String(id)){
+          a.ack_time = ts;
+          a.ack_method = method;
+          break;
+        }
+      }
+      saveStore();
+    }
+    setBanner('ok', '已完成理解確認，現在可以出下一題。');
+  }
+
   function startAttempt(){
+    state.phase = 'QUESTION';
     state.startedAt = Date.now();
     state.attemptsCount = 0;
     state.hintShownLevels = new Set();
@@ -326,6 +413,11 @@
     state.hintStartAt = null;
     state.shownSolution = false;
     state.attemptLogged = false;
+    state.ackRequired = false;
+    state.ackDone = false;
+    state.pendingAttemptId = null;
+    hideWrongGate();
+    setNextEnabled(true);
   }
 
   function markHint(level){
@@ -482,13 +574,19 @@
 
   function resetUI(){
     state.q = null;
+    state.phase = 'QUESTION';
     state.startedAt = 0;
     state.maxHint = 0;
     state.showedSteps = false;
     state.renderedHints = new Set();
+    state.ackRequired = false;
+    state.ackDone = false;
+    state.pendingAttemptId = null;
     els.qText.textContent = '（按「出新題」開始）';
     els.answer.value = '';
     els.hints.innerHTML = '';
+    hideWrongGate();
+    setNextEnabled(true);
     els.solution.innerHTML = '';
     els.chips.innerHTML = '';
     els.nextHint.style.display = 'none';
@@ -497,6 +595,10 @@
   }
 
   function newQuestion(){
+    if (state.ackRequired && !state.ackDone){
+      setBanner('warn', '請先完成「我理解了」再出下一題。');
+      return;
+    }
     if (state.q && !state.attemptLogged){
       commitAttempt(false, 'skip', els.answer.value);
     }
@@ -512,6 +614,8 @@
     state.showedSteps = false;
     state.renderedHints = new Set();
     els.hints.innerHTML = '';
+    hideWrongGate();
+    setNextEnabled(true);
     els.solution.innerHTML = '';
     els.answer.value = '';
     els.qText.textContent = q.question;
@@ -597,11 +701,30 @@
     return String(a) === String(b);
   }
 
-  function recordAttempt(ok, errMsg){
+  function recordAttempt(ok, errMsg, studentAnswerRaw, diagnosis){
     const q = state.q;
-    const ms = state.startedAt ? Math.max(0, nowMs() - state.startedAt) : 0;
-    state.store.attempts.push({
-      ts: nowMs(),
+    const tsNow = nowMs();
+    const ms = state.startedAt ? Math.max(0, tsNow - state.startedAt) : 0;
+    const attemptId = `attempt_${tsNow}_${Math.floor(Math.random()*1e6)}`;
+    const rec = {
+      attempt_id: attemptId,
+      timestamp: tsNow,
+      ts: tsNow,
+      question_id: q ? (q.id || '') : '',
+      topic_id: q ? (q.topic || '未分類') : '未分類',
+      template_id: q ? (q.kind || '') : '',
+      question_text: q ? (q.question || '') : '',
+      student_answer_raw: String(studentAnswerRaw || ''),
+      correct_answer: q ? String(q.answer || '') : '',
+      is_correct: !!ok,
+      error_type: ok ? null : String(diagnosis?.error_type || 'other'),
+      error_detail: ok ? '' : String(diagnosis?.error_detail || errMsg || ''),
+      remediation_hints: ok ? [] : (Array.isArray(diagnosis?.remediation_hints) ? diagnosis.remediation_hints : []),
+      remediation_steps: ok ? [] : (Array.isArray(diagnosis?.remediation_steps) ? diagnosis.remediation_steps : []),
+      ack_time: null,
+      ack_method: null,
+      time_spent_ms: ms,
+
       qid: q ? (q.id || '') : '',
       topic: q ? (q.topic || '未分類') : '未分類',
       kind: q ? (q.kind || '') : '',
@@ -612,7 +735,9 @@
       max_hint: state.maxHint,
       showed_steps: state.showedSteps ? 1 : 0,
       err: errMsg || ''
-    });
+    };
+    state.store.attempts.push(rec);
+    if (!ok) state.pendingAttemptId = attemptId;
 
     // keep last 5000 attempts
     if (state.store.attempts.length > 5000) state.store.attempts.splice(0, state.store.attempts.length - 5000);
@@ -621,24 +746,58 @@
 
   function check(){
     if (!state.q){ setBanner('bad','請先出題。'); return; }
-    try{
-      const user = parseAnswerForQuestion(state.q, els.answer.value);
-      const exp = expectedAnswerValue(state.q);
-      const ok = nearlyEqual(user, exp);
-      state.attemptsCount = Math.max(0, Number(state.attemptsCount || 0)) + 1;
-      recordAttempt(ok, '');
-      commitAttempt(ok, ok ? 'correct' : 'wrong', els.answer.value);
-      if (ok){
-        setBanner('ok', '答對了！建議：再看一眼題目條件，確認單位與合理性。');
-      } else {
-        setBanner('bad', '答錯了。建議：先回到提示 1→2→3，找出你卡在哪一步。');
-      }
-    }catch(e){
-      recordAttempt(false, String(e && e.message || e));
-      state.attemptsCount = Math.max(0, Number(state.attemptsCount || 0)) + 1;
-      commitAttempt(false, 'error', els.answer.value);
-      setBanner('bad', String(e && e.message || e));
+    if (state.ackRequired && !state.ackDone){
+      setBanner('warn', '請先完成「我理解了」再繼續。');
+      return;
     }
+
+    const raw = els.answer.value;
+    let ok = false;
+    let errMsg = '';
+    try {
+      const user = parseAnswerForQuestion(state.q, raw);
+      const exp = expectedAnswerValue(state.q);
+      ok = nearlyEqual(user, exp);
+    } catch (e) {
+      ok = false;
+      errMsg = String(e && e.message || e);
+    }
+
+    state.attemptsCount = Math.max(0, Number(state.attemptsCount || 0)) + 1;
+
+    if (ok){
+      state.phase = 'CORRECT_FEEDBACK';
+      state.ackRequired = false;
+      state.ackDone = true;
+      hideWrongGate();
+      setNextEnabled(true);
+      recordAttempt(true, '', raw, null);
+      commitAttempt(true, 'correct', raw);
+      setBanner('ok', '答對了！建議：再看一眼題目條件，確認單位與合理性。');
+      return;
+    }
+
+    const diagnosis = (typeof window.diagnoseWrongAnswer === 'function')
+      ? window.diagnoseWrongAnswer(state.q, raw)
+      : {
+          error_type: 'other',
+          error_detail: '先回到題意，判斷要用哪個運算，再把每一步寫出來。',
+          remediation_hints: [
+            '先判斷題目要你求什麼，再選運算。',
+            '把數字整理成算式，逐步計算。',
+            '算完檢查答案大小和單位是否合理。',
+          ],
+          remediation_steps: [],
+        };
+
+    state.phase = 'WRONG_DIAGNOSIS';
+    state.ackRequired = true;
+    state.ackDone = false;
+    setNextEnabled(false);
+    showWrongGate(diagnosis, raw);
+    recordAttempt(false, errMsg, raw, diagnosis);
+    commitAttempt(false, errMsg ? 'error' : 'wrong', raw);
+    setBanner('bad', '答錯了。請先看錯誤診斷與補救提示，按「我理解了」後才能下一題。');
   }
 
   function nextStepHint(){
@@ -821,6 +980,10 @@
     for (const a of els.plan.querySelectorAll('.planLink')){
       a.addEventListener('click', (ev) => {
         ev.preventDefault();
+        if (state.ackRequired && !state.ackDone){
+          setBanner('warn', '請先完成「我理解了」再切到下一題。');
+          return;
+        }
         const id = ev.currentTarget.getAttribute('data-qid');
         const q = bank.find(x => String(x.id) === String(id));
         if (q){
@@ -864,6 +1027,31 @@
         lines.push(`${i+1}) ${w.topic} / ${w.kind}（錯:${w.wrong}，提示≥2:${w.hint2}，提示=3:${w.hint3}）`);
       });
     }
+
+    const wrongAttempts = sum.attempts.filter(a => (a.is_correct === false) || (!a.ok));
+    if (wrongAttempts.length){
+      const byType = new Map();
+      for (const a of wrongAttempts){
+        const t = String(a.error_type || 'other');
+        byType.set(t, (byType.get(t) || 0) + 1);
+      }
+      const topTypes = Array.from(byType.entries()).sort((x,y)=>y[1]-x[1]);
+      lines.push('');
+      lines.push('錯題診斷統計：');
+      for (const [t, n] of topTypes.slice(0,5)) lines.push(`- ${t}: ${n}`);
+
+      lines.push('');
+      lines.push('最近錯題摘要（最多 3 題）：');
+      wrongAttempts.slice(-3).forEach((a, idx) => {
+        lines.push(`${idx+1}) ${a.topic_id || a.topic} / ${a.template_id || a.kind}`);
+        lines.push(`   學生答案：${a.student_answer_raw || ''}｜正解：${a.correct_answer || ''}`);
+        lines.push(`   診斷：${a.error_detail || '（無）'}`);
+        if (Array.isArray(a.remediation_hints) && a.remediation_hints.length){
+          lines.push(`   補救提示1：${a.remediation_hints[0]}`);
+        }
+        lines.push(`   已確認理解：${a.ack_time ? '是' : '否'}${a.ack_method ? `（${a.ack_method}）` : ''}`);
+      });
+    }
     return lines.join('\n');
   }
 
@@ -901,6 +1089,7 @@
     els.btnHint2.addEventListener('click', ()=>showHint(2));
     els.btnHint3.addEventListener('click', ()=>showHint(3));
     els.btnShowSteps.addEventListener('click', showSteps);
+    els.btnAcknowledge.addEventListener('click', ()=>acknowledgeWrong('button'));
     els.btnNext.addEventListener('click', nextStepHint);
     els.btnRefreshReport.addEventListener('click', renderReport);
     els.btnCopyReport.addEventListener('click', ()=>copyText(reportText()));
@@ -912,10 +1101,18 @@
         // allow Enter to submit
       }
       if (ev.key === 'Enter'){
+        if (state.ackRequired && !state.ackDone){
+          acknowledgeWrong('enter');
+          ev.preventDefault();
+          return;
+        }
         if (document.activeElement === els.answer) check();
       }
       const k = String(ev.key||'').toLowerCase();
-      if (k === 'n') newQuestion();
+      if (k === 'n'){
+        if (state.ackRequired && !state.ackDone) setBanner('warn', '請先完成「我理解了」再出下一題。');
+        else newQuestion();
+      }
       if (k === '1') showHint(1);
       if (k === '2') showHint(2);
       if (k === '3') showHint(3);
