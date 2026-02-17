@@ -133,9 +133,9 @@ def q_discount(i: int) -> Q:
     ]
 
     steps = [
-        "付費比例 = 1 − 折扣%",
-        "原價 × 付費比例",
-        "金額取到小數點後 2 位（或題目允許可省略尾端 0）",
+        f"付費比例 = 100% − {off}% = {100-off}% = {fmt_decimal(pay_rate)}",
+        f"原價 × 付費比例 = {fmt_money2(price)} × {fmt_decimal(pay_rate)}",
+        f"計算得到 {answer} 元",
     ]
 
     return Q(
@@ -334,9 +334,9 @@ def q_fraction_remaining(i: int) -> Q:
     ]
 
     steps = [
-        "用掉 = 全體 × 分數",
-        "剩下 = 全體 − 用掉",
-        "寫上單位：公尺",
+        f"用掉 = {whole} × {fmt_fraction(fr)} = {eaten_s}",
+        f"剩下 = {whole} − {eaten_s} = {left_s}",
+        f"答案：剩下 {left_s} 公尺",
     ]
 
     return Q(
@@ -436,9 +436,10 @@ def q_two_step_shopping(i: int) -> Q:
     ]
 
     steps = [
-        "分別算小計：單價×數量",
-        "合計：小計相加",
-        "實付：合計 − 折價券",
+        f"小計1：{fmt_money2(p1)} × {q1} = {fmt_money2(p1*Decimal(q1))}",
+        f"小計2：{fmt_money2(p2)} × {q2} = {fmt_money2(p2*Decimal(q2))}",
+        f"合計：{fmt_money2(p1*Decimal(q1))} + {fmt_money2(p2*Decimal(q2))} = {fmt_money2(total)}",
+        f"實付：{fmt_money2(total)} − {fmt_money2(coupon)} = {answer} 元",
     ]
 
     return Q(
@@ -547,10 +548,10 @@ def q_area_tiling(i: int) -> Q:
     ]
 
     steps = [
-        "公尺換算成公分",
-        "房間面積 = 長×寬",
-        "地磚面積 = 邊長×邊長",
-        "用除法求塊數",
+        f"公尺換公分：長 {room_m_l} m = {room_cm_l} cm，寬 {room_cm_w//100} m = {room_cm_w} cm",
+        f"房間面積 = {room_cm_l} × {room_cm_w} = {room_area}（cm²）",
+        f"地磚面積 = {tile_cm} × {tile_cm} = {tile_area}（cm²）",
+        f"塊數 = {room_area} ÷ {tile_area} = {tiles}（塊）",
     ]
 
     return Q(
@@ -594,9 +595,9 @@ def q_proportional_split(i: int) -> Q:
     ]
 
     steps = [
-        "總份數 = 比的各部分相加",
-        "每份 = 總數 ÷ 總份數",
-        "某人份數 × 每份 = 分到的數量",
+        f"總份數 = {a} + {b} + {c} = {s}",
+        f"每份 = {total} ÷ {s} = {k}",
+        f"{who} 有 {part} 份：{part} × {k} = {share}（顆）",
     ]
 
     return Q(
