@@ -216,6 +216,12 @@
     </div>
 
     <div class="card" style="margin-top:12px">
+      <div style="font-weight:800">📘 觀念提醒與出題方向建議</div>
+      <div class="small">依據作答紀錄，列出每個題型的核心觀念提醒與建議練習方向，幫助家長掌握孩子需要加強的觀念。</div>
+      <div id="conceptDirectionBox" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
       <div style="font-weight:800">家長本機報告（純文字｜詳細）</div>
       <div class="small">把本機作答紀錄（Attempts telemetry）整理成完整文字週報：包含題型統計、提示/耗時、以及答錯明細（含提示深度與 A/B/C/D）。</div>
       <div class="row" style="margin-top:10px">
@@ -397,6 +403,144 @@
       if (key === 'rounding_error') return '先算完整值，最後一步才做四捨五入。';
       if (key === 'misunderstanding') return '先圈關鍵字（平均/剩下/每），確認要找什麼再動筆。';
       return '先回到題意，寫出算式與單位，再一步一步算。';
+    }
+
+    function conceptReminderZh(kind){
+      const k = String(kind || '').toLowerCase();
+      const r = [];
+      if (/四則|order|bracket|括號|乘除|arithmetic/.test(k)) {
+        r.push('🔑 運算順序：先括號 → 再乘除 → 最後加減（同級由左到右）');
+        r.push('🔑 遇到括號中有括號，從最內層開始算');
+        r.push('🔑 負數運算：減去一個負數 = 加上正數');
+      }
+      if (/通分|common_denom|add_unlike/.test(k)) {
+        r.push('🔑 通分：先找分母的最小公倍數（LCM），再把分子分母同乘');
+        r.push('🔑 通分後才能做加減，分母不能直接相加');
+      }
+      if (/約分|simplif|reduce/.test(k)) {
+        r.push('🔑 約分：找分子分母的最大公因數（GCD），同除到最簡');
+      }
+      if (/分數加減|frac.*add|frac.*sub|add_like/.test(k)) {
+        r.push('🔑 同分母直接分子加減；異分母先通分');
+        r.push('🔑 算完要約分到最簡');
+      }
+      if (/帶分數|mixed/.test(k)) {
+        r.push('🔑 帶分數 = 整數 + 真分數，計算可先化成假分數');
+        r.push('🔑 最後記得把假分數換回帶分數');
+      }
+      if (/gcd|lcm|公因|公倍/.test(k)) {
+        r.push('🔑 GCD：兩數共有的最大因數（短除法）');
+        r.push('🔑 LCM：短除法全部因數相乘');
+        r.push('🔑 a × b = GCD × LCM');
+      }
+      if (/小數|decimal|money/.test(k)) {
+        r.push('🔑 小數加減要對齊小數點');
+        r.push('🔑 小數乘法：先算數字再數小數位數相加');
+        r.push('🔑 小數除法：除數先變整數（被除數同步移小數點）');
+      }
+      if (/互換|convert|frac.*dec/.test(k)) {
+        r.push('🔑 分數→小數：分子÷分母');
+        r.push('🔑 小數→分數：如 0.25 = 25/100 = 1/4');
+      }
+      if (/百分|percent|discount|折扣/.test(k)) {
+        r.push('🔑 百分率 = 部分÷全部×100%');
+        r.push('🔑 打八折 = ×0.8；折讓 = 原價 - 售價');
+      }
+      if (/比例|ratio|份數/.test(k)) {
+        r.push('🔑 化簡比：找 GCD 同除');
+        r.push('🔑 比值 = a÷b');
+        r.push('🔑 份數問題：每份 = 全部÷總份數');
+      }
+      if (/單位|unit_convert|公分|公尺|公升/.test(k)) {
+        r.push('🔑 長度：1m=100cm；重量：1kg=1000g');
+        r.push('🔑 容量：1L=1000mL=1000cm³');
+      }
+      if (/速率|rate|speed|distance|路程/.test(k)) {
+        r.push('🔑 速率×時間=距離');
+        r.push('🔑 單位要統一（km/h 配 km 和 h）');
+      }
+      if (/面積|area/.test(k)) {
+        r.push('🔑 長方形 = 長×寬；三角形 = 底×高÷2');
+        r.push('🔑 梯形 = (上底+下底)×高÷2');
+        r.push('🔑 組合圖形：拆成基本圖形再相加');
+      }
+      if (/體積|volume/.test(k)) {
+        r.push('🔑 長方體 = 長×寬×高；正方體 = 邊長³');
+        r.push('🔑 容積 = 容器內部體積（扣壁厚）');
+        r.push('🔑 1L = 1000cm³');
+      }
+      if (/應用|word|life|文字/.test(k)) {
+        r.push('🔑 先找關鍵字：「共」「剩下」「每」「平均」');
+        r.push('🔑 「幾分之幾」用乘法；「平均分」用除法');
+        r.push('🔑 先列算式再計算，最後檢查單位');
+      }
+      if (/方程|equation|linear|quadratic/.test(k)) {
+        r.push('🔑 等號兩邊同加同減同乘同除');
+        r.push('🔑 移項要變號（加↔減、乘↔除）');
+        r.push('🔑 解完代回原式驗算');
+      }
+      if (/平均|avg|average/.test(k)) {
+        r.push('🔑 平均 = 總和÷個數');
+      }
+      if (!r.length) {
+        r.push('🔑 先看懂題意，再列算式，最後計算並檢查');
+        r.push('🔑 每一步寫出來，不跳步');
+      }
+      return r;
+    }
+
+    function practiceDirectionZh(kind, errorType){
+      const k = String(kind || '').toLowerCase();
+      const et = String(errorType || '');
+      const d = [];
+      if (et === 'calculation_error') {
+        d.push('📝 出題方向：多練純計算題，從 2 步驟開始，穩了再加到 3–4 步');
+        d.push('📝 做題方式：每步寫出中間結果，算完用逆運算檢查');
+      } else if (et === 'concept_error') {
+        d.push('📝 出題方向：先做「判斷用什麼運算」的選擇題，穩了再做計算題');
+        d.push('📝 做題方式：每題先口頭說「這題要用加/減/乘/除」再動筆');
+      } else if (et === 'unit_error') {
+        d.push('📝 出題方向：專練「單位換算」題組，先做單一換算再做混合');
+        d.push('📝 做題方式：算前先統一單位，答案附上單位再核對');
+      } else if (et === 'sign_error') {
+        d.push('📝 出題方向：多練含負數和減法的題，特別是「連減」和「加減混合」');
+        d.push('📝 做題方式：每個加減號標出來，移動時確認變號');
+      } else if (et === 'misunderstanding') {
+        d.push('📝 出題方向：先做「圈關鍵字→列算式」的拆解練習');
+        d.push('📝 做題方式：讀完題先用自己的話說「這題要求什麼」');
+      } else {
+        d.push('📝 出題方向：從基本題開始，穩了再練進階題');
+        d.push('📝 做題方式：寫出每一步不跳步，算完檢查');
+      }
+      if (/分數|fraction/.test(k)) d.push('📝 題型加強：先練通分約分 → 分數加減 → 應用題');
+      if (/小數|decimal/.test(k)) d.push('📝 題型加強：先練對齊加減 → 乘除 → 混合運算');
+      if (/方程|equation|linear/.test(k)) d.push('📝 題型加強：先練一步移項 → 兩步 → 文字題列方程');
+      if (/面積|area|體積|volume/.test(k)) d.push('📝 題型加強：先練單一圖形公式 → 組合圖形拆解');
+      if (/應用|word|life/.test(k)) d.push('📝 題型加強：先練讀題圈關鍵字 → 列式 → 完整計算');
+      return d;
+    }
+
+    function detailedErrorExplanationZh(evt){
+      const et = inferErrorType(evt);
+      const kind = String(evt?.kind || '').toLowerCase();
+      const studentAns = String(evt?.student_answer_raw || evt?.student_answer || '');
+      const correctAns = String(evt?.correct_answer || '');
+      const parts = [];
+      const desc = {
+        calculation_error: '計算過程有誤，可能是某一步加減乘除算錯或進借位出問題。',
+        concept_error: '解題方向偏差，可能用錯運算方法或公式套用有誤。',
+        unit_error: '單位處理有問題，可能忘了換算或計算中把單位搞混。',
+        sign_error: '正負號處理有誤，可能移項忘了變號或減法運算漏負號。',
+        rounding_error: '取概數有誤，可能中間步驟就做了近似而非最後才取。',
+        misunderstanding: '題意理解偏差，可能沒抓到關鍵字或搞混「求什麼」。',
+      };
+      parts.push(desc[et] || '需要重新檢查解題過程。');
+      if (studentAns && correctAns) parts.push('學生答 ' + studentAns + '，正確答案是 ' + correctAns + '。');
+      if (/分數|fraction/.test(kind) && et === 'calculation_error') parts.push('提醒：通分後分子做運算，分母不能跟著加減。');
+      if (/小數|decimal/.test(kind) && et === 'calculation_error') parts.push('提醒：加減時小數點要對齊；乘法先算數字再數小數位數。');
+      if (/四則|bracket|乘除/.test(kind)) parts.push('提醒：先括號→乘除→加減，同層由左到右。');
+      if (/方程|equation/.test(kind)) parts.push('提醒：移項要變號，解完代回驗算。');
+      return parts.join(' ');
     }
 
     function fmtTime(ts){
@@ -816,6 +960,8 @@
 
         const qs = pickPracticeQuestions(uid, row.unit_id, row.kind, attempts, 6);
         const latest3 = row.latest.slice(-3).reverse();
+        const concepts = conceptReminderZh(row.kind);
+        const directions = practiceDirectionZh(row.kind, topType);
 
         const card = document.createElement('div');
         card.className = 'card';
@@ -831,13 +977,21 @@
           <div style="margin-top:8px" class="small">錯誤分類：${safeStr(typeText || '（無）')}</div>
           <div style="margin-top:6px" class="small">原因說明：${safeStr(reasonText)}</div>
           <div style="margin-top:8px" class="small">補救建議：${safeStr(errorTypeAdviceZh(topType))}</div>
-          <div style="margin-top:8px">
-            <div style="font-weight:700">最近錯題示例</div>
-            <ul style="margin:6px 0 0 18px; padding:0">
-              ${latest3.map(e => `<li>${safeStr(String(e?.extra?.question || e?.question_id || '(題目)'))}<br><span class="small">學生答案：${safeStr(e?.student_answer || e?.student_answer_raw || '')}｜正確：${safeStr(e?.correct_answer || '')}</span></li>`).join('') || '<li class="small">（無）</li>'}
+          <div style="margin-top:10px">
+            <div style="font-weight:700">📋 錯題詳細分析</div>
+            <ul style="margin:6px 0 0 18px; padding:0; list-style:none">
+              ${latest3.map(e => `<li style="margin-bottom:10px; padding:8px; background:#0b1220; border-radius:6px; border-left:3px solid #f85149"><strong>${safeStr(String(e?.extra?.question || e?.question_id || '(題目)'))}</strong><br><span class="small">學生答案：${safeStr(e?.student_answer || e?.student_answer_raw || '')}｜正確答案：${safeStr(e?.correct_answer || '')}</span><br><span class="small" style="color:#d29922">📌 ${safeStr(detailedErrorExplanationZh(e))}</span></li>`).join('') || '<li class="small">（無）</li>'}
             </ul>
           </div>
-          <div style="margin-top:8px">
+          <div style="margin-top:10px; padding:10px; background:rgba(88,166,255,0.08); border-radius:8px">
+            <div style="font-weight:700; color:#58a6ff">🔑 觀念提醒</div>
+            <div class="small" style="margin-top:4px">${concepts.map(c => '<div style="margin-top:3px">' + safeStr(c) + '</div>').join('')}</div>
+          </div>
+          <div style="margin-top:10px; padding:10px; background:rgba(210,153,34,0.08); border-radius:8px">
+            <div style="font-weight:700; color:#d29922">📝 建議出題方向與做題方式</div>
+            <div class="small" style="margin-top:4px">${directions.map(d => '<div style="margin-top:3px">' + safeStr(d) + '</div>').join('')}</div>
+          </div>
+          <div style="margin-top:10px">
             <div style="font-weight:700">相近題目練習（補救）</div>
             <ol style="margin:6px 0 0 18px; padding:0">
               ${qs.map(q => `<li><span class="mono">${safeStr(String(q?.id || ''))}</span>：${safeStr(qText(q))}</li>`).join('') || '<li class="small">（找不到對應題目）</li>'}
@@ -847,6 +1001,59 @@
         box.appendChild(card);
       }
       return rows;
+    }
+
+    function renderConceptAndDirection(uid, attempts){
+      const box = $('conceptDirectionBox');
+      if (!box) return;
+      box.innerHTML = '';
+      const items = Array.isArray(attempts) ? attempts : [];
+      if (!items.length){
+        box.innerHTML = '<div class="small">（尚無作答紀錄）</div>';
+        return;
+      }
+      const kindMap = new Map();
+      for (const evt of items){
+        const kind = String(evt?.kind || 'unknown');
+        const unitId = String(evt?.unit_id || '');
+        const key = `${unitId}::${kind}`;
+        if (!kindMap.has(key)) kindMap.set(key, { unit_id: unitId, kind, total: 0, wrong: 0, topError: '' });
+        const g = kindMap.get(key);
+        g.total++;
+        if (evt?.is_correct === false){
+          g.wrong++;
+          if (!g.topError) g.topError = inferErrorType(evt);
+        }
+      }
+      const sorted = Array.from(kindMap.values()).sort((a,b) => b.wrong - a.wrong || b.total - a.total);
+      for (const g of sorted.slice(0, 8)){
+        const concepts = conceptReminderZh(g.kind);
+        const dirs = practiceDirectionZh(g.kind, g.topError || 'calculation_error');
+        const acc = g.total ? Math.round(100 * (1 - g.wrong / g.total)) : 100;
+        const tagCls = acc >= 85 ? 'ok' : (acc >= 60 ? 'warn' : 'bad');
+        const tagText = acc >= 85 ? '穩定' : (acc >= 60 ? '需加強' : '高風險');
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.marginTop = '10px';
+        card.innerHTML = `
+          <div class="row" style="justify-content:space-between; align-items:flex-start">
+            <div>
+              <div style="font-weight:800">${unitName(g.unit_id)} / ${safeStr(kindNameZh(g.kind))}</div>
+              <div class="small">做過 ${g.total} 題｜正確率 ${acc}%${g.wrong ? '｜答錯 ' + g.wrong + ' 題' : ''}</div>
+            </div>
+            <span class="tag ${tagCls}">${tagText}</span>
+          </div>
+          <div style="margin-top:10px; padding:10px; background:rgba(88,166,255,0.08); border-radius:8px">
+            <div style="font-weight:700; color:#58a6ff">🔑 觀念提醒</div>
+            <div class="small" style="margin-top:4px">${concepts.map(c => '<div style="margin-top:3px">' + safeStr(c) + '</div>').join('')}</div>
+          </div>
+          <div style="margin-top:10px; padding:10px; background:rgba(210,153,34,0.08); border-radius:8px">
+            <div style="font-weight:700; color:#d29922">📝 建議出題方向與做題方式</div>
+            <div class="small" style="margin-top:4px">${dirs.map(dd => '<div style="margin-top:3px">' + safeStr(dd) + '</div>').join('')}</div>
+          </div>
+        `;
+        box.appendChild(card);
+      }
     }
 
     function renderWeaknesses(uid, attempts){
@@ -1225,6 +1432,29 @@
         lines.push('\n');
       }
 
+      lines.push('【觀念提醒與出題方向建議】\n');
+      const attemptedKinds = new Map();
+      for (const r of recs){
+        const kk = `${r.unit_id || ''}::${r.kind || ''}`;
+        if (!attemptedKinds.has(kk)) attemptedKinds.set(kk, { unit_id: r.unit_id, kind: r.kind, total: 0, wrong: 0, topError: '' });
+        const gg = attemptedKinds.get(kk);
+        gg.total++;
+        if (r.is_correct === 0){ gg.wrong++; if (!gg.topError) gg.topError = String(r.error_type || ''); }
+      }
+      const kindsSorted = Array.from(attemptedKinds.values()).sort((a,b) => b.wrong - a.wrong || b.total - a.total);
+      for (const gg of kindsSorted.slice(0, 8)){
+        const cpts = conceptReminderZh(gg.kind);
+        const dirs = practiceDirectionZh(gg.kind, gg.topError || 'calculation_error');
+        const accK = gg.total ? Math.round(100 * (1 - gg.wrong / gg.total)) : 100;
+        lines.push(`- ${unitName(gg.unit_id)} / ${kindNameZh(gg.kind)}（做 ${gg.total} 題，正確率 ${accK}%）\n`);
+        lines.push('  觀念提醒：\n');
+        for (const cc of cpts) lines.push(`    ${cc}\n`);
+        lines.push('  出題做題方向：\n');
+        for (const dd of dirs) lines.push(`    ${dd}\n`);
+        lines.push('\n');
+      }
+      lines.push('\n');
+
       lines.push(`一、錯誤題目明細（最多列 ${MAX_LIST} 題）\n`);
       if (!wrong.length){
         lines.push('- 目前沒有答錯題目。\n\n');
@@ -1497,6 +1727,7 @@
 
       const remedy = renderWeaknesses(uid, attempts);
       const wrongDiagRows = renderWrongDiagnosis(uid, attempts);
+      renderConceptAndDirection(uid, attempts);
 
       const top1 = (remedy.top || [])[0];
       $('pillWeak').textContent = top1
