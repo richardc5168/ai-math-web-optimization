@@ -169,9 +169,9 @@ def main() -> int:
     ok2, msg2 = smoke_test_api()
     ok3, msg3 = smoke_test_pytest_contracts()
 
-    print(msg1)
-    print(msg2)
-    print(msg3)
+    print(f"1/3 {msg1}")
+    print(f"2/3 {msg2}")
+    print(f"3/3 {msg3}")
 
     if ok1 and ok2 and ok3:
         print("OK: verify_all")
