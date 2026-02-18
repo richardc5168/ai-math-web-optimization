@@ -23,13 +23,28 @@ def test_ambiguous_wording_detector_hits_improper_remaining_fraction():
     assert _is_ambiguous_wording(bad_2) is True
 
 
+def test_ambiguous_wording_detector_hits_invalid_action_fraction():
+    bad_1 = "一桶油用了 3/2，還剩多少公斤？"
+    bad_2 = "一本書先看了 1/1，還剩多少頁？"
+    assert _is_ambiguous_wording(bad_1) is True
+    assert _is_ambiguous_wording(bad_2) is True
+
+
+def test_ambiguous_wording_detector_allows_logical_fraction_wording():
+    good = "一本書有 120 頁，先看了 1/4，剩下的又看了 3/5，還剩多少頁？"
+    assert _is_ambiguous_wording(good) is False
+
+
 def test_generator_avoids_ambiguous_wording():
     pattern = re.compile(r"剩下的又(?:看了|用掉|用了)\s*1(?:\s*/\s*1)?(?=[\s，。；！？])")
     bad_remain = re.compile(r"(?:又剩下|還剩(?:下)?|剩下(?:的)?又(?:看了|用掉|用了)?|剩餘)[^。！？\n]{0,16}?(\d+)\s*/\s*(\d+)")
+    bad_action = re.compile(r"(?:先|又|再)?(?:用掉|用了|看了|吃了|倒出|花掉|走了|注滿了|占)[^。！？\n]{0,12}?(\d+)\s*/\s*(\d+)")
     random.seed(20260218)
 
     for _ in range(400):
         q = generate_fraction_word_problem_g5().get("question", "")
         assert not pattern.search(str(q)), q
+        for m in bad_action.finditer(str(q)):
+            assert int(m.group(1)) < int(m.group(2)), q
         for m in bad_remain.finditer(str(q)):
             assert int(m.group(1)) <= int(m.group(2)), q

@@ -44,10 +44,26 @@ def _is_ambiguous_wording(qtext: str) -> bool:
     if any(re.search(p, text) for p in patterns):
         return True
 
+    # Rule A: "用了/又用了/看了/吃了/倒出/花掉/占..." in word-problem context must be 0 < f < 1.
+    action_re = re.compile(
+        r"(?:先|又|再)?(?:用掉|用了|看了|吃了|倒出|花掉|走了|注滿了|占)"
+        r"[^。！？\n]{0,12}?(\d+)\s*/\s*(\d+)"
+    )
+    for m in action_re.finditer(text):
+        num = int(m.group(1))
+        den = int(m.group(2))
+        if den <= 0:
+            return True
+        if num <= 0 or num >= den:
+            return True
+
+    # Rule B: remaining wording must not carry fractions > 1.
     for m in re.finditer(r"(?:又剩下|還剩(?:下)?|剩下(?:的)?又(?:看了|用掉|用了)?|剩餘)[^。！？\n]{0,16}?(\d+)\s*/\s*(\d+)", text):
         num = int(m.group(1))
         den = int(m.group(2))
-        if den > 0 and num > den:
+        if den <= 0:
+            return True
+        if num > den:
             return True
 
     return False
