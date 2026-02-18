@@ -25,6 +25,7 @@
     textarea{min-width:260px; min-height:70px; resize:vertical}
     .btn{display:inline-block; padding:10px 12px; border-radius:10px; border:1px solid rgba(88,166,255,.45); background:rgba(88,166,255,.12); color:var(--text); text-decoration:none; cursor:pointer}
     .btn.primary{background:rgba(88,166,255,.22); border-color:rgba(88,166,255,.65)}
+    .btn.toggle-on{background:rgba(46,160,67,.16); border-color:rgba(46,160,67,.65)}
     .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
     .btn.bad{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
     .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px}
@@ -110,6 +111,7 @@
             <option value="4">Level 4（合理性檢查）</option>
           </select>
           <button class="btn" id="btnHint">看提示</button>
+          <button class="btn" id="btnShortHint">簡短提示：關</button>
           <button class="btn" id="btnShowSteps">看完整解題</button>
         </div>
 
@@ -229,6 +231,27 @@
       div.className = 'hint';
       div.textContent = text;
       return div;
+    }
+
+    function compressHintText(text){
+      const raw = String(text || '').trim();
+      if (!raw) return '（此層提示無內容）';
+      const lines = raw
+        .split(/\n+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (!lines.length) return raw;
+      const selected = [];
+      for (let i = 0; i < lines.length; i++){
+        const line = lines[i];
+        if (/^(✅|❌|🏁|📌)/.test(line)) continue;
+        selected.push(line);
+        if (selected.length >= 2) break;
+      }
+      if (!selected.length){
+        selected.push(lines[0]);
+      }
+      return selected.join('\n');
     }
 
     /* ========== remain_then_fraction 視覺化提示 ========== */
@@ -1558,9 +1581,10 @@
     }
 
     /** Render a single level of the bar/grid model as a DOM element */
-    function renderBarHintLevel(model, levelIdx){
+    function renderBarHintLevel(model, levelIdx, opts){
       var level = model.levels[levelIdx];
       if (!level) return null;
+      var shortMode = !!(opts && opts.shortMode);
       var div = document.createElement('div');
       div.className = 'hint-visual';
       div.setAttribute('data-testid', 'visual-step');
@@ -1578,7 +1602,8 @@
         h += renderBarSVG(model.parts, level.cells, level.brackets || []);
       }
 
-      h += '<div class="hv-text">' + escapeHtml(level.text) + '</div>';
+      var textToShow = shortMode ? compressHintText(level.text) : level.text;
+      h += '<div class="hv-text">' + escapeHtml(textToShow) + '</div>';
       div.innerHTML = h;
       return div;
     }
@@ -1644,6 +1669,7 @@
       q: null,
       revealed: false,
       hintUsed: 0,
+      shortHintMode: false,
       hintStepIndex: 0,
       lastPick: null,
       startedAt: null,
@@ -1731,11 +1757,19 @@
       solution: document.getElementById('solution'),
       hintLevel: document.getElementById('hintLevel'),
       btnHint: document.getElementById('btnHint'),
+      btnShortHint: document.getElementById('btnShortHint'),
       btnShowSteps: document.getElementById('btnShowSteps'),
       studentState: document.getElementById('studentState'),
       btnNext: document.getElementById('btnNext'),
       nextHint: document.getElementById('nextHint'),
     };
+
+    function updateShortHintButton(){
+      if (!els.btnShortHint) return;
+      const on = !!state.shortHintMode;
+      els.btnShortHint.textContent = on ? '簡短提示：開' : '簡短提示：關';
+      els.btnShortHint.classList.toggle('toggle-on', on);
+    }
 
     function updateBankMeta(){
       if (!bank.length){
@@ -2008,11 +2042,11 @@
         }
         const stepNum = state.hintStepIndex + 1;
         markHint(stepNum);
-        const el = renderBarHintLevel(model, state.hintStepIndex);
+        const el = renderBarHintLevel(model, state.hintStepIndex, { shortMode: state.shortHintMode });
         els.hints.appendChild(el);
         state.hintStepIndex++;
         state.hintUsed = Math.max(state.hintUsed, stepNum);
-        setBannerMuted(`已顯示圖解 Level ${stepNum}/${levels.length}（不含最終答案）。`);
+        setBannerMuted(`已顯示圖解 Level ${stepNum}/${levels.length}${state.shortHintMode ? '（簡短模式）' : ''}（不含最終答案）。`);
         return;
       }
 
@@ -2023,14 +2057,24 @@
         setBannerMuted('已顯示全部提示步驟，可按「看完整解題」看答案。');
         return;
       }
-      const text = steps[state.hintStepIndex];
+      const text = state.shortHintMode
+        ? compressHintText(steps[state.hintStepIndex])
+        : steps[state.hintStepIndex];
       const stepNum = state.hintStepIndex + 1;
       const level = Math.min(4, Math.ceil(stepNum * 4 / steps.length));
       markHint(level);
       els.hints.appendChild(renderHint(`步驟 ${stepNum}：${text}`));
       state.hintStepIndex++;
       state.hintUsed = Math.max(state.hintUsed, level);
-      setBannerMuted(`已顯示步驟 ${stepNum}/${steps.length}（不含最終答案）。`);
+      setBannerMuted(`已顯示步驟 ${stepNum}/${steps.length}${state.shortHintMode ? '（簡短模式）' : ''}（不含最終答案）。`);
+    });
+
+    els.btnShortHint.addEventListener('click', () => {
+      state.shortHintMode = !state.shortHintMode;
+      updateShortHintButton();
+      setBannerMuted(state.shortHintMode
+        ? '已開啟簡短提示：每次只顯示重點。'
+        : '已關閉簡短提示：恢復完整提示。');
     });
 
     els.btnNext.addEventListener('click', () => {
@@ -2098,7 +2142,7 @@
         }
         if (state._barModel && state.hintStepIndex === 0){
           markHint(1);
-          const el = renderBarHintLevel(state._barModel, 0);
+          const el = renderBarHintLevel(state._barModel, 0, { shortMode: state.shortHintMode });
           if (el){
             el.style.borderColor = 'rgba(248,81,73,0.5)';
             el.querySelector('.hv-title').textContent += ' 💡 答錯了，先看看觀念提示';
@@ -2111,6 +2155,7 @@
     });
 
     updateBankMeta();
+    updateShortHintButton();
     window.AIMathUnitReportWidget?.render(document.getElementById('unitReport'), UNIT_ID, { days: 7 });
   </script>
 </body>
