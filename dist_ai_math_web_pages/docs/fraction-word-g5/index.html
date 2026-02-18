@@ -277,20 +277,112 @@
      */
     function buildFractionBarModel(q){
       const kind = String(q.kind);
+      var result = null;
       if (kind === 'remaining_after_fraction'){
         const p = extractRAFParams(q);
-        if (p.sub === 'B') return buildBarModel_RAF_B(q, p);
-        if (p.sub === 'C') return buildBarModel_RAF_C(q, p);
-        if (p.sub === 'A2') return buildBarModel_RAF_A(q, p, true);
-        return buildBarModel_RAF_A(q, p, false);
+        if (p.sub === 'B') result = buildBarModel_RAF_B(q, p);
+        else if (p.sub === 'C') result = buildBarModel_RAF_C(q, p);
+        else if (p.sub === 'A2') result = buildBarModel_RAF_A(q, p, true);
+        else result = buildBarModel_RAF_A(q, p, false);
       }
-      if (kind === 'remain_then_fraction') return buildBarModel_RTF(q);
-      if (kind === 'average_division') return buildBarModel_AVG(q);
-      if (kind === 'fraction_of_quantity') return buildBarModel_FOQ(q);
-      if (kind === 'fraction_of_fraction') return buildBarModel_FOF(q);
-      if (kind === 'reverse_fraction') return buildBarModel_REV(q);
-      if (kind === 'generic_fraction_word') return buildBarModel_GEN(q);
-      return null;
+      else if (kind === 'remain_then_fraction') result = buildBarModel_RTF(q);
+      else if (kind === 'average_division') result = buildBarModel_AVG(q);
+      else if (kind === 'fraction_of_quantity') result = buildBarModel_FOQ(q);
+      else if (kind === 'fraction_of_fraction') result = buildBarModel_FOF(q);
+      else if (kind === 'reverse_fraction') result = buildBarModel_REV(q);
+      else if (kind === 'generic_fraction_word') result = buildBarModel_GEN(q);
+
+      // Fallback: if kind-specific builder returned null, try generic extraction
+      if (!result) result = buildBarModel_FALLBACK(q);
+      return result;
+    }
+
+    /* --- Fallback: extract any fractions from question text → simple bar model --- */
+    function buildBarModel_FALLBACK(q){
+      const txt = String(q.question || '');
+      const fracs = [];
+      const re = /(\d+)\/(\d+)/g;
+      let m;
+      while ((m = re.exec(txt)) !== null) fracs.push({ n:parseInt(m[1],10), d:parseInt(m[2],10) });
+      if (!fracs.length) return null;
+      const unitM = txt.match(/[人棵顆頁公條盒瓶杯塊張元小份][尺升斤克里時]?/);
+      const unit = unitM ? unitM[0] : '';
+
+      // Two-fraction division pattern: "f1 的量 = f2 (unit)" → answer = f2 ÷ f1
+      if (fracs.length >= 2){
+        const f1 = fracs[0], f2 = fracs[1];
+        const parts = lcm(f1.d, f2.d);
+        const c1 = f1.n * (parts / f1.d);
+        const c2 = f2.n * (parts / f2.d);
+        const cells = new Array(parts).fill('empty');
+        for (var i = 0; i < Math.min(c1,parts); i++) cells[i] = 'green';
+        for (var i2 = 0; i2 < Math.min(c2,parts); i2++) cells[i2] = cells[i2] === 'green' ? 'blue' : 'orange';
+        return {
+          parts: parts, unit_label: unit,
+          levels: [
+            { title: '\ud83d\udd0d Level 1\uff1a\u5224\u65b7\u984c\u578b',
+              text: '\u984c\u76ee\u6709\u5169\u500b\u5206\u6578\uff1a' + fracStr(f1) + ' \u548c ' + fracStr(f2) + '\n' +
+                    '\u2192 \u60f3\u60f3\u770b\u662f\u4e58\u6cd5\u9084\u662f\u9664\u6cd5\uff1f',
+              cells: new Array(parts).fill('empty'),
+              brackets: [{ start:0, count:parts, label:'\u5168\u90e8', color:'white' }]
+            },
+            { title: '\ud83d\udcca Level 2\uff1a\u756b\u5716\u5207\u5206\uff08' + parts + ' \u7b49\u4efd\uff09',
+              text: '\u628a\u5168\u90e8\u5207\u6210 ' + parts + ' \u683c\uff08LCM=' + parts + '\uff09\n' +
+                    '\ud83d\udfe9 ' + fracStr(f1) + ' = ' + c1 + '/' + parts + '\n' +
+                    '\ud83d\udfe7 ' + fracStr(f2) + ' = ' + c2 + '/' + parts,
+              cells: cells.slice(),
+              brackets: [
+                { start:0, count:c1, label:fracStr(f1), color:'green' },
+                { start:0, count:c2, label:fracStr(f2), color:'orange' }
+              ]
+            },
+            { title: '\u270f\ufe0f Level 3\uff1a\u7b97\u5f0f',
+              text: '\u5148\u901a\u5206\uff0c\u518d\u5217\u5f0f\u8a08\u7b97\n' +
+                    fracStr(f1) + ' = ' + c1 + '/' + parts + '\n' +
+                    fracStr(f2) + ' = ' + c2 + '/' + parts + '\n' +
+                    '\u4f9d\u984c\u610f\u5206\u6790\u8a08\u7b97',
+              cells: cells.slice(),
+              brackets: [{ start:0, count:parts, label:'\u901a\u5206\u5f8c\u8a08\u7b97', color:'blue' }]
+            },
+            { title: '\ud83c\udfaf Level 4\uff1a\u5408\u7406\u6027\u6aa2\u67e5',
+              text: '\u2705 \u7b54\u6848\u5408\u7406\u55ce\uff1f\u55ae\u4f4d\u5c0d\u55ce\uff1f\n\n\ud83c\udfc1 \u628a\u7b54\u6848\u586b\u4e0a\u53bb\u5427\uff01',
+              cells: cells.slice(),
+              brackets: [{ start:0, count:parts, label:'\u7b54\u6848', color:'blue' }]
+            }
+          ]
+        };
+      }
+
+      // Single-fraction fallback
+      const f = fracs[0];
+      const parts = f.d;
+      const cells = new Array(parts).fill('empty');
+      for (var j = 0; j < f.n; j++) cells[j] = 'green';
+      return {
+        parts: parts, unit_label: unit,
+        levels: [
+          { title: '\ud83d\udd0d Level 1\uff1a\u5224\u65b7\u984c\u578b',
+            text: '\u984c\u76ee\u6709\u5206\u6578 ' + fracStr(f) + '\n\u60f3\u60f3\u770b\u8ddf\u54ea\u500b\u91cf\u6709\u95dc\uff1f',
+            cells: new Array(parts).fill('empty'),
+            brackets: [{ start:0, count:parts, label:'\u5168\u90e8', color:'white' }]
+          },
+          { title: '\ud83d\udcca Level 2\uff1a\u756b\u5716\u5207\u5206\uff08' + parts + ' \u7b49\u4efd\uff09',
+            text: '\u5207\u6210 ' + parts + ' \u7b49\u4efd\n\ud83d\udfe9 ' + fracStr(f) + ' = ' + f.n + ' \u683c',
+            cells: cells.slice(),
+            brackets: [{ start:0, count:f.n, label:fracStr(f), color:'green' }]
+          },
+          { title: '\u270f\ufe0f Level 3\uff1a\u7b97\u5f0f',
+            text: '\u4f9d\u984c\u610f\u5217\u5f0f\u8a08\u7b97',
+            cells: cells.slice(),
+            brackets: [{ start:0, count:f.n, label:fracStr(f), color:'green' }]
+          },
+          { title: '\ud83c\udfaf Level 4\uff1a\u5408\u7406\u6027\u6aa2\u67e5',
+            text: '\u2705 \u7b54\u6848\u5408\u7406\u55ce\uff1f\u55ae\u4f4d\u5c0d\u55ce\uff1f\n\n\ud83c\udfc1 \u628a\u7b54\u6848\u586b\u4e0a\u53bb\u5427\uff01',
+            cells: cells.slice(),
+            brackets: [{ start:0, count:f.n, label:'\u7b54\u6848', color:'green' }]
+          }
+        ]
+      };
     }
 
     /* --- RAF Pattern B: 兩次都從原整體 (蛋糕) → 通分加法 --- */
@@ -854,7 +946,17 @@
       const re = /(\d+)\/(\d+)/g;
       let m;
       while ((m = re.exec(txt)) !== null) fracs.push({ n:parseInt(m[1],10), d:parseInt(m[2],10) });
-      if (fracs.length < 2) return null;
+      // Handle standalone "1" as a fraction (e.g. "其中的 1" or "的 1 用")
+      if (fracs.length < 2) {
+        if (/其中的\s*1(?!\/|\d)|的\s*1\s*[用來拿做種佔]/.test(txt) && fracs.length === 1) {
+          // figure out position: if 其中 appears after the a/b → second is 1
+          const fracPos = txt.indexOf(fracs[0].n + '/' + fracs[0].d);
+          const wholePos = txt.search(/其中的\s*1|的\s*1\s*[用來拿做種佔]/);
+          if (wholePos > fracPos) fracs.push({n:1, d:1});
+          else fracs.unshift({n:1, d:1});
+        }
+        if (fracs.length < 2) return null;
+      }
       const f1 = fracs[0], f2 = fracs[1];
 
       if (isPool) {
