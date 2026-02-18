@@ -137,7 +137,11 @@ def smoke_test_pytest_contracts() -> tuple[bool, str]:
         errors = int(suite.attrib.get("errors", "0"))
         skipped = int(suite.attrib.get("skipped", "0"))
         passed = max(0, total - failed - errors - skipped)
-        return f"tests={total} passed={passed} failed={failed} errors={errors} skipped={skipped}"
+        if failed == 0 and errors == 0:
+            if skipped > 0:
+                return f"{passed}/{total} passed (skipped={skipped})"
+            return f"{passed}/{total} passed"
+        return f"{passed}/{total} passed (failed={failed}, errors={errors}, skipped={skipped})"
 
     try:
         p = subprocess.run(cmd, cwd=str(ROOT), capture_output=True, text=True)
