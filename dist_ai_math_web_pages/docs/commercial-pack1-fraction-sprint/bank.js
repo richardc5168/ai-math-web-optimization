@@ -76,15 +76,16 @@
 
   function hintsOriginal(fr, knownStr) {
     return [
-      '先找「基準量」：題目問的是原來有多少（總量）。',
-      `列式：已知 = 原量 × ${fr.s}。所以 原量 = 已知 ÷ ${fr.s}。`,
-      `把「÷ 分數」想成「× 倒數」：已知 ÷ ${fr.s} = 已知 × ${fr.d}/${fr.n}。`
+      '先畫線段圖：把「原量」畫成 1 整條，已知部分標成對應分數。',
+      `列式：已知 = 原量 × ${fr.s}，所以 原量 = 已知 ÷ ${fr.s}。`,
+      `把「÷ 分數」改寫成「× 倒數」：已知 ÷ ${fr.s} = 已知 × ${fr.d}/${fr.n}。`
     ];
   }
 
   function stepsOriginal(fr, known, ans) {
     return [
       `讀題：已知是原量的 ${fr.s}，已知為 ${known}。`,
+      `畫圖：把整條當 1，先標出 ${fr.s} 這一段就是 ${known}。`,
       `列式：${known} = 原量 × ${fr.s}。`,
       `原量 = ${known} ÷ ${fr.s} = ${known} × ${fr.d}/${fr.n}。`,
       `計算得到原量 = ${ans}。`,
@@ -95,7 +96,7 @@
   function hintsRemain(frUsed) {
     const remain = subFrac(frac(1, 1), frUsed);
     return [
-      '先找「基準量」：總量是 1。',
+      '先畫線段圖：把總量畫成 1 整條，再分成「用掉」與「剩下」。',
       `用掉的是 ${frUsed.s}，剩下比例 = 1 − ${frUsed.s} = ${remain.s}。`,
       `剩下數量 = 總量 × ${remain.s}。`
     ];
@@ -105,6 +106,7 @@
     const remain = subFrac(frac(1, 1), frUsed);
     return [
       `總量 = ${total}。用掉比例 = ${frUsed.s}。`,
+      `畫圖：整條 1 先標 ${frUsed.s}（用掉），其餘就是 ${remain.s}。`,
       `剩下比例 = 1 − ${frUsed.s} = ${remain.s}。`,
       `剩下 = ${total} × ${remain.s}。`,
       `計算：剩下 = ${remainAns}。`,
@@ -114,7 +116,7 @@
 
   function hintsPart(frPart) {
     return [
-      '先找「基準量」：題目問的是一部分，基準量通常是「總量」。',
+      '先畫線段圖：把總量畫成 1 整條，圈出題目要的分數部分。',
       `列式：部分 = 總量 × ${frPart.s}。`,
       '如果出現混合分數，先轉成假分數再算。'
     ];
@@ -123,6 +125,7 @@
   function stepsPart(total, frPart, partAns) {
     return [
       `總量 = ${total}。比例 = ${frPart.s}。`,
+      `畫圖：整條 1 對應到 ${total}，其中 ${frPart.s} 那段就是要求的部分。`,
       `部分 = ${total} × ${frPart.s}。`,
       `計算：部分 = ${partAns}。`,
       '檢查：部分 ÷ 總量 = 比例（或接近）。'
@@ -131,7 +134,7 @@
 
   function hintsCompare() {
     return [
-      '先把兩個量都表示成「同一個基準量」的分數（或都算成實際數量）。',
+      '先畫兩條同長線段（同一個總量 1），分別標出兩個分數。',
       '要比較差多少：用「大 − 小」。',
       '最後記得對應單位（顆/張/支…）。'
     ];
@@ -140,6 +143,7 @@
   function stepsCompare(total, f1, f2, ans) {
     return [
       `總量 = ${total}。A = ${total} × ${f1.s}，B = ${total} × ${f2.s}。`,
+      `畫圖：A 與 B 都以同一個總量 ${total} 為基準，先看哪一段較長。`,
       '先算出兩個部分各是多少。',
       `差 = |A − B| = ${ans}。`,
       '檢查：差不會超過總量。'

@@ -49,6 +49,16 @@
 
     .hintBox{display:none; margin-top:10px; border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(0,0,0,.18)}
     .hintLine{font-family:var(--mono); font-size:13px; line-height:1.6; padding:6px 8px; border-left:3px solid rgba(88,166,255,.8); background:rgba(88,166,255,.06); border-radius:10px; margin:6px 0}
+    .visualHintBox{display:none; margin-top:10px; border:1px dashed rgba(88,166,255,.45); border-radius:12px; padding:10px; background:rgba(88,166,255,.06)}
+    .vizTitle{font-size:12px; color:var(--muted); margin-bottom:8px}
+    .vizBar{position:relative; height:16px; border:1px solid rgba(255,255,255,.2); border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); margin:6px 0}
+    .vizFill{height:100%}
+    .vizFill.used{background:rgba(248,81,73,.55)}
+    .vizFill.remain{background:rgba(46,160,67,.6)}
+    .vizFill.part{background:rgba(88,166,255,.65)}
+    .vizFill.diff{background:rgba(251,191,36,.65)}
+    .vizLabel{font-size:12px; color:var(--text)}
+    .vizRow{margin-bottom:8px}
 
     .modalBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:14px; z-index:50}
     .modal{width:min(720px, 100%); background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px}
@@ -108,6 +118,15 @@
 
       <div class="eq" id="q">（請先解鎖，或按試看開始）</div>
 
+      <div class="row" style="margin-top:0">
+        <label class="small">題型</label>
+        <select id="kindFilter">
+          <option value="all">全部</option>
+        </select>
+        <button class="btn" id="btnNewQ">出新題</button>
+        <button class="btn ghost" id="btnClear">清空</button>
+      </div>
+
       <div class="row">
         <label class="small">你的答案</label>
         <input id="ans" placeholder="例如：7 或 3/5" />
@@ -118,13 +137,23 @@
       <div class="banner muted" id="banner">提示：先自己試算一輪；卡住就按提示 1→2→3（觀念→列式→策略），最後再看完整步驟。</div>
 
       <div class="row" id="hintRow">
-        <button class="btn" id="btnHint1">提示 1（觀念）</button>
-        <button class="btn" id="btnHint2">提示 2（列式）</button>
-        <button class="btn" id="btnHint3">提示 3（計算策略）</button>
-        <button class="btn" id="btnFull">完整步驟（交卷後）</button>
+        <label class="small">提示層級</label>
+        <select id="hintLevelSel">
+          <option value="1">Level 1（判斷題型）</option>
+          <option value="2">Level 2（畫圖切分）</option>
+          <option value="3">Level 3（算式）</option>
+          <option value="4">Level 4（合理性檢查）</option>
+        </select>
+        <button class="btn" id="btnHint1">看提示</button>
+        <button class="btn" id="btnHint2">簡短提示：關</button>
+        <button class="btn" id="btnFull">看完整解題</button>
+        <button class="btn" id="btnHint3" style="display:none">保留</button>
       </div>
 
+      <div class="small" id="hintState">尚未顯示提示。</div>
+
       <div class="hintBox" id="hintBox"></div>
+      <div class="visualHintBox" id="visualHintBox"></div>
 
       <div class="row" style="margin-top:14px">
         <button class="btn" id="btnReinforce" disabled>同型 3 題（鞏固）</button>
@@ -257,15 +286,21 @@
     btnNewDay: document.getElementById('btnNewDay'),
     q: document.getElementById('q'),
     ans: document.getElementById('ans'),
+    kindFilter: document.getElementById('kindFilter'),
+    btnNewQ: document.getElementById('btnNewQ'),
+    btnClear: document.getElementById('btnClear'),
     btnSubmit: document.getElementById('btnSubmit'),
     btnSkip: document.getElementById('btnSkip'),
     banner: document.getElementById('banner'),
     hintBox: document.getElementById('hintBox'),
+    visualHintBox: document.getElementById('visualHintBox'),
     hintRow: document.getElementById('hintRow'),
     btnHint1: document.getElementById('btnHint1'),
     btnHint2: document.getElementById('btnHint2'),
     btnHint3: document.getElementById('btnHint3'),
     btnFull: document.getElementById('btnFull'),
+    hintLevelSel: document.getElementById('hintLevelSel'),
+    hintState: document.getElementById('hintState'),
     dayProgress: document.getElementById('dayProgress'),
     dayMaxHint: document.getElementById('dayMaxHint'),
     bar: document.getElementById('bar'),
@@ -302,6 +337,7 @@
     tick: null,
     allowFull: false,
     reinforce: null,
+    shortHint: false,
   };
 
   function nowDayKey() {
@@ -459,6 +495,128 @@
     return a || 1;
   }
 
+  function fracToString(f) {
+    if (!f) return '';
+    return f.d === 1 ? String(f.n) : `${f.n}/${f.d}`;
+  }
+
+  function subFracObj(a, b) {
+    if (!a || !b) return null;
+    const n = a.n * b.d - b.n * a.d;
+    const d = a.d * b.d;
+    if (d === 0) return null;
+    const g = gcd(Math.abs(n), Math.abs(d));
+    const nn = n / g;
+    const dd = d / g;
+    return { n: dd < 0 ? -nn : nn, d: Math.abs(dd) };
+  }
+
+  function extractFractions(text) {
+    const s = String(text || '');
+    const out = [];
+    const seen = new Set();
+    const re = /(\d+)\s*\/\s*(\d+)/g;
+    let m;
+    while ((m = re.exec(s)) !== null) {
+      const n = Number(m[1]);
+      const d = Number(m[2]);
+      if (!Number.isFinite(n) || !Number.isFinite(d) || d === 0) continue;
+      const key = `${n}/${d}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(normalizeFraction(key));
+    }
+    return out.filter(Boolean);
+  }
+
+  function extractIntegers(text) {
+    const s = String(text || '');
+    const vals = [];
+    const re = /\d+/g;
+    let m;
+    while ((m = re.exec(s)) !== null) vals.push(Number(m[0]));
+    return vals;
+  }
+
+  function clampPct(v) {
+    const x = Number(v);
+    if (!Number.isFinite(x)) return 0;
+    return Math.max(0, Math.min(100, x));
+  }
+
+  function fracPct(f) {
+    if (!f || !f.d) return 0;
+    return clampPct((f.n / f.d) * 100);
+  }
+
+  function visualHintHtml(item) {
+    if (!item) return '';
+    const frs = extractFractions([item.question, ...(item.hints || [])].join(' '));
+    const properFrs = frs.filter(f => f && f.n > 0 && f.d > 0 && f.n < f.d);
+    const f1 = properFrs[0] || null;
+    const f2 = properFrs[1] || null;
+    const one = { n: 1, d: 1 };
+    const ints = extractIntegers(item.question);
+    const totalCandidate = ints.find(v => Number.isFinite(v) && v >= 2) || null;
+
+    if (!f1) return '';
+
+    if (item.kind === 'remain') {
+      const remain = subFracObj(one, f1);
+      if (!remain || remain.n <= 0) return '';
+      return `
+        <div class="vizTitle">畫圖提示：先把總量當作 1 條線段（100%），再分成「用掉」與「剩下」。</div>
+        <div class="vizRow">
+          <div class="vizLabel">用掉：${escapeHtml(fracToString(f1))}（約 ${Math.round(fracPct(f1))}%）</div>
+          <div class="vizBar"><div class="vizFill used" style="width:${fracPct(f1)}%"></div></div>
+        </div>
+        <div class="vizRow">
+          <div class="vizLabel">剩下：${escapeHtml(fracToString(remain))}（約 ${Math.round(fracPct(remain))}%）${totalCandidate ? `，再乘總量 ${totalCandidate}` : ''}</div>
+          <div class="vizBar"><div class="vizFill remain" style="width:${fracPct(remain)}%"></div></div>
+        </div>
+      `;
+    }
+
+    if (item.kind === 'part_to_total') {
+      return `
+        <div class="vizTitle">畫圖提示：總量先畫成 100%，圈出題目要的那一部分。</div>
+        <div class="vizRow">
+          <div class="vizLabel">部分：${escapeHtml(fracToString(f1))}（約 ${Math.round(fracPct(f1))}%）${totalCandidate ? `，再乘總量 ${totalCandidate}` : ''}</div>
+          <div class="vizBar"><div class="vizFill part" style="width:${fracPct(f1)}%"></div></div>
+        </div>
+      `;
+    }
+
+    if (item.kind === 'compare' && f2) {
+      const aPct = fracPct(f1);
+      const bPct = fracPct(f2);
+      const diffPct = clampPct(Math.abs(aPct - bPct));
+      return `
+        <div class="vizTitle">畫圖提示：先把兩段都畫在同一個「總量 1」底下，再看差距。</div>
+        <div class="vizRow">
+          <div class="vizLabel">第一段：${escapeHtml(fracToString(f1))}（約 ${Math.round(aPct)}%）</div>
+          <div class="vizBar"><div class="vizFill part" style="width:${aPct}%"></div></div>
+        </div>
+        <div class="vizRow">
+          <div class="vizLabel">第二段：${escapeHtml(fracToString(f2))}（約 ${Math.round(bPct)}%）</div>
+          <div class="vizBar"><div class="vizFill used" style="width:${bPct}%"></div></div>
+        </div>
+        <div class="vizRow">
+          <div class="vizLabel">差距：約 ${Math.round(diffPct)}%</div>
+          <div class="vizBar"><div class="vizFill diff" style="width:${diffPct}%"></div></div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="vizTitle">畫圖提示：把總量先畫成一整條（100%），已知的比例先標色，再決定是「乘」還是「除」。</div>
+      <div class="vizRow">
+        <div class="vizLabel">已知比例：${escapeHtml(fracToString(f1))}（約 ${Math.round(fracPct(f1))}%）</div>
+        <div class="vizBar"><div class="vizFill part" style="width:${fracPct(f1)}%"></div></div>
+      </div>
+    `;
+  }
+
   function eqFrac(a, b) {
     return a && b && a.n === b.n && a.d === b.d;
   }
@@ -482,6 +640,70 @@
     return 'READ';
   }
 
+  function kindLabel(kind) {
+    return kind === 'original' ? '找原量' :
+      kind === 'remain' ? '找剩下' :
+      kind === 'part_to_total' ? '找部分' :
+      kind === 'compare' ? '比較差距' : String(kind || '未知題型');
+  }
+
+  function toDecimalString(fr) {
+    if (!fr || !fr.d) return '';
+    const value = fr.n / fr.d;
+    if (!Number.isFinite(value)) return '';
+    return String(Math.round(value * 1000000) / 1000000);
+  }
+
+  function levelBlocks(item) {
+    const frs = extractFractions([item?.question || '', ...(item?.hints || [])].join(' '));
+    const properFrs = frs.filter(f => f && f.n > 0 && f.d > 0 && f.n < f.d);
+    const f1 = properFrs[0] || null;
+    const f2 = properFrs[1] || null;
+    const ans = normalizeFraction(item?.answer || '');
+
+    const level1 = [
+      `🔍 Level 1：判斷題型`,
+      `題型：${kindLabel(item?.kind)}。先找「基準量是誰（當 1）」。`,
+      `再判斷要算的是「部分、剩下、原量」還是「兩者差距」。`
+    ];
+    if (item?.kind === 'compare' && f1 && f2) {
+      level1.push(`同一個總量下比較 ${fracToString(f1)} 與 ${fracToString(f2)}，最後用大 − 小。`);
+    }
+
+    const level2 = [
+      `📊 Level 2：畫圖切分`,
+      `把總量畫成一條（100%），先上色已知比例，再標出要找的區域。`,
+      `⚠️ 題目若寫「現有的幾分之幾」，基準會改成現有量，不一定是總容量。`
+    ];
+    if (f1) level2.push(`先標第一段：${fracToString(f1)}（約 ${Math.round(fracPct(f1))}%）。`);
+    if (f2) level2.push(`再標第二段：${fracToString(f2)}（約 ${Math.round(fracPct(f2))}%）。`);
+
+    const level3 = [
+      `✏️ Level 3：算式`,
+      ...((item?.steps || []).slice(0, 4).map((s, i) => `${i + 1}）${s}`))
+    ];
+    if (level3.length <= 1) level3.push(`1）先列式。2）計算。3）化成最簡答案。`);
+
+    const level4 = [
+      `🎯 Level 4：合理性檢查`,
+      `答案：${item?.answer || '（未提供）'}`,
+      `✅ 單位要對（個/公升/張）。`,
+      `✅ 結果要符合題意：不應小於 0，且通常不超過總量。`
+    ];
+    if (ans) level4.push(`換成小數約為 ${toDecimalString(ans)}。`);
+
+    return [level1, level2, level3, level4];
+  }
+
+  function currentHintLevel() {
+    const raw = Number(els.hintLevelSel?.value || 1);
+    return Math.min(4, Math.max(1, Number.isFinite(raw) ? raw : 1));
+  }
+
+  function updateShortHintBtn() {
+    els.btnHint2.innerText = `簡短提示：${state.shortHint ? '開' : '關'}`;
+  }
+
   function showHint(level) {
     state.hintLevelUsed = Math.max(state.hintLevelUsed, level);
     const item = state.todayList[state.idx];
@@ -493,14 +715,37 @@
       return;
     }
 
+    const blocks = levelBlocks(item);
+    const maxLayer = Math.min(4, Math.max(1, level));
     const lines = [];
-    if (level === 1) lines.push(...(item.hints || []).slice(0,1));
-    if (level === 2) lines.push(...(item.hints || []).slice(0,2));
-    if (level === 3) lines.push(...(item.hints || []).slice(0,3));
-    if (level === 4) lines.push(...(item.steps || []));
+    for (let i = 0; i < maxLayer; i++) {
+      const block = blocks[i] || [];
+      if (!block.length) continue;
+      if (state.shortHint) {
+        lines.push(block[0] || '');
+        if (block[1]) lines.push(block[1]);
+      } else {
+        lines.push(...block);
+      }
+    }
 
     els.hintBox.style.display = 'block';
     els.hintBox.innerHTML = lines.map(s => `<div class="hintLine">${escapeHtml(s)}</div>`).join('');
+
+    const visualHtml = visualHintHtml(item);
+    if (visualHtml && maxLayer >= 2) {
+      els.visualHintBox.style.display = 'block';
+      els.visualHintBox.innerHTML = visualHtml;
+    } else {
+      els.visualHintBox.style.display = 'none';
+      els.visualHintBox.innerHTML = '';
+    }
+
+    if (maxLayer >= 4) {
+      els.hintState.innerText = '已顯示全部圖解提示（共 4 層），可按「看完整解題」看答案。';
+    } else {
+      els.hintState.innerText = `已顯示到 Level ${maxLayer}。`;
+    }
   }
 
   function escapeHtml(s) {
@@ -522,10 +767,13 @@
     els.ans.value = '';
     els.hintBox.style.display = 'none';
     els.hintBox.innerHTML = '';
+    els.visualHintBox.style.display = 'none';
+    els.visualHintBox.innerHTML = '';
+    els.hintState.innerText = '尚未顯示提示。';
     state.hintLevelUsed = 0;
     state.allowFull = false;
     els.banner.className = 'banner muted';
-    els.banner.innerText = `題型：${item.kind}｜先自己試算；需要再開提示。`;
+    els.banner.innerText = `題型：${kindLabel(item.kind)}｜先畫一條線段圖，再列式；卡住再開提示。`;
 
     state.startTs = Date.now();
     if (state.tick) clearInterval(state.tick);
@@ -659,6 +907,9 @@
       els.q.innerText = '（今日任務完成）';
       els.hintBox.style.display = 'none';
       els.hintBox.innerHTML = '';
+      els.visualHintBox.style.display = 'none';
+      els.visualHintBox.innerHTML = '';
+      els.hintState.innerText = '今日任務完成。';
       clearInterval(state.tick);
       refreshReport();
       return;
@@ -1030,9 +1281,12 @@
   els.btnClose.onclick = closeModal;
   els.modal.addEventListener('click', (e) => { if (e.target === els.modal) closeModal(); });
 
-  els.btnHint1.onclick = () => showHint(1);
-  els.btnHint2.onclick = () => showHint(2);
-  els.btnHint3.onclick = () => showHint(3);
+  els.btnHint1.onclick = () => showHint(currentHintLevel());
+  els.btnHint2.onclick = () => {
+    state.shortHint = !state.shortHint;
+    updateShortHintBtn();
+  };
+  els.btnHint3.onclick = () => showHint(Math.min(4, currentHintLevel() + 1));
   els.btnFull.onclick = () => showHint(4);
 
   els.btnSubmit.onclick = () => submit(false);
@@ -1056,6 +1310,15 @@
   els.btnLock.onclick = lockForTest;
 
   els.btnReinforce.onclick = buildReinforce;
+  els.btnNewQ.onclick = () => buildToday(true);
+  els.btnClear.onclick = () => {
+    els.ans.value = '';
+    els.hintBox.style.display = 'none';
+    els.hintBox.innerHTML = '';
+    els.visualHintBox.style.display = 'none';
+    els.visualHintBox.innerHTML = '';
+    els.hintState.innerText = '已清空目前作答與提示。';
+  };
 
   // init
   initBank();
@@ -1066,6 +1329,7 @@
   buildToday(false);
   refreshReport();
   renderPinStatus();
+  updateShortHintBtn();
 </script>
 </body>
 </html>
