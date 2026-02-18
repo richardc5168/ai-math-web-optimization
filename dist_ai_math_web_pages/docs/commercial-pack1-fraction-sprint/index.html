@@ -84,6 +84,9 @@
     .hint-visual{border-left:3px solid #d29922;padding:8px 12px;margin:8px 0;background:rgba(210,153,34,.06);border-radius:0 8px 8px 0}
     .hint-visual .hv-title{font-weight:700;color:#d29922;margin-bottom:4px;font-size:14px}
     .hint-visual .hv-text{white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text)}
+    .hint-visual .hv-key{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;margin:2px 4px}
+    .hint-visual .hv-warn{color:#ffd2cf;background:rgba(248,81,73,.12);border:1px solid rgba(248,81,73,.3);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13px}
+    .hint-visual .hv-ok{color:#b7f5c9;background:rgba(46,160,67,.10);border:1px solid rgba(46,160,67,.3);border-radius:8px;padding:8px 10px;margin:8px 0;font-size:13px}
 
     .modalBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:14px; z-index:50}
     .modal{width:min(720px, 100%); background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px}
@@ -955,6 +958,42 @@
     return html;
   }
 
+  /* ── compressHintText (from fraction-word-g5 §8) ── */
+  function compressHintText(text){
+    var raw = String(text || '').trim();
+    if (!raw) return '（此層提示無內容）';
+    var lines = raw.split(/\n+/).map(function(s){return s.trim();}).filter(Boolean);
+    if (!lines.length) return raw;
+    var selected = [];
+    for (var i = 0; i < lines.length; i++){
+      var line = lines[i];
+      if (/^(✅|❌|🏁|📌)/.test(line)) continue;
+      selected.push(line);
+      if (selected.length >= 2) break;
+    }
+    if (!selected.length) selected.push(lines[0]);
+    return selected.join('\n');
+  }
+
+  /* ── renderBarHintLevel (from fraction-word-g5 §8): single-level DOM element ── */
+  function renderBarHintLevel(model, levelIdx, opts){
+    var level = model.levels[levelIdx];
+    if (!level) return null;
+    var shortMode = !!(opts && opts.shortMode);
+    var div = document.createElement('div');
+    div.className = 'hint-visual';
+    var h = '<div class="hv-title">' + escapeHtml(level.title) + '</div>';
+    if (level.grid){
+      h += renderGridSVG(level.gridCols || model.cols, level.gridRows || model.rows, level.grid, level);
+    } else {
+      h += renderBarSVG(model.parts, level.cells, level.brackets || []);
+    }
+    var textToShow = shortMode ? compressHintText(level.text) : level.text;
+    h += '<div class="hv-text">' + escapeHtml(textToShow) + '</div>';
+    div.innerHTML = h;
+    return div;
+  }
+
   /* ── main rich-hint renderer (SVG system) ── */
   function renderAllLevelsHtml(item, maxLevel, short) {
     if (!item) return '';
@@ -971,7 +1010,7 @@
       } else {
         html += renderBarSVG(model.parts, lv.cells, lv.brackets || []);
       }
-      var text = short ? lv.text.split('\n').filter(function(l){return l.trim();}).slice(0,2).join('\n') : lv.text;
+      var text = short ? compressHintText(lv.text) : lv.text;
       html += '<div class="hv-text">' + escapeHtml(text) + '</div>';
       html += '</div>';
     }
