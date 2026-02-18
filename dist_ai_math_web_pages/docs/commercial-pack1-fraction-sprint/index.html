@@ -49,16 +49,32 @@
 
     .hintBox{display:none; margin-top:10px; border:1px solid var(--line); border-radius:12px; padding:12px; background:rgba(0,0,0,.18)}
     .hintLine{font-family:var(--mono); font-size:13px; line-height:1.6; padding:6px 8px; border-left:3px solid rgba(88,166,255,.8); background:rgba(88,166,255,.06); border-radius:10px; margin:6px 0}
-    .visualHintBox{display:none; margin-top:10px; border:1px dashed rgba(88,166,255,.45); border-radius:12px; padding:10px; background:rgba(88,166,255,.06)}
-    .vizTitle{font-size:12px; color:var(--muted); margin-bottom:8px}
-    .vizBar{position:relative; height:16px; border:1px solid rgba(255,255,255,.2); border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); margin:6px 0}
-    .vizFill{height:100%}
-    .vizFill.used{background:rgba(248,81,73,.55)}
-    .vizFill.remain{background:rgba(46,160,67,.6)}
-    .vizFill.part{background:rgba(88,166,255,.65)}
-    .vizFill.diff{background:rgba(251,191,36,.65)}
-    .vizLabel{font-size:12px; color:var(--text)}
-    .vizRow{margin-bottom:8px}
+    .visualHintBox{display:none}
+    /* ── rich hint styles ── */
+    .lvlHeader{font-size:14px;font-weight:700;margin:14px 0 6px;padding:7px 12px;border-radius:8px}
+    .lvlHeader.l1{background:rgba(88,166,255,.12);border-left:4px solid #58a6ff}
+    .lvlHeader.l2{background:rgba(251,191,36,.12);border-left:4px solid #fbbf24}
+    .lvlHeader.l3{background:rgba(46,160,67,.12);border-left:4px solid #2ea043}
+    .lvlHeader.l4{background:rgba(248,81,73,.12);border-left:4px solid #f85149}
+    .lvlBody{font-size:13px;line-height:1.7;padding:4px 0 4px 14px}
+    .lvlBody .step{margin:4px 0;padding:5px 10px;background:rgba(255,255,255,.04);border-radius:6px}
+    .vizBarChart{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.15);margin:8px 0}
+    .vizBarSeg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;min-width:0;overflow:hidden;white-space:nowrap;padding:0 4px}
+    .vizBarSeg.c-red{background:#d94a3e}.vizBarSeg.c-orange{background:#d4a028}
+    .vizBarSeg.c-blue{background:#3b8eea}.vizBarSeg.c-green{background:#38a34f}
+    .vizBarSeg.c-empty-seg{background:rgba(255,255,255,.08);color:var(--muted)}
+    .vizGrid{display:grid;gap:3px;margin:8px 0}
+    .vizCell{border-radius:4px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.8);font-weight:600}
+    .vizCell.c-red{background:#d94a3e}.vizCell.c-orange{background:#d4a028}
+    .vizCell.c-blue{background:#3b8eea}.vizCell.c-green{background:#38a34f}
+    .vizCell.c-empty{background:rgba(255,255,255,.08);color:var(--muted)}
+    .vizLegend{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0;font-size:12px}
+    .vizLegend span{display:inline-flex;align-items:center;gap:4px}
+    .vizSwatch{display:inline-block;width:14px;height:14px;border-radius:3px}
+    .vizSwatch.c-red{background:#d94a3e}.vizSwatch.c-orange{background:#d4a028}
+    .vizSwatch.c-blue{background:#3b8eea}.vizSwatch.c-green{background:#38a34f}
+    .vizSwatch.c-empty{background:rgba(255,255,255,.12)}
+    .vizLabel{font-size:12px;color:var(--text);margin:4px 0}
 
     .modalBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:14px; z-index:50}
     .modal{width:min(720px, 100%); background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px}
@@ -549,72 +565,145 @@
     return clampPct((f.n / f.d) * 100);
   }
 
-  function visualHintHtml(item) {
+  /* ── helper: LCM ── */
+  function lcmOf(a, b) { return Math.abs(a * b) / gcd(a, b); }
+  function roundNice(v) {
+    if (!Number.isFinite(v)) return '?';
+    const r = Math.round(v * 1000) / 1000;
+    return r === Math.floor(r) ? String(Math.floor(r)) : String(r);
+  }
+  function bestGridCols(n) {
+    if (n <= 5) return n; if (n <= 10) return 5;
+    if (n <= 12) return 6; if (n <= 20) return 5;
+    return Math.min(10, Math.ceil(Math.sqrt(n)));
+  }
+  function buildGridCells(total, segs) {
+    const cols = bestGridCols(total);
+    const flat = [];
+    for (const s of segs) for (let i = 0; i < s.count; i++) flat.push(s.cls);
+    while (flat.length < total) flat.push('c-empty');
+    let h = `<div class="vizGrid" style="grid-template-columns:repeat(${cols},1fr)">`;
+    for (let i = 0; i < total; i++) h += `<div class="vizCell ${flat[i]}">${i+1}</div>`;
+    h += '</div>'; return h;
+  }
+  function buildBarChart(segs, caption) {
+    let h = '<div class="vizBarChart">';
+    for (const s of segs) { if (s.pct <= 0) continue; h += `<div class="vizBarSeg ${s.cls}" style="width:${s.pct}%">${escapeHtml(s.label)}</div>`; }
+    h += '</div>';
+    if (caption) h += `<div class="vizLabel" style="text-align:center;margin-top:2px">${escapeHtml(caption)}</div>`;
+    return h;
+  }
+  function buildLegend(items) {
+    let h = '<div class="vizLegend">';
+    for (const it of items) h += `<span><span class="vizSwatch ${it.cls}"></span>${escapeHtml(it.label)}</span>`;
+    h += '</div>'; return h;
+  }
+
+  /* ── main rich-hint renderer ── */
+  function renderAllLevelsHtml(item, maxLevel, short) {
     if (!item) return '';
     const frs = extractFractions([item.question, ...(item.hints || [])].join(' '));
     const properFrs = frs.filter(f => f && f.n > 0 && f.d > 0 && f.n < f.d);
     const f1 = properFrs[0] || null;
     const f2 = properFrs[1] || null;
-    const one = { n: 1, d: 1 };
     const ints = extractIntegers(item.question);
-    const totalCandidate = ints.find(v => Number.isFinite(v) && v >= 2) || null;
+    const total = ints.find(v => v >= 2) || null;
+    const ansF = normalizeFraction(item.answer || '');
+    const ansStr = item.answer || '';
+    let html = '';
 
-    if (!f1) return '';
-
-    if (item.kind === 'remain') {
-      const remain = subFracObj(one, f1);
-      if (!remain || remain.n <= 0) return '';
-      return `
-        <div class="vizTitle">畫圖提示：先把總量當作 1 條線段（100%），再分成「用掉」與「剩下」。</div>
-        <div class="vizRow">
-          <div class="vizLabel">用掉：${escapeHtml(fracToString(f1))}（約 ${Math.round(fracPct(f1))}%）</div>
-          <div class="vizBar"><div class="vizFill used" style="width:${fracPct(f1)}%"></div></div>
-        </div>
-        <div class="vizRow">
-          <div class="vizLabel">剩下：${escapeHtml(fracToString(remain))}（約 ${Math.round(fracPct(remain))}%）${totalCandidate ? `，再乘總量 ${totalCandidate}` : ''}</div>
-          <div class="vizBar"><div class="vizFill remain" style="width:${fracPct(remain)}%"></div></div>
-        </div>
-      `;
+    /* ── Level 1 ── */
+    if (maxLevel >= 1) {
+      html += '<div class="lvlHeader l1">🔍 Level 1：判斷題型</div><div class="lvlBody">';
+      if (item.kind === 'remain' && f1) {
+        const usedPct = fracPct(f1);
+        html += buildBarChart([{pct:100-usedPct,cls:'c-blue',label:total?roundNice(total*(1-f1.n/f1.d))+'':'剩下'},{pct:usedPct,cls:'c-red',label:'用掉 '+fracToString(f1)}], total?'總量 = '+total:'');
+        html += `<div class="step">${total?'總量 = '+total+'。':''}用掉 ${fracToString(f1)}${total?' → 用掉 = '+total+' × '+fracToString(f1)+' = '+roundNice(total*f1.n/f1.d):''}</div>`;
+        if (f2) html += `<div class="step">⚠️ 再處理「${fracToString(f2)}」→ 注意基準是「現有量」還是「總量」！兩次都用乘法！</div>`;
+      } else if (item.kind === 'original' && f1) {
+        html += buildBarChart([{pct:fracPct(f1),cls:'c-orange',label:'已知 '+fracToString(f1)},{pct:100-fracPct(f1),cls:'c-empty-seg',label:'？'}],'原量 = ？（要求）');
+        html += `<div class="step">已知是原量的 ${fracToString(f1)}，要反推原量。</div>`;
+        html += '<div class="step">⚠️ 基準 = 原量（未知）→ 用「÷ 分數 = × 倒數」</div>';
+      } else if (item.kind === 'part_to_total' && f1) {
+        html += buildBarChart([{pct:fracPct(f1),cls:'c-green',label:'部分 '+fracToString(f1)},{pct:100-fracPct(f1),cls:'c-empty-seg',label:'其餘'}],total?'總量 = '+total:'');
+        html += `<div class="step">要找總量 ${total||'?'} 的 ${fracToString(f1)} 是多少。</div>`;
+      } else if (item.kind === 'compare' && f1 && f2) {
+        html += '<div class="vizLabel">A：'+escapeHtml(fracToString(f1))+'</div>';
+        html += buildBarChart([{pct:fracPct(f1),cls:'c-orange',label:fracToString(f1)},{pct:100-fracPct(f1),cls:'c-empty-seg',label:''}],'');
+        html += '<div class="vizLabel">B：'+escapeHtml(fracToString(f2))+'</div>';
+        html += buildBarChart([{pct:fracPct(f2),cls:'c-blue',label:fracToString(f2)},{pct:100-fracPct(f2),cls:'c-empty-seg',label:''}],'');
+        html += `<div class="step">同一個總量 ${total||'?'} 下，比較 ${fracToString(f1)} 與 ${fracToString(f2)}，差 = 大 − 小。</div>`;
+      }
+      html += '</div>';
     }
 
-    if (item.kind === 'part_to_total') {
-      return `
-        <div class="vizTitle">畫圖提示：總量先畫成 100%，圈出題目要的那一部分。</div>
-        <div class="vizRow">
-          <div class="vizLabel">部分：${escapeHtml(fracToString(f1))}（約 ${Math.round(fracPct(f1))}%）${totalCandidate ? `，再乘總量 ${totalCandidate}` : ''}</div>
-          <div class="vizBar"><div class="vizFill part" style="width:${fracPct(f1)}%"></div></div>
-        </div>
-      `;
+    /* ── Level 2 ── */
+    if (maxLevel >= 2) {
+      html += '<div class="lvlHeader l2">📊 Level 2：畫圖切分</div><div class="lvlBody">';
+      if (short) {
+        html += '<div class="step">把總量切成等份格子，分別上色。按「簡短提示：關」看完整圖。</div>';
+      } else if (item.kind === 'remain' && f1) {
+        const d = f1.d, usedN = f1.n, remainN = d - usedN;
+        html += buildGridCells(d, [{count:usedN,cls:'c-red'},{count:remainN,cls:'c-blue'}]);
+        html += buildLegend([{cls:'c-red',label:'🟥 用掉 = '+usedN+'/'+d+' 格'},{cls:'c-blue',label:'🟦 剩下 = '+remainN+'/'+d+' 格'}]);
+        if (total) { const pc = roundNice(total/d); html += `<div class="step">每格 = ${total} ÷ ${d} = ${pc}。剩 ${remainN} 格 = ${roundNice(remainN*total/d)}</div>`; }
+      } else if (item.kind === 'original' && f1) {
+        const d = f1.d;
+        html += buildGridCells(d, [{count:f1.n,cls:'c-orange'},{count:d-f1.n,cls:'c-empty'}]);
+        html += buildLegend([{cls:'c-orange',label:'🟧 已知 = '+f1.n+'/'+d+' 格'},{cls:'c-empty',label:'⬜ 未知'}]);
+        html += '<div class="step">'+f1.n+' 格 = 題目給的已知量，整條 = 原量。</div>';
+      } else if (item.kind === 'part_to_total' && f1) {
+        const d = f1.d;
+        html += buildGridCells(d, [{count:f1.n,cls:'c-green'},{count:d-f1.n,cls:'c-empty'}]);
+        html += buildLegend([{cls:'c-green',label:'🟩 部分 = '+f1.n+'/'+d+' 格'},{cls:'c-empty',label:'⬜ 其餘'}]);
+        if (total) html += `<div class="step">每格 = ${total} ÷ ${d} = ${roundNice(total/d)}。部分 = ${f1.n} 格 = ${roundNice(f1.n*total/d)}</div>`;
+      } else if (item.kind === 'compare' && f1 && f2) {
+        const d = lcmOf(f1.d, f2.d);
+        const aN = Math.round(f1.n*d/f1.d), bN = Math.round(f2.n*d/f2.d);
+        html += '<div class="vizLabel">A（'+escapeHtml(fracToString(f1))+' = '+aN+'/'+d+'）</div>';
+        html += buildGridCells(d, [{count:aN,cls:'c-orange'},{count:d-aN,cls:'c-empty'}]);
+        html += '<div class="vizLabel">B（'+escapeHtml(fracToString(f2))+' = '+bN+'/'+d+'）</div>';
+        html += buildGridCells(d, [{count:bN,cls:'c-blue'},{count:d-bN,cls:'c-empty'}]);
+        html += buildLegend([{cls:'c-orange',label:'🟧 A = '+aN+'/'+d},{cls:'c-blue',label:'🟦 B = '+bN+'/'+d}]);
+        const diffN = Math.abs(aN-bN);
+        html += `<div class="step">差 = ${Math.max(aN,bN)}/${d} − ${Math.min(aN,bN)}/${d} = ${diffN}/${d}${total?' → '+roundNice(diffN*total/d):''}</div>`;
+      }
+      html += '</div>';
     }
 
-    if (item.kind === 'compare' && f2) {
-      const aPct = fracPct(f1);
-      const bPct = fracPct(f2);
-      const diffPct = clampPct(Math.abs(aPct - bPct));
-      return `
-        <div class="vizTitle">畫圖提示：先把兩段都畫在同一個「總量 1」底下，再看差距。</div>
-        <div class="vizRow">
-          <div class="vizLabel">第一段：${escapeHtml(fracToString(f1))}（約 ${Math.round(aPct)}%）</div>
-          <div class="vizBar"><div class="vizFill part" style="width:${aPct}%"></div></div>
-        </div>
-        <div class="vizRow">
-          <div class="vizLabel">第二段：${escapeHtml(fracToString(f2))}（約 ${Math.round(bPct)}%）</div>
-          <div class="vizBar"><div class="vizFill used" style="width:${bPct}%"></div></div>
-        </div>
-        <div class="vizRow">
-          <div class="vizLabel">差距：約 ${Math.round(diffPct)}%</div>
-          <div class="vizBar"><div class="vizFill diff" style="width:${diffPct}%"></div></div>
-        </div>
-      `;
+    /* ── Level 3 ── */
+    if (maxLevel >= 3) {
+      html += '<div class="lvlHeader l3">✏️ Level 3：算式</div><div class="lvlBody">';
+      const steps = item.steps || [];
+      const circ = ['①','②','③','④','⑤','⑥','⑦','⑧'];
+      for (let i = 0; i < steps.length; i++) html += `<div class="step">${circ[i]||(i+1)+'）'} ${escapeHtml(steps[i])}</div>`;
+      if (!steps.length) html += '<div class="step">① 列式 → ② 計算 → ③ 約分成最簡</div>';
+      html += `<div class="step" style="font-weight:700">答案：${escapeHtml(ansStr)}</div>`;
+      html += '</div>';
     }
 
-    return `
-      <div class="vizTitle">畫圖提示：把總量先畫成一整條（100%），已知的比例先標色，再決定是「乘」還是「除」。</div>
-      <div class="vizRow">
-        <div class="vizLabel">已知比例：${escapeHtml(fracToString(f1))}（約 ${Math.round(fracPct(f1))}%）</div>
-        <div class="vizBar"><div class="vizFill part" style="width:${fracPct(f1)}%"></div></div>
-      </div>
-    `;
+    /* ── Level 4 ── */
+    if (maxLevel >= 4) {
+      html += '<div class="lvlHeader l4">🎯 Level 4：合理性檢查</div><div class="lvlBody">';
+      html += `<div class="step" style="font-size:18px;font-weight:700">${escapeHtml(ansStr)}</div>`;
+      const aD = ansF ? roundNice(ansF.n/ansF.d) : ansStr;
+      if (item.kind === 'remain' && total) {
+        html += `<div class="step">✅ 剩 ${aD} < 總量 ${total} → 合理</div>`;
+        html += '<div class="step">✅ 剩下 > 0 → 合理</div>';
+      } else if (item.kind === 'original') {
+        html += '<div class="step">✅ 原量 > 已知量 → 合理</div>';
+        html += '<div class="step">✅ 原量 × 分數 = 已知？驗算！</div>';
+      } else if (item.kind === 'compare' && total) {
+        html += `<div class="step">✅ 差 ${aD} ≤ 總量 ${total} → 合理</div>`;
+        html += '<div class="step">✅ 差 ≥ 0 → 合理</div>';
+      } else {
+        html += '<div class="step">✅ 結果 ≥ 0 且不超過總量 → 合理</div>';
+        html += '<div class="step">✅ 單位要對（個/公升/張）</div>';
+      }
+      html += '<div class="step" style="margin-top:8px;font-size:14px">🏁 把答案填上去吧！</div>';
+      html += '</div>';
+    }
+    return html;
   }
 
   function eqFrac(a, b) {
@@ -647,54 +736,6 @@
       kind === 'compare' ? '比較差距' : String(kind || '未知題型');
   }
 
-  function toDecimalString(fr) {
-    if (!fr || !fr.d) return '';
-    const value = fr.n / fr.d;
-    if (!Number.isFinite(value)) return '';
-    return String(Math.round(value * 1000000) / 1000000);
-  }
-
-  function levelBlocks(item) {
-    const frs = extractFractions([item?.question || '', ...(item?.hints || [])].join(' '));
-    const properFrs = frs.filter(f => f && f.n > 0 && f.d > 0 && f.n < f.d);
-    const f1 = properFrs[0] || null;
-    const f2 = properFrs[1] || null;
-    const ans = normalizeFraction(item?.answer || '');
-
-    const level1 = [
-      `🔍 Level 1：判斷題型`,
-      `題型：${kindLabel(item?.kind)}。先找「基準量是誰（當 1）」。`,
-      `再判斷要算的是「部分、剩下、原量」還是「兩者差距」。`
-    ];
-    if (item?.kind === 'compare' && f1 && f2) {
-      level1.push(`同一個總量下比較 ${fracToString(f1)} 與 ${fracToString(f2)}，最後用大 − 小。`);
-    }
-
-    const level2 = [
-      `📊 Level 2：畫圖切分`,
-      `把總量畫成一條（100%），先上色已知比例，再標出要找的區域。`,
-      `⚠️ 題目若寫「現有的幾分之幾」，基準會改成現有量，不一定是總容量。`
-    ];
-    if (f1) level2.push(`先標第一段：${fracToString(f1)}（約 ${Math.round(fracPct(f1))}%）。`);
-    if (f2) level2.push(`再標第二段：${fracToString(f2)}（約 ${Math.round(fracPct(f2))}%）。`);
-
-    const level3 = [
-      `✏️ Level 3：算式`,
-      ...((item?.steps || []).slice(0, 4).map((s, i) => `${i + 1}）${s}`))
-    ];
-    if (level3.length <= 1) level3.push(`1）先列式。2）計算。3）化成最簡答案。`);
-
-    const level4 = [
-      `🎯 Level 4：合理性檢查`,
-      `答案：${item?.answer || '（未提供）'}`,
-      `✅ 單位要對（個/公升/張）。`,
-      `✅ 結果要符合題意：不應小於 0，且通常不超過總量。`
-    ];
-    if (ans) level4.push(`換成小數約為 ${toDecimalString(ans)}。`);
-
-    return [level1, level2, level3, level4];
-  }
-
   function currentHintLevel() {
     const raw = Number(els.hintLevelSel?.value || 1);
     return Math.min(4, Math.max(1, Number.isFinite(raw) ? raw : 1));
@@ -715,31 +756,13 @@
       return;
     }
 
-    const blocks = levelBlocks(item);
     const maxLayer = Math.min(4, Math.max(1, level));
-    const lines = [];
-    for (let i = 0; i < maxLayer; i++) {
-      const block = blocks[i] || [];
-      if (!block.length) continue;
-      if (state.shortHint) {
-        lines.push(block[0] || '');
-        if (block[1]) lines.push(block[1]);
-      } else {
-        lines.push(...block);
-      }
-    }
+    const html = renderAllLevelsHtml(item, maxLayer, state.shortHint);
 
     els.hintBox.style.display = 'block';
-    els.hintBox.innerHTML = lines.map(s => `<div class="hintLine">${escapeHtml(s)}</div>`).join('');
-
-    const visualHtml = visualHintHtml(item);
-    if (visualHtml && maxLayer >= 2) {
-      els.visualHintBox.style.display = 'block';
-      els.visualHintBox.innerHTML = visualHtml;
-    } else {
-      els.visualHintBox.style.display = 'none';
-      els.visualHintBox.innerHTML = '';
-    }
+    els.hintBox.innerHTML = html;
+    els.visualHintBox.style.display = 'none';
+    els.visualHintBox.innerHTML = '';
 
     if (maxLayer >= 4) {
       els.hintState.innerText = '已顯示全部圖解提示（共 4 層），可按「看完整解題」看答案。';
