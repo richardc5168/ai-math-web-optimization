@@ -80,6 +80,10 @@
     .vizStripCell.c-red{background:#d94a3e}.vizStripCell.c-orange{background:#d4a028}.vizStripCell.c-blue{background:#3b8eea}.vizStripCell.c-green{background:#38a34f}
     .vizStripCell.c-empty{background:rgba(255,255,255,.08);color:var(--muted)}
     .vizDrawStep{margin:4px 0;padding:6px 10px;background:rgba(251,191,36,.06);border-radius:6px;border-left:3px solid #fbbf24;font-size:13px;line-height:1.6}
+    /* hint-visual SVG system (ported from fraction-word-g5) */
+    .hint-visual{border-left:3px solid #d29922;padding:8px 12px;margin:8px 0;background:rgba(210,153,34,.06);border-radius:0 8px 8px 0}
+    .hint-visual .hv-title{font-weight:700;color:#d29922;margin-bottom:4px;font-size:14px}
+    .hint-visual .hv-text{white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text)}
 
     .modalBackdrop{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; padding:14px; z-index:50}
     .modal{width:min(720px, 100%); background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px}
@@ -582,230 +586,393 @@
     if (n <= 12) return 6; if (n <= 20) return 5;
     return Math.min(10, Math.ceil(Math.sqrt(n)));
   }
-  function buildGridCells(total, segs) {
-    const cols = bestGridCols(total);
-    const flat = [];
-    for (const s of segs) for (let i = 0; i < s.count; i++) flat.push(s.cls);
-    while (flat.length < total) flat.push('c-empty');
-    let h = `<div class="vizGrid" style="grid-template-columns:repeat(${cols},1fr)">`;
-    for (let i = 0; i < total; i++) h += `<div class="vizCell ${flat[i]}">${i+1}</div>`;
-    h += '</div>'; return h;
-  }
-  function buildBarChart(segs, caption) {
-    let h = '<div class="vizBarChart">';
-    for (const s of segs) { if (s.pct <= 0) continue; h += `<div class="vizBarSeg ${s.cls}" style="width:${s.pct}%">${escapeHtml(s.label)}</div>`; }
-    h += '</div>';
-    if (caption) h += `<div class="vizLabel" style="text-align:center;margin-top:2px">${escapeHtml(caption)}</div>`;
-    return h;
-  }
-  function buildLegend(items) {
-    let h = '<div class="vizLegend">';
-    for (const it of items) h += `<span><span class="vizSwatch ${it.cls}"></span>${escapeHtml(it.label)}</span>`;
-    h += '</div>'; return h;
-  }
-  /* ── fraction-strip builder ── */
-  function buildFractionStrip(totalCells, segs, fracLabel) {
-    const cols = totalCells <= 10 ? totalCells : totalCells <= 20 ? 10 : bestGridCols(totalCells);
-    const showLbl = totalCells <= 20;
-    const flat = [];
-    for (const s of segs) for (let i = 0; i < s.count; i++) flat.push(s.cls);
-    while (flat.length < totalCells) flat.push('c-empty');
-    let h = '<div class="vizStrip" style="grid-template-columns:repeat('+cols+',1fr)">';
-    for (let i = 0; i < totalCells; i++) h += '<div class="vizStripCell '+flat[i]+'">'+(showLbl && fracLabel ? escapeHtml(fracLabel) : (i+1))+'</div>';
-    h += '</div>'; return h;
-  }
-  function buildDrawSteps(arr) {
-    const c = ['①','②','③','④','⑤','⑥','⑦','⑧'];
-    let h = '';
-    for (let i = 0; i < arr.length; i++) h += '<div class="vizDrawStep">'+c[i]+' '+arr[i]+'</div>';
-    return h;
+  function buildGridCells(total, segs) { /* legacy – unused */ return ''; }
+  function buildBarChart(segs, caption) { /* legacy – unused */ return ''; }
+  function buildLegend(items) { /* legacy – unused */ return ''; }
+  function buildFractionStrip(t,s,l) { /* legacy – unused */ return ''; }
+  function buildDrawSteps(a) { /* legacy – unused */ return ''; }
+  function isCurrentThenOutPattern() { return false; }
+
+  /* ========== SVG Bar Renderer (ported from fraction-word-g5) ========== */
+  function renderBarSVG(parts, cells, brackets){
+    var W = 400, H = 32, padX = 10, padY = 8;
+    var cellW = W / parts;
+    var bH = (brackets && brackets.length > 0) ? 30 : 4;
+    var svgH = padY + H + bH;
+    var colors = {
+      red:'#f85149', orange:'#d29922', blue:'#58a6ff',
+      green:'#2ea043', white:'rgba(255,255,255,0.7)',
+      empty:'rgba(255,255,255,0.06)'
+    };
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+          + (W+padX*2) + ' ' + svgH
+          + '" style="width:100%;max-width:500px;display:block;margin:6px 0">';
+    for (var i = 0; i < parts; i++){
+      var x = padX + i * cellW;
+      var c = cells[i] || 'empty';
+      s += '<rect x="'+x+'" y="'+padY+'" width="'+cellW+'" height="'+H
+         + '" fill="'+(colors[c]||colors.empty)
+         + '" stroke="rgba(255,255,255,0.18)" stroke-width="0.7"/>';
+    }
+    s += '<rect x="'+padX+'" y="'+padY+'" width="'+W+'" height="'+H
+       + '" rx="3" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>';
+    if (brackets && brackets.length){
+      var bY = padY + H + 3;
+      for (var j = 0; j < brackets.length; j++){
+        var b = brackets[j];
+        if (!b || b.count <= 0) continue;
+        var x1 = padX + b.start * cellW;
+        var x2 = padX + (b.start + b.count) * cellW;
+        var mx = (x1 + x2) / 2;
+        var bc = colors[b.color] || colors.white;
+        s += '<line x1="'+(x1+1)+'" y1="'+bY+'" x2="'+(x1+1)+'" y2="'+(bY+8)+'" stroke="'+bc+'" stroke-width="1" opacity="0.7"/>';
+        s += '<line x1="'+(x2-1)+'" y1="'+bY+'" x2="'+(x2-1)+'" y2="'+(bY+8)+'" stroke="'+bc+'" stroke-width="1" opacity="0.7"/>';
+        s += '<line x1="'+(x1+1)+'" y1="'+(bY+8)+'" x2="'+(x2-1)+'" y2="'+(bY+8)+'" stroke="'+bc+'" stroke-width="1" opacity="0.7"/>';
+        s += '<text x="'+mx+'" y="'+(bY+20)+'" text-anchor="middle" fill="'+bc+'" font-size="10" font-family="system-ui,sans-serif">'
+           + escapeHtml(b.label) + '</text>';
+      }
+    }
+    s += '</svg>';
+    return s;
   }
 
-  function isCurrentThenOutPattern(item, f1, f2) {
-    const q = String((item && item.question) || '');
-    return !!(item && item.kind === 'remain' && f1 && f2 && /(現在有|現有|已有)/.test(q) && /(倒出|再倒出|用掉|取走)/.test(q));
+  /* ========== 2D Grid SVG Renderer (area model) ========== */
+  function renderGridSVG(nCols, nRows, grid, opts){
+    opts = opts || {};
+    var W = 400, padX = 10, padY = 8;
+    var cellW = W / nCols;
+    var cellH = Math.max(28, Math.min(46, 180 / nRows));
+    var H = cellH * nRows;
+    var lblH = (opts.gridLabels && opts.gridLabels.length) ? 28 : 4;
+    var svgH = padY + H + lblH + 4;
+    var colors = {
+      eaten1:'#f85149', eaten2:'#d29922', left:'#58a6ff',
+      green:'#2ea043', empty:'rgba(255,255,255,0.06)',
+      white:'rgba(255,255,255,0.7)'
+    };
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '
+          + (W+padX*2) + ' ' + svgH
+          + '" style="width:100%;max-width:520px;display:block;margin:6px 0">';
+    for (var r = 0; r < nRows; r++){
+      for (var c = 0; c < nCols; c++){
+        var st = (grid && grid[r*nCols+c]) || 'empty';
+        var x = padX + c*cellW;
+        var y = padY + r*cellH;
+        s += '<rect x="'+x+'" y="'+y+'" width="'+cellW+'" height="'+cellH
+           + '" fill="'+(colors[st]||colors.empty)
+           + '" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>';
+        if (opts.cellLabels && opts.cellLabels[st] && cellW > 26 && cellH > 18){
+          var cl = opts.cellLabels[st];
+          s += '<text x="'+(x+cellW/2)+'" y="'+(y+cellH/2+4)+'" text-anchor="middle"'
+             + ' fill="rgba(255,255,255,0.85)" font-size="'+(Math.min(11,cellW/4.5))+'"'
+             + ' font-family="system-ui,sans-serif">'+escapeHtml(cl)+'</text>';
+        }
+      }
+    }
+    for (var vc = 0; vc <= nCols; vc++){
+      var vx = padX + vc*cellW;
+      var vw = (vc===0||vc===nCols) ? '1.5' : '1';
+      s += '<line x1="'+vx+'" y1="'+padY+'" x2="'+vx+'" y2="'+(padY+H)+'" stroke="rgba(255,255,255,0.35)" stroke-width="'+vw+'"/>';
+    }
+    var hScope = opts.hLineScope || 'all';
+    var rcs = opts.remainColStart || 0;
+    for (var hr = 0; hr <= nRows; hr++){
+      var hy = padY + hr*cellH;
+      if (hr===0 || hr===nRows){
+        s += '<line x1="'+padX+'" y1="'+hy+'" x2="'+(padX+W)+'" y2="'+hy+'" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>';
+      } else if (hScope === 'all'){
+        s += '<line x1="'+padX+'" y1="'+hy+'" x2="'+(padX+W)+'" y2="'+hy+'" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>';
+      } else if (hScope === 'remaining'){
+        var hx1 = padX + rcs*cellW;
+        s += '<line x1="'+hx1+'" y1="'+hy+'" x2="'+(padX+W)+'" y2="'+hy+'" stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-dasharray="4,2"/>';
+      }
+    }
+    s += '<rect x="'+padX+'" y="'+padY+'" width="'+W+'" height="'+H+'" rx="3" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>';
+    if (rcs > 0 && rcs < nCols){
+      var dx = padX + rcs * cellW;
+      s += '<line x1="'+dx+'" y1="'+(padY-2)+'" x2="'+dx+'" y2="'+(padY+H+2)+'" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>';
+    }
+    if (opts.gridLabels){
+      var bY = padY + H + 4;
+      for (var li = 0; li < opts.gridLabels.length; li++){
+        var lb = opts.gridLabels[li];
+        var lx1 = padX + lb.startCol*cellW;
+        var lx2 = padX + lb.endCol*cellW;
+        var mx = (lx1+lx2)/2;
+        var bc = colors[lb.color] || colors.white;
+        s += '<line x1="'+(lx1+1)+'" y1="'+bY+'" x2="'+(lx1+1)+'" y2="'+(bY+8)+'" stroke="'+bc+'" stroke-width="1" opacity="0.7"/>';
+        s += '<line x1="'+(lx2-1)+'" y1="'+bY+'" x2="'+(lx2-1)+'" y2="'+(bY+8)+'" stroke="'+bc+'" stroke-width="1" opacity="0.7"/>';
+        s += '<line x1="'+(lx1+1)+'" y1="'+(bY+8)+'" x2="'+(lx2-1)+'" y2="'+(bY+8)+'" stroke="'+bc+'" stroke-width="1" opacity="0.7"/>';
+        s += '<text x="'+mx+'" y="'+(bY+20)+'" text-anchor="middle" fill="'+bc+'" font-size="10" font-family="system-ui,sans-serif">'
+           + escapeHtml(lb.text) + '</text>';
+      }
+    }
+    if (nRows > 1 && rcs > 0 && rcs < nCols && hScope !== 'none'){
+      var rLblX = padX + W + 6;
+      for (var ri = 0; ri < nRows; ri++){
+        var ry = padY + ri*cellH + cellH/2 + 3;
+        s += '<text x="'+rLblX+'" y="'+ry+'" fill="rgba(255,255,255,0.5)" font-size="9" font-family="system-ui,sans-serif">'+(ri+1)+'</text>';
+      }
+    }
+    s += '</svg>';
+    return s;
   }
 
-  /* ── main rich-hint renderer ── */
+  /* ========== barModel builders (adapted for commercial-pack kinds) ========== */
+  function cpFracStr(f){ return (!f||!f.d) ? '?' : f.d===1 ? String(f.n) : f.n+'/'+f.d; }
+
+  /* remain kind: 用掉 f1 → 剩下 1−f1 */
+  function buildBarModel_REMAIN(f1, total, ansStr){
+    if (!f1 || !total) return null;
+    var d = f1.d, n = f1.n;
+    var remN = d - n, remD = d, g0 = gcd(remN, remD);
+    var usedAmt = total * n / d;
+    var remAmt = total * remN / remD;
+    var empty_cells = new Array(d).fill('empty');
+    var full_cells = [];
+    for (var i = 0; i < n; i++) full_cells.push('red');
+    for (var i2 = n; i2 < d; i2++) full_cells.push('blue');
+    return {
+      parts: d,
+      levels: [
+        { title: '🔍 Level 1：判斷題型',
+          text: '全部 = ' + total + '\n' +
+                '用掉 ' + cpFracStr(f1) + ' → 是「全部的 ' + cpFracStr(f1) + '」\n' +
+                '→ 剩下 = 全部 × (1 − ' + cpFracStr(f1) + ') = 全部 × ' + remN + '/' + remD + '\n\n' +
+                '📌 看到「的」就用「乘」！',
+          cells: empty_cells,
+          brackets: [{ start:0, count:d, label:'全部 = '+total, color:'white' }] },
+        { title: '📊 Level 2：畫圖切分（' + d + ' 等份）',
+          text: '把全部切成 ' + d + ' 等份\n' +
+                '每份 = ' + total + ' ÷ ' + d + ' = ' + roundNice(total/d) + '\n\n' +
+                '🟥 用掉 ' + cpFracStr(f1) + ' = ' + n + ' 格紅\n' +
+                '🟦 剩下 ' + remN + '/' + remD + (g0>1?' = '+remN/g0+'/'+remD/g0:'') + ' = ' + remN + ' 格藍',
+          cells: full_cells.slice(),
+          brackets: [
+            { start:0, count:n, label:'用掉 '+roundNice(usedAmt), color:'red' },
+            { start:n, count:remN, label:'剩 '+roundNice(remAmt), color:'blue' }
+          ] },
+        { title: '✏️ Level 3：算式',
+          text: '① 用掉 = ' + total + ' × ' + cpFracStr(f1) + ' = ' + roundNice(usedAmt) + '\n' +
+                '② 剩下 = ' + total + ' − ' + roundNice(usedAmt) + ' = ' + roundNice(remAmt),
+          cells: full_cells.slice(),
+          brackets: [
+            { start:0, count:n, label:'用掉', color:'red' },
+            { start:n, count:remN, label:'剩下', color:'blue' }
+          ] },
+        { title: '🎯 Level 4：合理性檢查',
+          text: '✅ 剩 ' + roundNice(remAmt) + ' < 總量 ' + total + ' → 合理\n' +
+                '✅ 剩下 > 0 → 合理\n\n🏁 把答案填上去吧！',
+          cells: full_cells.slice(),
+          brackets: [
+            { start:n, count:remN, label:'答案 '+(ansStr||roundNice(remAmt)), color:'blue' }
+          ] }
+      ]
+    };
+  }
+
+  /* original kind: 反推原量 (除法) */
+  function buildBarModel_ORIGINAL(f1, allInts, ansStr){
+    if (!f1) return null;
+    var d = f1.d, n = f1.n;
+    var total = parseInt(ansStr, 10);
+    if (!Number.isFinite(total) || total <= 0) return null;
+    var knownAmt = total * n / d;
+    var cells_known = new Array(d).fill('empty');
+    for (var i = 0; i < n; i++) cells_known[i] = 'orange';
+    var cells_full = new Array(d).fill('empty');
+    for (var j = 0; j < n; j++) cells_full[j] = 'orange';
+    for (var k = n; k < d; k++) cells_full[k] = 'green';
+    return {
+      parts: d,
+      levels: [
+        { title: '🔍 Level 1：判斷題型',
+          text: '已知是原量的 ' + cpFracStr(f1) + '，用掉了 ' + roundNice(knownAmt) + '\n' +
+                '→ 要反推原量 → 用除法！\n\n' +
+                '📌 原量 = 已知 ÷ 已知比例\n' +
+                '   = 已知 × 倒數',
+          cells: cells_known.slice(),
+          brackets: [
+            { start:0, count:n, label:'已知 '+roundNice(knownAmt), color:'orange' },
+            { start:n, count:d-n, label:'？', color:'white' }
+          ] },
+        { title: '📊 Level 2：畫圖切分（' + d + ' 等份）',
+          text: '全部 = ' + d + ' 格\n' +
+                '🟧 已知 ' + cpFracStr(f1) + ' = ' + n + ' 格 = ' + roundNice(knownAmt) + '\n' +
+                '每格 = ' + roundNice(knownAmt) + ' ÷ ' + n + ' = ' + roundNice(knownAmt/n) + '\n' +
+                '全部 = ' + roundNice(knownAmt/n) + ' × ' + d + ' = ' + total,
+          cells: cells_full.slice(),
+          brackets: [
+            { start:0, count:n, label:cpFracStr(f1)+' = '+roundNice(knownAmt), color:'orange' },
+            { start:0, count:d, label:'原量 = '+total, color:'green' }
+          ] },
+        { title: '✏️ Level 3：算式',
+          text: '原量 = ' + roundNice(knownAmt) + ' ÷ ' + cpFracStr(f1) + '\n' +
+                '     = ' + roundNice(knownAmt) + ' × ' + d + '/' + n + '\n' +
+                '     = ' + total,
+          cells: cells_full.slice(),
+          brackets: [
+            { start:0, count:d, label:'原量 = '+total, color:'green' }
+          ] },
+        { title: '🎯 Level 4：合理性檢查',
+          text: '✅ 原量 ' + total + ' > 已知 ' + roundNice(knownAmt) + ' → 合理\n' +
+                '✅ 驗算：' + total + ' × ' + cpFracStr(f1) + ' = ' + roundNice(knownAmt) + ' ✓\n\n🏁 把答案填上去吧！',
+          cells: cells_full.slice(),
+          brackets: [
+            { start:0, count:d, label:'答案 '+total, color:'green' }
+          ] }
+      ]
+    };
+  }
+
+  /* part_to_total kind: 部分 = 總量 × f1 */
+  function buildBarModel_PART(f1, total, ansStr){
+    if (!f1 || !total) return null;
+    var d = f1.d, n = f1.n;
+    var partAmt = total * n / d;
+    var cells = new Array(d).fill('empty');
+    for (var i = 0; i < n; i++) cells[i] = 'green';
+    return {
+      parts: d,
+      levels: [
+        { title: '🔍 Level 1：判斷題型',
+          text: '全部 = ' + total + '\n' +
+                '要算全部的 ' + cpFracStr(f1) + ' 是多少\n' +
+                '→ 用乘法：' + total + ' × ' + cpFracStr(f1) + '\n\n' +
+                '📌 看到「的幾分之幾」就想到「乘法」！',
+          cells: new Array(d).fill('empty'),
+          brackets: [{ start:0, count:d, label:'全部 = '+total, color:'white' }] },
+        { title: '📊 Level 2：畫圖切分（' + d + ' 等份）',
+          text: '把 ' + total + ' 切成 ' + d + ' 等份\n' +
+                '每份 = ' + total + ' ÷ ' + d + ' = ' + roundNice(total/d) + '\n\n' +
+                '🟩 要的部分 ' + cpFracStr(f1) + ' = ' + n + ' 格（綠）',
+          cells: cells.slice(),
+          brackets: [{ start:0, count:n, label:roundNice(partAmt), color:'green' }] },
+        { title: '✏️ Level 3：算式',
+          text: (function(){
+            var g = gcd(total, d);
+            if (g > 1) return total + ' × ' + cpFracStr(f1) + '\n= (' + total + ' ÷ ' + g + ') × ' + n + ' / (' + d + ' ÷ ' + g + ')\n= ' + (total/g) + ' × ' + n + ' / ' + (d/g) + ' = ' + roundNice(partAmt);
+            return total + ' × ' + cpFracStr(f1) + ' = ' + (total*n) + ' / ' + d + ' = ' + roundNice(partAmt);
+          })(),
+          cells: cells.slice(),
+          brackets: [{ start:0, count:n, label:'答案 '+roundNice(partAmt), color:'green' }] },
+        { title: '🎯 Level 4：合理性檢查',
+          text: '✅ 結果 ' + roundNice(partAmt) + ' < 全部 ' + total + ' → 合理\n' +
+                '✅ 驗算：' + roundNice(partAmt) + ' ÷ ' + total + ' = ' + cpFracStr(f1) + ' ✓\n\n🏁 把答案填上去吧！',
+          cells: cells.slice(),
+          brackets: [{ start:0, count:n, label:'答案', color:'green' }] }
+      ]
+    };
+  }
+
+  /* compare kind: 比較兩個分數的差 */
+  function buildBarModel_COMPARE(f1, f2, total, ansStr){
+    if (!f1 || !f2 || !total) return null;
+    var cd = lcmOf(f1.d, f2.d);
+    var a1 = Math.round(f1.n * cd / f1.d);
+    var a2 = Math.round(f2.n * cd / f2.d);
+    var diffN = Math.abs(a1 - a2);
+    var amt1 = total * f1.n / f1.d;
+    var amt2 = total * f2.n / f2.d;
+    var diffAmt = Math.abs(amt1 - amt2);
+    var small = Math.min(a1, a2), big = Math.max(a1, a2);
+    var cells_merge = new Array(cd).fill('empty');
+    for (var k = 0; k < small; k++) cells_merge[k] = 'green';
+    for (var m = small; m < big; m++) cells_merge[m] = 'red';
+    return {
+      parts: cd,
+      levels: [
+        { title: '🔍 Level 1：判斷題型',
+          text: '同一個總量 ' + total + ' 下\nA = ' + total + ' × ' + cpFracStr(f1) + ' = ' + roundNice(amt1) +
+                '\nB = ' + total + ' × ' + cpFracStr(f2) + ' = ' + roundNice(amt2) +
+                '\n\n→ 差 = 大 − 小',
+          cells: new Array(cd).fill('empty'),
+          brackets: [{ start:0, count:cd, label:'全部 = '+total, color:'white' }] },
+        { title: '📊 Level 2：畫圖切分（通分 = ' + cd + '）',
+          text: '通分 → LCM = ' + cd + '\n' +
+                '🟧 A = ' + cpFracStr(f1) + ' = ' + a1 + '/' + cd + '\n' +
+                '🟦 B = ' + cpFracStr(f2) + ' = ' + a2 + '/' + cd + '\n\n' +
+                '差 = |' + a1 + ' − ' + a2 + '|/' + cd + ' = ' + diffN + '/' + cd,
+          cells: cells_merge.slice(),
+          brackets: [
+            { start:0, count:small, label:'共同', color:'green' },
+            { start:small, count:diffN, label:'差 '+diffN+'/'+cd, color:'red' }
+          ] },
+        { title: '✏️ Level 3：算式',
+          text: '① A = ' + total + ' × ' + cpFracStr(f1) + ' = ' + roundNice(amt1) + '\n' +
+                '② B = ' + total + ' × ' + cpFracStr(f2) + ' = ' + roundNice(amt2) + '\n' +
+                '③ 差 = |' + roundNice(amt1) + ' − ' + roundNice(amt2) + '| = ' + roundNice(diffAmt),
+          cells: cells_merge.slice(),
+          brackets: [
+            { start:small, count:diffN, label:'差 = '+roundNice(diffAmt), color:'red' }
+          ] },
+        { title: '🎯 Level 4：合理性檢查',
+          text: '✅ 差 ' + roundNice(diffAmt) + ' ≤ 總量 ' + total + ' → 合理\n' +
+                '✅ 差 ≥ 0 → 合理\n\n🏁 把答案填上去吧！',
+          cells: cells_merge.slice(),
+          brackets: [
+            { start:small, count:diffN, label:'答案 '+(ansStr||roundNice(diffAmt)), color:'red' }
+          ] }
+      ]
+    };
+  }
+
+  /* Router: pick the right builder for each kind */
+  function buildFractionBarModel(item){
+    if (!item) return null;
+    var frs = extractFractions([item.question].concat(item.hints || []).join(' '));
+    var properFrs = frs.filter(function(f){ return f && f.n > 0 && f.d > 0 && f.n < f.d; });
+    var f1 = properFrs[0] || null;
+    var f2 = properFrs[1] || null;
+    var ints = extractIntegers(item.question);
+    var total = null;
+    for (var ti = 0; ti < ints.length; ti++){ if (ints[ti] >= 2){ total = ints[ti]; break; } }
+    var ansStr = item.answer || '';
+    if (!f1) return null;
+    if (item.kind === 'remain') return buildBarModel_REMAIN(f1, total, ansStr);
+    if (item.kind === 'original') return buildBarModel_ORIGINAL(f1, ints, ansStr);
+    if (item.kind === 'part_to_total') return buildBarModel_PART(f1, total, ansStr);
+    if (item.kind === 'compare' && f2) return buildBarModel_COMPARE(f1, f2, total, ansStr);
+    return null;
+  }
+
+  /* Text-only fallback when no SVG model available */
+  function renderTextOnlyHints(item, maxLevel){
+    var hints = item.hints || [];
+    var steps = item.steps || [];
+    var ansStr = item.answer || '';
+    var html = '';
+    if (maxLevel >= 1 && hints[0]) html += '<div class="hint-visual"><div class="hv-title">🔍 Level 1：判斷題型</div><div class="hv-text">' + escapeHtml(hints[0]) + '</div></div>';
+    if (maxLevel >= 2 && hints[1]) html += '<div class="hint-visual"><div class="hv-title">📊 Level 2：畫圖切分</div><div class="hv-text">' + escapeHtml(hints[1]) + '</div></div>';
+    if (maxLevel >= 3 && hints[2]) html += '<div class="hint-visual"><div class="hv-title">✏️ Level 3：算式</div><div class="hv-text">' + escapeHtml(hints[2]) + '</div></div>';
+    if (maxLevel >= 4){
+      var circ = ['①','②','③','④','⑤','⑥'];
+      var stepsHtml = '';
+      for (var si = 0; si < steps.length; si++) stepsHtml += (circ[si]||(si+1)+'）') + ' ' + steps[si] + '\n';
+      stepsHtml += '\n答案：' + ansStr + '\n✅ 結果合理嗎？\n\n🏁 把答案填上去吧！';
+      html += '<div class="hint-visual"><div class="hv-title">🎯 Level 4：合理性檢查</div><div class="hv-text">' + escapeHtml(stepsHtml) + '</div></div>';
+    }
+    return html;
+  }
+
+  /* ── main rich-hint renderer (SVG system) ── */
   function renderAllLevelsHtml(item, maxLevel, short) {
     if (!item) return '';
-    const frs = extractFractions([item.question, ...(item.hints || [])].join(' '));
-    const properFrs = frs.filter(f => f && f.n > 0 && f.d > 0 && f.n < f.d);
-    const f1 = properFrs[0] || null;
-    const f2 = properFrs[1] || null;
-    const ints = extractIntegers(item.question);
-    const total = ints.find(v => v >= 2) || null;
-    const ansF = normalizeFraction(item.answer || '');
-    const ansStr = item.answer || '';
-    const currentThenOut = isCurrentThenOutPattern(item, f1, f2);
-    const currentAmt = (currentThenOut && total) ? total * f1.n / f1.d : null;
-    const outAmt = (currentThenOut && total) ? currentAmt * f2.n / f2.d : null;
-    const remainAmt = (currentThenOut && total) ? currentAmt - outAmt : null;
-    let html = '';
-
-    /* ── Level 1 ── */
-    if (maxLevel >= 1) {
-      html += '<div class="lvlHeader l1">🔍 Level 1：判斷題型</div><div class="lvlBody">';
-      if (item.kind === 'remain' && f1) {
-        if (currentThenOut) {
-          const waterPct = fracPct(f1);
-          html += buildBarChart([{pct:waterPct,cls:'c-green',label:'水 '+(currentAmt==null?'':roundNice(currentAmt)+' 公升')},{pct:100-waterPct,cls:'c-empty-seg',label:'空'}], total?'水箱容量 = '+total+' 公升':'');
-          html += `<div class="step">現有 ${fracToString(f1)} 的水${total?' → 水量 = '+total+' × '+fracToString(f1)+' = '+roundNice(currentAmt)+' 公升':''}</div>`;
-          html += `<div class="step">再倒出「現有水的 ${fracToString(f2)}」</div>`;
-          html += '<div class="step">⚠️ 基準是「現有水」不是「容量」→ 兩次都用乘法！</div>';
-        } else {
-          const usedPct = fracPct(f1);
-          html += buildBarChart([{pct:100-usedPct,cls:'c-blue',label:total?roundNice(total*(1-f1.n/f1.d))+'':'剩下'},{pct:usedPct,cls:'c-red',label:'用掉 '+fracToString(f1)}], total?'總量 = '+total:'');
-          html += `<div class="step">${total?'總量 = '+total+'。':''}用掉 ${fracToString(f1)}${total?' → 用掉 = '+total+' × '+fracToString(f1)+' = '+roundNice(total*f1.n/f1.d):''}</div>`;
-          if (f2) html += `<div class="step">⚠️ 再處理「${fracToString(f2)}」→ 注意基準是「現有量」還是「總量」！兩次都用乘法！</div>`;
-        }
-      } else if (item.kind === 'original' && f1) {
-        html += buildBarChart([{pct:fracPct(f1),cls:'c-orange',label:'已知 '+fracToString(f1)},{pct:100-fracPct(f1),cls:'c-empty-seg',label:'？'}],'原量 = ？（要求）');
-        html += `<div class="step">已知是原量的 ${fracToString(f1)}，要反推原量。</div>`;
-        html += '<div class="step">⚠️ 基準 = 原量（未知）→ 用「÷ 分數 = × 倒數」</div>';
-      } else if (item.kind === 'part_to_total' && f1) {
-        html += buildBarChart([{pct:fracPct(f1),cls:'c-green',label:'部分 '+fracToString(f1)},{pct:100-fracPct(f1),cls:'c-empty-seg',label:'其餘'}],total?'總量 = '+total:'');
-        html += `<div class="step">要找總量 ${total||'?'} 的 ${fracToString(f1)} 是多少。</div>`;
-      } else if (item.kind === 'compare' && f1 && f2) {
-        html += '<div class="vizLabel">A：'+escapeHtml(fracToString(f1))+'</div>';
-        html += buildBarChart([{pct:fracPct(f1),cls:'c-orange',label:fracToString(f1)},{pct:100-fracPct(f1),cls:'c-empty-seg',label:''}],'');
-        html += '<div class="vizLabel">B：'+escapeHtml(fracToString(f2))+'</div>';
-        html += buildBarChart([{pct:fracPct(f2),cls:'c-blue',label:fracToString(f2)},{pct:100-fracPct(f2),cls:'c-empty-seg',label:''}],'');
-        html += `<div class="step">同一個總量 ${total||'?'} 下，比較 ${fracToString(f1)} 與 ${fracToString(f2)}，差 = 大 − 小。</div>`;
-      }
-      html += '</div>';
-    }
-
-    /* ── Level 2 ── */
-    if (maxLevel >= 2) {
-      html += '<div class="lvlHeader l2">📊 Level 2：畫圖切分</div><div class="lvlBody">';
-      if (short) {
-        html += '<div class="step">把總量畫成長條圖並切份上色。按「簡短提示：關」看完整圖。</div>';
-      } else if (item.kind === 'remain' && f1) {
-        if (currentThenOut) {
-          const d = f1.d * f2.d;
-          const waterCells = f1.n * f2.d;
-          const outCells = f1.n * f2.n;
-          const keepCells = waterCells - outCells;
-          const emptyCells = d - waterCells;
-          html += `<div class="step">剩 ${remainAmt==null?'?':roundNice(remainAmt)} 公升</div>`;
-          html += '<div class="vizLabel">先畫「現有的水」</div>';
-          html += buildFractionStrip(d,[{count:waterCells,cls:'c-green'},{count:emptyCells,cls:'c-empty'}],'1/'+d);
-          html += buildLegend([{cls:'c-green',label:'🟩 水 = '+waterCells+'/'+d+' 格'},{cls:'c-empty',label:'⬜ 空 = '+emptyCells+'/'+d+' 格'}]);
-          html += '<div class="vizLabel" style="margin-top:10px">再把水的 '+fracToString(f2)+' 倒出</div>';
-          html += buildFractionStrip(d,[{count:outCells,cls:'c-red'},{count:keepCells,cls:'c-blue'},{count:emptyCells,cls:'c-empty'}],'1/'+d);
-          html += buildLegend([{cls:'c-red',label:'🟥 倒出 = '+outCells+'/'+d},{cls:'c-blue',label:'🟦 剩下 = '+keepCells+'/'+d},{cls:'c-green',label:'🟩 原本的水 = '+waterCells+'/'+d}]);
-          html += buildDrawSteps([
-            '整個水箱切成 '+d+' 等份（每格 = 1/'+d+'）。',
-            '現有水是 '+fracToString(f1)+' → '+waterCells+'/'+d+' 格。',
-            '倒出現有水的 '+fracToString(f2)+' → 倒出 '+outCells+' 格（紅色）。',
-            '剩下 '+keepCells+' 格（藍色）= '+keepCells+'/'+d+(total?'，所以是 '+roundNice(remainAmt)+' 公升':'')+'。'
-          ]);
-        } else {
-          const d1 = f1.d, n1 = f1.n, rem1 = d1 - n1;
-          const ds = [];
-          ds.push('畫一條長條圖，代表總量'+(total?' = '+total:'')+'。');
-          ds.push('直切成 '+d1+' 等份，每份 = '+(total?total+' ÷ '+d1+' = '+roundNice(total/d1):'1/'+d1)+'。');
-          ds.push('塗紅 '+n1+' 份 → 表示「用掉 '+fracToString(f1)+'」。');
-          html += buildFractionStrip(d1,[{count:n1,cls:'c-red'},{count:rem1,cls:'c-blue'}],'1/'+d1);
-          html += buildLegend([{cls:'c-red',label:'🟥 用掉 '+n1+'/'+d1},{cls:'c-blue',label:'🟦 剩下 '+rem1+'/'+d1}]);
-          ds.push('剩下 '+rem1+' 份 = '+rem1+'/'+d1+(total?' → '+roundNice(rem1*total/d1):'')+'。');
-          if (f2) {
-            const d2=f2.d, n2=f2.n, tc=d1*d2;
-            const fU=n1*d2, sU=n2*rem1, fR=rem1*(d2-n2);
-            ds.push('把剩下 '+rem1+' 份各再切 '+d2+' 小格 → 全條 = '+tc+' 小格（每格 = 1/'+tc+(total?' = '+roundNice(total/tc):'')+'）。');
-            html += '<div class="vizLabel" style="margin-top:10px">▼ 再切後（'+tc+' 格，每格 = 1/'+tc+'）</div>';
-            html += buildFractionStrip(tc,[{count:fU,cls:'c-red'},{count:sU,cls:'c-orange'},{count:fR,cls:'c-blue'}],'1/'+tc);
-            html += buildLegend([{cls:'c-red',label:'🟥 第1次 = '+fU+'/'+tc},{cls:'c-orange',label:'🟧 第2次 = '+sU+'/'+tc},{cls:'c-blue',label:'🟦 最終剩 = '+fR+'/'+tc}]);
-            ds.push('塗橙 '+sU+' 格 → 「再用掉剩下的 '+fracToString(f2)+'」。');
-            ds.push('最終剩 '+fR+'/'+tc+(total?' → '+total+' × '+fR+'/'+tc+' = '+roundNice(fR*total/tc):'')+'。');
-          }
-          html += buildDrawSteps(ds);
-        }
-      } else if (item.kind === 'original' && f1) {
-        const d = f1.d;
-        const ds = [];
-        ds.push('畫一條長條圖，代表「原量（未知）」。');
-        ds.push('直切成 '+d+' 等份，每份 = 原量 ÷ '+d+'。');
-        ds.push('塗橙 '+f1.n+' 份 → 就是題目給的已知量 = 原量 × '+fracToString(f1)+'。');
-        html += buildFractionStrip(d,[{count:f1.n,cls:'c-orange'},{count:d-f1.n,cls:'c-empty'}],'1/'+d);
-        html += buildLegend([{cls:'c-orange',label:'🟧 已知 = '+f1.n+'/'+d},{cls:'c-empty',label:'⬜ 未知部分'}]);
-        ds.push(f1.n+' 份 = 題目已知 → 1 份 = 已知 ÷ '+f1.n+' → 原量 = 1份 × '+d+'。');
-        ds.push('公式：原量 = 已知量 ÷ '+fracToString(f1)+' = 已知量 × '+f1.d+'/'+f1.n+'。');
-        html += buildDrawSteps(ds);
-      } else if (item.kind === 'part_to_total' && f1) {
-        const d = f1.d;
-        const ds = [];
-        ds.push('畫一條長條圖，代表總量'+(total?' = '+total:'')+'。');
-        ds.push('直切成 '+d+' 等份，每份 = '+(total?total+' ÷ '+d+' = '+roundNice(total/d):'1/'+d)+'。');
-        ds.push('塗綠 '+f1.n+' 份 → 表示「佔總量的 '+fracToString(f1)+'」。');
-        html += buildFractionStrip(d,[{count:f1.n,cls:'c-green'},{count:d-f1.n,cls:'c-empty'}],'1/'+d);
-        html += buildLegend([{cls:'c-green',label:'🟩 部分 = '+f1.n+'/'+d},{cls:'c-empty',label:'⬜ 其餘'}]);
-        ds.push('部分 = '+f1.n+' × '+(total?roundNice(total/d)+' = '+roundNice(f1.n*total/d):'(1/'+d+')')+'。');
-        html += buildDrawSteps(ds);
-      } else if (item.kind === 'compare' && f1 && f2) {
-        const d = lcmOf(f1.d, f2.d);
-        const aN = Math.round(f1.n*d/f1.d), bN = Math.round(f2.n*d/f2.d);
-        const ds = [];
-        ds.push('畫 A、B 兩條等長長條圖'+(total?'，各代表 '+total:'')+'。');
-        ds.push('統一分母 = '+d+'（通分）→ A = '+aN+'/'+d+'，B = '+bN+'/'+d+'。');
-        html += '<div class="vizLabel">A（'+escapeHtml(fracToString(f1))+' = '+aN+'/'+d+'）</div>';
-        html += buildFractionStrip(d,[{count:aN,cls:'c-orange'},{count:d-aN,cls:'c-empty'}],'1/'+d);
-        html += '<div class="vizLabel">B（'+escapeHtml(fracToString(f2))+' = '+bN+'/'+d+'）</div>';
-        html += buildFractionStrip(d,[{count:bN,cls:'c-blue'},{count:d-bN,cls:'c-empty'}],'1/'+d);
-        html += buildLegend([{cls:'c-orange',label:'🟧 A = '+aN+'/'+d},{cls:'c-blue',label:'🟦 B = '+bN+'/'+d}]);
-        const diffN = Math.abs(aN-bN);
-        ds.push('A 塗橙 '+aN+' 格，B 塗藍 '+bN+' 格。');
-        ds.push('差 = |'+aN+' − '+bN+'|/'+d+' = '+diffN+'/'+d+(total?' → '+roundNice(diffN*total/d):'')+'。');
-        html += buildDrawSteps(ds);
-      }
-      html += '</div>';
-    }
-
-    /* ── Level 3 ── */
-    if (maxLevel >= 3) {
-      html += '<div class="lvlHeader l3">✏️ Level 3：算式</div><div class="lvlBody">';
-      const steps = item.steps || [];
-      if (currentThenOut && total) {
-        const s1 = `水量 = ${total} × ${fracToString(f1)} = ${roundNice(currentAmt)} 公升`;
-        const s2 = `倒出 = ${roundNice(currentAmt)} × ${fracToString(f2)} = ${roundNice(outAmt)} 公升`;
-        const s3 = `剩下 = ${roundNice(currentAmt)} − ${roundNice(outAmt)} = ${roundNice(remainAmt)} 公升`;
-        html += `<div class="step">① ${escapeHtml(s1)}</div>`;
-        html += `<div class="step">② ${escapeHtml(s2)}</div>`;
-        html += `<div class="step">③ ${escapeHtml(s3)}</div>`;
-        html += `<div class="step" style="font-weight:700">答案：${escapeHtml(ansStr || (roundNice(remainAmt)+' 公升'))}</div>`;
-        html += '</div>';
+    var model = buildFractionBarModel(item);
+    if (!model) return renderTextOnlyHints(item, maxLevel);
+    var html = '';
+    var n = Math.min(maxLevel, model.levels.length);
+    for (var i = 0; i < n; i++){
+      var lv = model.levels[i];
+      html += '<div class="hint-visual">';
+      html += '<div class="hv-title">' + escapeHtml(lv.title) + '</div>';
+      if (lv.grid){
+        html += renderGridSVG(lv.gridCols || model.cols, lv.gridRows || model.rows, lv.grid, lv);
       } else {
-      const circ = ['①','②','③','④','⑤','⑥','⑦','⑧'];
-      for (let i = 0; i < steps.length; i++) html += `<div class="step">${circ[i]||(i+1)+'）'} ${escapeHtml(steps[i])}</div>`;
-      if (!steps.length) html += '<div class="step">① 列式 → ② 計算 → ③ 約分成最簡</div>';
-      html += `<div class="step" style="font-weight:700">答案：${escapeHtml(ansStr)}</div>`;
-      html += '</div>';
+        html += renderBarSVG(model.parts, lv.cells, lv.brackets || []);
       }
-    }
-
-    /* ── Level 4 ── */
-    if (maxLevel >= 4) {
-      html += '<div class="lvlHeader l4">🎯 Level 4：合理性檢查</div><div class="lvlBody">';
-      html += `<div class="step" style="font-size:18px;font-weight:700">${escapeHtml(ansStr)}</div>`;
-      const aD = ansF ? roundNice(ansF.n/ansF.d) : ansStr;
-      if (currentThenOut && total) {
-        html += `<div class="step">✅ 剩 ${roundNice(remainAmt)} < 水量 ${roundNice(currentAmt)} → 合理</div>`;
-        html += '<div class="step">✅ 剩下 > 0 → 合理</div>';
-      } else if (item.kind === 'remain' && total) {
-        html += `<div class="step">✅ 剩 ${aD} < 總量 ${total} → 合理</div>`;
-        html += '<div class="step">✅ 剩下 > 0 → 合理</div>';
-      } else if (item.kind === 'original') {
-        html += '<div class="step">✅ 原量 > 已知量 → 合理</div>';
-        html += '<div class="step">✅ 原量 × 分數 = 已知？驗算！</div>';
-      } else if (item.kind === 'compare' && total) {
-        html += `<div class="step">✅ 差 ${aD} ≤ 總量 ${total} → 合理</div>`;
-        html += '<div class="step">✅ 差 ≥ 0 → 合理</div>';
-      } else {
-        html += '<div class="step">✅ 結果 ≥ 0 且不超過總量 → 合理</div>';
-        html += '<div class="step">✅ 單位要對（個/公升/張）</div>';
-      }
-      html += '<div class="step" style="margin-top:8px;font-size:14px">🏁 把答案填上去吧！</div>';
+      var text = short ? lv.text.split('\n').filter(function(l){return l.trim();}).slice(0,2).join('\n') : lv.text;
+      html += '<div class="hv-text">' + escapeHtml(text) + '</div>';
       html += '</div>';
     }
     return html;
