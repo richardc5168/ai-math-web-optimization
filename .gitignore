@@ -107,3 +107,7 @@ data/resources/
 
 # Issued redeem codes (plaintext) - DO NOT COMMIT
 issued_codes/
+
+# Local test/build outputs
+node_modules/
+test-results/
