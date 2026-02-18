@@ -32,6 +32,29 @@ DIST = ROOT / "dist_ai_math_web_pages" / "docs"
 
 BANK_ASSIGN_RE = re.compile(r"^\s*window\.([A-Za-z0-9_]+)\s*=\s*\[", re.MULTILINE)
 
+MODULE_ALIAS_ZH: dict[str, str] = {
+    "interactive-g5-empire": "五年級帝國闖關",
+    "g5-grand-slam": "大單位換算大滿貫",
+    "life-applications-g5": "小五生活應用題",
+    "decimal-unit4": "五下第4單元｜小數",
+}
+
+KIND_ALIAS_ZH: dict[str, str] = {
+    "d_mul_int": "小數×整數（買多份）",
+    "int_mul_d": "整數×小數（比例/折扣）",
+    "d_mul_d": "小數×小數（面積/單價）",
+    "d_div_int": "小數÷整數（平均分）",
+    "int_div_int_to_decimal": "整數÷整數（商是小數）",
+    "x10_shift": "小數點位移（×10/÷10）",
+}
+
+FORMAT_KEY_ZH: dict[str, str] = {
+    "symbolic_or_equation": "等式/符號",
+    "unknown_format": "其他格式",
+    "numeric_expr": "數值算式",
+    "multi_space_numbers": "多值(空格)",
+}
+
 
 def _load_audit_report() -> dict[str, Any] | None:
     """Load answer-format audit JSON written under docs/learning-map/.
@@ -99,18 +122,19 @@ def _render_audit_block(report: dict[str, Any] | None) -> str:
 
     focus_lines = []
     for mid, _, c in focus[:8]:
+        mid_zh = MODULE_ALIAS_ZH.get(mid, mid)
         parts = []
         for key in ("symbolic_or_equation", "unknown_format", "numeric_expr"):
             if int(c.get(key, 0) or 0):
-                parts.append(f"{key}:{int(c[key])}")
+                parts.append(f"{FORMAT_KEY_ZH.get(key, key)}:{int(c[key])}")
         if int(c.get("multi_space_numbers", 0) or 0):
-            parts.append(f"multi_space_numbers:{int(c['multi_space_numbers'])}")
+            parts.append(f"{FORMAT_KEY_ZH['multi_space_numbers']}:{int(c['multi_space_numbers'])}")
         qterm = mid
         focus_lines.append(
             "".join(
                 [
                     "<li>",
-                    f'<button class="k linklike" type="button" data-set-q="{_html_escape(qterm)}">{_html_escape(mid)}</button>',
+                    f'<button class="k linklike" type="button" data-set-q="{_html_escape(qterm)}">{_html_escape(mid_zh)}</button>',
                     " — ",
                     _html_escape(" / ".join(parts) or "special"),
                     "</li>",
@@ -197,6 +221,18 @@ def _norm_space(s: str) -> str:
     return re.sub(r"\\s+", " ", (s or "").strip())
 
 
+def _module_display(module_id: str, fallback_title: str) -> str:
+    alias = MODULE_ALIAS_ZH.get(module_id)
+    if alias:
+        return alias
+    title = _norm_space(fallback_title)
+    return title or module_id
+
+
+def _kind_display(kind: str) -> str:
+    return KIND_ALIAS_ZH.get(kind, kind)
+
+
 @dataclass
 class KindAgg:
     count: int
@@ -223,7 +259,11 @@ def _build_aggregates() -> list[ModuleAgg]:
 
     for p in bank_paths:
         module_id = p.parent.relative_to(DOCS).as_posix().rstrip("/")
-        bank_var, items = _load_bank_items(p)
+        try:
+            bank_var, items = _load_bank_items(p)
+        except Exception as e:
+            print(f"WARN: skip non-JSON bank {p.as_posix()}: {e}")
+            continue
         if not items:
             continue
 
@@ -337,17 +377,20 @@ def _render_html(mods: list[ModuleAgg]) -> str:
     toc_items: list[str] = []
     for m in mods:
         total = sum(k.count for k in m.kinds.values())
+        display_title = _module_display(m.module_id, m.module_title)
         toc_items.append(
-            f'<li><a href="#m_{_html_escape(m.module_id)}">{_html_escape(m.module_title)} <span class="k">({total} 題 / {len(m.kinds)} 題型)</span></a></li>'
+            f'<li><a href="#m_{_html_escape(m.module_id)}">{_html_escape(display_title)} <span class="k">({total} 題 / {len(m.kinds)} 題型)</span></a></li>'
         )
 
     # Render sections
     sections: list[str] = []
     for m in mods:
         total = sum(k.count for k in m.kinds.values())
+        display_title = _module_display(m.module_id, m.module_title)
         keywords_module = " ".join(
             [
                 m.module_id,
+                display_title,
                 m.module_title,
                 m.bank_var or "",
             ]
@@ -356,6 +399,7 @@ def _render_html(mods: list[ModuleAgg]) -> str:
         header_meta = (
             f'<div class="meta">'
             f'{_pill("模組", "pill lvl")}'
+            f'{_pill(display_title)}'
             f'{_pill(m.module_id)}'
             f'{_pill(f"{total} 題")}'
             f'{_pill(f"{len(m.kinds)} 題型")}'
@@ -370,9 +414,10 @@ def _render_html(mods: list[ModuleAgg]) -> str:
             top_tags = [t for t, _ in agg.tags.most_common(8)]
 
             diff_parts = []
+            diff_zh = {"easy": "簡單", "medium": "中等", "hard": "挑戰"}
             for label in ("easy", "medium", "hard"):
                 if agg.difficulties.get(label):
-                    diff_parts.append(f"{label}:{agg.difficulties[label]}")
+                    diff_parts.append(f"{diff_zh.get(label, label)}:{agg.difficulties[label]}")
             diff_text = " / ".join(diff_parts) if diff_parts else "-"
 
             kw = " ".join(
@@ -389,9 +434,9 @@ def _render_html(mods: list[ModuleAgg]) -> str:
                 "\n".join(
                     [
                         f'<details data-keywords="{_html_escape(kw)}">',
-                        f'  <summary>{_html_escape(kind_name)} <span class="pills">'
+                        f'  <summary>{_html_escape(_kind_display(kind_name))} <span class="pills">'
                         f'{_pill(f"{agg.count} 題", "pill lvl mid")}'
-                        f'{_pill(f"難度 {diff_text}", "pill")}''</span></summary>',
+                        f'{_pill(f"難度 {diff_text}", "pill")}{_pill(kind_name, "pill")}</span></summary>',
                         '  <div class="grid2">',
                         '    <div>',
                         '      <div class="meta"><span class="pill lvl">核心觀念（常見）</span></div>',
@@ -426,7 +471,7 @@ def _render_html(mods: list[ModuleAgg]) -> str:
             "\n".join(
                 [
                     f'<section id="m_{_html_escape(m.module_id)}" data-keywords="{_html_escape(keywords_module)}">',
-                    f'  <h2>{_html_escape(m.module_title)}</h2>',
+                    f'  <h2>{_html_escape(display_title)}</h2>',
                     f'  {header_meta}',
                     "  " + "\n  ".join(details_blocks),
                     '</section>',
@@ -504,8 +549,8 @@ def _render_html(mods: list[ModuleAgg]) -> str:
     <div style="max-width:1280px;margin:0 auto;">
         <h1>題型觀念地圖（提示 / 題型 / 核心觀念快速摘要）</h1>
         <div class="sub">
-            來源：自動掃描 <span class="k">docs/**/bank.js</span>，彙整每個模組的 <b>kind 題型</b>、<b>常見觀念</b>、<b>步驟要點</b> 與 <b>題數/難度分布</b>。<br/>
-            使用方式：左側搜尋（中/英關鍵字皆可）→ 右側展開題型細節。<br/>
+            來源：自動掃描 <span class="k">docs/**/bank.js</span>，彙整每個模組的 <b>題型（含代碼）</b>、<b>常見觀念</b>、<b>步驟要點</b> 與 <b>題數/難度分布</b>。<br/>
+            使用方式：左側搜尋（建議中文關鍵字）→ 右側展開題型細節。<br/>
             生成時間：__GEN_TIME__
         </div>
         <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
@@ -519,7 +564,7 @@ def _render_html(mods: list[ModuleAgg]) -> str:
     <aside class="card toc">
         <h2>目錄 / 搜尋</h2>
         <div class="search">
-            <input id="q" placeholder="輸入關鍵字，例如：通分、約分、折扣、unit conversion、softmax…" />
+            <input id="q" placeholder="輸入關鍵字，例如：通分、約分、折扣、小數點移位、平均分配…" />
         </div>
         <div class="hint">提示：可用「題型 kind」或「觀念句子」搜尋，例如：小數點移動、平均分配、%↔小數。</div>
         <ul id="toc">

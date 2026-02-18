@@ -11,6 +11,16 @@ OUT_JS = ROOT / "docs" / "decimal-unit4" / "bank.js"
 random.seed(20260201)
 
 
+KIND_ZH: Dict[str, str] = {
+    "d_mul_int": "小數 × 整數（買多份）",
+    "int_mul_d": "整數 × 小數（比例／折扣）",
+    "d_mul_d": "小數 × 小數（面積／單價）",
+    "d_div_int": "小數 ÷ 整數（平均分）",
+    "int_div_int_to_decimal": "整數 ÷ 整數（商是小數）",
+    "x10_shift": "乘除 10/100/1000（小數點位移）",
+}
+
+
 def qround(x: Decimal, ndigits: int) -> Decimal:
     q = Decimal("1").scaleb(-ndigits)
     return x.quantize(q, rounding=ROUND_HALF_UP)
@@ -249,6 +259,48 @@ def make_decimal_int(scale_choices: List[int], min_int: int, max_int: int) -> De
 
 def money(d: Decimal) -> Decimal:
     return qround(d, 2)
+
+
+def _strip_prefixes(s: str) -> str:
+    t = str(s or "").strip()
+    for p in ("觀念：", "列式：", "步驟：", "規則：", "提示："):
+        if t.startswith(p):
+            return t[len(p) :].strip()
+    return t
+
+
+def _polish_item_for_teaching(item: Dict[str, Any]) -> Dict[str, Any]:
+    kind = str(item.get("kind") or "")
+    kind_zh = KIND_ZH.get(kind, kind)
+
+    hints = [str(x) for x in (item.get("hints") or [])]
+    if hints:
+        if len(hints) >= 1:
+            hints[0] = f"提示 1｜先懂觀念：{_strip_prefixes(hints[0])}"
+        if len(hints) >= 2:
+            hints[1] = f"提示 2｜先列式再算：{_strip_prefixes(hints[1])}"
+        if len(hints) >= 3:
+            h3 = hints[2]
+            if not h3.startswith("提示 3｜完整解題步驟"):
+                hints[2] = "提示 3｜完整解題步驟（孩子先做、家長可對照）\n" + h3
+
+    steps = [str(s) for s in (item.get("steps") or []) if str(s).strip()]
+    child_steps = [f"{idx}. {s}" for idx, s in enumerate(steps[:5], start=1)]
+    parent_check = steps[-1] if steps else "先估算方向，再核對單位與小數位數。"
+
+    explanation = "\n".join(
+        [
+            f"題型：{kind_zh}",
+            "孩子解題步驟：",
+            *(child_steps or ["1. 先圈出題目中的數字、單位與要問的量。"]),
+            f"家長檢查重點：{parent_check}",
+        ]
+    )
+
+    item["kind_zh"] = kind_zh
+    item["hints"] = hints
+    item["explanation"] = explanation
+    return item
 
 
 def gen_d_mul_int(i: int) -> Dict[str, Any]:
@@ -548,7 +600,7 @@ def generate_bank(target_counts: Dict[str, int]) -> List[Dict[str, Any]]:
         if t in seen:
             continue
         seen.add(t)
-        uniq.append(q)
+        uniq.append(_polish_item_for_teaching(q))
 
     return uniq
 
