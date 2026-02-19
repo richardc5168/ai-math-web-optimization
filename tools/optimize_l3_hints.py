@@ -119,23 +119,51 @@ def steps_are_concrete(steps: list[str]) -> bool:
 # Answer masking
 # =====================================================================
 
+def _ans_pattern(ans: str) -> re.Pattern | None:
+    """Build regex that matches *ans* as a standalone value (not inside a larger number)."""
+    ans = ans.strip()
+    if not ans:
+        return None
+    # For numeric-looking answers, use digit-boundary assertions
+    escaped = re.escape(ans)
+    return re.compile(rf"(?<!\d){escaped}(?!\d)")
+
+
 def mask_answer_in_step(step: str, answer: str) -> str:
+    """Replace the answer in *step* with ？, using word-boundary matching."""
+    pat = _ans_pattern(answer)
+    if pat is None:
+        return step
+
+    # Replace only the LAST occurrence
+    matches = list(pat.finditer(step))
+    if matches:
+        m = matches[-1]
+        return step[: m.start()] + "？" + step[m.end() :]
+
+    # Try alternative forms for fractions: "3/4" → "3 / 4"
     ans = answer.strip()
-    if ans in step:
-        idx = step.rfind(ans)
-        return step[:idx] + "？" + step[idx + len(ans) :]
     if "/" in ans:
         parts = ans.split("/")
         if len(parts) == 2:
             spaced = f"{parts[0].strip()} / {parts[1].strip()}"
-            if spaced in step:
-                idx = step.rfind(spaced)
-                return step[:idx] + "？" + step[idx + len(spaced) :]
+            sp_pat = _ans_pattern(spaced)
+            if sp_pat:
+                matches = list(sp_pat.finditer(step))
+                if matches:
+                    m = matches[-1]
+                    return step[: m.start()] + "？" + step[m.end() :]
+
+    # Try stripped leading-zero time: "07:15" → "7:15"
     if ":" in ans:
         alt = ans.lstrip("0")
-        if alt in step:
-            idx = step.rfind(alt)
-            return step[:idx] + "？" + step[idx + len(alt) :]
+        alt_pat = _ans_pattern(alt)
+        if alt_pat:
+            matches = list(alt_pat.finditer(step))
+            if matches:
+                m = matches[-1]
+                return step[: m.start()] + "？" + step[m.end() :]
+
     return step.rstrip("。．.") + " → ？"
 
 
@@ -149,13 +177,13 @@ def gen_l3_from_concrete_steps(q: dict) -> str | None:
     if not steps or not answer:
         return None
 
-    ans_str = answer.strip()
+    pat = _ans_pattern(answer)
     parts: list[str] = []
     for i, step in enumerate(steps):
         if i >= len(CIRCLED):
             break
-        # Mask the answer in ANY step that contains it
-        if ans_str and ans_str in step:
+        # Mask the answer in ANY step where it appears as a standalone value
+        if pat and pat.search(step):
             parts.append(f"{CIRCLED[i]} {mask_answer_in_step(step, answer)}")
         else:
             parts.append(f"{CIRCLED[i]} {step}")
