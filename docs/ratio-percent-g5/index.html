@@ -31,6 +31,9 @@
     .banner.bad{border-color:rgba(248,81,73,.65); color:#ffd2cf; background:rgba(248,81,73,.08)}
     .q{font-size:18px; padding:12px 14px; border-radius:12px; background:#08102a; border:1px dashed rgba(88,166,255,.4); margin: 10px 0; white-space:pre-wrap}
     .hint{border-left:3px solid rgba(88,166,255,.55); padding:8px 10px; background:rgba(88,166,255,.06); border-radius:10px; margin:8px 0; white-space:pre-wrap}
+    .hint .viz{margin:0 0 6px; text-align:center}
+    .hint .viz svg{max-width:100%;height:auto}
+    .hint .vizLabel{white-space:pre-wrap}
     .sol{border:1px dashed rgba(255,255,255,.18); border-radius:12px; padding:12px; margin-top:10px; white-space:pre-wrap}
     .pill{display:inline-block; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.04); color:var(--muted); font-size:12px}
     a{color:var(--accent)}
@@ -181,10 +184,104 @@
       return Math.abs(a-b) <= 1e-9;
     }
 
-    function renderHint(text){
+    function rpEsc(s){
+      return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    }
+
+    function rpNums(text){
+      return (String(text||'').match(/\d+(?:\.\d+)?/g) || []).map(Number).filter(Number.isFinite);
+    }
+
+    function rpRatioBar(parts, lv, labels){
+      const arr = Array.isArray(parts) ? parts.filter(n => Number.isFinite(n) && n > 0) : [];
+      if (!arr.length) return '';
+      const sum = arr.reduce((a,b)=>a+b,0);
+      const W = 360, H = 34, pad = 8;
+      const colors = ['#3b8eea','#d4a028','#d94a3e','#2ea043'];
+      let x = pad;
+      let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W+pad*2} 88">`;
+      for (let i=0;i<arr.length;i++){
+        const w = W * arr[i] / sum;
+        s += `<rect x="${x}" y="${pad}" width="${w}" height="${H}" fill="${colors[i%colors.length]}" stroke="rgba(255,255,255,.24)"/>`;
+        s += `<text x="${x+w/2}" y="${pad+21}" text-anchor="middle" font-size="11" fill="#fff">${arr[i]} 份</text>`;
+        x += w;
+      }
+      if (lv >= 2) s += `<text x="${pad}" y="60" font-size="11" fill="#e6edf3">總份數 = ${sum}，每份 = 全體 ÷ ${sum}</text>`;
+      if (lv >= 3) s += `<text x="${pad}" y="78" font-size="11" fill="#ffd700">先統一成「份」，再算部分/剩下</text>`;
+      return s + `</svg>`;
+    }
+
+    function rpPercentGrid(p, lv, note){
+      const pp = Math.max(0, Math.min(100, Number(p)||0));
+      const cols=10, rows=10, cs=24, pad=8;
+      const gW=cols*cs, gH=rows*cs;
+      let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${gW+pad*2+50} ${gH+52}">`;
+      let cnt = 0;
+      for (let r=0;r<rows;r++) for (let c=0;c<cols;c++){
+        cnt++;
+        s += `<rect x="${pad+c*cs}" y="${pad+r*cs}" width="${cs}" height="${cs}" fill="${cnt<=pp?'#d94a3e':'#1a2744'}" stroke="rgba(255,255,255,.16)"/>`;
+      }
+      s += `<rect x="${pad}" y="${pad}" width="${gW}" height="${gH}" fill="none" stroke="rgba(255,255,255,.45)"/>`;
+      s += `<text x="${pad+gW+6}" y="${pad+gH/2}" font-size="11" fill="#ffd2cf">${pp}%</text>`;
+      if (lv >= 2) s += `<text x="${pad}" y="${pad+gH+18}" font-size="11" fill="#e6edf3">每 100 格中塗 ${pp} 格</text>`;
+      if (lv >= 3) s += `<text x="${pad}" y="${pad+gH+36}" font-size="11" fill="#ffd700">${rpEsc(note || 'p% = p/100 = 小數 p÷100')}</text>`;
+      return s + `</svg>`;
+    }
+
+    function buildRatioPercentViz(q, lv){
+      const kind = String(q?.kind || '');
+      const text = String(q?.question || '');
+      const ns = rpNums(text);
+
+      if (kind === 'ratio_part_total' || kind === 'ratio_remaining'){
+        if (ns.length >= 2) return rpRatioBar([ns[0], ns[1]], lv);
+      }
+
+      if (kind === 'ratio_missing_to_1'){
+        const m = text.match(/([0-9]*\.?[0-9]+)/);
+        if (m){
+          const used = Number(m[1]);
+          if (Number.isFinite(used) && used >= 0 && used <= 1){
+            return rpRatioBar([used*10, (1-used)*10], lv, ['已知','剩下']);
+          }
+        }
+      }
+
+      if (kind === 'ratio_add_decimal' || kind === 'ratio_sub_decimal'){
+        if (ns.length >= 2) return rpRatioBar([ns[0]*10, ns[1]*10], lv);
+      }
+
+      if (kind === 'ratio_unit_rate'){
+        let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 376 86">`;
+        s += `<rect x="8" y="10" width="150" height="30" rx="6" fill="rgba(59,142,234,.24)" stroke="#3b8eea"/>`;
+        s += `<text x="83" y="30" text-anchor="middle" font-size="11" fill="#b7d8ff">每 n 單位 的量</text>`;
+        s += `<line x1="166" y1="25" x2="236" y2="25" stroke="#ffd700" stroke-width="2"/>`;
+        s += `<text x="201" y="18" text-anchor="middle" font-size="11" fill="#ffd700">÷n</text>`;
+        s += `<rect x="236" y="10" width="132" height="30" rx="6" fill="rgba(46,160,67,.24)" stroke="#2ea043"/>`;
+        s += `<text x="302" y="30" text-anchor="middle" font-size="11" fill="#7ee787">每 1 單位</text>`;
+        if (lv >= 2) s += `<text x="8" y="62" font-size="11" fill="#e6edf3">單位率 = 總量 ÷ 單位數</text>`;
+        if (lv >= 3) s += `<text x="8" y="78" font-size="11" fill="#ffd700">先確認分母是「1 單位」</text>`;
+        return s + `</svg>`;
+      }
+
+      if (kind.startsWith('percent_') || kind === 'decimal_to_percent' || kind === 'fraction_to_percent' || kind === 'percent_to_decimal'){
+        const pm = text.match(/(\d+(?:\.\d+)?)\s*%/);
+        const p = pm ? Number(pm[1]) : (kind === 'decimal_to_percent' && ns.length ? ns[0]*100 : null);
+        if (p != null) return rpPercentGrid(p, lv, '百分率與小數互轉：% ⇄ ÷100/×100');
+      }
+
+      return '';
+    }
+
+    function renderHint(text, q, level){
       const div = document.createElement('div');
       div.className = 'hint';
-      div.textContent = text;
+      const viz = buildRatioPercentViz(q, level);
+      if (viz){
+        div.innerHTML = `<div class="viz">${viz}</div><div class="vizLabel">${rpEsc(text).replaceAll('\n','<br>')}</div>`;
+      } else {
+        div.textContent = text;
+      }
       return div;
     }
 
@@ -377,7 +474,7 @@
       const stepNum = state.hintStepIndex + 1;
       const level = Math.min(3, Math.ceil(stepNum * 3 / allSteps.length));
       markHint(level);
-      els.hints.appendChild(renderHint(`步驟 ${stepNum}：${text}`));
+      els.hints.appendChild(renderHint(`步驟 ${stepNum}：${text}`, state.q, level));
       state.hintStepIndex++;
       setBanner('muted',`已顯示步驟 ${stepNum}/${allSteps.length}（不含最終答案）。`);
     }
