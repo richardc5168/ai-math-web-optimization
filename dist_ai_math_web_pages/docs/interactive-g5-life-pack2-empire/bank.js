@@ -5232,7 +5232,7 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件書包原價 28 元，打 折扣 0.95，省下多少元？",
+    "question": "（生活應用｜折扣）一件書包原價 28 元，打 95 折，省下多少元？",
     "answer": "1.4",
     "answer_mode": "money2",
     "hints": [
@@ -5359,7 +5359,7 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "medium",
-    "question": "（生活應用｜折扣）一件玩具原價 86.1 元，打 折扣 0.85，省下多少元？",
+    "question": "（生活應用｜折扣）一件玩具原價 86.1 元，打 85 折，省下多少元？",
     "answer": "12.92",
     "answer_mode": "money2",
     "hints": [
@@ -5444,7 +5444,7 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件球鞋原價 62.6 元，打 折扣 0.88，省下多少元？",
+    "question": "（生活應用｜折扣）一件球鞋原價 62.6 元，打 88 折，省下多少元？",
     "answer": "7.51",
     "answer_mode": "money2",
     "hints": [
@@ -5571,7 +5571,7 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件球鞋原價 31.6 元，打 折扣 0.66，省下多少元？",
+    "question": "（生活應用｜折扣）一件球鞋原價 31.6 元，打 66 折，省下多少元？",
     "answer": "10.74",
     "answer_mode": "money2",
     "hints": [
@@ -5613,7 +5613,7 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "medium",
-    "question": "（生活應用｜折扣）一件外套原價 31.6 元，打 折扣 0.85，省下多少元？",
+    "question": "（生活應用｜折扣）一件外套原價 31.6 元，打 85 折，省下多少元？",
     "answer": "4.74",
     "answer_mode": "money2",
     "hints": [
@@ -5740,17 +5740,17 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "hard",
-    "question": "（生活應用｜折扣）一件書包原價 17.7 元，打 折扣 0.82，折後價是多少元？",
+    "question": "（生活應用｜折扣）一件書包原價 17.7 元，打 82 折，折後價是多少元？",
     "answer": "14.51",
     "answer_mode": "money2",
     "hints": [
       "關鍵字：打折後要付多少。",
       "折後價 = 原價 × 折扣倍率。",
-      "折扣 0.82 對應倍率約是 0.82。",
-      "📐 一步步算：\n① 把『折扣 0.82』換成小數倍率：0.82。\n② 列式：17.7 × 0.82 = ？\n③ 計算：17.7 × 0.82 = ？ 元。\n④ 檢查：折後價 ？ 應小於原價 17.7 ✓。\n算完記得回頭檢查喔！✅"
+      "82 折就是原價 × 0.82。",
+      "📐 一步步算：\n① 82 折 → 原價 × 0.82。\n② 列式：17.7 × 0.82 = ？\n③ 計算：17.7 × 0.82 = ？ 元。\n④ 檢查：折後價 ？ 應小於原價 17.7 ✓。\n算完記得回頭檢查喔！✅"
     ],
     "steps": [
-      "把『折扣 0.82』換成小數倍率：0.82。",
+      "82 折 → 原價 × 0.82。",
       "列式：17.7 × 0.82 = ？",
       "計算：17.7 × 0.82 = 14.51 元。",
       "檢查：折後價 14.51 應小於原價 17.7 ✓。"
@@ -5826,7 +5826,7 @@ window.G5_LIFE_PACK2_BANK = [
     "kind": "u7_discount_percent",
     "topic": "小五生活應用題｜第二包｜帝國",
     "difficulty": "medium",
-    "question": "（生活應用｜折扣）一件球鞋原價 84.9 元，打 折扣 0.85，省下多少元？",
+    "question": "（生活應用｜折扣）一件球鞋原價 84.9 元，打 85 折，省下多少元？",
     "answer": "12.74",
     "answer_mode": "money2",
     "hints": [
