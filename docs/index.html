@@ -28,6 +28,14 @@
     .tag-math { background: rgba(210, 153, 34, 0.15); color: #d29922; border-color: rgba(210, 153, 34, 0.3); }
     .btn { display: inline-block; background: var(--btn-bg); color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 15px; width: 100%; text-align: center; box-sizing: border-box; }
     .btn:hover { background: var(--btn-hover); }
+    .summary-card { grid-column: 1 / -1; }
+    .summary-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 8px; }
+    .summary-table { width: 100%; border-collapse: collapse; min-width: 860px; color: #9fb0c0; font-size: 0.98rem; }
+    .summary-table th { text-align: left; border-bottom: 1px solid var(--border); padding: 10px 8px; color: #e6edf3; background: rgba(88,166,255,0.08); font-size: 0.92rem; }
+    .summary-table td { padding: 10px 8px; border-bottom: 1px solid rgba(48,54,61,0.75); vertical-align: top; line-height: 1.55; }
+    .summary-table tbody tr:last-child td { border-bottom: none; }
+    .summary-link { color: #58a6ff; text-decoration: none; font-weight: 600; }
+    .summary-link:hover { text-decoration: underline; }
     .tech-stack { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; }
     .tech-item { margin-bottom: 15px; }
     .tech-title { font-weight: bold; color: #fff; text-decoration: none; }
@@ -354,7 +362,7 @@
       </div>
 
       <!-- 模組 4a-summary: 四大互動模組分類摘要 -->
-      <div class="card">
+      <div class="card summary-card">
         <h2>互動題型分類摘要（快速對照）</h2>
         <div>
           <span class="tag tag-math">4 大互動模組</span>
@@ -363,42 +371,44 @@
         <p>
           幫家長與孩子快速選模組：先看「題型範圍」，再看「提示層級」，就能決定先練基本功、綜合題型，或直接練生活應用。
         </p>
-        <table style="width:100%; border-collapse:collapse; font-size:0.9rem; color:#8b949e; margin-top:6px;">
+        <div class="summary-table-wrap">
+        <table class="summary-table">
           <thead>
             <tr>
-              <th style="text-align:left; border-bottom:1px solid #30363d; padding:6px 4px; color:#c9d1d9;">模組</th>
-              <th style="text-align:left; border-bottom:1px solid #30363d; padding:6px 4px; color:#c9d1d9;">題型範圍</th>
-              <th style="text-align:left; border-bottom:1px solid #30363d; padding:6px 4px; color:#c9d1d9;">提示層級</th>
-              <th style="text-align:left; border-bottom:1px solid #30363d; padding:6px 4px; color:#c9d1d9;">特色</th>
+              <th>模組</th>
+              <th>題型範圍</th>
+              <th>提示層級</th>
+              <th>特色</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="padding:7px 4px;"><a href="./interactive-decimal-g5/" style="color:#58a6ff; text-decoration:none;">Interactive Decimal G5</a></td>
-              <td style="padding:7px 4px;">小數乘除、小數點移動</td>
-              <td style="padding:7px 4px;">3 層提示</td>
-              <td style="padding:7px 4px;">小數點工坊 3 步驟、補 0 對齊</td>
+              <td><a href="./interactive-decimal-g5/" class="summary-link">Interactive Decimal G5</a></td>
+              <td>小數乘除、小數點移動</td>
+              <td>3 層提示</td>
+              <td>小數點工坊 3 步驟、補 0 對齊</td>
             </tr>
             <tr>
-              <td style="padding:7px 4px;"><a href="./interactive-g5-empire/" style="color:#58a6ff; text-decoration:none;">Interactive G5 Empire</a></td>
-              <td style="padding:7px 4px;">8 題型綜合（小數/分數/百分率/時間/單位/體積）</td>
-              <td style="padding:7px 4px;">3 層提示</td>
-              <td style="padding:7px 4px;">90 秒闖關＋帝國擴張</td>
+              <td><a href="./interactive-g5-empire/" class="summary-link">Interactive G5 Empire</a></td>
+              <td>8 題型綜合（小數/分數/百分率/時間/單位/體積）</td>
+              <td>3 層提示</td>
+              <td>90 秒闖關＋帝國擴張</td>
             </tr>
             <tr>
-              <td style="padding:7px 4px;"><a href="./interactive-g5-life-pack1-empire/" style="color:#58a6ff; text-decoration:none;">Life Pack 1 Empire</a></td>
-              <td style="padding:7px 4px;">生活應用 10 單元 × 20 題</td>
-              <td style="padding:7px 4px;">4 層提示</td>
-              <td style="padding:7px 4px;">單元城池、常見錯誤點、煙火慶祝</td>
+              <td><a href="./interactive-g5-life-pack1-empire/" class="summary-link">Life Pack 1 Empire</a></td>
+              <td>生活應用 10 單元 × 20 題</td>
+              <td>4 層提示</td>
+              <td>單元城池、常見錯誤點、煙火慶祝</td>
             </tr>
             <tr>
-              <td style="padding:7px 4px;"><a href="./interactive-g5-life-pack2-empire/" style="color:#58a6ff; text-decoration:none;">Life Pack 2 Empire</a></td>
-              <td style="padding:7px 4px;">生活應用第 2 包 10 單元 × 20 題</td>
-              <td style="padding:7px 4px;">4 層提示</td>
-              <td style="padding:7px 4px;">延伸題庫、弱點專攻、帝國征服</td>
+              <td><a href="./interactive-g5-life-pack2-empire/" class="summary-link">Life Pack 2 Empire</a></td>
+              <td>生活應用第 2 包 10 單元 × 20 題</td>
+              <td>4 層提示</td>
+              <td>延伸題庫、弱點專攻、帝國征服</td>
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
 
       <!-- 模組 4a-4b: 互動小五生活應用題帝國｜第二包 基礎入門 -->
