@@ -1239,10 +1239,28 @@
       ].filter(Boolean).join('\n');
     }
 
+    function harmonizeTeacherTone(text, level){
+      const src = normalizeText(text || '');
+      if (!src) return '（沒有提示）';
+      const lv = clampHintLevel(level);
+      if (lv === 1){
+        return src
+          .replace('🔍【Level 1｜判斷題型】', '🔍【Level 1｜老師先帶你看題意】')
+          .replace(/📌\s*口訣：/g, '👩‍🏫 老師口訣：');
+      }
+      if (lv === 2){
+        return src
+          .replace('📐【Level 2｜列式】', '📐【Level 2｜老師陪你列式】');
+      }
+      return src
+        .replace('✏️【Level 3｜計算引導】', '✏️【Level 3｜老師帶你一步一步算】')
+        .replace(/✅\s*合理性/g, '✅ 自我檢查');
+    }
+
     function currentHint(level){
       const q = state.q;
       if (!q) return null;
-      return buildGuidedHint(q, level);
+      return harmonizeTeacherTone(buildGuidedHint(q, level), level);
     }
 
     function showHintForLevel(level){
