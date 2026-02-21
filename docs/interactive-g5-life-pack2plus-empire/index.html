@@ -926,7 +926,7 @@
       const qUnitLabel = normalizeText(unitMatch ? unitMatch[1] : '') || '原題單位';
       const opGuide = qop || inferOperationByUnit(u);
       const unitSpecific = {
-        u1_avg_fraction:'單元提醒：看到「平均分」先用 ÷，最後結果可用分數表示。',
+        u1_avg_fraction:'單元提醒：「平均分」＝ ÷，結果寫成最簡分數。',
         u2_frac_addsub_life:(() => {
           const d1 = Number(qm.d1 || 0);
           const d2 = Number(qm.d2 || 0);
@@ -944,14 +944,26 @@
         u9_unit_convert_decimal:'單元提醒：先統一單位，再計算。',
         u10_rate_time_distance:'單元提醒：先寫「每…」單位率，再用 距離=速率×時間。'
       };
+      // --- Unit-specific early returns (avoid generic template mismatch) ---
+      if (u === 'u1_avg_fraction'){
+        const focusU1 = st ? `你剛剛卡在：${st} ` : '';
+        return [
+          '下一步（平均分配題）：',
+          `步驟一：${focusU1}已知＝${qa || '總量'}、分給${qb || 'n'}人；未知＝每人多少；單位＝${qUnitLabel}。`,
+          `步驟二：「平均分」→ 用 ÷；算式＝${qexpr || (qa || '總量') + ' ÷ ' + (qb || 'n')}。`,
+          `步驟三：算出結果寫成分數（a/b），約成最簡分數，檢查單位仍是「${qUnitLabel}」。`,
+          '答案格式：分數（a/b）。',
+          unitSpecific[u] || '單元提醒：「平均分」＝ ÷，結果寫成最簡分數。'
+        ].filter(Boolean).join('\n');
+      }
       const focus = st ? `你剛剛卡在：${st}` : '先把題目資料寫成已知、未知、單位。';
       return [
         '下一步（條列引導）：',
-        `步驟一：${focus} 已知：${qa || '第一個分數'}、${qb || '第二個分數'}；未知：總量；單位：${qUnitLabel}。`,
-        `步驟二：看關鍵詞「又…一共」，用 ${opGuide}；算式直接寫：${qexpr || '分數 ${opGuide} 分數'}。`,
-        `步驟三：依序算中間結果（分母同就直接算分子；分母不同就先通分），最後檢查單位仍是「${qUnitLabel}」。`,
+        `步驟一：${focus} 已知：${qa || '第一個數'}、${qb || '第二個數'}；未知：結果；單位：${qUnitLabel}。`,
+        `步驟二：依關鍵詞選運算（${opGuide}）；算式＝${qexpr || '數 ' + opGuide + ' 數'}。`,
+        `步驟三：依序算中間結果，最後檢查單位仍是「${qUnitLabel}」。`,
         '答案格式：分數（a/b）。',
-        unitSpecific[u] || '單元提醒：不確定時先回到題目，重看「問什麼、給什麼、單位是什麼」。'
+        unitSpecific[u] || '單元提醒：不確定時回到題目，重看「問什麼、給什麼、單位是什麼」。'
       ].join('\n');
     }
 
