@@ -267,6 +267,8 @@
   <div class="expand-toast" id="expandToast" aria-live="polite"></div>
 
   <script src="./bank.js"></script>
+  <script src="../shared/coach_event_log.js"></script>
+  <script src="../shared/attempt_telemetry.js"></script>
   <script>
     // ---------- UI skeleton ----------
     const tabGame = document.getElementById('tabGame');
@@ -286,11 +288,11 @@
           <option value="normal" selected>標準</option>
           <option value="hard">挑戰</option>
         </select>
-        <button class="btn primary" id="btnStart">開始 90 秒</button>
+        <button class="btn primary" id="btnStart">開始 300 秒（5 分鐘）</button>
         <button class="btn" id="btnStop" style="display:none">停止</button>
       </div>
       <div class="stat" style="margin-top:8px">
-        <span>時間：<b id="gTime">90</b>s</span>
+        <span>時間：<b id="gTime">300</b>s</span>
         <span>分數：<b id="gScore">0</b></span>
         <span>連對：<b id="gStreak">0</b></span>
         <span>正確率：<b id="gAcc">0%</b></span>
@@ -308,6 +310,7 @@
         <button class="btn warn" id="btnNudge">給我提示方向</button>
       </div>
       <div class="banner muted" id="gBanner">闖關：答對才擴張領地；連對越多擴張越快。</div>
+      <div class="hint" id="gWrongDetail" style="display:none"></div>
     `;
 
     panelPractice.innerHTML = `
@@ -495,12 +498,88 @@
 
     // ---------- bank/state ----------
     const bank = Array.isArray(window.G5_LIFE_PACK2PLUS_BANK) ? window.G5_LIFE_PACK2PLUS_BANK : [];
-    const state = { q:null, revealed:false, submitted:false, hintUsed:0, practiceStreak:0, shownHintLevels:{1:false,2:false,3:false}, recentKinds:[] };
+    const state = { q:null, revealed:false, submitted:false, practiceQStartAt:0, hintUsed:0, practiceStreak:0, shownHintLevels:{1:false,2:false,3:false}, recentKinds:[] };
+
+    const UNIT_ID = 'interactive-g5-life-pack2plus-empire';
+    const GAME_DURATION_SEC = 300;
 
     const ls = {
       get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
       set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); } catch {} },
     };
+
+    function getUid(){
+      return window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
+    }
+
+    function shownHintLevelsArray(){
+      const out = [];
+      for (const lv of [1,2,3]) if (state.shownHintLevels?.[lv]) out.push(lv);
+      return out;
+    }
+
+    function appendAttemptTelemetry(q, opts){
+      if (!q || !window.AIMathAttemptTelemetry?.appendAttempt) return;
+      const o = opts || {};
+      const tsStart = Number(o.tsStart || Date.now());
+      const tsEnd = Number(o.tsEnd || Date.now());
+      const shownLevels = Array.isArray(o.shownLevels) ? o.shownLevels : [];
+      const evt = {
+        unit_id: UNIT_ID,
+        kind: String(q.kind || ''),
+        question_id: String(q.id || q.question || ''),
+        ts_start: tsStart,
+        ts_end: tsEnd,
+        is_correct: !!o.isCorrect,
+        attempts_count: 1,
+        hint: {
+          shown_levels: shownLevels,
+          shown_count: shownLevels.length,
+          total_hint_ms: 0,
+        },
+        steps: {
+          shown_solution: !!o.shownSolution,
+        },
+        student_answer: String(o.studentAnswer || ''),
+        correct_answer: String(q.answer || ''),
+        extra: {
+          question: String(q.question || ''),
+          difficulty: String(q.difficulty || ''),
+          source_module: UNIT_ID,
+          mode: String(o.mode || 'practice'),
+          reason: String(o.reason || ''),
+        },
+      };
+      window.AIMathAttemptTelemetry.appendAttempt(getUid(), evt, { maxAttempts: 5000 });
+    }
+
+    function wrongDiagnosisByUnit(q, studentRaw, errText){
+      const u = String(q?.kind || '');
+      const s = normalizeText(studentRaw || '');
+      const lines = [];
+      lines.push('【你這題可能卡住的點】');
+      lines.push(`- 你的答案：${s || '（空白）'}`);
+      lines.push(`- 正確答案：${String(q?.answer || '')}`);
+      if (errText) lines.push(`- 輸入/格式提醒：${errText}`);
+
+      if (u === 'u1_avg_fraction') lines.push('- 觀念提醒：平均題先用「總量 ÷ 份數」，再看要不要寫成分數。');
+      else if (u === 'u2_frac_addsub_life') lines.push('- 觀念提醒：分數加減先看分母，不同分母要先通分。');
+      else if (u === 'u3_frac_times_int') lines.push('- 觀念提醒：分數乘整數可先約分，避免數字太大。');
+      else if (u === 'u4_money_decimal_addsub') lines.push('- 觀念提醒：金額題先對齊小數點，再判斷是合計或找零。');
+      else if (u === 'u5_decimal_muldiv_price') lines.push('- 觀念提醒：單價×數量=總價；反過來才用除法。');
+      else if (u === 'u6_frac_dec_convert') lines.push('- 觀念提醒：分數與小數要先轉成同一種表示再比較。');
+      else if (u === 'u7_discount_percent') lines.push('- 觀念提醒：百分率要先轉小數比例再運算。');
+      else if (u === 'u8_ratio_recipe') lines.push('- 觀念提醒：比例題先算每 1 份是多少，再乘份數。');
+      else if (u === 'u9_unit_convert_decimal') lines.push('- 觀念提醒：先統一單位，再做加減乘除。');
+      else if (u === 'u10_rate_time_distance') lines.push('- 觀念提醒：先寫「距離=速率×時間」或「時間=距離÷速率」。');
+
+      lines.push('');
+      lines.push('【下一次這題怎麼做】');
+      lines.push('1) 先圈「已知 / 未知 / 單位」。');
+      lines.push('2) 決定 + / − / × / ÷ 的方向並寫完整算式。');
+      lines.push('3) 算完做單位與大小合理性檢查。');
+      return lines.join('\n');
+    }
 
     const els = {
       bankMeta: document.getElementById('bankMeta'),
@@ -540,6 +619,7 @@
       gQ: document.getElementById('gQ'),
       gAnswer: document.getElementById('gAnswer'),
       gBanner: document.getElementById('gBanner'),
+      gWrongDetail: document.getElementById('gWrongDetail'),
       btnSubmit: document.getElementById('btnSubmit'),
       btnNudge: document.getElementById('btnNudge'),
 
@@ -688,6 +768,7 @@
       state.q = q;
       state.revealed = false;
       state.submitted = false;
+      state.practiceQStartAt = Date.now();
       state.hintUsed = 0;
       state.shownHintLevels = {1:false,2:false,3:false};
       if (els.answer) els.answer.value = '';
@@ -695,6 +776,10 @@
       if (els.hints) els.hints.innerHTML = '';
       if (els.solution) els.solution.innerHTML = '';
       if (els.nextHint) els.nextHint.style.display = 'none';
+      if (els.gWrongDetail){
+        els.gWrongDetail.style.display = 'none';
+        els.gWrongDetail.textContent = '';
+      }
 
       if (els.qText) els.qText.textContent = q ? q.question : '（題庫中沒有符合條件的題目）';
       applyAnswerUI(q, 'practice');
@@ -1205,6 +1290,8 @@
       const q = state.q;
       if (!q){ showBanner('warn', '請先按「出題」。'); return; }
       state.submitted = true;
+      const tsEnd = Date.now();
+      const tsStart = Number(state.practiceQStartAt || tsEnd);
       try {
         const ok = compareByMode(els.answer.value, q.answer, q.answer_mode);
         if (ok){
@@ -1233,14 +1320,47 @@
             showBanner('ok', `答對了！+${PRACTICE_XP_CORRECT} 工程點數（練習也能擴張）\n連對 ${state.practiceStreak}：擴張 ${res.claimed || 0} 格。你可以出下一題。`);
           }
 
+          appendAttemptTelemetry(q, {
+            mode: 'practice',
+            isCorrect: true,
+            studentAnswer: els.answer.value,
+            reason: 'correct',
+            shownLevels: shownHintLevelsArray(),
+            shownSolution: !!state.revealed,
+            tsStart,
+            tsEnd,
+          });
+
           renderEmpire(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
           if (empireBigOpen) renderEmpireBig(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
         } else {
           state.practiceStreak = 0;
-          showBanner('warn', '答案不對沒關係（不扣分）。再試一次：先確認題目要找什麼（未知），把「已知 / 未知 / 單位」標出來，再決定算式方向。需要時按「下一層提示」或「給我下一步」，也可以看完整解題。');
+          const reasonText = wrongDiagnosisByUnit(q, els.answer.value, '答案與正解不一致');
+          appendAttemptTelemetry(q, {
+            mode: 'practice',
+            isCorrect: false,
+            studentAnswer: els.answer.value,
+            reason: reasonText,
+            shownLevels: shownHintLevelsArray(),
+            shownSolution: !!state.revealed,
+            tsStart,
+            tsEnd,
+          });
+          showBanner('warn', `答案不對沒關係（不扣分）。請先看你做錯在哪：\n${reasonText}`);
         }
       } catch (e){
-        showBanner('warn', `格式或輸入有誤（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}\n（可先按提示或看完整解題，確認答案格式）`);
+        const reasonText = wrongDiagnosisByUnit(q, els.answer.value, String(e?.message || e || '答案格式錯誤'));
+        appendAttemptTelemetry(q, {
+          mode: 'practice',
+          isCorrect: false,
+          studentAnswer: els.answer.value,
+          reason: reasonText,
+          shownLevels: shownHintLevelsArray(),
+          shownSolution: !!state.revealed,
+          tsStart,
+          tsEnd,
+        });
+        showBanner('warn', `格式或輸入有誤（不扣分）。\n${reasonText}\n（可先按提示或看完整解題，確認答案格式）`);
       }
     });
 
@@ -1276,7 +1396,7 @@
       const acc = g.total ? Math.round((g.correct / g.total) * 100) : 0;
       if (els.gAcc) els.gAcc.textContent = `${acc}%`;
       if (els.gBar){
-        const pct = Math.max(0, Math.min(100, (g.t / 90) * 100));
+        const pct = Math.max(0, Math.min(100, (g.t / GAME_DURATION_SEC) * 100));
         els.gBar.style.width = `${pct}%`;
       }
     }
@@ -1302,7 +1422,7 @@
       if (g.running) return;
       g.running = true;
       g.startedAtMs = Date.now();
-      g.t = 0;
+      g.t = GAME_DURATION_SEC;
       g.score = 0;
       g.streak = 0;
       g.correct = 0;
@@ -1318,12 +1438,19 @@
       gUpdate();
       if (els.btnStart) els.btnStart.style.display = 'none';
       if (els.btnStop) els.btnStop.style.display = '';
-      gBanner('muted', `開始！計時改成「累積秒數」（不會自動結束）。\n口訣：越快越準越好——每題 60 秒內答對、速度變快、連對變長都會給獎勵。`);
+      if (els.gWrongDetail){ els.gWrongDetail.style.display = 'none'; els.gWrongDetail.textContent = ''; }
+      gBanner('muted', `開始 300 秒（5 分鐘）！目標：看你能答對幾題。\n規則：一旦答錯，時間會歸 0 並先看做錯分析。`);
       g.timer = setInterval(() => {
         if (!g.running) return;
         const now = Date.now();
-        g.t = Math.max(0, Math.floor((now - (g.startedAtMs || now)) / 1000));
+        const elapsed = Math.max(0, Math.floor((now - (g.startedAtMs || now)) / 1000));
+        g.t = Math.max(0, GAME_DURATION_SEC - elapsed);
         gUpdate();
+        if (g.t <= 0){
+          g._endMsg = `時間到（5 分鐘）！本回合你答對 ${g.correct} 題，答錯 ${Math.max(0, g.total - g.correct)} 題。`;
+          g._endKind = 'warn';
+          gStop();
+        }
       }, GAME_TICK_MS);
     }
 
@@ -1415,17 +1542,68 @@
           }
 
           gBanner('ok', `答對！+${delta} 分（連對 ${g.streak}）${praiseLines.length?`\n${praiseLines.join('\n')}`:''}`);
+          appendAttemptTelemetry(q, {
+            mode: 'game',
+            isCorrect: true,
+            studentAnswer: els.gAnswer.value,
+            reason: 'correct',
+            shownLevels: g.hintUsedThisQ ? [1] : [],
+            shownSolution: false,
+            tsStart: Number(g.qStartAtMs || Date.now()),
+            tsEnd: Date.now(),
+          });
           renderEmpire(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
           if (empireBigOpen) renderEmpireBig(res.ids?.length ? res.ids[res.ids.length - 1] : null, res.ids || []);
         } else {
+          const reasonText = wrongDiagnosisByUnit(q, els.gAnswer.value, '答案與正解不一致');
+          if (els.gWrongDetail){
+            els.gWrongDetail.textContent = reasonText;
+            els.gWrongDetail.style.display = '';
+          }
+          appendAttemptTelemetry(q, {
+            mode: 'game',
+            isCorrect: false,
+            studentAnswer: els.gAnswer.value,
+            reason: reasonText,
+            shownLevels: g.hintUsedThisQ ? [1] : [],
+            shownSolution: false,
+            tsStart: Number(g.qStartAtMs || Date.now()),
+            tsEnd: Date.now(),
+          });
           g.streak = 0;
-          gBanner('warn', '不對沒關係！連對歸零，但下一題再把它追回來。先確認題目問什麼、單位、算式方向。');
+          g.t = 0;
+          gUpdate();
+          g._endMsg = `答錯，時間歸 0。先看下方「做錯在哪」分析，再重新開始。\n本回合答對 ${g.correct} 題。`;
+          g._endKind = 'bad';
+          gBanner('bad', '答錯，時間歸 0。請先看做錯分析。');
+          gStop();
+          return;
         }
         g.hintUsedThisQ = false;
         gPick();
         gUpdate();
       } catch (e){
-        gBanner('warn', `格式或輸入有誤（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}`);
+        const reasonText = wrongDiagnosisByUnit(q, els.gAnswer.value, String(e?.message || e || '答案格式錯誤'));
+        if (els.gWrongDetail){
+          els.gWrongDetail.textContent = reasonText;
+          els.gWrongDetail.style.display = '';
+        }
+        appendAttemptTelemetry(q, {
+          mode: 'game',
+          isCorrect: false,
+          studentAnswer: els.gAnswer.value,
+          reason: reasonText,
+          shownLevels: g.hintUsedThisQ ? [1] : [],
+          shownSolution: false,
+          tsStart: Number(g.qStartAtMs || Date.now()),
+          tsEnd: Date.now(),
+        });
+        g.t = 0;
+        gUpdate();
+        g._endMsg = `輸入格式錯誤，時間歸 0。請先看做錯分析，再重新開始。\n本回合答對 ${g.correct} 題。`;
+        g._endKind = 'bad';
+        gBanner('bad', `格式或輸入有誤，時間歸 0。\n${String(e?.message || e || '答案格式錯誤')}`);
+        gStop();
       }
     }
 
