@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>互動小五生活應用題帝國｜第二包（加強版｜更難 + 加題）</title>
+  <title>互動小五生活應用題帝國｜第二包 基礎入門</title>
   <style>
     :root{
       --bg:#0b1020; --panel:#0f1733; --card:#121c3d;
@@ -154,8 +154,8 @@
 </head>
 <body>
   <header>
-    <div class="title">互動小五生活應用題帝國｜第二包（加強版｜更難 + 加題）</div>
-    <div class="sub">把生活應用題做成「帝國征服」：答對才擴張、累積工程點數、解鎖領地。含闖關計分 + 練習提示/詳解/下一步；可離線（file://）或 GitHub Pages 使用。</div>
+    <div class="title">互動小五生活應用題帝國｜第二包 基礎入門</div>
+    <div class="sub">答對擴張領地、累積工程點數。含闖關計分 + 練習提示/詳解/下一步。</div>
     <div class="row" style="margin-top:10px">
       <a class="btn" href="../">← 回到 AI MATH WEB</a>
       <span class="pill" id="bankMeta">題庫載入中...</span>
@@ -281,13 +281,6 @@
       <div class="row">
         <label>單元</label>
         <select id="gUnit"></select>
-        <label>難度</label>
-        <select id="gDifficulty">
-          <option value="all">全部</option>
-          <option value="easy">入門</option>
-          <option value="normal" selected>標準</option>
-          <option value="hard">挑戰</option>
-        </select>
         <button class="btn primary" id="btnStart">開始 300 秒（5 分鐘）</button>
         <button class="btn" id="btnStop" style="display:none">停止</button>
       </div>
@@ -317,13 +310,6 @@
       <div class="row">
         <label>單元</label>
         <select id="unit"></select>
-        <label>難度</label>
-        <select id="difficulty">
-          <option value="all" selected>全部</option>
-          <option value="easy">入門</option>
-          <option value="normal">標準</option>
-          <option value="hard">挑戰</option>
-        </select>
         <button class="btn" id="btnNew">出題</button>
         <button class="btn" id="btnReset">重設本題</button>
       </div>
@@ -588,7 +574,7 @@
 
       // practice
       unit: document.getElementById('unit'),
-      difficulty: document.getElementById('difficulty'),
+      difficulty: null,
       btnNew: document.getElementById('btnNew'),
       btnReset: document.getElementById('btnReset'),
       qText: document.getElementById('qText'),
@@ -607,7 +593,7 @@
 
       // game
       gUnit: document.getElementById('gUnit'),
-      gDifficulty: document.getElementById('gDifficulty'),
+      gDifficulty: null,
       btnStart: document.getElementById('btnStart'),
       btnStop: document.getElementById('btnStop'),
       gTime: document.getElementById('gTime'),
@@ -652,16 +638,16 @@
 
     // ---------- units ----------
     const UNITS = [
-      { id:'u1_avg_fraction', title:'Unit 1｜平均分配與分數意義' },
-      { id:'u2_frac_addsub_life', title:'Unit 2｜分數加減（生活量）' },
-      { id:'u3_frac_times_int', title:'Unit 3｜分數×整數（倍數）' },
-      { id:'u4_money_decimal_addsub', title:'Unit 4｜小數與金錢（加減）' },
-      { id:'u5_decimal_muldiv_price', title:'Unit 5｜小數乘除（單價/平均）' },
-      { id:'u6_frac_dec_convert', title:'Unit 6｜分數↔小數（等值）' },
-      { id:'u7_discount_percent', title:'Unit 7｜折扣與百分比（用小數比例）' },
-      { id:'u8_ratio_recipe', title:'Unit 8｜比例與配方（份數法）' },
-      { id:'u9_unit_convert_decimal', title:'Unit 9｜單位換算 + 小數' },
-      { id:'u10_rate_time_distance', title:'Unit 10｜路程/時間/速率（每…）' },
+      { id:'u1_avg_fraction', title:'平均分配｜果汁分幾杯、緞帶剪幾段' },
+      { id:'u2_frac_addsub_life', title:'分數加減｜水壺裝多少、剩多少' },
+      { id:'u3_frac_times_int', title:'分數×整數｜買幾份共多少' },
+      { id:'u4_money_decimal_addsub', title:'金額加減｜買東西找零、合計' },
+      { id:'u5_decimal_muldiv_price', title:'單價數量｜一個多少錢、幾個多少' },
+      { id:'u6_frac_dec_convert', title:'分數↔小數｜0.5 就是 1/2' },
+      { id:'u7_discount_percent', title:'打折計算｜原價打幾折省多少' },
+      { id:'u8_ratio_recipe', title:'比例配方｜果汁水 2:3 各要多少' },
+      { id:'u9_unit_convert_decimal', title:'單位換算｜公斤→公克、公尺→公分' },
+      { id:'u10_rate_time_distance', title:'速率距離｜每分鐘走幾公尺、共多遠' },
     ];
     const unitById = Object.fromEntries(UNITS.map(u => [u.id, u]));
 
@@ -1561,7 +1547,7 @@
     // ---------- practice events ----------
     els.btnNew?.addEventListener('click', () => {
       const unit = String(els.unit.value||'all');
-      const diff = String(els.difficulty.value||'all');
+      const diff = 'all';
       const pool = filteredBank(unit, diff);
       const avoidKinds = (unit === 'all') ? state.recentKinds.slice(-2) : [];
       const q = pickFromPool(pool, { avoidId: state.q?.id, avoidKinds });
@@ -1688,7 +1674,7 @@
 
     function buildGamePool(){
       const unit = String(els.gUnit.value || 'all');
-      const diff = String(els.gDifficulty.value || 'all');
+      const diff = 'all';
       return filteredBank(unit, diff);
     }
 
@@ -1925,7 +1911,7 @@
     els.gAnswer?.addEventListener('keydown', (e) => { if (e.key === 'Enter') gSubmit(); });
 
     els.gUnit?.addEventListener('change', () => { if (g.running){ g.pool = buildGamePool(); gPick(); } });
-    els.gDifficulty?.addEventListener('change', () => { if (g.running){ g.pool = buildGamePool(); gPick(); } });
+
 
     // ---------- empire events ----------
     fillUnitSelect(els.unit, true);
