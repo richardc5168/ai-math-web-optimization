@@ -1,23 +1,28 @@
 {
-  "version": "auto-optimization-policy.v1",
-  "updated_at": "2026-02-22T00:00:00.000Z",
-  "scope": {
-    "grades": [5, 6],
-    "safe_change_types": [
-      "golden/*.json",
-      "golden/*.jsonl",
-      "docs/improvement/*.json",
-      "dist_ai_math_web_pages/docs/improvement/*.json"
-    ]
+  "error_memory": {
+    "dedupe_key": [
+      "source",
+      "code",
+      "fingerprint"
+    ],
+    "required_fields": [
+      "first_seen",
+      "last_seen",
+      "count",
+      "severity",
+      "status"
+    ],
+    "store": "golden/error_memory.jsonl",
+    "summary_output": "artifacts/error_memory_summary.json"
   },
   "gates": {
-    "tests_pass": true,
     "axe_critical_max": 0,
+    "e2e_flaky_rate_max": 0.02,
+    "golden_correct_rate_min": 1,
+    "hint_rubric_avg_min": 7,
     "lighthouse_accessibility_min": 90,
     "lighthouse_performance_min": 85,
-    "hint_rubric_avg_min": 7,
-    "golden_correct_rate_min": 1,
-    "e2e_flaky_rate_max": 0.02
+    "tests_pass": true
   },
   "improvement": {
     "mode_default": "enforce",
@@ -35,33 +40,17 @@
     ]
   },
   "parent_report": {
+    "must_output": [
+      "weak_points",
+      "remedial_suggestions",
+      "next_practice_bundle"
+    ],
     "signals_input": "feedback/parent_report_signals.jsonl",
     "weakness_dimensions": [
       "knowledge_point",
       "error_type",
       "hint_dependency",
       "time_to_solve"
-    ],
-    "must_output": [
-      "weak_points",
-      "remedial_suggestions",
-      "next_practice_bundle"
-    ]
-  },
-  "error_memory": {
-    "store": "golden/error_memory.jsonl",
-    "summary_output": "artifacts/error_memory_summary.json",
-    "dedupe_key": [
-      "source",
-      "code",
-      "fingerprint"
-    ],
-    "required_fields": [
-      "first_seen",
-      "last_seen",
-      "count",
-      "severity",
-      "status"
     ]
   },
   "rollback": {
@@ -71,5 +60,19 @@
       "non_regression_failure",
       "post_release_slo_drop"
     ]
-  }
+  },
+  "scope": {
+    "grades": [
+      5,
+      6
+    ],
+    "safe_change_types": [
+      "golden/*.json",
+      "golden/*.jsonl",
+      "docs/improvement/*.json",
+      "dist_ai_math_web_pages/docs/improvement/*.json"
+    ]
+  },
+  "updated_at": "2026-02-22T00:00:00.000Z",
+  "version": "auto-optimization-policy.v1"
 }

@@ -28,20 +28,7 @@ jobs:
 
       - name: Validate policy JSON canonical format
         shell: bash
-        run: |
-          node -e "
-          const fs=require('fs');
-          const p='golden/auto_optimization_policy.json';
-          const src=fs.readFileSync(p,'utf8');
-          const data=JSON.parse(src);
-          const normalize=(v)=>Array.isArray(v)?v.map(normalize):(v&&typeof v==='object')?Object.keys(v).sort().reduce((a,k)=>(a[k]=normalize(v[k]),a),{}):v;
-          const canonical=JSON.stringify(normalize(data),null,2)+'\n';
-          if(src!==canonical){
-            console.error('policy json is not canonical:',p);
-            process.exit(1);
-          }
-          console.log('policy json canonical:',p);
-          "
+        run: node tools/check_policy_json_canonical.cjs
 
       - name: Install Python dependencies
         run: |

@@ -19,6 +19,12 @@ repos:
 
   - repo: local
     hooks:
+      - id: policy-json-canonical
+        name: Enforce policy JSON canonical format
+        entry: node tools/check_policy_json_canonical.cjs
+        language: system
+        pass_filenames: false
+
       - id: ragweb-strict-checklist
         name: RAGWEB strict checklist
         entry: ./.venv/Scripts/python.exe scripts/run_checklist.py --spec tests/specs/precommit_checklist.json
