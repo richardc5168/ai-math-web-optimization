@@ -1,0 +1,75 @@
+{
+  "version": "auto-optimization-policy.v1",
+  "updated_at": "2026-02-22T00:00:00.000Z",
+  "scope": {
+    "grades": [5, 6],
+    "safe_change_types": [
+      "golden/*.json",
+      "golden/*.jsonl",
+      "docs/improvement/*.json",
+      "dist_ai_math_web_pages/docs/improvement/*.json"
+    ]
+  },
+  "gates": {
+    "tests_pass": true,
+    "axe_critical_max": 0,
+    "lighthouse_accessibility_min": 90,
+    "lighthouse_performance_min": 85,
+    "hint_rubric_avg_min": 7,
+    "golden_correct_rate_min": 1,
+    "e2e_flaky_rate_max": 0.02
+  },
+  "improvement": {
+    "mode_default": "enforce",
+    "mode_when_golden_changed": "require-improvement",
+    "non_regression_metrics": [
+      "hint_avg",
+      "hint_min",
+      "golden_rate",
+      "e2e_flaky_rate"
+    ],
+    "required_improvement_metrics": [
+      "hint_avg",
+      "hint_min",
+      "golden_rate"
+    ]
+  },
+  "parent_report": {
+    "signals_input": "feedback/parent_report_signals.jsonl",
+    "weakness_dimensions": [
+      "knowledge_point",
+      "error_type",
+      "hint_dependency",
+      "time_to_solve"
+    ],
+    "must_output": [
+      "weak_points",
+      "remedial_suggestions",
+      "next_practice_bundle"
+    ]
+  },
+  "error_memory": {
+    "store": "golden/error_memory.jsonl",
+    "summary_output": "artifacts/error_memory_summary.json",
+    "dedupe_key": [
+      "source",
+      "code",
+      "fingerprint"
+    ],
+    "required_fields": [
+      "first_seen",
+      "last_seen",
+      "count",
+      "severity",
+      "status"
+    ]
+  },
+  "rollback": {
+    "enabled": true,
+    "triggers": [
+      "gate_failure",
+      "non_regression_failure",
+      "post_release_slo_drop"
+    ]
+  }
+}
