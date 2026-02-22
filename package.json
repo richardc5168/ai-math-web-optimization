@@ -17,6 +17,7 @@
     "derive:report-signals": "node tools/derive_report_signal_candidates.cjs --in feedback/parent_report_signals.jsonl --out artifacts/report_autotune_candidates.json",
     "apply:report-signals": "node tools/apply_report_signal_autotune.cjs --golden golden/grade5_pack_v1.jsonl --candidates artifacts/report_autotune_candidates.json --report artifacts/report_autotune_apply.json",
     "check:improvement": "node tools/check_improvement_trend.cjs --mode enforce",
+    "trend:improvement": "node tools/build_improvement_trend_chart.cjs",
     "golden:check": "node tools/run_golden_correctness.cjs",
     "scorecard": "node tools/build_scorecard.cjs --out artifacts/scorecard.json",
     "gate:scorecard": "node tools/check_scorecard_gate.cjs",

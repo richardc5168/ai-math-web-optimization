@@ -58,6 +58,7 @@ jobs:
           npm run judge:hints
           npm run golden:check
           npm run scorecard
+          npm run trend:improvement
           if git diff --quiet -- golden/grade5_pack_v1.jsonl; then
             npm run check:improvement
           else
@@ -114,3 +115,6 @@ jobs:
             artifacts/report_autotune_candidates.json
             artifacts/report_autotune_apply.json
             artifacts/improvement_check.json
+            artifacts/improvement_trend.json
+            artifacts/improvement_trend.md
+            artifacts/improvement_trend_history.jsonl
