@@ -112,6 +112,10 @@ jobs:
             golden/error_memory.jsonl
             artifacts/error_memory_summary.json
 
+      - name: Build agent triage report
+        if: always()
+        run: npm run triage:agent
+
       - name: Create issue on nightly failure
         if: failure()
         uses: actions/github-script@v7
@@ -120,6 +124,7 @@ jobs:
             const fs = require('fs');
             const crypto = require('crypto');
             const summaryPath = 'artifacts/error_memory_summary.json';
+            const triagePath = 'artifacts/agent_triage.json';
             let summary = {
               generated_at: new Date().toISOString(),
               detected_incidents: -1,
@@ -129,11 +134,19 @@ jobs:
               open_errors: -1,
               latest: []
             };
+            let triage = null;
             if (fs.existsSync(summaryPath)) {
               try {
                 summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
               } catch (e) {
                 core.warning(`failed to parse ${summaryPath}: ${e.message}`);
+              }
+            }
+            if (fs.existsSync(triagePath)) {
+              try {
+                triage = JSON.parse(fs.readFileSync(triagePath, 'utf8'));
+              } catch (e) {
+                core.warning(`failed to parse ${triagePath}: ${e.message}`);
               }
             }
 
@@ -157,6 +170,7 @@ jobs:
               '',
               `- dedupe_signature: ${signature}`,
               `- run: ${runUrl}`,
+              `- likely_root_cause: ${triage?.likely_root_cause || 'unknown'}`,
               `- generated_at: ${summary.generated_at}`,
               `- detected_incidents: ${summary.detected_incidents}`,
               `- newly_added: ${summary.newly_added}`,
@@ -168,6 +182,8 @@ jobs:
               latestText,
               '',
               'Source artifacts:',
+              '- artifacts/agent_triage.json',
+              '- artifacts/agent_triage.md',
               '- artifacts/error_memory_summary.json',
               '- golden/error_memory.jsonl'
             ].join('\n');

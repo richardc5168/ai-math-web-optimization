@@ -19,6 +19,7 @@
     "check:improvement": "node tools/check_improvement_trend.cjs --mode enforce",
     "trend:improvement": "node tools/build_improvement_trend_chart.cjs",
     "memory:update": "node tools/update_error_memory.cjs",
+    "triage:agent": "node tools/build_agent_triage_report.cjs",
     "golden:check": "node tools/run_golden_correctness.cjs",
     "scorecard": "node tools/build_scorecard.cjs --out artifacts/scorecard.json",
     "gate:scorecard": "node tools/check_scorecard_gate.cjs",

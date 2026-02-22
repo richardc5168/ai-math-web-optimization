@@ -47,6 +47,10 @@ jobs:
       - name: Run verify:all
         run: npm run verify:all
 
+      - name: Build agent triage report
+        if: always()
+        run: npm run triage:agent
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
