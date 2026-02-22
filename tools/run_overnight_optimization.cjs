@@ -58,6 +58,7 @@ async function main() {
     console.log(`\n=== overnight iteration ${i} started: ${startedAt} ===`);
 
     const steps = [
+      ['npm', ['run', 'agent:web-search']],
       ['npm', ['run', 'autotune:hints']],
       ['npm', ['run', 'derive:report-signals']],
       ['npm', ['run', 'apply:report-signals']],
@@ -121,8 +122,8 @@ async function main() {
     };
 
     if (pass && autoCommit) {
-      const hasDiff = runCommand('git', ['diff', '--quiet']);
-      if (!hasDiff.pass) {
+      const statusRes = runCommand('git', ['status', '--porcelain']);
+      if (statusRes.stdout && statusRes.stdout.trim().length > 0) {
         const addRes = runCommand('git', ['add', '-A']);
         logs.push({ command: 'git add -A', pass: addRes.pass, status: addRes.status });
 
