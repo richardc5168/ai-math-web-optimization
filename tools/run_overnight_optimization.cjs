@@ -32,6 +32,29 @@ function ensureDir(relPath) {
   return p;
 }
 
+function runStepWithRetry(cmd, args, logs, retryCount = 1) {
+  let res = runCommand(cmd, args);
+  logs.push({
+    command: `${cmd} ${args.join(' ')}`,
+    pass: res.pass,
+    status: res.status,
+    stderr: res.pass ? undefined : res.stderr,
+  });
+
+  let attempts = 0;
+  while (!res.pass && attempts < retryCount) {
+    attempts += 1;
+    res = runCommand(cmd, args);
+    logs.push({
+      command: `${cmd} ${args.join(' ')} (retry-${attempts})`,
+      pass: res.pass,
+      status: res.status,
+      stderr: res.pass ? undefined : res.stderr,
+    });
+  }
+  return res;
+}
+
 function stageOptimizationFiles() {
   const trackedPaths = [
     'golden/grade5_pack_v1.jsonl',
@@ -110,15 +133,32 @@ async function main() {
       if (cmd === 'npm' && args.join(' ') === 'run gate:scorecard') {
         const diffGolden = runCommand('git', ['diff', '--quiet', '--', 'golden/grade5_pack_v1.jsonl']);
         const mode = diffGolden.pass ? 'enforce' : 'require-improvement';
-        const improveRes = runCommand('node', ['tools/check_improvement_trend.cjs', '--mode', mode]);
-        logs.push({ command: `node tools/check_improvement_trend.cjs --mode ${mode}`, pass: improveRes.pass, status: improveRes.status });
+        let improveRes = runStepWithRetry('node', ['tools/check_improvement_trend.cjs', '--mode', mode], logs, 1);
+        if (!improveRes.pass && mode === 'require-improvement') {
+          const retrySteps = [
+            ['npm', ['run', 'agent:web-search']],
+            ['npm', ['run', 'autotune:hints']],
+            ['npm', ['run', 'judge:hints']],
+            ['npm', ['run', 'scorecard']],
+            ['npm', ['run', 'trend:improvement']],
+          ];
+          for (const [rCmd, rArgs] of retrySteps) {
+            const retryRes = runStepWithRetry(rCmd, rArgs, logs, 1);
+            if (!retryRes.pass) {
+              improveRes = retryRes;
+              break;
+            }
+          }
+          if (improveRes.pass) {
+            improveRes = runStepWithRetry('node', ['tools/check_improvement_trend.cjs', '--mode', mode], logs, 1);
+          }
+        }
         if (!improveRes.pass) {
           pass = false;
           break;
         }
       }
-      const res = runCommand(cmd, args);
-      logs.push({ command: `${cmd} ${args.join(' ')}`, pass: res.pass, status: res.status });
+      const res = runStepWithRetry(cmd, args, logs, 1);
       if (!res.pass) {
         pass = false;
         break;

@@ -21,11 +21,19 @@ function pythonCmd() {
   }) || 'python';
 }
 
+function resolveCommand(command) {
+  if (process.platform !== 'win32') return command;
+  if (command === 'npm') return 'npm.cmd';
+  if (command === 'npx') return 'npx.cmd';
+  return command;
+}
+
 function runCommand(command, args, options = {}) {
-  const proc = spawnSync(command, args, {
+  const execCommand = resolveCommand(command);
+  const proc = spawnSync(execCommand, args, {
     cwd: process.cwd(),
     encoding: 'utf-8',
-    shell: process.platform === 'win32',
+    shell: false,
     ...options,
   });
   return {

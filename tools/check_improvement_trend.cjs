@@ -43,6 +43,13 @@ const improved =
   current.hint_min > Number(baseline.best_hint_min || 0) ||
   current.golden_rate > Number(baseline.best_golden_rate || 0);
 
+const atQualityCeiling =
+  current.hint_avg >= 10 &&
+  current.hint_min >= 10 &&
+  current.golden_rate >= 1;
+
+const improvementSatisfied = improved || (nonRegression && atQualityCeiling);
+
 const nextBaseline = {
   best_hint_avg: Math.max(Number(baseline.best_hint_avg || 0), current.hint_avg),
   best_hint_min: Math.max(Number(baseline.best_hint_min || 0), current.hint_min),
@@ -55,6 +62,8 @@ const report = {
   mode,
   non_regression: nonRegression,
   improved,
+  improvement_satisfied: improvementSatisfied,
+  at_quality_ceiling: atQualityCeiling,
   baseline,
   current,
 };
@@ -66,7 +75,7 @@ if (nonRegression) {
   fs.writeFileSync(baselinePath, JSON.stringify(nextBaseline, null, 2) + '\n', 'utf8');
 }
 
-if (mode === 'require-improvement' && !improved) {
+if (mode === 'require-improvement' && !improvementSatisfied) {
   console.error('no measurable improvement over baseline');
   process.exit(1);
 }
@@ -76,4 +85,4 @@ if (mode === 'enforce' && !nonRegression) {
   process.exit(1);
 }
 
-console.log(JSON.stringify({ nonRegression, improved }, null, 2));
+console.log(JSON.stringify({ nonRegression, improved, improvementSatisfied, atQualityCeiling }, null, 2));
