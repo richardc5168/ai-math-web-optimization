@@ -1277,14 +1277,22 @@
       return '🟡 標準語氣：算完回查，答案更穩。';
     }
 
+    function hintStepRhythm(level){
+      const lv = clampHintLevel(level);
+      if (lv === 1) return '🔁 四步口訣：圈 → 列 → 算 → 查（本層先做「圈」）';
+      if (lv === 2) return '🔁 四步口訣：圈 → 列 → 算 → 查（本層先做「列」）';
+      return '🔁 四步口訣：圈 → 列 → 算 → 查（本層先做「算＋查」）';
+    }
+
     function injectDifficultyLine(text, difficulty, level){
       const src = normalizeText(text || '');
       if (!src) return src;
       const line = hintDifficultyLine(difficulty, level);
+      const rhythmLine = hintStepRhythm(level);
       if (!line) return src;
       const parts = src.split('\n');
       if (!parts.length) return src;
-      return [parts[0], line, ...parts.slice(1)].join('\n');
+      return [parts[0], line, rhythmLine, ...parts.slice(1)].join('\n');
     }
 
     function currentHint(level){
