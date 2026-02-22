@@ -1,51 +1,91 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["version", "tests", "e2e", "lighthouse", "axe", "hint_rubric", "golden", "timestamp"],
+  "required": [
+    "version",
+    "tests",
+    "e2e",
+    "lighthouse",
+    "axe",
+    "hint_rubric",
+    "golden",
+    "timestamp"
+  ],
   "properties": {
-    "version": { "type": "string" },
-    "timestamp": { "type": "string" },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
     "tests": {
       "type": "object",
-      "required": ["pass"],
+      "required": [
+        "pass"
+      ],
       "properties": {
-        "pass": { "type": "boolean" }
+        "pass": {
+          "type": "boolean"
+        }
       }
     },
     "e2e": {
       "type": "object",
-      "required": ["flaky_rate"],
+      "required": [
+        "flaky_rate"
+      ],
       "properties": {
-        "flaky_rate": { "type": "number" }
+        "flaky_rate": {
+          "type": "number"
+        }
       }
     },
     "lighthouse": {
       "type": "object",
-      "required": ["performance", "accessibility"],
+      "required": [
+        "performance",
+        "accessibility"
+      ],
       "properties": {
-        "performance": { "type": "number" },
-        "accessibility": { "type": "number" }
+        "performance": {
+          "type": "number"
+        },
+        "accessibility": {
+          "type": "number"
+        }
       }
     },
     "axe": {
       "type": "object",
-      "required": ["critical"],
+      "required": [
+        "critical"
+      ],
       "properties": {
-        "critical": { "type": "integer" }
+        "critical": {
+          "type": "integer"
+        }
       }
     },
     "hint_rubric": {
       "type": "object",
-      "required": ["avg"],
+      "required": [
+        "avg"
+      ],
       "properties": {
-        "avg": { "type": "number" }
+        "avg": {
+          "type": "number"
+        }
       }
     },
     "golden": {
       "type": "object",
-      "required": ["correct_rate"],
+      "required": [
+        "correct_rate"
+      ],
       "properties": {
-        "correct_rate": { "type": "number" }
+        "correct_rate": {
+          "type": "number"
+        }
       }
     }
   }

@@ -1,27 +1,40 @@
 const fs = require('fs');
 const path = require('path');
 
-function normalize(value) {
-  if (Array.isArray(value)) return value.map(normalize);
-  if (value && typeof value === 'object') {
-    return Object.keys(value)
-      .sort()
-      .reduce((acc, key) => {
-        acc[key] = normalize(value[key]);
-        return acc;
-      }, {});
+const targets = [
+  path.join(process.cwd(), 'golden', 'auto_optimization_policy.json'),
+  path.join(process.cwd(), 'golden', 'improvement_baseline.json'),
+  path.join(process.cwd(), 'schemas', 'scorecard.schema.json'),
+];
+
+const writeMode = process.argv.includes('--write');
+let invalidCount = 0;
+
+for (const filePath of targets) {
+  if (!fs.existsSync(filePath)) {
+    console.error(`missing required file: ${filePath}`);
+    invalidCount += 1;
+    continue;
   }
-  return value;
+
+  const source = fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n');
+  const parsed = JSON.parse(source);
+  const canonical = `${JSON.stringify(parsed, null, 2)}\n`;
+
+  if (source !== canonical) {
+    if (writeMode) {
+      fs.writeFileSync(filePath, canonical, 'utf8');
+      console.log(`rewrote canonical json: ${filePath}`);
+    } else {
+      console.error(`json is not canonical: ${filePath}`);
+      invalidCount += 1;
+    }
+    continue;
+  }
+
+  console.log(`json canonical: ${filePath}`);
 }
 
-const policyPath = path.join(process.cwd(), 'golden', 'auto_optimization_policy.json');
-const source = fs.readFileSync(policyPath, 'utf8');
-const parsed = JSON.parse(source);
-const canonical = `${JSON.stringify(normalize(parsed), null, 2)}\n`;
-
-if (source !== canonical) {
-  console.error(`policy json is not canonical: ${policyPath}`);
+if (invalidCount > 0) {
   process.exit(1);
 }
-
-console.log(`policy json canonical: ${policyPath}`);

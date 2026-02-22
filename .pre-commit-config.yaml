@@ -20,7 +20,7 @@ repos:
   - repo: local
     hooks:
       - id: policy-json-canonical
-        name: Enforce policy JSON canonical format
+        name: Enforce critical JSON canonical format
         entry: node tools/check_policy_json_canonical.cjs
         language: system
         pass_filenames: false
