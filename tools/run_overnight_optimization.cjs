@@ -49,6 +49,19 @@ function stageOptimizationFiles() {
   return runCommand('git', ['add', '--', ...trackedPaths]);
 }
 
+function resetOptimizationFiles() {
+  const trackedPaths = [
+    'golden/grade5_pack_v1.jsonl',
+    'golden/improvement_baseline.json',
+    'golden/improvement_trend_history.jsonl',
+    'golden/error_memory.jsonl',
+    'docs/improvement/latest.json',
+    'dist_ai_math_web_pages/docs/improvement/latest.json',
+  ];
+
+  return runCommand('git', ['restore', '--', ...trackedPaths]);
+}
+
 async function main() {
   const hours = Number(argValue('--hours', '7'));
   const intervalMin = Number(argValue('--interval-min', '30'));
@@ -120,6 +133,8 @@ async function main() {
       logs.push({ command: 'npm run triage:agent', pass: triage.pass, status: triage.status });
       const summary = runCommand('npm', ['run', 'summary:iteration']);
       logs.push({ command: 'npm run summary:iteration', pass: summary.pass, status: summary.status });
+      const reset = resetOptimizationFiles();
+      logs.push({ command: 'git restore -- [optimization files]', pass: reset.pass, status: reset.status });
     }
 
     const iterSummary = readJson('artifacts/iteration_output_summary.json', {});
