@@ -63,10 +63,6 @@ function stageOptimizationFiles() {
     'golden/error_memory.jsonl',
     'docs/improvement/latest.json',
     'dist_ai_math_web_pages/docs/improvement/latest.json',
-    'artifacts/agent_web_search_report.json',
-    'artifacts/iteration_output_summary.json',
-    'artifacts/web_topic_alignment.json',
-    'artifacts/scorecard.json',
   ];
 
   return runCommand('git', ['add', '--', ...trackedPaths]);
@@ -199,23 +195,31 @@ async function main() {
         const addRes = stageOptimizationFiles();
         logs.push({ command: 'git add -- [optimization files]', pass: addRes.pass, status: addRes.status });
 
-        const commitMsg = `chore: overnight iteration ${i} optimized content and reports`;
-        let commitRes = runCommand('git', ['commit', '-m', commitMsg]);
-
-        // If pre-commit hooks modified files and failed the commit, add and commit again
-        if (!commitRes.pass) {
-          stageOptimizationFiles();
-          commitRes = runCommand('git', ['commit', '-m', commitMsg]);
+        const hasStagedRes = runCommand('git', ['diff', '--cached', '--quiet']);
+        if (hasStagedRes.pass) {
+          logs.push({ command: 'git diff --cached --quiet', pass: true, status: 0 });
+        } else {
+          logs.push({ command: 'git diff --cached --quiet', pass: false, status: hasStagedRes.status });
         }
 
-        logs.push({ command: `git commit -m "${commitMsg}"`, pass: commitRes.pass, status: commitRes.status });
+        if (!hasStagedRes.pass) {
+          const commitMsg = `chore: overnight iteration ${i} optimized content and reports`;
+          let commitRes = { pass: false, status: 1 };
+          for (let commitTry = 1; commitTry <= 3; commitTry += 1) {
+            stageOptimizationFiles();
+            commitRes = runCommand('git', ['commit', '-m', commitMsg]);
+            if (commitRes.pass) break;
+          }
 
-        if (commitRes.pass) {
-          const hashRes = runCommand('git', ['rev-parse', '--short', 'HEAD']);
-          if (hashRes.pass) entry.commit_hash = (hashRes.stdout || '').trim();
-          if (autoPush) {
-            const pushRes = runCommand('git', ['push', 'origin', 'main']);
-            logs.push({ command: 'git push origin main', pass: pushRes.pass, status: pushRes.status });
+          logs.push({ command: `git commit -m "${commitMsg}"`, pass: commitRes.pass, status: commitRes.status });
+
+          if (commitRes.pass) {
+            const hashRes = runCommand('git', ['rev-parse', '--short', 'HEAD']);
+            if (hashRes.pass) entry.commit_hash = (hashRes.stdout || '').trim();
+            if (autoPush) {
+              const pushRes = runCommand('git', ['push', 'origin', 'main']);
+              logs.push({ command: 'git push origin main', pass: pushRes.pass, status: pushRes.status });
+            }
           }
         }
       }

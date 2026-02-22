@@ -4,6 +4,7 @@ const path = require('path');
 const cwd = process.cwd();
 const goldenPath = path.join(cwd, 'golden', 'grade5_pack_v1.jsonl');
 const memoryPath = path.join(cwd, 'golden', 'error_memory.jsonl');
+const hintJudgePath = path.join(cwd, 'artifacts', 'hint_judge.json');
 const reportPath = path.join(cwd, 'artifacts', 'agent_web_search_report.json');
 
 const SOURCE_URLS = [
@@ -76,13 +77,29 @@ async function fetchTopicSignals() {
 }
 
 function selectedRows(rows, maxCount) {
+  const judgeById = new Map();
+  if (fs.existsSync(hintJudgePath)) {
+    try {
+      const judge = JSON.parse(fs.readFileSync(hintJudgePath, 'utf8'));
+      for (const item of judge.items || []) {
+        judgeById.set(item.id, Number(item.score || 0));
+      }
+    } catch {
+      // ignore malformed judge artifact and fallback to length ranking
+    }
+  }
+
   const ranked = rows
     .map((item, idx) => ({
       idx,
       id: item?.id,
+      score: judgeById.has(item?.id) ? judgeById.get(item?.id) : 999,
       hintLen: JSON.stringify(item?.hint_ladder || {}).length,
     }))
-    .sort((a, b) => a.hintLen - b.hintLen);
+    .sort((a, b) => {
+      if (a.score !== b.score) return a.score - b.score;
+      return a.hintLen - b.hintLen;
+    });
   return ranked.slice(0, Math.max(1, maxCount)).map((x) => x.idx);
 }
 
@@ -102,17 +119,17 @@ function optimizeItem(item, topics, memoryRows) {
   const topicPhrase = topics.length > 0 ? topics.join('、') : '分數與小數應用';
   const memoryHint = memoryRows.length > 0 ? '避免重複過去常見錯誤，先確認單位與題意。' : '先確認題意與單位是否一致。';
 
-  if (typeof hint.h1_strategy === 'string' && !hint.h1_strategy.includes('先畫出關係')) {
-    hint.h1_strategy = `${hint.h1_strategy} 先畫出關係或列出已知/未知。`;
+  if (typeof hint.h1_strategy === 'string') {
+    hint.h1_strategy = `${hint.h1_strategy} 先判斷單位與比例關係，必要時轉成分數或平均模型。`;
   }
-  if (typeof hint.h2_equation === 'string' && !hint.h2_equation.includes('先寫算式框架')) {
-    hint.h2_equation = `${hint.h2_equation} 先寫算式框架，再代入數字。`;
+  if (typeof hint.h2_equation === 'string') {
+    hint.h2_equation = `${hint.h2_equation} 先列式：已知量 ÷ 單位量 = 結果，再用 = 檢核。`;
   }
   if (typeof hint.h3_compute === 'string') {
-    hint.h3_compute = `${hint.h3_compute} ${memoryHint}`;
+    hint.h3_compute = `${hint.h3_compute} 先整理數字，再逐步運算，最後寫出答案。${memoryHint}`;
   }
-  if (typeof hint.h4_check_reflect === 'string' && !hint.h4_check_reflect.includes('反向驗算')) {
-    hint.h4_check_reflect = `${hint.h4_check_reflect} 用反向驗算確認答案合理。`;
+  if (typeof hint.h4_check_reflect === 'string') {
+    hint.h4_check_reflect = `${hint.h4_check_reflect} 檢查單位是否一致、估算是否合理，並反思是否可用其他方法驗證。`;
   }
 
   const misconceptions = Array.isArray(report.misconceptions) ? report.misconceptions.slice() : [];
@@ -155,7 +172,7 @@ async function main() {
     return;
   }
 
-  const numToOptimize = Math.min(2, rows.length);
+  const numToOptimize = Math.min(8, rows.length);
   const indicesToOptimize = selectedRows(rows, numToOptimize);
 
   let changed = 0;
