@@ -1,0 +1,36 @@
+# 20260223 Report
+
+## Web Link
+- https://richardc5168.github.io/ai-math-web/
+
+## Overnight Run Summary
+- finished_at: 2026-02-23T02:12:53.973Z
+- total_iterations: 67
+- auto_commit: true
+- auto_push: true
+- history_path: artifacts/overnight_iteration_history.jsonl
+- iteration_dir: artifacts/iterations
+
+## Latest Iterations (65-67)
+- Iteration 65: pass=true, non_regression=true, improved=false, commit_hash=ea86ea7
+- Iteration 66: pass=true, non_regression=true, improved=false, commit_hash=11220a3
+- Iteration 67: pass=true, non_regression=true, improved=false, commit_hash=12da149
+
+## Latest Git Commits
+- 12da149 chore: overnight iteration 67 optimized content and reports
+- 11220a3 chore: overnight iteration 66 optimized content and reports
+- ea86ea7 chore: overnight iteration 65 optimized content and reports
+- 1104f64 chore: overnight iteration 64 optimized content and reports
+- c8b1e06 chore: overnight iteration 63 optimized content and reports
+- 529680f chore: overnight iteration 62 optimized content and reports
+- a340207 chore: overnight iteration 61 optimized content and reports
+- 45d50a8 chore: overnight iteration 60 optimized content and reports
+- e800dfe chore: overnight iteration 59 optimized content and reports
+- 95d394a chore: overnight iteration 58 optimized content and reports
+
+## Artifacts
+- artifacts/overnight_run_summary.json
+- artifacts/overnight_iteration_history.jsonl
+- artifacts/iteration_output_summary.json
+- artifacts/agent_web_search_report.json
+- artifacts/web_topic_alignment.json

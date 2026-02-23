@@ -429,7 +429,26 @@
     function filteredBank(kind, difficulty){
       let pool = bank;
       if (kind && kind !== 'all') pool = pool.filter(x => String(x.kind) === kind);
-      if (difficulty && difficulty !== 'all') pool = pool.filter(x => String(x.difficulty) === difficulty);
+      const diff = String(difficulty || 'all');
+      if (diff !== 'all') {
+        if (diff === 'medium') {
+          const mediumPool = pool.filter(x => String(x.difficulty) === 'medium');
+          if (mediumPool.length) return mediumPool;
+          return pool.filter(x => {
+            const d = String(x.difficulty);
+            return d === 'easy' || d === 'hard';
+          });
+        }
+
+        if (diff === 'easy' || diff === 'hard') {
+          pool = pool.filter(x => {
+            const d = String(x.difficulty);
+            return d === 'easy' || d === 'hard';
+          });
+        } else {
+          pool = pool.filter(x => String(x.difficulty) === diff);
+        }
+      }
       return pool;
     }
 
