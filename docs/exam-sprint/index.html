@@ -471,6 +471,18 @@
     return patterns.some(re => re.test(t));
   }
 
+  function hasNumericMismatchRisk(questionText, hintText){
+    const qNums = String(questionText || '').match(/\d+(?:\.\d+)?(?:\s*\/\s*\d+)?/g) || [];
+    const hNums = String(hintText || '').match(/\d+(?:\.\d+)?(?:\s*\/\s*\d+)?/g) || [];
+    if (!hNums.length) return false;
+    const qSet = new Set(qNums.map(s => s.replace(/\s+/g, '')));
+    let extra = 0;
+    for (const n of hNums){
+      if (!qSet.has(String(n).replace(/\s+/g, ''))) extra += 1;
+    }
+    return extra >= 2;
+  }
+
   function getFamilyHintText(q, level){
     const lv = Math.max(1, Math.min(3, Number(level || 1)));
     const kind = String(q?.kind || '');
@@ -524,7 +536,9 @@
       return '檢查每一步單位是否一致，最後再寫答案。';
     }
 
-    return null;
+    if (lv === 1) return '觀念：先讀懂題目在問什麼，圈出已知與未知。';
+    if (lv === 2) return '先列出算式或步驟順序，再逐步計算。';
+    return '最後做驗算與單位檢查，確認答案合理。';
   }
 
   function getNormalizedSolution(q){
@@ -1113,7 +1127,8 @@
     const idx = Math.max(1, Math.min(3, Number(level||1))) - 1;
     const rawText = safeStr(hints[idx] || hints[hints.length-1] || '（此題沒有提示）');
     const exact = getNormalizedHintText(q, idx + 1);
-    const fallback = isBoilerplateHintText(rawText) ? getFamilyHintText(q, idx + 1) : null;
+    const needFallback = isBoilerplateHintText(rawText) || hasNumericMismatchRisk(q?.question || '', rawText);
+    const fallback = needFallback ? getFamilyHintText(q, idx + 1) : null;
     const text = safeStr(exact || fallback || rawText);
     const hintKey = `${idx+1}::${text}`;
     if (state.renderedHints.has(hintKey)){
