@@ -459,6 +459,74 @@
     return null;
   }
 
+  function isBoilerplateHintText(text){
+    const t = String(text || '');
+    if (!t.trim()) return true;
+    const patterns = [
+      /請依前面步驟完成計算/,
+      /最後請自行寫出答案/,
+      /先找最小公倍數：LCM\([^\)]*\)/,
+      /先算分子：\d+\s*[×x]\s*\d+\s*=\s*\d+/,
+    ];
+    return patterns.some(re => re.test(t));
+  }
+
+  function getFamilyHintText(q, level){
+    const lv = Math.max(1, Math.min(3, Number(level || 1)));
+    const kind = String(q?.kind || '');
+
+    const fracAddKinds = new Set(['fraction_addsub','add_unlike','sub_unlike','fraction_add_unlike','fraction_sub_mixed']);
+    const fracWordKinds = new Set(['fraction_of_quantity','remaining_after_fraction','reverse_fraction','remain_then_fraction','fraction_remaining','remaining_by_fraction','fraction_of_fraction','average_division','generic_fraction_word','fraction_mul','mul']);
+    const decimalKinds = new Set(['d_mul_d','d_div_int','d_mul_int','int_mul_d','int_div_int_to_decimal','decimal_mul','decimal_div','decimal_times_decimal']);
+    const ratioPercentKinds = new Set(['percent_of','percent_find_whole','percent_increase_decrease','percent_interest','ratio_missing_to_1','ratio_sub_decimal']);
+    const timeKinds = new Set(['time_add','time_add_cross_day','time_sub_cross_day']);
+    const volumeAreaKinds = new Set(['rect_cm3','composite','composite3','rect_find_height','cube_find_edge','cm3_to_m3','m3_to_cm3','surface_area_rect_prism','area_tiling','decimal_dims','mixed_units']);
+
+    if (fracAddKinds.has(kind)){
+      if (lv === 1) return '觀念：分數加減先看分母；同分母直接算分子，不同分母先通分。';
+      if (lv === 2) return '步驟：先找公分母，再把每個分數改成同分母。';
+      return '完成分子加減後，約分到最簡分數，最後檢查答案大小是否合理。';
+    }
+
+    if (fracWordKinds.has(kind)){
+      if (lv === 1) return '觀念：先圈出「全部、部分、剩下」與「要找什麼」。';
+      if (lv === 2) return '把題意翻成算式：先算比例，再乘上（或除以）總量。';
+      return '算完做反推驗算：把答案代回題意，檢查是否符合情境。';
+    }
+
+    if (decimalKinds.has(kind)){
+      if (lv === 1) return '觀念：小數運算先對齊位值（或先當整數算）。';
+      if (lv === 2) return '先算整數部分，再處理小數點位數與位置。';
+      return '用估算檢查量級：答案應與題目數字大小關係一致。';
+    }
+
+    if (ratioPercentKinds.has(kind)){
+      if (lv === 1) return '觀念：百分率先換成倍率（% ÷ 100）。';
+      if (lv === 2) return '先判斷是「求部分、求全體」或「增加/減少後」。';
+      return '完成後反代驗算：把結果帶回原式確認成立。';
+    }
+
+    if (timeKinds.has(kind)){
+      if (lv === 1) return '觀念：先統一時間格式（時:分 或 分鐘）。';
+      if (lv === 2) return '加法超過 60 進位；減法不夠減先借位。';
+      return '最後換回題目指定格式，並檢查是否跨日。';
+    }
+
+    if (volumeAreaKinds.has(kind)){
+      if (lv === 1) return '觀念：先判斷求體積還是面積，公式不同。';
+      if (lv === 2) return '把已知長寬高（或底高）代入公式，逐步計算。';
+      return '最後檢查單位：面積是平方、體積是立方。';
+    }
+
+    if (kind === 'shopping_two_step' || kind === 'general'){
+      if (lv === 1) return '觀念：這是兩步驟生活題，先找第一步，再接第二步。';
+      if (lv === 2) return '把每一步算式分開寫，避免一次混算。';
+      return '檢查每一步單位是否一致，最後再寫答案。';
+    }
+
+    return null;
+  }
+
   function getNormalizedSolution(q){
     const kind = String(q?.kind || '');
 
@@ -1044,7 +1112,9 @@
     const hints = Array.isArray(q.hints) ? q.hints : [];
     const idx = Math.max(1, Math.min(3, Number(level||1))) - 1;
     const rawText = safeStr(hints[idx] || hints[hints.length-1] || '（此題沒有提示）');
-    const text = safeStr(getNormalizedHintText(q, idx + 1) || rawText);
+    const exact = getNormalizedHintText(q, idx + 1);
+    const fallback = isBoilerplateHintText(rawText) ? getFamilyHintText(q, idx + 1) : null;
+    const text = safeStr(exact || fallback || rawText);
     const hintKey = `${idx+1}::${text}`;
     if (state.renderedHints.has(hintKey)){
       setBanner('muted', `提示 ${idx+1} 已顯示過。`);
