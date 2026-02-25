@@ -541,6 +541,16 @@
     return '最後做驗算與單位檢查，確認答案合理。';
   }
 
+  function withLevelPrefix(text, level){
+    const lv = Math.max(1, Math.min(3, Number(level || 1)));
+    const s = String(text || '').trim();
+    if (!s) return s;
+    if (/^Level\s*[123]/i.test(s)) return s;
+    if (lv === 1) return `Level 1（觀念）｜${s}`;
+    if (lv === 2) return `Level 2（列式/操作）｜${s}`;
+    return `Level 3（驗算/注意）｜${s}`;
+  }
+
   function getNormalizedSolution(q){
     const kind = String(q?.kind || '');
 
@@ -1129,7 +1139,7 @@
     const exact = getNormalizedHintText(q, idx + 1);
     const needFallback = isBoilerplateHintText(rawText) || hasNumericMismatchRisk(q?.question || '', rawText);
     const fallback = needFallback ? getFamilyHintText(q, idx + 1) : null;
-    const text = safeStr(exact || fallback || rawText);
+    const text = withLevelPrefix(safeStr(exact || fallback || rawText), idx + 1);
     const hintKey = `${idx+1}::${text}`;
     if (state.renderedHints.has(hintKey)){
       setBanner('muted', `提示 ${idx+1} 已顯示過。`);
