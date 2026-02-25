@@ -1865,10 +1865,23 @@
       return false;
     }
 
-    function pickQuestion(){
+    function isDirectAnswerableQuestion(q){
+      if (!q) return false;
+      if (q.manual_check) return false;
+      if (String(q.kind || '') === 'national_bank_source') return false;
+      if (!normalizeText(q.question || '')) return false;
+      return true;
+    }
+
+    function pickQuestion(options = {}){
+      const preferDirect = options.preferDirect !== false;
       const k = String(els.kind.value || 'all');
       const basePool = (k === 'all') ? bank : bank.filter(x => String(x.kind) === k);
-      const pool = basePool.filter(x => !isAmbiguousQuestionText(x?.question));
+      let pool = basePool.filter(x => !isAmbiguousQuestionText(x?.question) && !!normalizeText(x?.question || ''));
+      if (preferDirect){
+        const directPool = pool.filter(isDirectAnswerableQuestion);
+        if (directPool.length) pool = directPool;
+      }
       if (!pool.length) return null;
       if (pool.length === 1) return pool[0];
 
@@ -2079,7 +2092,14 @@
       if (state.q && !state.revealed && !state.attemptLogged){
         commitAttempt(false, 'skip', els.answer.value);
       }
-      showQuestion(pickQuestion());
+      const inAllMode = String(els.kind.value || 'all') === 'all';
+      const q = pickQuestion({ preferDirect: inAllMode });
+      showQuestion(q);
+      if (!q){
+        setBannerBad('目前沒有可出題目，請切換題型或稍後再試。');
+      } else if (inAllMode && !isDirectAnswerableQuestion(q)){
+        setBannerMuted('目前可直接作答題不足，已改出來源卷題（可切換題型為互動題練習）。');
+      }
     });
 
     els.btnReset.addEventListener('click', () => {
@@ -2195,6 +2215,13 @@
         if (!state.revealed) showFullSolution(q);
         state.revealed = true;
         commitAttempt(true, 'manual_check', studentRaw);
+        if (String(els.kind.value || 'all') === 'all'){
+          const nextQ = pickQuestion({ preferDirect: true });
+          if (nextQ && nextQ.id !== q.id){
+            showQuestion(nextQ);
+            setBannerMuted('已自動跳到下一題可直接作答題，避免卡住。');
+          }
+        }
         return;
       }
 
