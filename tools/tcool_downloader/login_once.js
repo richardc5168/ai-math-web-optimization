@@ -25,7 +25,10 @@ function looksLikeVerificationPage(url, title = '') {
     s.includes('challenge') ||
     s.includes('cloudflare') ||
     s.includes('verify') ||
-    s.includes('attention required')
+    s.includes('attention required') ||
+    s.includes('驗證') ||
+    s.includes('人機') ||
+    s.includes('機器人')
   );
 }
 

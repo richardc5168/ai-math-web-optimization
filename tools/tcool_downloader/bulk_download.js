@@ -68,7 +68,11 @@ function looksLikeVerification(url, title = '', bodyText = '') {
     s.includes('challenge') ||
     s.includes('cloudflare') ||
     s.includes('attention required') ||
-    s.includes('verify you are human')
+    s.includes('verify you are human') ||
+    s.includes('驗證') ||
+    s.includes('人機') ||
+    s.includes('機器人') ||
+    s.includes('i am not a robot')
   );
 }
 
