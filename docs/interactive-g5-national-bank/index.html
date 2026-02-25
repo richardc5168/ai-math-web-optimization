@@ -2012,11 +2012,27 @@
 
     function buildQuestionVisualModel(q){
       const txt = String(q?.question || '');
+      if (/三合院|挖空.*小長方形/.test(txt)){
+        const parsedCourtyard = parseCourtyardQuestion(txt);
+        if (parsedCourtyard) return { type: 'courtyard_volume', ...parsedCourtyard };
+      }
       if (/兩個長方體組成/.test(txt)){
         const parsed = parseStackedCuboidQuestion(txt);
         if (parsed) return { type: 'stacked_cuboid', ...parsed };
       }
       return null;
+    }
+
+    function parseCourtyardQuestion(text){
+      const txt = String(text || '');
+      const heightMatch = txt.match(/高度是\s*(\d+(?:\.\d+)?)\s*公尺/);
+      const shapeMatch = txt.match(/大長方形長\s*(\d+(?:\.\d+)?)\s*寬\s*(\d+(?:\.\d+)?)[^\d]+小長方形長\s*(\d+(?:\.\d+)?)\s*寬\s*(\d+(?:\.\d+)?)/);
+      if (!shapeMatch) return null;
+      return {
+        outer: { l: Number(shapeMatch[1]), w: Number(shapeMatch[2]) },
+        inner: { l: Number(shapeMatch[3]), w: Number(shapeMatch[4]) },
+        h: heightMatch ? Number(heightMatch[1]) : null,
+      };
     }
 
     function renderStackedCuboidSvg(model){
@@ -2075,8 +2091,61 @@
       `;
     }
 
+    function renderCourtyardSvg(model){
+      const outerL = model.outer.l;
+      const outerW = model.outer.w;
+      const innerL = model.inner.l;
+      const innerW = model.inner.w;
+
+      const scale = 18;
+      const ox = 90;
+      const oy = 70;
+      const outerWidth = outerL * scale;
+      const outerHeight = outerW * scale;
+      const innerWidth = innerL * scale;
+      const innerHeight = innerW * scale;
+      const ix = ox + (outerWidth - innerWidth) / 2;
+      const iy = oy + (outerHeight - innerHeight) / 2;
+      const svgW = Math.max(620, ox + outerWidth + 120);
+      const svgH = Math.max(420, oy + outerHeight + 100);
+
+      const baseArea = outerL * outerW;
+      const holeArea = innerL * innerW;
+      const netArea = baseArea - holeArea;
+      const volumeText = Number.isFinite(model.h)
+        ? `體積 = ${netArea} × ${model.h} = ${netArea * model.h} 立方公尺`
+        : `體積 = 底面積 ${netArea} × 高度`;
+
+      return `
+        <svg class="q-visual-svg" viewBox="0 0 ${svgW} ${svgH}" role="img" aria-label="三合院平面挖空示意圖">
+          <rect x="${ox}" y="${oy}" width="${outerWidth}" height="${outerHeight}" fill="#204a87" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+          <rect x="${ix}" y="${iy}" width="${innerWidth}" height="${innerHeight}" fill="#0b1020" stroke="rgba(255,255,255,0.45)" stroke-dasharray="6 4" stroke-width="2"/>
+
+          <line x1="${ox}" y1="${oy + outerHeight + 24}" x2="${ox + outerWidth}" y2="${oy + outerHeight + 24}" stroke="#9cc6ff" stroke-width="2"/>
+          <text x="${ox + outerWidth / 2}" y="${oy + outerHeight + 42}" fill="#9cc6ff" text-anchor="middle" font-size="14">大長方形長 ${outerL} m</text>
+
+          <line x1="${ox + outerWidth + 24}" y1="${oy}" x2="${ox + outerWidth + 24}" y2="${oy + outerHeight}" stroke="#9cc6ff" stroke-width="2"/>
+          <text x="${ox + outerWidth + 30}" y="${oy + outerHeight / 2}" fill="#9cc6ff" font-size="14">寬 ${outerW} m</text>
+
+          <line x1="${ix}" y1="${iy - 18}" x2="${ix + innerWidth}" y2="${iy - 18}" stroke="#f0c040" stroke-width="2"/>
+          <text x="${ix + innerWidth / 2}" y="${iy - 24}" fill="#f0c040" text-anchor="middle" font-size="13">挖空長 ${innerL} m</text>
+
+          <text x="${ix + innerWidth + 8}" y="${iy + innerHeight / 2}" fill="#f0c040" font-size="13">挖空寬 ${innerW} m</text>
+          <text x="${ox}" y="${oy + outerHeight + 70}" fill="#b7f5c9" font-size="14">底面積 = ${outerL}×${outerW} − ${innerL}×${innerW} = ${netArea} 平方公尺</text>
+          <text x="${ox}" y="${oy + outerHeight + 92}" fill="#b7f5c9" font-size="14">${volumeText}</text>
+        </svg>
+      `;
+    }
+
     function renderQuestionVisual(model){
       if (!model) return '';
+      if (model.type === 'courtyard_volume'){
+        return `
+          <div class="q-visual-title">🏠 圖形說明（三合院空拍圖）</div>
+          ${renderCourtyardSvg(model)}
+          <div class="q-visual-note">先算「大底面積－中間挖空面積」，再乘高度。</div>
+        `;
+      }
       if (model.type === 'stacked_cuboid'){
         return `
           <div class="q-visual-title">🧩 圖形說明（兩個長方體）</div>
