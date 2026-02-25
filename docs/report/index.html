@@ -146,8 +146,8 @@
     </div>
 
     <div class="card" style="margin-top:12px">
-      <div class="section-title">家長週報（math-offline 版整合）</div>
-      <div class="small">整合 parent_report 的統計/建議/四象限圖表，不影響原題型與提示流程。</div>
+      <div class="section-title">家長週報（基礎數學檢測）</div>
+      <div class="small">整合小學基礎數學檢測的統計/建議/四象限圖表，不影響原題型與提示流程。</div>
       <div id="offlineCards" class="grid" style="margin-top:10px"></div>
       <div class="subgrid">
         <div class="card">
@@ -164,7 +164,12 @@
         <div id="offlineRecommend" class="small" style="margin-top:6px"></div>
       </div>
       <div class="card" style="margin-top:10px">
-        <div style="font-weight:700">📊 統計表 — 最近 7 天</div>
+        <div style="font-weight:700">� 檢測結果 — 補救觀念與出題建議</div>
+        <div class="small">依據小學基礎數學檢測的作答結果，列出需要補救的觀念與建議練習方向，幫助家長快速掌握孩子的學習弱點。</div>
+        <div id="offlineRemedy" style="margin-top:6px"></div>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <div style="font-weight:700">�📊 統計表 — 最近 7 天</div>
         <div class="small">最近七天內的作答統計（單元/題型/標籤），正確率低於 80% 的題型會顯示觀念提醒與補救建議。</div>
         <div id="offlineTable" style="margin-top:6px"></div>
       </div>
@@ -1515,6 +1520,76 @@
       el.innerHTML = `- ${rec.summary.join('<br>- ')}${focus}`;
     }
 
+    function renderOfflineRemedy(attempts){
+      const el = $('offlineRemedy');
+      if (!el) return;
+      const items = Array.isArray(attempts) ? attempts : [];
+      if (!items.length){
+        el.innerHTML = '<div class="small">（尚無作答紀錄，完成檢測後自動顯示補救建議）</div>';
+        return;
+      }
+      // group by kind
+      const kindMap = new Map();
+      for (const evt of items){
+        const kind = String(evt?.kind || 'unknown');
+        const unitId = String(evt?.unit_id || '');
+        const key = `${unitId}::${kind}`;
+        if (!kindMap.has(key)) kindMap.set(key, { unit_id: unitId, kind, total: 0, wrong: 0, hintUsed: 0, topError: '' });
+        const g = kindMap.get(key);
+        g.total++;
+        if (evt?.is_correct === false){
+          g.wrong++;
+          if (!g.topError) g.topError = inferErrorType(evt);
+        }
+        const hc = Number(evt?.hint?.shown_count || 0);
+        if (hc > 0) g.hintUsed++;
+      }
+      // sort: most wrong first, then most hint-dependent
+      const sorted = Array.from(kindMap.values()).sort((a,b) => {
+        const accA = a.total ? (a.wrong / a.total) : 0;
+        const accB = b.total ? (b.wrong / b.total) : 0;
+        if (accB !== accA) return accB - accA;
+        return (b.hintUsed / (b.total||1)) - (a.hintUsed / (a.total||1));
+      });
+      const weakKinds = sorted.filter(g => {
+        const acc = g.total ? (1 - g.wrong / g.total) : 1;
+        const hintRate = g.total ? (g.hintUsed / g.total) : 0;
+        return acc < 0.8 || hintRate >= 0.5;
+      });
+      if (!weakKinds.length){
+        el.innerHTML = '<div class="small" style="color:var(--ok)">✅ 所有題型正確率皆 ≥ 80% 且提示依賴低，目前無需額外補救。建議維持每週短回合練習。</div>';
+        return;
+      }
+      let html = '';
+      for (const g of weakKinds.slice(0, 6)){
+        const acc = g.total ? Math.round(100 * (1 - g.wrong / g.total)) : 100;
+        const hintRate = g.total ? Math.round(100 * g.hintUsed / g.total) : 0;
+        const tagCls = acc >= 80 ? 'ok' : (acc >= 60 ? 'warn' : 'bad');
+        const concepts = conceptReminderZh(g.kind);
+        const dirs = practiceDirectionZh(g.kind, g.topError || 'calculation_error');
+        html += `<div class="card" style="margin-top:8px;padding:10px">
+          <div style="font-weight:700">${safeStr(kindNameZh(g.kind))} <span class="mono small">(${safeStr(g.kind)})</span>
+            <span class="tag ${tagCls}" style="margin-left:6px">正確率 ${acc}%</span>
+            ${hintRate >= 50 ? `<span class="tag warn" style="margin-left:4px">提示依賴 ${hintRate}%</span>` : ''}
+          </div>
+          <div style="margin-top:6px">
+            <div class="small" style="font-weight:600">🧠 需補強觀念：</div>
+            <ul style="margin:4px 0 0 18px;padding:0;color:#dbeafe;font-size:13px">
+              ${concepts.map(c => `<li>${safeStr(c)}</li>`).join('')}
+            </ul>
+          </div>
+          <div style="margin-top:6px">
+            <div class="small" style="font-weight:600">📝 出題與練習建議：</div>
+            <ul style="margin:4px 0 0 18px;padding:0;color:#dbeafe;font-size:13px">
+              ${dirs.map(d => `<li>${safeStr(d)}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="small" style="margin-top:4px;color:var(--muted)">作答 ${g.total} 題，錯 ${g.wrong} 題，使用提示 ${g.hintUsed} 次</div>
+        </div>`;
+      }
+      el.innerHTML = html;
+    }
+
     function renderAttemptTable(attempts){
       const tb = $('tbAttempts');
       if (!tb) return;
@@ -2485,6 +2560,7 @@
       renderOfflineQuadrant(offlineStats);
       renderOfflineTrend(offlineStats);
       renderOfflineRecommend(offlineStats);
+      renderOfflineRemedy(attempts);
 
       // ── 最近 7 天 vs 更早歷史紀錄 ──
       const sevenDayMs = Date.now() - 7 * 24 * 60 * 60 * 1000;
