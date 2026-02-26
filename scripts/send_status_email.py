@@ -90,22 +90,23 @@ def require_env(name: str) -> str:
 
 def main() -> int:
     try:
-        smtp_host = os.getenv("RAGWEB_SMTP_HOST", "smtp.gmail.com").strip()
-        smtp_port = int(os.getenv("RAGWEB_SMTP_PORT", "465").strip())
-        smtp_user = os.getenv("RAGWEB_SMTP_USER", "").strip()
-        smtp_pass = os.getenv("RAGWEB_SMTP_PASS", "").strip()
+        smtp_host = os.getenv("RAGWEB_SMTP_HOST", os.getenv("SMTP_HOST", "smtp.gmail.com")).strip()
+        smtp_port = int(os.getenv("RAGWEB_SMTP_PORT", os.getenv("SMTP_PORT", "465")).strip())
+        smtp_user = os.getenv("RAGWEB_SMTP_USER", os.getenv("SMTP_USER", "")).strip()
+        smtp_pass = os.getenv("RAGWEB_SMTP_PASS", os.getenv("SMTP_PASS", "")).strip()
 
         if not smtp_user or not smtp_pass:
-            print("MAIL_SKIPPED: missing SMTP credentials; set RAGWEB_SMTP_USER and RAGWEB_SMTP_PASS to enable sending")
+            print("MAIL_SKIPPED: missing SMTP credentials (RAGWEB_SMTP_USER/RAGWEB_SMTP_PASS or SMTP_USER/SMTP_PASS)")
+            latest = load_latest()
+            print(f"LATEST_STATUS: kind={latest.get('kind')} id={latest.get('id')} pass={latest.get('pass')} checked_at={latest.get('checked_at')}")
             return 0
 
         default_email = git_user_email()
-        mail_to = os.getenv("RAGWEB_MAIL_TO", default_email).strip()
+        mail_to = os.getenv("RAGWEB_MAIL_TO", os.getenv("MAIL_TO", default_email)).strip()
         if not mail_to:
-            print("MAIL_SKIPPED: missing RAGWEB_MAIL_TO and git user.email; skip sending")
-            return 0
+            raise ValueError("missing env: RAGWEB_MAIL_TO (and git user.email empty)")
 
-        mail_from = os.getenv("RAGWEB_MAIL_FROM", smtp_user).strip()
+        mail_from = os.getenv("RAGWEB_MAIL_FROM", os.getenv("MAIL_FROM", smtp_user)).strip()
         subject = os.getenv("RAGWEB_MAIL_SUBJECT", "[RAGWEB] 30分鐘自動優化摘要").strip()
 
         latest = load_latest()
@@ -125,10 +126,31 @@ def main() -> int:
             server.send_message(msg)
 
         print(f"MAIL_SENT: to={mail_to} via {smtp_host}:{smtp_port}")
+        github_summary = os.getenv("GITHUB_STEP_SUMMARY", "").strip()
+        if github_summary:
+            summary_lines = [
+                "## 30-min Mail Status",
+                "",
+                f"- Result: MAIL_SENT",
+                f"- To: {mail_to}",
+                f"- Latest kind: {latest.get('kind')}",
+                f"- Latest id: {latest.get('id')}",
+                f"- Latest pass: {latest.get('pass')}",
+            ]
+            Path(github_summary).write_text("\n".join(summary_lines) + "\n", encoding="utf-8")
         return 0
     except Exception as exc:
         print(f"MAIL_SEND_FAILED: {exc}")
-        print("Required env: RAGWEB_SMTP_USER, RAGWEB_SMTP_PASS, optional RAGWEB_MAIL_TO")
+        github_summary = os.getenv("GITHUB_STEP_SUMMARY", "").strip()
+        if github_summary:
+            summary_lines = [
+                "## 30-min Mail Status",
+                "",
+                f"- Result: MAIL_FAILED",
+                f"- Error: {exc}",
+            ]
+            Path(github_summary).write_text("\n".join(summary_lines) + "\n", encoding="utf-8")
+        print("Required env: RAGWEB_SMTP_USER, RAGWEB_SMTP_PASS (or SMTP_USER/SMTP_PASS), optional RAGWEB_MAIL_TO")
         return 0
 
 
