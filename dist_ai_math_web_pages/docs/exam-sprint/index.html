@@ -394,14 +394,19 @@
       const model = extractFracAddSubModel(q);
       if (!model) return null;
       const sameDen = model.f1.d === model.f2.d;
+      const numRes = model.op === '+' ? (model.n1 + model.n2) : (model.n1 - model.n2);
+      const equalSubToZero = model.op === '-' && model.n1 === model.n2;
       if (lv === 1){
+        if (equalSubToZero) return `觀念：${model.f1.s} ${model.op} ${model.f2.s} 是同分母且同值，相減後會是 0（寫成 0/${model.commonD} 再化簡為 0）。`;
         return sameDen
           ? `觀念：${model.f1.s} ${model.op} ${model.f2.s} 是同分母，可直接做分子${model.op === '+' ? '相加' : '相減'}。`
           : `觀念：${model.f1.s} ${model.op} ${model.f2.s} 是不同分母，先通分再做分子${model.op === '+' ? '相加' : '相減'}。`;
       }
       if (lv === 2){
+        if (equalSubToZero) return `先找公分母：LCM(${model.f1.d}, ${model.f2.d}) = ${model.commonD}；再改寫成 ${model.n1}/${model.commonD} ${model.op} ${model.n2}/${model.commonD} = 0/${model.commonD}。`;
         return `先找公分母：LCM(${model.f1.d}, ${model.f2.d}) = ${model.commonD}；再改寫成 ${model.n1}/${model.commonD} ${model.op} ${model.n2}/${model.commonD}。`;
       }
+      if (equalSubToZero) return `分子運算：${model.n1} ${model.op} ${model.n2} = ${numRes}，分母維持 ${model.commonD}，得到 0/${model.commonD}，再化簡為 0。`;
       return `分子運算：${model.n1} ${model.op} ${model.n2}，分母維持 ${model.commonD}，最後再約分成最簡分數（不直接給最終答案）。`;
     }
 
@@ -728,6 +733,8 @@
     const y2 = top + rowH + rowGap;
     const textY = y2 + rowH + 18;
     const footY = textY + 16;
+    const numRes = model.op === '+' ? (model.n1 + model.n2) : (model.n1 - model.n2);
+    const equalSubToZero = model.op === '-' && model.n1 === model.n2;
 
     let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W + pad*2} ${footY + 14}">`;
     for (let i=0;i<cols;i++){
@@ -746,8 +753,14 @@
     const opLabel = model.op === '+' ? '第二個分數（加）' : '第二個分數（減）';
     const opColor = model.op === '+' ? '#ffe7b3' : '#ffd2cf';
     s += `<text x="${pad + 212}" y="${textY}" font-size="12" fill="${opColor}">${opLabel}：${model.f2.s} → ${model.n2}/${cols}</text>`;
+    if (level >= 2){
+      const calcText = equalSubToZero
+        ? `同分母相減：${model.n1}/${cols} - ${model.n2}/${cols} = 0/${cols} → 0`
+        : `分子運算：${model.n1} ${model.op} ${model.n2} = ${numRes}（分母維持 ${cols}）`;
+      s += `<text x="${pad}" y="${footY}" font-size="12" fill="#e6edf3">${calcText}</text>`;
+    }
     if (level >= 3){
-      s += `<text x="${pad}" y="${footY}" font-size="12" fill="#e6edf3">先把兩個分數通分到 ${cols}，再做分子 ${model.op === '+' ? '相加' : '相減'}（不在提示直接給最終答案）。</text>`;
+      s += `<text x="${pad}" y="${footY + 16}" font-size="12" fill="#e6edf3">先把兩個分數通分到 ${cols}，再做分子 ${model.op === '+' ? '相加' : '相減'}（不在提示直接給最終答案）。</text>`;
     }
     s += `</svg>`;
     return s;
