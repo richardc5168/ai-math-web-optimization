@@ -3,6 +3,14 @@
   "updated_at": "2026-02-26T14:30:00Z",
   "commands": [
     {
+      "id": "2026-02-26-summary-30m",
+      "enabled": true,
+      "action": "npm_script",
+      "value": "summary:iteration",
+      "cooldown_minutes": 30,
+      "note": "每 30 分鐘產生一次簡易改善摘要，並透過自動提交推送到 GitHub 做進度回報"
+    },
+    {
       "id": "2026-02-26-gate-verify-all",
       "enabled": true,
       "action": "npm_script",
@@ -92,7 +100,7 @@
     },
     {
       "id": "2026-02-26-optimize-g5g6-5h",
-      "enabled": true,
+      "enabled": false,
       "action": "npm_script",
       "value": "optimize:g5g6:web:5h",
       "cooldown_minutes": 720,
