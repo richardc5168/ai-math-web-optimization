@@ -702,3 +702,58 @@ test('recordMisconceptionCorrected — marks correction', () => {
   assert.ok(report.totalCorrected >= 1, 'Should have at least 1 corrected');
   assert.ok(report.correctionRate > 0, 'Correction rate should be > 0');
 });
+
+/* ============================================================
+ * 24. buildAreaModelSVG
+ * ============================================================ */
+test('buildAreaModelSVG — renders rectangle with grid', () => {
+  const svg = HE.buildAreaModelSVG(3, 4);
+  assert.ok(svg.includes('<svg'), 'Should render SVG');
+  assert.ok(svg.includes('role="img"'), 'Should have ARIA role');
+  assert.ok(svg.includes('Area model'), 'Should have aria-label');
+  assert.ok(svg.includes('12 格'), 'Should show grid count 3*4=12');
+});
+
+test('buildAreaModelSVG — with partitions', () => {
+  const svg = HE.buildAreaModelSVG(4, 3, {
+    partitions: [
+      { label: '2/4', fraction: 0.5, color: '#ef4444' },
+      { label: '2/4', fraction: 0.5, color: '#3b82f6' }
+    ]
+  });
+  assert.ok(svg.includes('2/4'), 'Should show partition labels');
+  assert.ok(svg.includes('2 regions'), 'Should mention regions in aria-label');
+});
+
+test('buildAreaModelSVG — returns empty for invalid input', () => {
+  assert.equal(HE.buildAreaModelSVG(0, 5), '');
+  assert.equal(HE.buildAreaModelSVG(-1, 3), '');
+});
+
+/* ============================================================
+ * 25. L4 placeholder boxes in fracRemain
+ * ============================================================ */
+test('fracRemain L4 includes placeholder boxes', () => {
+  const q = { kind: 'remain_then_fraction', question: '吃 1/3 再吃剩下的 1/2', answer: '1/3' };
+  const html = HE.buildRichHintHTML(q, 4);
+  assert.ok(html.includes('he-placeholder'), 'L4 should have placeholder boxes');
+  assert.ok(html.includes('步驟①'), 'L4 should show step 1');
+  assert.ok(html.includes('步驟②'), 'L4 should show step 2');
+  assert.ok(html.includes('步驟③'), 'L4 should show step 3');
+});
+
+/* ============================================================
+ * 26. suggestHintLevel
+ * ============================================================ */
+test('suggestHintLevel — returns L1 for new question', () => {
+  const suggestion = HE.suggestHintLevel('brand_new_q_xyz');
+  assert.equal(suggestion.level, 1);
+  assert.ok(suggestion.reason.length > 0, 'Should have a reason');
+});
+
+test('suggestHintLevel — returns L2 when prior misconception exists', () => {
+  HE.recordMisconception('q_prior_err', ['direction_error']);
+  const suggestion = HE.suggestHintLevel('q_prior_err');
+  assert.equal(suggestion.level, 2);
+  assert.ok(suggestion.reason.includes('direction_error'), 'Should mention the misconception');
+});

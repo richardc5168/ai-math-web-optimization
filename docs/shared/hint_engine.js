@@ -910,6 +910,69 @@
     return svg;
   }
 
+  /**
+   * buildAreaModelSVG(length, width, opts)
+   * Rectangular area model — shows a rectangle divided into sub-regions.
+   * Useful for multiplication (including fraction multiplication).
+   * opts.partitions: [{ label, fraction, color }] — vertical partitions of the rectangle
+   */
+  function buildAreaModelSVG(length, width, opts){
+    opts = opts || {};
+    var l = (length !== undefined && length !== null) ? Number(length) : 0;
+    var w = (width !== undefined && width !== null) ? Number(width) : 0;
+    if (!isFinite(l) || !isFinite(w) || l <= 0 || w <= 0) return '';
+    var scale = opts.scale || 40;
+    var maxDim = 6;
+    var drawL = Math.min(l, maxDim) * scale;
+    var drawW = Math.min(w, maxDim) * scale;
+    var pad = 30;
+    var W = drawL + pad * 2 + 20;
+    var H = drawW + pad * 2 + 20;
+    var partitions = opts.partitions || [];
+
+    var ariaLabel = 'Area model: ' + l + ' x ' + w;
+    if (partitions.length > 0) ariaLabel += ' with ' + partitions.length + ' regions';
+    var svg = '<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escapeHTML(ariaLabel)+'" style="display:block;margin:6px auto">';
+
+    /* Main rectangle */
+    svg += '<rect x="'+pad+'" y="'+pad+'" width="'+drawL+'" height="'+drawW+'" fill="#374151" stroke="#9ca3af" stroke-width="1.5" rx="2"/>';
+
+    /* Partitions (vertical divisions) */
+    if (partitions.length > 0){
+      var px = pad;
+      var defCols = ['#ef4444','#3b82f6','#22c55e','#f97316','#8b5cf6'];
+      for (var i = 0; i < partitions.length; i++){
+        var part = partitions[i];
+        var frac = part.fraction || (1 / partitions.length);
+        var pw = frac * drawL;
+        var color = part.color || defCols[i % defCols.length];
+        svg += '<rect x="'+px+'" y="'+pad+'" width="'+Math.round(pw)+'" height="'+drawW+'" fill="'+color+'" opacity="0.3" stroke="'+color+'" stroke-width="0.5"/>';
+        /* Label inside partition */
+        svg += '<text x="'+(px + Math.round(pw)/2)+'" y="'+(pad + drawW/2)+'" text-anchor="middle" dy=".35em" fill="'+color+'" font-size="10" font-weight="700">'+escapeHTML(part.label || '')+'</text>';
+        px += Math.round(pw);
+      }
+    }
+
+    /* Dimension labels */
+    svg += '<text x="'+(pad + drawL/2)+'" y="'+(pad - 8)+'" text-anchor="middle" fill="#e5e7eb" font-size="11" font-weight="700">'+l+'</text>';
+    svg += '<text x="'+(pad - 10)+'" y="'+(pad + drawW/2)+'" text-anchor="middle" dy=".35em" fill="#e5e7eb" font-size="11" font-weight="700" transform="rotate(-90 '+(pad-10)+' '+(pad+drawW/2)+')">'+w+'</text>';
+
+    /* Grid lines for integer grid */
+    if (l <= maxDim && w <= maxDim && l === Math.floor(l) && w === Math.floor(w)){
+      for (var gx = 1; gx < l; gx++){
+        svg += '<line x1="'+(pad + gx*scale)+'" y1="'+pad+'" x2="'+(pad + gx*scale)+'" y2="'+(pad + drawW)+'" stroke="#6b7280" stroke-width="0.5" stroke-dasharray="3,3"/>';
+      }
+      for (var gy = 1; gy < w; gy++){
+        svg += '<line x1="'+pad+'" y1="'+(pad + gy*scale)+'" x2="'+(pad + drawL)+'" y2="'+(pad + gy*scale)+'" stroke="#6b7280" stroke-width="0.5" stroke-dasharray="3,3"/>';
+      }
+      /* Unit count */
+      svg += '<text x="'+(pad + drawL + 6)+'" y="'+(pad + drawW + 12)+'" fill="#9ca3af" font-size="9">= '+(l*w)+' 格</text>';
+    }
+
+    svg += '</svg>';
+    return svg;
+  }
+
   function buildComparisonBarSVG(items, opts){
     opts = opts || {};
     if (!items || items.length === 0) return '';
@@ -1336,8 +1399,9 @@
       if (family === 'fracRemain' && fracs.length >= 2){
         var f1r = fracs[0], f2r = fracs[1];
         html += '<div class="he-formula">';
-        html += '步驟① 1 − ' + f1r.num + '/' + f1r.den + ' = ' + (f1r.den-f1r.num) + '/' + f1r.den + ' (剩下)<br>';
-        html += '步驟② ' + (f1r.den-f1r.num) + '/' + f1r.den + ' × ' + f2r.num + '/' + f2r.den + ' = ？（自行計算）<br>';
+        html += '<div class="he-step-row">步驟① 1 − ' + f1r.num + '/' + f1r.den + ' = <span class="he-placeholder">□</span>/' + f1r.den + ' (剩下)</div>';
+        html += '<div class="he-step-row">步驟② <span class="he-placeholder">□</span>/' + f1r.den + ' × ' + f2r.num + '/' + f2r.den + ' = <span class="he-placeholder">□</span>（第二段量）</div>';
+        html += '<div class="he-step-row">步驟③ 剩下 − 第二段 = <span class="he-placeholder">□</span>（最終答案）</div>';
         html += '</div>';
         html += '<div class="he-check-ok">✅ 第二段 &lt; 剩下？全部 &gt; 答案？</div>';
         html += '<div class="he-check-bad">❌ 常見錯：直接用 1 × ' + f2r.num + '/' + f2r.den + '（忽略基準切換）</div>';
@@ -1892,6 +1956,39 @@
     };
   }
 
+  /**
+   * suggestHintLevel(questionId)
+   * Based on past hint usage and misconceptions, suggest which hint level
+   * the student should start with for this question.
+   * Returns { level: 1-4, reason: String }
+   */
+  function suggestHintLevel(questionId){
+    var id = String(questionId || '');
+    var hData = _loadTracking();
+    var dData = _loadDiagTracking();
+    var rec = hData[id];
+    var dRec = dData[id];
+
+    /* Has prior misconceptions that weren't corrected — suggest L2 */
+    if (dRec && dRec.triggers && dRec.triggers.length > 0 && !dRec.corrected){
+      return { level: 2, reason: '上次有錯因（' + dRec.triggers[0] + '），建議從畫圖確認' };
+    }
+
+    /* First attempt: start at L1 */
+    if (!rec || !rec.attempts || rec.attempts === 0){
+      return { level: 1, reason: '初次作答，從觀念鎖定開始' };
+    }
+
+    /* Multiple attempts needed L3+ hints to succeed */
+    var l3plus = (rec.correctAfterHint && ((rec.correctAfterHint.L3 || 0) + (rec.correctAfterHint.L4 || 0))) || 0;
+    if (l3plus >= 2){
+      return { level: 3, reason: '多次需要 L3+ 提示才答對，建議從讀圖階段開始' };
+    }
+
+    /* Has been seen but not a hard question */
+    return { level: 1, reason: '複習題目，從觀念鎖定開始' };
+  }
+
   /* ============================================================
    * Public API — processHint()
    * ============================================================
@@ -2248,6 +2345,9 @@
       '.he-rich-viz svg:hover{opacity:.85}',
       /* Formula scaffolding */
       '.he-formula{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);border-radius:6px;padding:6px 10px;margin:6px 0;font-family:monospace;font-size:13px;color:#e5e7eb;line-height:1.7}',
+      '.he-step-row{margin:3px 0;padding:2px 0;border-bottom:1px dotted rgba(210,153,34,.15)}',
+      '.he-step-row:last-child{border-bottom:none}',
+      '.he-placeholder{display:inline-block;width:22px;height:18px;border:2px dashed #d29922;border-radius:3px;text-align:center;color:#d29922;font-weight:900;font-size:14px;vertical-align:middle;line-height:18px;margin:0 2px}',
       /* Check indicators */
       '.he-check-ok{color:#3fb950;font-size:12px;margin:2px 0}',
       '.he-check-bad{color:#f85149;font-size:12px;margin:2px 0}',
@@ -2301,6 +2401,7 @@
     buildStepIndicatorSVG: buildStepIndicatorSVG,
     buildFractionCircleSVG: buildFractionCircleSVG,
     buildTreeDiagramSVG: buildTreeDiagramSVG,
+    buildAreaModelSVG: buildAreaModelSVG,
     highlightKeywords: highlightKeywords,
 
     /* L4 gate */
@@ -2320,6 +2421,7 @@
     recordMisconception: recordMisconception,
     recordMisconceptionCorrected: recordMisconceptionCorrected,
     getMisconceptionReport: getMisconceptionReport,
+    suggestHintLevel: suggestHintLevel,
 
     /* Utilities */
     extractFractions: extractFractions,
