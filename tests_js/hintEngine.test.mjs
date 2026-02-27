@@ -540,3 +540,32 @@ test('processHintHTML decimal L2 — includes place value SVG', () => {
   assert.ok(html.includes('位值分解'));
   assert.ok(html.includes('十分位') || html.includes('buildPlaceValueSVG') || html.includes('個'));
 });
+
+/* ============================================================
+ * 17. buildComparisonBarSVG
+ * ============================================================ */
+test('buildComparisonBarSVG — renders bars with aria-label', () => {
+  const svg = HE.buildComparisonBarSVG([
+    { label: '原價', value: 1000 },
+    { label: '折後', value: 800 }
+  ]);
+  assert.ok(svg.includes('<svg'));
+  assert.ok(svg.includes('role="img"'));
+  assert.ok(svg.includes('原價'));
+  assert.ok(svg.includes('1000'));
+  assert.ok(svg.includes('800'));
+});
+
+test('buildComparisonBarSVG — empty input', () => {
+  assert.strictEqual(HE.buildComparisonBarSVG([]), '');
+  assert.strictEqual(HE.buildComparisonBarSVG(null), '');
+});
+
+/* ============================================================
+ * 18. CSS animation class present
+ * ============================================================ */
+test('processHintHTML — percent L2 includes comparison bar when original price present', () => {
+  const q = { kind: 'percent_of', question: '原價 500 元，打 8 折後多少？', answer: '400' };
+  const html = HE.processHintHTML(q, 2);
+  assert.ok(html.includes('原價'), 'Should show original price comparison');
+});

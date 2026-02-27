@@ -773,6 +773,49 @@
     return parseInt(h.substr(0,2),16)+','+parseInt(h.substr(2,2),16)+','+parseInt(h.substr(4,2),16);
   }
 
+  /**
+   * buildComparisonBarSVG(items, opts)
+   * Horizontal bar comparison chart.
+   * items: array of {label, value, color?}
+   * Useful for comparing quantities (原價 vs 折後, 兩人各自的量, etc.)
+   */
+  function buildComparisonBarSVG(items, opts){
+    opts = opts || {};
+    if (!items || items.length === 0) return '';
+    var W = opts.width || 280;
+    var barH = 20;
+    var gap = 8;
+    var labelW = 50;
+    var H = items.length * (barH + gap) + gap + 4;
+    var maxVal = 0;
+    for (var i = 0; i < items.length; i++){
+      if (items[i].value > maxVal) maxVal = items[i].value;
+    }
+    if (maxVal === 0) maxVal = 1;
+    var barAreaW = W - labelW - 40;
+
+    var ariaLabel = 'Comparison bar chart: ' + items.map(function(it){ return it.label + '=' + it.value; }).join(', ');
+    var svg = '<svg width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+ariaLabel+'" style="display:block;margin:6px auto">';
+
+    var defColors = ['#3b82f6','#ef4444','#22c55e','#f97316','#8b5cf6'];
+    for (var j = 0; j < items.length; j++){
+      var it = items[j];
+      var y = gap + j * (barH + gap);
+      var bw = (it.value / maxVal) * barAreaW;
+      var c = it.color || defColors[j % defColors.length];
+
+      /* Label */
+      svg += '<text x="'+(labelW-4)+'" y="'+(y+barH/2)+'" text-anchor="end" dy=".35em" fill="#e5e7eb" font-size="10">'+escapeHTML(it.label)+'</text>';
+      /* Bar */
+      svg += '<rect x="'+labelW+'" y="'+y+'" width="'+Math.round(bw)+'" height="'+barH+'" fill="'+c+'" opacity="0.7" rx="3"/>';
+      /* Value on bar */
+      svg += '<text x="'+(labelW+Math.round(bw)+4)+'" y="'+(y+barH/2)+'" dy=".35em" fill="'+c+'" font-size="10" font-weight="700">'+it.value+'</text>';
+    }
+
+    svg += '</svg>';
+    return svg;
+  }
+
   /* ============================================================
    * 2c. Rich Hint HTML Builder — per-family parametric hints
    * ============================================================ */
@@ -854,7 +897,19 @@
         var m = text.match(/(\d+)\s*[%％折]/);
         if (m) pVal = parseInt(m[1], 10);
         if (/折/.test(text)) pVal = pVal * 10;
-        if (pVal > 0 && pVal <= 100) html += buildPercentGridSVG(pVal);
+        if (pVal > 0 && pVal <= 100){
+          html += buildPercentGridSVG(pVal);
+          /* If an original amount is in the text, show comparison bar */
+          var origMatch = text.match(/(?:原[價價]|定價|售價|全[部體])\s*(\d+)/);
+          if (origMatch){
+            var origAmt = parseInt(origMatch[1],10);
+            var discAmt = Math.round(origAmt * pVal / 100);
+            html += buildComparisonBarSVG([
+              { label: '原價', value: origAmt },
+              { label: pVal+'%', value: discAmt }
+            ]);
+          }
+        }
       } else if (family === 'decimal'){
         var decs = [];
         var dm = text.match(/\d+\.\d+/g);
@@ -1803,7 +1858,11 @@
       '.he-rich-l2{color:#3fb950;font-weight:600;line-height:1.6;margin:4px 0}',
       '.he-rich-l3{color:#d29922;font-weight:600;line-height:1.6;margin:4px 0}',
       '.he-rich-l4{color:#f85149;font-weight:600;line-height:1.6;margin:4px 0}',
-      '.he-rich-viz{margin:6px 0}',
+      '.he-rich-viz{margin:6px 0;animation:heVizFadeIn .5s ease-out}',
+      '@keyframes heVizFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}',
+      /* SVG specific animations */
+      '.he-rich-viz svg{transition:opacity .3s ease}',
+      '.he-rich-viz svg:hover{opacity:.85}',
       /* Formula scaffolding */
       '.he-formula{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);border-radius:6px;padding:6px 10px;margin:6px 0;font-family:monospace;font-size:13px;color:#e5e7eb;line-height:1.7}',
       /* Check indicators */
@@ -1855,6 +1914,7 @@
     buildLevelingSVG: buildLevelingSVG,
     buildNumberBondSVG: buildNumberBondSVG,
     buildPlaceValueSVG: buildPlaceValueSVG,
+    buildComparisonBarSVG: buildComparisonBarSVG,
 
     /* L4 gate */
     enforceL3Gate: enforceL3Gate,
