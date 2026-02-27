@@ -390,6 +390,41 @@ test('diagnoseWrongAnswer — base switch detection', () => {
   }
 });
 
+test('diagnoseWrongAnswer — fraction not reduced', () => {
+  const q = { kind: 'fraction_addsub', question: '算 1/4 + 1/4', answer: '1/2' };
+  const diag = HE.diagnoseWrongAnswer(q, '2/4');
+  assert.ok(diag && diag.length > 0, 'Should detect un-reduced fraction');
+  assert.ok(diag.some(d => d.tag === 'fraction_not_reduced'));
+});
+
+test('diagnoseWrongAnswer — volume vs area confusion', () => {
+  const q = { kind: 'rect_cm3', question: '長 5 寬 4 高 3 求體積', answer: '60' };
+  const diag = HE.diagnoseWrongAnswer(q, '20');
+  assert.ok(diag && diag.length > 0, 'Should detect area/volume confusion');
+  assert.ok(diag.some(d => d.tag === 'volume_area_confusion'));
+});
+
+test('diagnoseWrongAnswer — forgot second step', () => {
+  const q = { kind: 'remain_then_fraction', question: '吃了 1/5 ，再吃剩下的 1/3', answer: '8/15' };
+  const diag = HE.diagnoseWrongAnswer(q, '0.8');
+  assert.ok(diag && diag.length > 0, 'Should detect forgot second step');
+  assert.ok(diag.some(d => d.tag === 'forgot_second_step'));
+});
+
+test('diagnoseWrongAnswer — sum instead of average', () => {
+  const q = { kind: 'u1_average', question: '成績 80 90 70', answer: '80' };
+  const diag = HE.diagnoseWrongAnswer(q, '240');
+  assert.ok(diag && diag.length > 0, 'Should detect sum not average');
+  assert.ok(diag.some(d => d.tag === 'sum_not_average'));
+});
+
+test('diagnoseWrongAnswer — off by one', () => {
+  const q = { kind: 'general', question: '共幾塊', answer: '10' };
+  const diag = HE.diagnoseWrongAnswer(q, '11');
+  assert.ok(diag && diag.length > 0, 'Should detect off-by-one');
+  assert.ok(diag.some(d => d.tag === 'off_by_one'));
+});
+
 /* ============================================================
  * 12. Tracking
  * ============================================================ */

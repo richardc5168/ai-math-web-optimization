@@ -1282,6 +1282,78 @@
         return /^-?\d/.test(String(wrongAns));
       },
       remedy: '時間進位/借位可能出錯。\n→ 60 分鐘 = 1 小時；不夠減先從小時借 1 變成 60 分鐘。'
+    },
+    'fraction_not_reduced': {
+      detect: function(q, wrongAns){
+        /* Student got correct value but didn't simplify — check if wrong/correct are equivalent fractions */
+        var fam = getFamily(q.kind);
+        if (fam !== 'fracAdd' && fam !== 'fracWord' && fam !== 'fracRemain') return false;
+        var aFracs = extractFractions(String(q.answer));
+        var wFracs = extractFractions(String(wrongAns));
+        if (aFracs.length !== 1 || wFracs.length !== 1) return false;
+        var af = aFracs[0], wf = wFracs[0];
+        /* Same value but different representation */
+        if (af.den === 0 || wf.den === 0) return false;
+        return (af.num * wf.den === wf.num * af.den) && (af.den !== wf.den || af.num !== wf.num);
+      },
+      remedy: '你的答案數值是對的，但分數還沒約到最簡分數。\n→ 找分子和分母的最大公因數（GCD），把分子分母同除以它。'
+    },
+    'volume_area_confusion': {
+      detect: function(q, wrongAns){
+        if (getFamily(q.kind) !== 'volume') return false;
+        var ints2 = extractIntegers(q.question);
+        if (ints2.length < 3) return false;
+        var wrongNum = parseFloat(wrongAns);
+        if (!isFinite(wrongNum)) return false;
+        /* Check if student computed area instead of volume (or vice versa) */
+        var area = ints2[0] * ints2[1];
+        var vol = area * ints2[2];
+        var correctNum = parseFloat(q.answer);
+        if (correctNum === vol && Math.abs(wrongNum - area) < 0.01) return true;
+        if (correctNum === area && Math.abs(wrongNum - vol) < 0.01) return true;
+        return false;
+      },
+      remedy: '你可能搞混了「面積」和「體積」。\n→ 面積 = 長×寬（平方單位）；體積 = 長×寬×高（立方單位）。\n確認題目問的是面積還是體積。'
+    },
+    'forgot_second_step': {
+      detect: function(q, wrongAns){
+        /* Student only did the first step in a two-step problem */
+        if (getFamily(q.kind) !== 'fracRemain') return false;
+        var fracs2 = extractFractions(q.question);
+        if (fracs2.length < 2) return false;
+        var wrongNum = parseFloat(wrongAns);
+        var f1 = fracs2[0];
+        /* Check if student just computed 1 - first_fraction */
+        var remainder = 1 - f1.num / f1.den;
+        if (isFinite(remainder) && Math.abs(wrongNum - remainder) < 0.001) return true;
+        /* Or just computed the first fraction */
+        if (Math.abs(wrongNum - f1.num / f1.den) < 0.001) return true;
+        return false;
+      },
+      remedy: '你可能只做了第一步就停了。\n→ 這題有兩段操作：先算出第一步結果，再對「剩下的量」做第二步。'
+    },
+    'sum_not_average': {
+      detect: function(q, wrongAns){
+        if (getFamily(q.kind) !== 'average') return false;
+        var ints3 = extractIntegers(q.question);
+        if (ints3.length < 2) return false;
+        var wrongNum = parseFloat(wrongAns);
+        var correctNum = parseFloat(q.answer);
+        if (!isFinite(wrongNum) || !isFinite(correctNum)) return false;
+        var sum = ints3.reduce(function(s,v){ return s+v; }, 0);
+        /* Student gave sum instead of average */
+        return Math.abs(wrongNum - sum) < 0.01 && Math.abs(correctNum - sum / ints3.length) < 0.01;
+      },
+      remedy: '你算出了總和，但忘記除以個數。\n→ 平均 = 總和 ÷ 個數，記得最後一步要除！'
+    },
+    'off_by_one': {
+      detect: function(q, wrongAns){
+        var correctNum = parseFloat(q.answer);
+        var wrongNum = parseFloat(wrongAns);
+        if (!isFinite(correctNum) || !isFinite(wrongNum)) return false;
+        return Math.abs(wrongNum - correctNum) === 1;
+      },
+      remedy: '答案差了 1，可能是「包含端點」的計數錯誤。\n→ 數東西時注意：是否要「+1」（含左右兩端），或者進位時多了/少了 1。'
     }
   };
 
