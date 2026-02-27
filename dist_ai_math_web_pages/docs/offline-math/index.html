@@ -141,7 +141,9 @@
 
   <script src="../shared/attempt_telemetry.js"></script>
   <script src="../shared/report/aggregate.js"></script>
-  <script src="./bank.js"></script>
+  <script src="./aggregate_compat.js?v=1"></script>
+  <script src="./bank.js?v=3"></script>
+  <script src="../shared/ux_enhancer.js"></script>
   <script>
   (function(){
     'use strict';
@@ -427,7 +429,9 @@
         },
       };
 
-      window.AIMathAttemptTelemetry?.appendAttempt?.(uid, evt, { maxAttempts: 5000 });
+      if (window.AIMathAttemptTelemetry && typeof window.AIMathAttemptTelemetry.appendAttempt === 'function') {
+        window.AIMathAttemptTelemetry.appendAttempt(uid, evt, { maxAttempts: 5000 });
+      }
 
       const correctText = isCorrect ? '正確' : '不正確';
       const cls = isCorrect ? 'ok' : 'bad';
@@ -449,9 +453,14 @@
     function renderReport(){
       const uid = String(($('uid').value || '').trim() || 'guest');
       const sinceMs = Date.now() - 7*24*60*60*1000;
-      const attempts = (window.AIMathAttemptTelemetry?.listAttempts?.(uid, { sinceMs }) || []).filter(x => String(x && x.unit_id) === UNIT_ID);
+      const attemptsRaw = (window.AIMathAttemptTelemetry && typeof window.AIMathAttemptTelemetry.listAttempts === 'function')
+        ? (window.AIMathAttemptTelemetry.listAttempts(uid, { sinceMs }) || [])
+        : [];
+      const attempts = attemptsRaw.filter(x => String(x && x.unit_id) === UNIT_ID);
 
-      const agg = window.AIMathReportAggregate?.aggregate?.(attempts) || { overall:{n:0,correct:0,avg_time_ms:0,hint_level_hist:{}}, kpi:{total:0,accuracy:0,avg_time_ms:0}, by_kind:[] };
+      const agg = (window.AIMathReportAggregate && typeof window.AIMathReportAggregate.aggregate === 'function')
+        ? (window.AIMathReportAggregate.aggregate(attempts) || { overall:{n:0,correct:0,avg_time_ms:0,hint_level_hist:{}}, kpi:{total:0,accuracy:0,avg_time_ms:0}, by_kind:[] })
+        : { overall:{n:0,correct:0,avg_time_ms:0,hint_level_hist:{}}, kpi:{total:0,accuracy:0,avg_time_ms:0}, by_kind:[] };
       const overall = agg.overall || { n:0, correct:0, avg_time_ms:0, hint_level_hist:{} };
 
       $('kTotal').textContent = String(overall.n || 0);
@@ -468,13 +477,19 @@
       const bestLabel = best === 'none' ? '無提示' : (best === 'solution' ? '解答' : best);
       $('kHint').textContent = bestLabel;
 
-      const rows = window.AIMathReportAggregate?.aggregateByUnitKind?.(attempts) || [];
-      const top = window.AIMathReportAggregate?.pickTopWeaknesses?.(rows, 3) || [];
+      const rows = (window.AIMathReportAggregate && typeof window.AIMathReportAggregate.aggregateByUnitKind === 'function')
+        ? (window.AIMathReportAggregate.aggregateByUnitKind(attempts) || [])
+        : [];
+      const top = (window.AIMathReportAggregate && typeof window.AIMathReportAggregate.pickTopWeaknesses === 'function')
+        ? (window.AIMathReportAggregate.pickTopWeaknesses(rows, 3) || [])
+        : [];
 
       $('weakList').innerHTML = '';
       for(const r of top){
         const li = document.createElement('li');
-        const remedy = window.AIMathReportAggregate?.remedyLabel?.(r) || { title: '' };
+        const remedy = (window.AIMathReportAggregate && typeof window.AIMathReportAggregate.remedyLabel === 'function')
+          ? (window.AIMathReportAggregate.remedyLabel(r) || { title: '' })
+          : { title: '' };
         const label = `${r.kind}｜${remedy.title}`;
         li.textContent = label;
         $('weakList').appendChild(li);
@@ -552,6 +567,13 @@
 
       renderQuestion(pickQuestion());
       renderReport();
+      if (window.AIMathUXEnhancer && typeof window.AIMathUXEnhancer.init === 'function') {
+        window.AIMathUXEnhancer.init({
+          moduleId: 'offline-math',
+          nextModulePath: '../exam-sprint/',
+          nextModuleLabel: '考前衝刺'
+        });
+      }
     }
 
     init();

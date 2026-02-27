@@ -183,6 +183,7 @@
 <script src="./diagnosis.js"></script>
 <script src="../shared/coach_event_log.js"></script>
 <script src="../shared/attempt_telemetry.js"></script>
+<script src="../shared/ux_enhancer.js"></script>
 <script>
   const BANK_GLOBAL = 'EXAM_SPRINT_BANK';
   const LS_KEY = 'examSprint.v1';
@@ -1653,6 +1654,11 @@
   }
 
   init();
+  window.AIMathUXEnhancer?.init({
+    moduleId: 'exam-sprint',
+    nextModulePath: '../interactive-g5-empire/',
+    nextModuleLabel: '互動小五數學帝國'
+  });
 </script>
 </body>
 </html>

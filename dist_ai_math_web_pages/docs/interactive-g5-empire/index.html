@@ -837,6 +837,7 @@
   <div class="expand-toast" id="expandToast" aria-live="polite"></div>
 
   <script src="./bank.js"></script>
+  <script src="../shared/ux_enhancer.js"></script>
   <script>
     // ---------- tabs ----------
     const tabGame = document.getElementById('tabGame');
@@ -3769,6 +3770,11 @@
     renderEmpire(null, null);
     saveEmpire();
     if (bank.length) showQuestion(bank[0]);
+    window.AIMathUXEnhancer?.init({
+      moduleId: 'interactive-g5-empire',
+      nextModulePath: '../interactive-g5-life-pack1-empire/',
+      nextModuleLabel: '生活應用帝國（第一包）'
+    });
   </script>
 </body>
 </html>

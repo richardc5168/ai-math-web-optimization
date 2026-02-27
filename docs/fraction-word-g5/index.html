@@ -162,6 +162,7 @@
   <script src="../shared/attempt_telemetry.js"></script>
   <script src="../shared/report/aggregate.js"></script>
   <script src="../shared/report/unit_report_widget.js"></script>
+  <script src="../shared/ux_enhancer.js"></script>
   <script>
     // --------- helpers ---------
     function normalizeText(s){
@@ -2157,6 +2158,11 @@
     updateBankMeta();
     updateShortHintButton();
     window.AIMathUnitReportWidget?.render(document.getElementById('unitReport'), UNIT_ID, { days: 7 });
+    window.AIMathUXEnhancer?.init({
+      moduleId: 'fraction-word-g5',
+      nextModulePath: '../ratio-percent-g5/',
+      nextModuleLabel: '比率與百分率'
+    });
   </script>
 </body>
 </html>

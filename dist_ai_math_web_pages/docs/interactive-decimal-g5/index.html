@@ -269,6 +269,7 @@
   </main>
 
   <script src="./bank.js"></script>
+  <script src="../shared/ux_enhancer.js"></script>
   <script>
     // ---------- tabs ----------
     const tabGame = document.getElementById('tabGame');
@@ -1110,6 +1111,11 @@
     renderEmpire(null);
     saveEmpire();
     if (bank.length) showQuestion(bank[0]);
+    window.AIMathUXEnhancer?.init({
+      moduleId: 'interactive-decimal-g5',
+      nextModulePath: '../interactive-g5-empire/',
+      nextModuleLabel: '互動小五數學帝國'
+    });
   </script>
 </body>
 </html>
