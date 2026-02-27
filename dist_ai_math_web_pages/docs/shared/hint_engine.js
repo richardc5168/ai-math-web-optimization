@@ -1338,6 +1338,21 @@
           html += '<div style="font-size:10px;color:#9ca3af;margin:2px 0 0 0">▼ 大小比較：</div>';
           html += buildFractionComparisonSVG(fracs[0], fracs[1]);
         }
+        /* Step-by-step narration for fracAdd L2 */
+        if (fracs.length >= 2){
+          var isAddL2 = !/減|差|少|扣/.test(text);
+          var comDenL2 = lcm(fracs[0].den, fracs[1].den) || fracs[0].den * fracs[1].den;
+          html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+          html += '① 🟥 分數① = <strong>' + fracs[0].num + '/' + fracs[0].den + '</strong> → 畫 ' + fracs[0].den + ' 格塗 ' + fracs[0].num + ' 格<br>';
+          html += '② 🟦 分數② = <strong>' + fracs[1].num + '/' + fracs[1].den + '</strong> → 畫 ' + fracs[1].den + ' 格塗 ' + fracs[1].num + ' 格<br>';
+          if (fracs[0].den !== fracs[1].den){
+            html += '③ 分母不同 → 通分至 <strong>' + comDenL2 + '</strong><br>';
+            html += '④ 合併後數格子';
+          } else {
+            html += '③ 分母相同 → 直接' + (isAddL2 ? '加' : '減') + '分子';
+          }
+          html += '</div>';
+        }
         /* Merged bar: common denominator */
         if (fracs.length >= 2){
           var comDen = fracs[0].den;
@@ -1380,6 +1395,15 @@
         if (/折/.test(text)) pVal = pVal * 10;
         if (pVal > 0 && pVal <= 100){
           html += buildPercentGridSVG(pVal);
+          /* Step-by-step narration */
+          html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+          html += '① 100 格方格紙，塗滿 <strong>' + pVal + '</strong> 格<br>';
+          html += '② 塗色佔全部的 <strong>' + pVal + '%</strong>';
+          if (/折/.test(text)){
+            var foldVal = text.match(/(\d+)\s*折/);
+            if (foldVal) html += ' = <strong>' + foldVal[1] + ' 折</strong>';
+          }
+          html += '</div>';
           /* If an original amount is in the text, show comparison bar */
           var origMatch = text.match(/(?:原[價價]|定價|售價|全[部體])\s*(\d+)/);
           if (origMatch){
@@ -1389,6 +1413,7 @@
               { label: '原價', value: origAmt },
               { label: pVal+'%', value: discAmt }
             ]);
+            html += '<div style="font-size:11px;color:#e5e7eb;margin:2px 0">③ 原價 <strong>' + origAmt + '</strong> → ' + pVal + '% = <strong>' + discAmt + '</strong></div>';
           }
         }
       } else if (family === 'decimal'){
@@ -1400,6 +1425,12 @@
           /* Place value decomposition for the first decimal */
           html += '<div style="font-size:10px;color:#9ca3af;margin:2px 0 0 0">▼ 位值分解：</div>';
           html += buildPlaceValueSVG(decs[0]);
+          /* Step-by-step narration */
+          html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+          html += '① 在數線上標出 <strong>' + decs.join(', ') + '</strong><br>';
+          html += '② 看每個小數的位值分解<br>';
+          if (decs.length >= 2) html += '③ 比較大小或準備運算';
+          html += '</div>';
         }
       } else if (family === 'volume' && ints.length >= 2){
         /* 3D isometric box for volume questions */
@@ -1409,8 +1440,17 @@
         var vUnit = unitM ? unitM[0] : '';
         if (vh > 0){
           html += buildIsometricBoxSVG(vl, vw, vh, { unit: vUnit, label: '體積 = 長×寬×高' });
+          html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+          html += '① 底面排好：<strong>' + vl + ' × ' + vw + '</strong>' + (vUnit ? ' ' + vUnit : '') + '<br>';
+          html += '② 一層一層往上疊 <strong>' + vh + '</strong> 層<br>';
+          html += '③ 體積 = 底面積 × 高';
+          html += '</div>';
         } else {
           html += buildIsometricBoxSVG(vl, vw, 1, { unit: vUnit, label: '面積 = 長×寬' });
+          html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+          html += '① 長 = <strong>' + vl + '</strong>　寬 = <strong>' + vw + '</strong><br>';
+          html += '② 面積 = 長 × 寬';
+          html += '</div>';
         }
       } else if (family === 'time'){
         /* Clock face for time questions */

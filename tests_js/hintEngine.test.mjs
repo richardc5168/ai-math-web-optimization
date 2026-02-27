@@ -994,3 +994,45 @@ test('fracRemain L4 shows intermediate calculation with numbers', () => {
   assert.ok(html.includes('常見錯誤'), 'L4 should warn about common mistake');
   assert.ok(!html.includes('>66<'), 'L4 should NOT reveal final answer 66');
 });
+
+/* ============================================================
+ * 43. fracAdd L2 step-by-step narration
+ * ============================================================ */
+test('fracAdd L2 has step-by-step narration', () => {
+  const q = { kind: 'fraction_addsub', question: '算 1/3 + 1/4', answer: '7/12' };
+  const html = HE.buildRichHintHTML(q, 2);
+  assert.ok(html.includes('①'), 'L2 should have step ①');
+  assert.ok(html.includes('②'), 'L2 should have step ②');
+  assert.ok(html.includes('通分'), 'L2 should mention tongfen for different denominators');
+});
+
+/* ============================================================
+ * 44. percent L2 step-by-step narration
+ * ============================================================ */
+test('percent L2 has step-by-step narration', () => {
+  const q = { kind: 'percent_of', question: '500 的 30% 是多少', answer: '150' };
+  const html = HE.buildRichHintHTML(q, 2);
+  assert.ok(html.includes('①'), 'L2 should have step ①');
+  assert.ok(html.includes('30'), 'L2 should mention 30%');
+});
+
+/* ============================================================
+ * 45. decimal L2 step-by-step narration
+ * ============================================================ */
+test('decimal L2 has step-by-step narration', () => {
+  const q = { kind: 'd_mul_d', question: '算 0.3 × 0.12', answer: '0.036' };
+  const html = HE.buildRichHintHTML(q, 2);
+  assert.ok(html.includes('①'), 'L2 should have step ①');
+  assert.ok(html.includes('0.3'), 'L2 narration should show decimal from question');
+});
+
+/* ============================================================
+ * 46. volume L2 step-by-step narration
+ * ============================================================ */
+test('volume L2 has step-by-step narration for 3D', () => {
+  const q = { kind: 'rect_cm3', question: '長 5 寬 3 高 4 公分的長方體體積', answer: '60' };
+  const html = HE.buildRichHintHTML(q, 2);
+  assert.ok(html.includes('①'), 'L2 should have step ①');
+  assert.ok(html.includes('5'), 'L2 narration should show dimensions from question');
+  assert.ok(html.includes('4'), 'L2 narration should show height');
+});
