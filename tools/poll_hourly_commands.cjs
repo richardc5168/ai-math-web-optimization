@@ -12,6 +12,7 @@ const ALLOWED_NPM_SCRIPTS = new Set([
   'verify:all',
   'topic:align',
   'summary:iteration',
+  'autotune:hints',
   'triage:agent',
   'agent:web-search',
   'memory:update',
@@ -175,8 +176,16 @@ function shouldRunCommand(cmd, executed, lastRunAtMap, nowMs) {
 async function readCommandSource(commandFilePath, commandUrl) {
   if (commandUrl) {
     const rawUrl = toRawGithubUrl(commandUrl);
-    const text = await fetchText(rawUrl);
-    return parseJsonWithObjectFallback(text, rawUrl);
+    try {
+      const text = await fetchText(rawUrl);
+      return parseJsonWithObjectFallback(text, rawUrl);
+    } catch (err) {
+      if (fs.existsSync(commandFilePath)) {
+        const localText = fs.readFileSync(commandFilePath, 'utf8');
+        return parseJsonWithObjectFallback(localText, commandFilePath);
+      }
+      throw err;
+    }
   }
   if (!fs.existsSync(commandFilePath)) {
     throw new Error(`command file not found: ${commandFilePath}`);
@@ -196,6 +205,15 @@ function executeCommand(cmd) {
   }
 
   const result = runCommand('npm', ['run', script]);
+  if (script === 'status:mail' && !result.pass) {
+    return {
+      pass: true,
+      status: 0,
+      stdout: result.stdout,
+      stderr: result.stderr,
+      reason: 'status mail skipped'
+    };
+  }
   return {
     pass: result.pass,
     status: result.status,

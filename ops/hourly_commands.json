@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-02-26T16:00:00Z",
+  "updated_at": "2026-02-27T02:30:00Z",
   "commands": [
     {
       "id": "2026-02-26-summary-30m",
@@ -17,6 +17,22 @@
       "value": "status:mail",
       "cooldown_minutes": 30,
       "note": "每 30 分鐘嘗試寄送狀態信（無 SMTP 憑證時自動跳過，不阻塞流程）"
+    },
+    {
+      "id": "2026-02-27-hint-judge-30m",
+      "enabled": true,
+      "action": "npm_script",
+      "value": "judge:hints",
+      "cooldown_minutes": 30,
+      "note": "每 30 分鐘檢查提示品質，避免教學提示爆答案並維持引導清晰"
+    },
+    {
+      "id": "2026-02-27-hint-autotune-30m",
+      "enabled": true,
+      "action": "npm_script",
+      "value": "autotune:hints",
+      "cooldown_minutes": 30,
+      "note": "每 30 分鐘執行提示優化，依題型自動收斂為更清晰且不洩漏答案的教學語句"
     },
     {
       "id": "2026-02-26-gate-verify-all",
@@ -95,7 +111,7 @@
       "enabled": true,
       "action": "npm_script",
       "value": "idle:web:fraction-decimal:expand",
-      "cooldown_minutes": 240,
+      "cooldown_minutes": 30,
       "note": "任務完成或 idle/stuck 時優先執行的擴充流程，持續優化出題與提示"
     },
     {
