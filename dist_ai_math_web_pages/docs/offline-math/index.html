@@ -41,6 +41,15 @@
     .ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
     .list{margin:8px 0 0 0;padding-left:18px;color:#dbeafe}
     .mono{font-family:ui-monospace,Consolas,monospace}
+    .formula-card{background:linear-gradient(135deg,#1a1040 0%,#0d1a2e 100%);border:1.5px solid #6366f1;border-radius:14px;padding:14px 16px;margin-top:10px;display:none}
+    .formula-card.show{display:block}
+    .formula-tag{display:inline-block;font-size:11px;background:#6366f1;color:#fff;padding:2px 8px;border-radius:999px;margin-bottom:8px;font-weight:700;letter-spacing:.5px}
+    .formula-motto{font-size:15px;font-weight:800;color:#fbbf24;margin-bottom:6px}
+    .formula-gen{font-size:14px;color:#c4b5fd;margin-bottom:4px;font-family:ui-monospace,Consolas,monospace}
+    .formula-calc{font-size:14px;color:#e2e8f0;line-height:1.6;white-space:pre-wrap}
+    .formula-calc b{color:#4ade80;font-weight:800}
+    .formula-note{font-size:12px;color:var(--muted);margin-top:6px;border-top:1px dashed #25314d;padding-top:6px}
+    .btn.formula{background:linear-gradient(135deg,#6366f1,#4f46e5);font-weight:700}
   </style>
 </head>
 <body>
@@ -99,7 +108,16 @@
           <button class="btn secondary" id="btnH1">提示 L1</button>
           <button class="btn secondary" id="btnH2">提示 L2</button>
           <button class="btn secondary" id="btnH3">提示 L3</button>
+          <button class="btn formula" id="btnFormula">⚡ 速算公式</button>
           <span id="status" class="sub"></span>
+        </div>
+
+        <div id="formulaCard" class="formula-card">
+          <span class="formula-tag">⚡ 速算公式</span>
+          <div id="formulaMotto" class="formula-motto"></div>
+          <div id="formulaGen" class="formula-gen"></div>
+          <div id="formulaCalc" class="formula-calc"></div>
+          <div id="formulaNote" class="formula-note"></div>
         </div>
 
         <div style="margin-top:10px">
@@ -150,6 +168,81 @@
     'use strict';
 
     const UNIT_ID = 'offline-math';
+
+    /* ── Speed-formula engine (速算公式) ── */
+    var SPEED_FORMULAS = {
+      time_div_ratio: {
+        motto: '口訣：「化同除」— 先化成同單位，再除',
+        generic: '(A×24+B) ÷ (C×24+D) = 答案',
+        note: '1日＝24時。把日時都變成「時」再做一次除法就好！',
+        calc: function(p){
+          var A=p.aDays, B=p.aHours, C=p.bDays, D=p.bHours;
+          var top=A*24+B, bot=C*24+D;
+          return '① 化成時：'+A+'×24+'+B+' = <b>'+top+'</b>\n'
+               + '② 化成時：'+C+'×24+'+D+' = <b>'+bot+'</b>\n'
+               + '③ 相除：'+top+' ÷ '+bot+' = <b>'+Math.floor(top/bot)+'</b>';
+        }
+      },
+      time_mul_day_hour: {
+        motto: '口訣：「分乘合」— 日時分開乘，再合起來進位',
+        generic: '日部分 = A×N，時部分 = B×N\n進位：時÷24 → 多的天加到日',
+        note: '最後「時」一定＜24，超過就要÷24進位到「日」。',
+        calc: function(p){
+          var A=p.days, B=p.hours, N=p.n;
+          var dd=A*N, hh=B*N;
+          var carry=Math.floor(hh/24), rem=hh%24;
+          return '① 日×'+N+'：'+A+'×'+N+' = <b>'+dd+'</b> 日\n'
+               + '② 時×'+N+'：'+B+'×'+N+' = <b>'+hh+'</b> 時\n'
+               + '③ 進位：'+hh+'÷24 = <b>'+carry+'</b> 日 餘 <b>'+rem+'</b> 時\n'
+               + '④ 答案：'+(dd+carry)+'日'+rem+'時';
+        }
+      },
+      time_div_seconds: {
+        motto: '口訣：「化秒除」— 分變秒再除',
+        generic: '(A×60+B) ÷ C = 答案',
+        note: '1分＝60秒。統一成「秒」後一次除法搞定！',
+        calc: function(p){
+          var A=p.min, B=p.sec, C=p.divSec;
+          var total=A*60+B;
+          return '① 化成秒：'+A+'×60+'+B+' = <b>'+total+'</b> 秒\n'
+               + '② 相除：'+total+' ÷ '+C+' = <b>'+Math.floor(total/C)+'</b>';
+        }
+      },
+      div_with_remainder: {
+        motto: '口訣：「除驗回」— 商×除＋餘＝被',
+        generic: '被除數 ÷ 除數 = 商 … 餘數\n驗算：除數 × 商 + 餘數 = 被除數',
+        note: '餘數一定＜除數！驗算公式背起來不會錯。',
+        calc: function(p){
+          var a=p.dividend, b=p.divisor;
+          var q=Math.floor(a/b), r=a%b;
+          return '① '+a+' ÷ '+b+' = 商 <b>'+q+'</b> 餘 <b>'+r+'</b>\n'
+               + '② 驗算：'+b+'×'+q+'+'+r+' = <b>'+(b*q+r)+'</b> ✓';
+        }
+      },
+      arithmetic_distributive_sub: {
+        motto: '口訣：「提公因，先減再乘」',
+        generic: 'k×a − k×b = k × (a−b)',
+        note: '找到兩邊共同的因數 k，提出來後只做一次乘法！',
+        calc: function(p){
+          var k=p.k, a=p.a, b=p.b;
+          var diff=a-b;
+          return '① 提出公因數 <b>'+k+'</b>\n'
+               + '② 括號內：'+a+' − '+b+' = <b>'+diff+'</b>\n'
+               + '③ 相乘：'+k+' × '+diff+' = <b>'+(k*diff)+'</b>';
+        }
+      }
+    };
+
+    function showSpeedFormula(it){
+      if(!it || !it.params || !it.type) return;
+      var f = SPEED_FORMULAS[it.type];
+      if(!f){ $('formulaCard').className='formula-card'; return; }
+      $('formulaMotto').textContent = f.motto;
+      $('formulaGen').textContent = '公式：' + f.generic;
+      $('formulaCalc').innerHTML = '▸ 代入本題：\n' + f.calc(it.params);
+      $('formulaNote').textContent = '💡 ' + f.note;
+      $('formulaCard').className = 'formula-card show';
+    }
 
     const $ = (id) => document.getElementById(id);
 
@@ -368,6 +461,7 @@
 
       $('ans').value = '';
       $('hintBox').textContent = '（尚未顯示）';
+      $('formulaCard').className = 'formula-card';
       $('stepsBox').style.display = 'none';
       $('stepsBox').textContent = '';
       $('status').textContent = '';
@@ -554,6 +648,10 @@
       $('btnH1').addEventListener('click', () => showHint(1));
       $('btnH2').addEventListener('click', () => showHint(2));
       $('btnH3').addEventListener('click', () => showHint(3));
+
+      $('btnFormula').addEventListener('click', () => {
+        if(state.cur) showSpeedFormula(state.cur);
+      });
 
       $('btnGiveUp').addEventListener('click', () => {
         if(!state.cur || state.finished) return;
