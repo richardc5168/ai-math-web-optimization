@@ -1139,6 +1139,34 @@
    * ============================================================ */
 
   /**
+   * buildProgressRingSVG(percent, opts)
+   * Circular progress ring for showing completion/correction rates.
+   * percent: 0-100, opts: { size, label, color }
+   */
+  function buildProgressRingSVG(percent, opts){
+    opts = opts || {};
+    var pct = Math.max(0, Math.min(100, Number(percent) || 0));
+    var size = opts.size || 80;
+    var r = (size - 10) / 2;
+    var cx = size / 2, cy = size / 2;
+    var circ = 2 * Math.PI * r;
+    var offset = circ * (1 - pct / 100);
+    var color = opts.color || (pct >= 70 ? '#3fb950' : (pct >= 40 ? '#d29922' : '#f85149'));
+    var label = opts.label || (pct + '%');
+
+    var ariaLabel = 'Progress: ' + pct + '%' + (opts.label ? ' (' + opts.label + ')' : '');
+    var svg = '<svg width="'+size+'" height="'+size+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+escapeHTML(ariaLabel)+'" style="display:inline-block;vertical-align:middle">';
+    /* Background ring */
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#374151" stroke-width="6"/>';
+    /* Progress arc */
+    svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+    /* Center text */
+    svg += '<text x="'+cx+'" y="'+cy+'" text-anchor="middle" dy=".35em" fill="'+color+'" font-size="'+(size > 60 ? 14 : 10)+'" font-weight="700">'+escapeHTML(label)+'</text>';
+    svg += '</svg>';
+    return svg;
+  }
+
+  /**
    * highlightKeywords(htmlStr)
    * Add colored highlighting to key math concepts in hint text.
    * Input should already be HTML-escaped.
@@ -1548,12 +1576,22 @@
         html += '<div class="he-check-ok">✅ '+(isAdd?'加的結果 ≥ 兩個分數中較大的':'減的結果 ≤ 被減數')+'</div>';
       } else if (family === 'percent'){
         var m3 = text.match(/(\d+)\s*[%％]/); var m3f = text.match(/(\d+)\s*折/);
+        html += '<div class="he-formula">';
         if (m3){
-          html += '<div class="he-formula">列式：原量 × ' + m3[1] + '/100 = ？</div>';
+          html += '<div class="he-step-row">步驟① 寫出倍率：'+m3[1]+'% = '+m3[1]+'/100</div>';
+          html += '<div class="he-step-row">步驟② 列式：原量 × '+m3[1]+'/100 = <span class="he-placeholder">□</span></div>';
+          html += '<div class="he-step-row">步驟③ 合理性檢查</div>';
         } else if (m3f){
-          html += '<div class="he-formula">列式：原量 × ' + m3f[1] + '/10 = ？（' + m3f[1] + '折 = 0.' + m3f[1] + '）</div>';
+          html += '<div class="he-step-row">步驟① 寫出倍率：'+m3f[1]+'折 = '+m3f[1]+'/10 = 0.'+m3f[1]+'</div>';
+          html += '<div class="he-step-row">步驟② 列式：原價 × 0.'+m3f[1]+' = <span class="he-placeholder">□</span></div>';
+          html += '<div class="he-step-row">步驟③ 合理性檢查</div>';
+        } else {
+          html += '<div class="he-step-row">步驟① 找出百分率或折扣率</div>';
+          html += '<div class="he-step-row">步驟② 列式：原量 × 倍率 = <span class="he-placeholder">□</span></div>';
         }
+        html += '</div>';
         html += '<div class="he-check-ok">✅ 打折 → 結果 &lt; 原價；加成 → 結果 &gt; 原量</div>';
+        html += '<div class="he-check-bad">❌ 常見錯：%忘記÷100、折數搞反</div>';
       } else if (family === 'decimal'){
         /* Detect decimal values and operation from question text */
         var decs4 = [];
@@ -1584,12 +1622,13 @@
           times4.push({ h: parseInt(tm4[1],10), m: parseInt(tm4[2]||'0',10) });
         }
         if (times4.length >= 2){
+          var needBorrow4 = times4[1].m < times4[0].m;
           html += '<div class="he-formula">';
-          html += '列式：'+times4[1].h+'時'+('0'+times4[1].m).slice(-2)+'分 − '+times4[0].h+'時'+('0'+times4[0].m).slice(-2)+'分<br>';
-          if (times4[1].m < times4[0].m){
-            html += '分鐘不夠減 → 借 1 小時 = 60 分鐘<br>';
+          html += '<div class="he-step-row">步驟① 列式：'+times4[1].h+'時'+('0'+times4[1].m).slice(-2)+'分 − '+times4[0].h+'時'+('0'+times4[0].m).slice(-2)+'分</div>';
+          if (needBorrow4){
+            html += '<div class="he-step-row">步驟② 分鐘不夠減 → 借 1 小時 = 60 分 → 分鐘變 <span class="he-placeholder">□</span></div>';
           }
-          html += '= ？時？分（自行計算）';
+          html += '<div class="he-step-row">步驟'+(needBorrow4?'③':'②')+' 計算：<span class="he-placeholder">□</span> 時 <span class="he-placeholder">□</span> 分</div>';
           html += '</div>';
           html += '<div class="he-check-ok">✅ 結果轉回鐘面看是否合理</div>';
           html += '<div class="he-check-bad">❌ 常見錯：忘記借位（60進位）</div>';
@@ -1611,8 +1650,8 @@
       } else if (family === 'average' && ints.length >= 2){
         var sum4 = ints.reduce(function(s,v){ return s+v; }, 0);
         html += '<div class="he-formula">';
-        html += '列式：(' + ints.join(' + ') + ') ÷ ' + ints.length + '<br>';
-        html += '= ' + sum4 + ' ÷ ' + ints.length + ' = ？（自行計算）';
+        html += '<div class="he-step-row">步驟① 加總：' + ints.join(' + ') + ' = <span class="he-placeholder">□</span></div>';
+        html += '<div class="he-step-row">步驟② 除以個數：<span class="he-placeholder">□</span> ÷ ' + ints.length + ' = <span class="he-placeholder">□</span></div>';
         html += '</div>';
         html += '<div class="he-check-ok">✅ 答案介於 ' + Math.min.apply(null, ints) + ' 和 ' + Math.max.apply(null, ints) + ' 之間？</div>';
         html += '<div class="he-check-bad">❌ 常見錯：忘記除以個數、或把「多出的量」當平均</div>';
@@ -2098,11 +2137,25 @@
       frequent.push({ tag: key, count: tagCounts[key] });
     }
     frequent.sort(function(a,b){ return b.count - a.count; });
+    /* Per-family breakdown */
+    var familyCounts = {};
+    for (var fid in data){
+      if (!data.hasOwnProperty(fid)) continue;
+      var frec = data[fid];
+      /* Extract family from question id pattern (module_kind_nnn) */
+      var fParts = String(fid).split('_');
+      var fKey = fParts.length >= 2 ? fParts.slice(0, -1).join('_') : 'unknown';
+      if (!familyCounts[fKey]) familyCounts[fKey] = { triggered: 0, corrected: 0 };
+      familyCounts[fKey].triggered++;
+      if (frec.corrected) familyCounts[fKey].corrected++;
+    }
+
     return {
       frequent: frequent.slice(0, 15),
       totalTriggered: totalTriggered,
       totalCorrected: totalCorrected,
-      correctionRate: totalTriggered > 0 ? Math.round(totalCorrected / totalTriggered * 100) : 0
+      correctionRate: totalTriggered > 0 ? Math.round(totalCorrected / totalTriggered * 100) : 0,
+      byFamily: familyCounts
     };
   }
 
@@ -2554,6 +2607,7 @@
     buildAreaModelSVG: buildAreaModelSVG,
     buildTapeModelSVG: buildTapeModelSVG,
     buildFractionComparisonSVG: buildFractionComparisonSVG,
+    buildProgressRingSVG: buildProgressRingSVG,
     highlightKeywords: highlightKeywords,
 
     /* L4 gate */

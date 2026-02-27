@@ -861,3 +861,83 @@ test('volume L4 includes placeholder boxes for 3D', () => {
   assert.ok(html.includes('步驟①'), 'L4 should show step 1 (底面積)');
   assert.ok(html.includes('步驟②'), 'L4 should show step 2 (體積)');
 });
+
+/* ============================================================
+ * 34. time L4 placeholder boxes
+ * ============================================================ */
+test('time L4 includes placeholder boxes', () => {
+  const q = { kind: 'time_add', question: '從 8:30 到 11:15 經過多久', answer: '2小時45分' };
+  const html = HE.buildRichHintHTML(q, 4);
+  assert.ok(html.includes('he-placeholder'), 'L4 should have placeholder boxes');
+  assert.ok(html.includes('步驟①'), 'L4 should show step 1');
+});
+
+test('time L4 shows borrow step when minutes need borrow', () => {
+  const q = { kind: 'time_add', question: '從 9:50 到 11:20 經過多久', answer: '1小時30分' };
+  const html = HE.buildRichHintHTML(q, 4);
+  assert.ok(html.includes('借'), 'L4 should mention borrow when m2 < m1');
+});
+
+/* ============================================================
+ * 35. percent L4 placeholder boxes
+ * ============================================================ */
+test('percent L4 includes placeholder boxes for percentage', () => {
+  const q = { kind: 'percent_of', question: '500 的 30% 是多少', answer: '150' };
+  const html = HE.buildRichHintHTML(q, 4);
+  assert.ok(html.includes('he-placeholder'), 'L4 should have placeholder boxes');
+  assert.ok(html.includes('步驟①'), 'L4 should show step 1 (倍率)');
+  assert.ok(html.includes('步驟②'), 'L4 should show step 2 (列式)');
+  assert.ok(html.includes('30'), 'L4 should reference the percentage');
+});
+
+test('percent L4 includes placeholder boxes for discount', () => {
+  const q = { kind: 'discount', question: '原價 800 元打 7 折，售價是多少', answer: '560' };
+  const html = HE.buildRichHintHTML(q, 4);
+  assert.ok(html.includes('he-placeholder'), 'L4 should have placeholder boxes');
+  assert.ok(html.includes('折'), 'L4 should mention discount');
+});
+
+/* ============================================================
+ * 36. average L4 placeholder boxes
+ * ============================================================ */
+test('average L4 includes placeholder boxes', () => {
+  const q = { kind: 'u1_average', question: '小明考了 85 90 75 分，平均幾分', answer: '83.3' };
+  const html = HE.buildRichHintHTML(q, 4);
+  assert.ok(html.includes('he-placeholder'), 'L4 should have placeholder boxes');
+  assert.ok(html.includes('步驟①'), 'L4 should show step 1 (加總)');
+  assert.ok(html.includes('步驟②'), 'L4 should show step 2 (除以個數)');
+});
+
+/* ============================================================
+ * 37. buildProgressRingSVG
+ * ============================================================ */
+test('buildProgressRingSVG — renders ring', () => {
+  const svg = HE.buildProgressRingSVG(75);
+  assert.ok(svg.includes('<svg'), 'Should produce SVG');
+  assert.ok(svg.includes('role="img"'), 'Should have ARIA role');
+  assert.ok(svg.includes('75%'), 'Should show percentage');
+});
+
+test('buildProgressRingSVG — green for high rate', () => {
+  const svg = HE.buildProgressRingSVG(85);
+  assert.ok(svg.includes('#3fb950'), 'Should use green for 85%');
+});
+
+test('buildProgressRingSVG — red for low rate', () => {
+  const svg = HE.buildProgressRingSVG(20);
+  assert.ok(svg.includes('#f85149'), 'Should use red for 20%');
+});
+
+test('buildProgressRingSVG — custom label', () => {
+  const svg = HE.buildProgressRingSVG(50, { label: '5/10' });
+  assert.ok(svg.includes('5/10'), 'Should show custom label');
+});
+
+/* ============================================================
+ * 38. getMisconceptionReport includes byFamily
+ * ============================================================ */
+test('getMisconceptionReport returns byFamily field', () => {
+  const report = HE.getMisconceptionReport();
+  assert.ok('byFamily' in report, 'Report should have byFamily field');
+  assert.equal(typeof report.byFamily, 'object', 'byFamily should be an object');
+});
