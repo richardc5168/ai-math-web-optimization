@@ -1567,7 +1567,20 @@
               { count: Math.max(0, comD3 - Math.round(eq1) - Math.round(eq2)), color: '#374151', label: '空' }
             ];
             html += buildGridSVG(gr3, gc3, cm3);
-            html += '<div style="font-size:11px;color:#9ca3af;margin:2px 0">通分 → 分母 '+comD3+'　'+Math.round(eq1)+' + '+Math.round(eq2)+' = '+Math.round(total3)+'（'+Math.round(total3)+'/'+comD3+'）</div>';
+            /* Detailed narration for fracAdd L3 */
+            var isAddL3 = !/減|差|少|扣/.test(text);
+            html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+            html += '通分後分母 = <strong>' + comD3 + '</strong><br><br>';
+            html += '🟥 ' + fa1.num + '/' + fa1.den + ' = <strong>' + Math.round(eq1) + '/' + comD3 + '</strong> → ' + Math.round(eq1) + ' 格<br>';
+            html += '🟦 ' + fa2.num + '/' + fa2.den + ' = <strong>' + Math.round(eq2) + '/' + comD3 + '</strong> → ' + Math.round(eq2) + ' 格<br><br>';
+            html += '📊 ' + (isAddL3 ? '加' : '減') + '起來 = ' + Math.round(eq1) + ' ' + (isAddL3 ? '+' : '−') + ' ' + Math.round(eq2) + ' = <strong>' + Math.round(total3) + '</strong> 格<br>';
+            html += '→ <strong>' + Math.round(total3) + '/' + comD3 + '</strong>';
+            /* Check if reducible */
+            var gcdL3 = gcd(Math.round(total3), comD3);
+            if (gcdL3 > 1){
+              html += ' → 約分 = <strong>' + (Math.round(total3)/gcdL3) + '/' + (comD3/gcdL3) + '</strong>';
+            }
+            html += '</div>';
           }
         } else {
           var fa = fracs[0];
