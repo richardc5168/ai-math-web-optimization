@@ -181,6 +181,25 @@
     </div>
 
     <div class="card" style="margin-top:12px">
+      <div style="font-weight:900; font-size:16px">📈 學習進步追蹤（本週 vs 上週）</div>
+      <div class="small" style="margin-top:4px">比較最近 7 天與前 7 天的表現差異，讓家長一眼看出進步或需要加強的地方。</div>
+      <div id="progressCompare" style="margin-top:10px"></div>
+      <div id="progressAdvice" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:900; font-size:16px">🕐 學習習慣觀察</div>
+      <div class="small" style="margin-top:4px">分析孩子的做題時段、頻率和持久力，幫助家長安排最佳學習時間。</div>
+      <div id="studyHabits" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:900; font-size:16px">🎯 本週行動建議（給家長的 3 件事）</div>
+      <div class="small" style="margin-top:4px">根據孩子的作答數據，提供最具體可執行的本週行動計畫。</div>
+      <div id="actionPlan" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
       <div style="font-weight:800">作答趨勢（最近 30 題）</div>
       <div class="small">綠色=答對，紅色=答錯；折線代表最近 30 題的正確率變化。</div>
       <div id="trendBox" style="margin-top:10px"></div>
@@ -2518,6 +2537,291 @@
       box.value = text;
     }
 
+    /** ── 學習進步追蹤：本週 vs 上週 ── */
+    function renderProgressCompare(thisWeekAttempts, lastWeekAttempts){
+      const el = $('progressCompare');
+      const advEl = $('progressAdvice');
+      if (!el) return;
+
+      function calcMetrics(arr){
+        const items = Array.isArray(arr) ? arr : [];
+        const n = items.length;
+        if (!n) return { n:0, accuracy:0, independent:0, hintDep:0, avgTime:0 };
+        let correct = 0, independent = 0, hinted = 0, totalMs = 0;
+        for (const e of items){
+          if (e?.is_correct) correct++;
+          const hc = Number(e?.hint?.shown_count || 0);
+          if (e?.is_correct && hc === 0) independent++;
+          if (hc > 0) hinted++;
+          totalMs += Math.max(0, Number(e?.ts_end || 0) - Number(e?.ts_start || 0));
+        }
+        return {
+          n, accuracy: correct / n, independent: independent / n,
+          hintDep: hinted / n, avgTime: totalMs / n
+        };
+      }
+
+      const tw = calcMetrics(thisWeekAttempts);
+      const lw = calcMetrics(lastWeekAttempts);
+
+      if (!tw.n && !lw.n){
+        el.innerHTML = '<div class="small">（尚無足夠紀錄進行比較）</div>';
+        if (advEl) advEl.innerHTML = '';
+        return;
+      }
+
+      function arrow(curr, prev, higherIsBetter){
+        if (!prev) return '<span style="color:var(--muted)">—</span>';
+        const diff = curr - prev;
+        if (Math.abs(diff) < 0.005) return '<span style="color:var(--muted)">→ 持平</span>';
+        const up = diff > 0;
+        const good = higherIsBetter ? up : !up;
+        const color = good ? 'var(--ok)' : 'var(--bad)';
+        const icon = up ? '↑' : '↓';
+        return `<span style="color:${color};font-weight:700">${icon} ${Math.abs(Math.round(diff*100))}%</span>`;
+      }
+
+      const rows = [
+        { label:'題數', tw: String(tw.n), lw: String(lw.n), change: tw.n > lw.n ? `<span style="color:var(--ok)">↑ ${tw.n - lw.n}</span>` : (tw.n < lw.n ? `<span style="color:var(--warn)">↓ ${lw.n - tw.n}</span>` : '<span style="color:var(--muted)">→ 持平</span>') },
+        { label:'正確率', tw: pct(tw.accuracy), lw: lw.n ? pct(lw.accuracy) : '—', change: arrow(tw.accuracy, lw.n ? lw.accuracy : null, true) },
+        { label:'獨立解題率', tw: pct(tw.independent), lw: lw.n ? pct(lw.independent) : '—', change: arrow(tw.independent, lw.n ? lw.independent : null, true) },
+        { label:'提示依賴率', tw: pct(tw.hintDep), lw: lw.n ? pct(lw.hintDep) : '—', change: arrow(tw.hintDep, lw.n ? lw.hintDep : null, false) },
+        { label:'平均時間', tw: sec(tw.avgTime), lw: lw.n ? sec(lw.avgTime) : '—', change: arrow(tw.avgTime/1000, lw.n ? lw.avgTime/1000 : null, false) },
+      ];
+
+      el.innerHTML = `
+        <table>
+          <thead><tr><th>指標</th><th>本週</th><th>上週</th><th>變化</th></tr></thead>
+          <tbody>
+            ${rows.map(r => `<tr><td style="font-weight:600">${r.label}</td><td>${r.tw}</td><td>${r.lw}</td><td>${r.change}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      `;
+
+      // Generate progress advice
+      if (!advEl) return;
+      const tips = [];
+      if (tw.n === 0) {
+        tips.push('⚠️ 本週尚未做題，建議每週至少完成 10-20 題維持手感。');
+      } else if (lw.n > 0) {
+        const accDiff = tw.accuracy - lw.accuracy;
+        const indDiff = tw.independent - lw.independent;
+        const hintDiff = tw.hintDep - lw.hintDep;
+        if (accDiff >= 0.05) tips.push('🎉 正確率有進步！繼續保持，可逐步挑戰更難的題型。');
+        else if (accDiff <= -0.1) tips.push('⚠️ 正確率下降，可能遇到新的困難概念。建議先回頭練習之前做對的題型鞏固信心。');
+        if (indDiff >= 0.05) tips.push('👏 獨立解題能力增強了！表示觀念逐漸穩固。');
+        if (hintDiff <= -0.05) tips.push('✅ 提示依賴降低，代表孩子在「嘗試自己想」這件事上有進步。');
+        else if (hintDiff >= 0.1) tips.push('💡 提示使用增加，可能正在學新概念。如果持續超過 2 週都高依賴，建議回到上一個階段重練。');
+        if (tw.n < lw.n * 0.5) tips.push('📉 做題量明顯減少，建議維持固定練習頻率（每週 3 次、每次 10 題）。');
+        else if (tw.n > lw.n * 1.5) tips.push('📈 做題量增加，很棒！注意不要為了衝量而跳過思考，品質比數量重要。');
+      } else {
+        tips.push('📊 上週沒有紀錄，無法比較。持續每週作答才能看出進步趨勢！');
+      }
+      if (!tips.length) tips.push('🌟 表現穩定，繼續保持目前的學習節奏即可。');
+      advEl.innerHTML = `<div style="padding:10px;background:rgba(88,166,255,0.06);border-radius:8px;font-size:13px;line-height:1.8">${tips.map(t => `<div>${t}</div>`).join('')}</div>`;
+    }
+
+    /** ── 學習習慣觀察 ── */
+    function renderStudyHabits(allAttempts){
+      const el = $('studyHabits');
+      if (!el) return;
+      const items = Array.isArray(allAttempts) ? allAttempts : [];
+      if (items.length < 3){
+        el.innerHTML = '<div class="small">（需至少 3 筆作答紀錄才能分析學習習慣）</div>';
+        return;
+      }
+
+      // 1. Time-of-day distribution
+      const hourBuckets = new Array(24).fill(0);
+      const dayBuckets = new Array(7).fill(0); // 0=Sun..6=Sat
+      const dailyDates = new Set();
+      let totalSessions = 0;
+      let lastSessionEnd = 0;
+      const SESSION_GAP = 30 * 60 * 1000; // 30 min gap = new session
+
+      for (const e of items){
+        const ts = Number(e?.ts_start || e?.ts_end || 0);
+        if (!ts) continue;
+        const d = new Date(ts);
+        hourBuckets[d.getHours()]++;
+        dayBuckets[d.getDay()]++;
+        dailyDates.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+        if (ts - lastSessionEnd > SESSION_GAP) totalSessions++;
+        lastSessionEnd = Number(e?.ts_end || ts);
+      }
+
+      // Find peak hours
+      const maxHour = Math.max(...hourBuckets);
+      const peakHours = [];
+      for (let h = 0; h < 24; h++){
+        if (hourBuckets[h] >= maxHour * 0.7 && hourBuckets[h] > 0) peakHours.push(h);
+      }
+
+      // Time period label
+      function timePeriodZh(hours){
+        const minH = Math.min(...hours);
+        const maxH = Math.max(...hours);
+        if (minH >= 6 && maxH <= 11) return '上午';
+        if (minH >= 12 && maxH <= 17) return '下午';
+        if (minH >= 18 && maxH <= 22) return '晚上';
+        if ((minH >= 15 && maxH <= 20)) return '放學後';
+        return `${minH}:00～${maxH + 1}:00`;
+      }
+
+      const dayNames = ['日','一','二','三','四','五','六'];
+      const activeDays = dayBuckets.map((n,i) => ({day:i, n})).filter(x => x.n > 0).sort((a,b) => b.n - a.n);
+      const topDays = activeDays.slice(0, 3).map(x => `週${dayNames[x.day]}`);
+
+      const totalDays = dailyDates.size;
+      const avgPerDay = totalDays ? (items.length / totalDays).toFixed(1) : '0';
+      const avgPerSession = totalSessions ? Math.round(items.length / totalSessions) : items.length;
+
+      // Hour chart (simple bar)
+      const hourChartBars = hourBuckets.map((n, h) => {
+        const pct = maxHour > 0 ? Math.round(n / maxHour * 100) : 0;
+        const isPeak = peakHours.includes(h);
+        return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:14px">
+          <div style="width:10px;background:${isPeak ? 'var(--accent)' : 'rgba(88,166,255,0.25)'};height:${Math.max(2, pct * 0.6)}px;border-radius:2px;transition:height 0.3s"></div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px">${h % 3 === 0 ? h : ''}</div>
+        </div>`;
+      }).join('');
+
+      const habitItems = [];
+      habitItems.push(`<div class="card" style="padding:10px"><div style="font-weight:700">🕐 常用做題時段</div>
+        <div style="margin-top:6px;font-size:14px;color:var(--accent);font-weight:800">${peakHours.length ? timePeriodZh(peakHours) : '—'}</div>
+        <div class="small" style="margin-top:4px">尖峰時段：${peakHours.map(h => h + ':00').join('、') || '—'}</div>
+        <div style="display:flex;align-items:flex-end;gap:1px;height:50px;margin-top:8px;padding:4px 0">${hourChartBars}</div>
+        <div class="small" style="margin-top:4px">▲ 24 小時做題分布（高亮 = 最常做題的時段）</div>
+      </div>`);
+
+      habitItems.push(`<div class="card" style="padding:10px"><div style="font-weight:700">📅 做題頻率</div>
+        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div class="small">活躍天數</div><div style="font-size:20px;font-weight:800;color:var(--accent)">${totalDays} 天</div></div>
+          <div><div class="small">總場次</div><div style="font-size:20px;font-weight:800">${totalSessions}</div></div>
+          <div><div class="small">平均每天</div><div style="font-size:20px;font-weight:800">${avgPerDay} 題</div></div>
+          <div><div class="small">平均每次</div><div style="font-size:20px;font-weight:800">${avgPerSession} 題</div></div>
+        </div>
+        <div class="small" style="margin-top:8px">最常做題的日子：${topDays.join('、') || '—'}</div>
+      </div>`);
+
+      // Study consistency advice
+      const consistencyTips = [];
+      if (totalDays <= 1) consistencyTips.push('建議增加做題天數，分散學習比集中一天效果更好（間隔學習效應）。');
+      else if (totalDays >= 5) consistencyTips.push('做題天數很穩定，持續保持，這是最有效的學習節奏！');
+      if (avgPerSession > 25) consistencyTips.push('單次做題量偏多，建議每次 10–15 題即可，專注力下降會影響正確率。');
+      else if (avgPerSession <= 5 && avgPerSession > 0) consistencyTips.push('每次做題量偏少，建議每次完成 10 題左右的完整回合。');
+      if (peakHours.length && (peakHours.some(h => h >= 22) || peakHours.some(h => h <= 5))) consistencyTips.push('做題時間偏晚，建議調整到放學後或傍晚，精神更好、效率更高。');
+
+      if (consistencyTips.length){
+        habitItems.push(`<div class="card" style="padding:10px;grid-column:1/-1"><div style="font-weight:700">💡 習慣建議</div>
+          <div style="margin-top:6px;font-size:13px;line-height:1.8">${consistencyTips.map(t => `<div>• ${t}</div>`).join('')}</div>
+        </div>`);
+      }
+
+      el.innerHTML = `<div class="subgrid">${habitItems.join('')}</div>`;
+    }
+
+    /** ── 本週行動建議（給家長的 3 件事）── */
+    function renderActionPlan(thisWeekAttempts, lastWeekAttempts, weakKinds){
+      const el = $('actionPlan');
+      if (!el) return;
+      const tw = Array.isArray(thisWeekAttempts) ? thisWeekAttempts : [];
+      const lw = Array.isArray(lastWeekAttempts) ? lastWeekAttempts : [];
+      const weak = Array.isArray(weakKinds) ? weakKinds : [];
+
+      if (!tw.length && !lw.length){
+        el.innerHTML = '<div class="small">（完成第一輪作答後，系統會自動產生行動建議）</div>';
+        return;
+      }
+
+      const actions = [];
+
+      // Action 1: Practice focus
+      if (weak.length > 0){
+        const topWeak = weak.slice(0, 2).map(w => kindNameZh(w.kind)).join('、');
+        const pageUrl = weak[0] ? unitPageUrl(weak[0].unit_id) : null;
+        actions.push({
+          icon: '📚', title: '重點練習',
+          desc: `本週最需加強：<strong>${safeStr(topWeak)}</strong>`,
+          detail: `建議每天做 5 題相關題型，先從簡單的開始，穩了再加難度。`,
+          link: pageUrl ? `<a href="${pageUrl}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px">↗ 去練習</a>` : '',
+        });
+      } else {
+        actions.push({
+          icon: '📚', title: '維持練習',
+          desc: '目前沒有明顯弱點，<strong>保持每週短回合練習</strong>即可。',
+          detail: '建議每週 2-3 次、每次 10 題的混合練習，維持手感。',
+          link: '',
+        });
+      }
+
+      // Action 2: Study habit
+      const twCorrect = tw.filter(e => e?.is_correct).length;
+      const twHinted = tw.filter(e => Number(e?.hint?.shown_count || 0) > 0).length;
+      const hintRate = tw.length ? twHinted / tw.length : 0;
+      if (hintRate >= 0.5){
+        actions.push({
+          icon: '🧠', title: '減少提示依賴',
+          desc: `提示使用率 <strong>${Math.round(hintRate * 100)}%</strong>，偏高`,
+          detail: '這週嘗試：看到題目先自己想 30 秒，寫出算式，算不出來再看 L1 提示。目標是「先想再看」。',
+          link: '',
+        });
+      } else if (tw.length && twCorrect / tw.length < 0.6){
+        actions.push({
+          icon: '🧠', title: '回頭鞏固基礎',
+          desc: `正確率 <strong>${Math.round(twCorrect / tw.length * 100)}%</strong>，建議先練熟基本題`,
+          detail: '先做會的題型，累積信心後再挑戰新題型。每題寫出完整算式、不跳步。',
+          link: '',
+        });
+      } else {
+        actions.push({
+          icon: '🧠', title: '培養獨立思考',
+          desc: '表現不錯！可以開始<strong>減少看提示的次數</strong>',
+          detail: '挑戰「零提示完成 5 題」，慢慢培養獨立解題的自信心。',
+          link: '',
+        });
+      }
+
+      // Action 3: Encouragement / next step
+      const lwN = lw.length;
+      const twN = tw.length;
+      if (twN > lwN && twN > 0){
+        actions.push({
+          icon: '🌟', title: '肯定努力',
+          desc: `本週做了 <strong>${twN}</strong> 題，比上週多 <strong>${twN - lwN}</strong> 題！`,
+          detail: '請記得跟孩子說「你這週有在練習，很棒」。正向鼓勵比指出錯誤更能維持學習動力。',
+          link: '',
+        });
+      } else if (twN === 0){
+        actions.push({
+          icon: '⏰', title: '安排固定時間',
+          desc: '本週還沒開始做題',
+          detail: '建議跟孩子約好「每天放學後」或「睡前」固定 10 分鐘做數學，養成習慣最重要。',
+          link: '',
+        });
+      } else {
+        actions.push({
+          icon: '🎯', title: '設定小目標',
+          desc: `本週已完成 <strong>${twN}</strong> 題`,
+          detail: '跟孩子一起設定「下週目標」，例如「正確率提高 5%」或「連續 3 天都有做題」。有目標會更有動力。',
+          link: '',
+        });
+      }
+
+      el.innerHTML = actions.map((a, i) => `
+        <div class="card" style="margin-top:${i ? 8 : 0}px;padding:12px;border-left:3px solid var(--accent)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-weight:800;font-size:15px">${a.icon} 行動 ${i+1}：${safeStr(a.title)}</div>
+              <div style="margin-top:6px;font-size:14px;line-height:1.6">${a.desc}</div>
+              <div style="margin-top:4px;font-size:13px;color:var(--muted);line-height:1.6">${safeStr(a.detail)}</div>
+            </div>
+            ${a.link ? `<div style="margin-left:10px">${a.link}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
     function refresh(){
       const uid = window.AIMathCoachLog?.getOrCreateUserId?.() || 'guest';
       $('txtUid').textContent = uid;
@@ -2591,6 +2895,15 @@
         if (hEl) hEl.innerHTML = '<div class="small">（七天以前沒有作答紀錄）</div>';
       }
       renderLatest24h(uid, attempts24h);
+
+      // ── 本週 vs 上週 比較 ──
+      const fourteenDayMs = Date.now() - 14 * 24 * 60 * 60 * 1000;
+      const lastWeekAttempts = allFiltered.filter(a => {
+        const t = Number(a?.ts_end || a?.ts_start || 0);
+        return t >= fourteenDayMs && t < sevenDayMs;
+      });
+      renderProgressCompare(recentAttempts, lastWeekAttempts);
+      renderStudyHabits(allFiltered);
 
       // Sellable summary (最近 N 天)
       const totalTimeMs = sumDurationMs(attempts);
@@ -2667,6 +2980,7 @@
       const remedy = renderWeaknesses(uid, attempts);
       const wrongDiagRows = renderWrongDiagnosis(uid, attempts);
       renderConceptAndDirection(uid, attempts);
+      renderActionPlan(recentAttempts, lastWeekAttempts, remedy.top || []);
 
       const top1 = (remedy.top || [])[0];
       $('pillWeak').textContent = top1

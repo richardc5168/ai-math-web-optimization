@@ -612,9 +612,12 @@
     var ofsX = sW * 0.866; /* cos(30°) */
     var ofsY = sW * 0.5;   /* sin(30°) */
 
-    var W = Math.ceil(sL + ofsX + 40);
+    /* Estimate height label width to set left padding */
+    var heightLabel = '高 '+h+(unit?' '+unit:'');
+    var labelWidth = Math.max(50, heightLabel.length * 8 + 16);
+    var bx = labelWidth; /* base x — enough room for height label */
+    var W = Math.ceil(bx + sL + ofsX + 30);
     var H = Math.ceil(sH + ofsY + 40);
-    var bx = 20; /* base x */
     var by = sH + 10; /* base y */
 
     var boxAriaLabel = 'Isometric box: length '+l+', width '+w+', height '+h+(unit?' '+unit:'');
@@ -639,10 +642,10 @@
     /* Length (bottom of front face) */
     svg += '<text x="'+(bx+sL/2)+'" y="'+(by+14)+'" text-anchor="middle" fill="#3b82f6" font-size="11" font-weight="700">長 '+l+(unit?' '+unit:'')+'</text>';
 
-    /* Height (left side) */
-    svg += '<text x="'+(bx-4)+'" y="'+(by-sH/2)+'" text-anchor="end" fill="#ef4444" font-size="11" font-weight="700">高 '+h+(unit?' '+unit:'')+'</text>';
-    /* Height arrow line */
-    svg += '<line x1="'+(bx-2)+'" y1="'+(by-2)+'" x2="'+(bx-2)+'" y2="'+(by-sH+2)+'" stroke="#ef4444" stroke-width="1" marker-start="url(#arrS)" marker-end="url(#arrE)"/>';
+    /* Height (left side — positioned with enough left margin, never clipped) */
+    var arrowX = bx - 12;
+    svg += '<line x1="'+arrowX+'" y1="'+(by-2)+'" x2="'+arrowX+'" y2="'+(by-sH+2)+'" stroke="#ef4444" stroke-width="1.5" marker-start="url(#arrS)" marker-end="url(#arrE)"/>';
+    svg += '<text x="'+(arrowX-4)+'" y="'+(by-sH/2)+'" text-anchor="end" fill="#ef4444" font-size="11" font-weight="700">'+escapeHTML(heightLabel)+'</text>';
 
     /* Width (top-right edge) */
     var wMidX = bx + sL + ofsX / 2;
@@ -1531,10 +1534,37 @@
         }
       } else if (family === 'volume' && ints.length >= 2){
         /* 3D isometric box for volume questions */
-        var vl = ints[0] || 1, vw = ints[1] || 1, vh = ints.length > 2 ? ints[2] : 0;
-        /* Detect unit from question text */
-        var unitM = text.match(/公分|cm|公尺|m/);
-        var vUnit = unitM ? unitM[0] : '';
+        /* Check for composite volume (multiple boxes A, B, C) */
+        var compositeMatch = text.match(/[A-C][\s：:]+長\s*(\d+)\s*(?:公分|cm)?\s*[、,]\s*寬\s*(\d+)\s*(?:公分|cm)?\s*[、,]\s*高\s*(\d+)/g);
+        if (compositeMatch && compositeMatch.length >= 2){
+          /* Composite: draw each box with label */
+          var unitM = text.match(/公分|cm|公尺|m/);
+          var vUnit = unitM ? unitM[0] : '';
+          var boxLabels = ['A','B','C','D','E'];
+          var svgParts = [];
+          var totalFormula = [];
+          var totalVol = 0;
+          for (var ci = 0; ci < compositeMatch.length; ci++){
+            var cm = compositeMatch[ci].match(/([A-C])[\s：:]+長\s*(\d+)\s*(?:公分|cm)?\s*[、,]\s*寬\s*(\d+)\s*(?:公分|cm)?\s*[、,]\s*高\s*(\d+)/);
+            if (cm){
+              var cl = parseInt(cm[2],10), cw = parseInt(cm[3],10), ch = parseInt(cm[4],10);
+              var cLabel = cm[1] || boxLabels[ci];
+              svgParts.push(buildIsometricBoxSVG(cl, cw, ch, { unit: vUnit, label: cLabel + '：' + cl + '×' + cw + '×' + ch }));
+              totalFormula.push('(' + cl + '×' + cw + '×' + ch + ')');
+              totalVol += cl * cw * ch;
+            }
+          }
+          html += '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + svgParts.join('') + '</div>';
+          html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
+          html += '① 分解成 ' + compositeMatch.length + ' 個長方體<br>';
+          html += '② V = ' + totalFormula.join(' + ') + '<br>';
+          html += '③ 各自算出體積再相加 = <strong>' + totalVol + '</strong>' + (vUnit ? ' ' + vUnit : '');
+          html += '</div>';
+        } else {
+          var vl = ints[0] || 1, vw = ints[1] || 1, vh = ints.length > 2 ? ints[2] : 0;
+          /* Detect unit from question text */
+          var unitM = text.match(/公分|cm|公尺|m/);
+          var vUnit = unitM ? unitM[0] : '';
         if (vh > 0){
           html += buildIsometricBoxSVG(vl, vw, vh, { unit: vUnit, label: '體積 = 長×寬×高' });
           html += '<div style="font-size:11px;color:#e5e7eb;margin:4px 0;line-height:1.6">';
@@ -1548,6 +1578,7 @@
           html += '① 長 = <strong>' + vl + '</strong>　寬 = <strong>' + vw + '</strong><br>';
           html += '② 面積 = 長 × 寬';
           html += '</div>';
+        }
         }
       } else if (family === 'time'){
         /* Clock face for time questions */

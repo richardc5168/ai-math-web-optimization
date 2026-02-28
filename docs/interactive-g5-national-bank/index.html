@@ -2193,14 +2193,24 @@
           <line x1="${bx}" y1="${by + bh + 18}" x2="${bx + bw}" y2="${by + bh + 18}" stroke="#9cc6ff" stroke-width="2" />
           <text x="${bx + bw/2}" y="${by + bh + 34}" fill="#9cc6ff" text-anchor="middle" font-size="14">下方長 ${b.l}</text>
 
-          <line x1="${bx + bw + 16}" y1="${by}" x2="${bx + bw + 16}" y2="${by + bh}" stroke="#9cc6ff" stroke-width="2" />
-          <text x="${bx + bw + 22}" y="${by + bh/2}" fill="#9cc6ff" font-size="14">高 ${b.h}</text>
+          <line x1="${bx + bw + 16}" y1="${by}" x2="${bx + bw + 16}" y2="${by + bh}" stroke="#9cc6ff" stroke-width="2" marker-start="url(#arrDown)" marker-end="url(#arrUp)" />
+          <text x="${bx + bw + 24}" y="${by + bh/2 + 5}" fill="#9cc6ff" font-size="14" font-weight="700">高 ${b.h}</text>
 
           <line x1="${tx}" y1="${ty - 24}" x2="${tx + tw}" y2="${ty - 24}" stroke="#f0c040" stroke-width="2" />
           <text x="${tx + tw/2}" y="${ty - 30}" fill="#f0c040" text-anchor="middle" font-size="14">上方長 ${t.l}</text>
 
+          <line x1="${tx + tw + 16}" y1="${ty}" x2="${tx + tw + 16}" y2="${ty + th}" stroke="#f0c040" stroke-width="2" marker-start="url(#arrDown2)" marker-end="url(#arrUp2)" />
+          <text x="${tx + tw + 24}" y="${ty + th/2 + 5}" fill="#f0c040" font-size="14" font-weight="700">高 ${t.h}</text>
+
           <text x="${bx + bd + 8}" y="${by - bd - 8}" fill="#9cc6ff" font-size="13">下方寬 ${b.w}</text>
-          <text x="${tx + td + 8}" y="${ty - td - 8}" fill="#f0c040" font-size="13">上方寬 ${t.w}、高 ${t.h}</text>
+          <text x="${tx + td + 8}" y="${ty - td - 8}" fill="#f0c040" font-size="13">上方寬 ${t.w}</text>
+
+          <defs>
+            <marker id="arrDown" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#9cc6ff"/></marker>
+            <marker id="arrUp" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6" fill="#9cc6ff"/></marker>
+            <marker id="arrDown2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#f0c040"/></marker>
+            <marker id="arrUp2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6" fill="#f0c040"/></marker>
+          </defs>
         </svg>
       `;
     }
