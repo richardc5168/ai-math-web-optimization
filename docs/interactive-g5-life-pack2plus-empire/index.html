@@ -28,8 +28,10 @@
     .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
     .btn.bad{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
     .btn.warn{border-color:rgba(210,153,34,.7); background:rgba(210,153,34,.10)}
-    .btn-skip-next{display:block;width:100%;margin-top:10px;padding:14px 0;border-radius:12px;border:2px solid rgba(46,160,67,.7);background:rgba(46,160,67,.18);color:#b7f5c9;font-size:17px;font-weight:700;cursor:pointer;text-align:center;letter-spacing:1px;transition:background .15s}
-    .btn-skip-next:hover{background:rgba(46,160,67,.32)}
+    .btn-skip-next{display:block;width:100%;margin-top:14px;padding:18px 0;border-radius:14px;border:2px solid rgba(46,160,67,.85);background:rgba(46,160,67,.22);color:#b7f5c9;font-size:20px;font-weight:800;cursor:pointer;text-align:center;letter-spacing:2px;transition:background .15s;box-shadow:0 0 12px rgba(46,160,67,.25)}
+    .btn-skip-next:hover{background:rgba(46,160,67,.38);box-shadow:0 0 20px rgba(46,160,67,.4)}
+    .btn-skip-next.pulse{animation:skipPulse 1.2s ease-in-out 3}
+    @keyframes skipPulse{0%,100%{box-shadow:0 0 12px rgba(46,160,67,.25)}50%{box-shadow:0 0 28px rgba(46,160,67,.65);border-color:rgba(46,160,67,1)}}
 
     .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px; white-space:pre-wrap}
     .banner.muted{color:var(--muted)}
@@ -336,7 +338,7 @@
         <button class="btn warn" id="btnShowSteps">看完整解題</button>
       </div>
       <div class="banner muted" id="banner">提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。卡住就按「下一層提示」或「給我下一步」。</div>
-      <button class="btn-skip-next" id="btnSkipNext" style="display:none">做下一題 ➜</button>
+      <button class="btn-skip-next" id="btnSkipNext" style="display:none">沒關係，做下一題 ➜</button>
       <div id="hints"></div>
       <div id="solution"></div>
       <div class="row" style="margin-top:8px">
@@ -2075,6 +2077,7 @@
             tsEnd,
           });
           showBanner('warn', `答案不對沒關係（不扣分）。請先看你做錯在哪：\n${reasonText}`);
+          if (els.btnSkipNext) { els.btnSkipNext.style.display = ''; els.btnSkipNext.classList.remove('pulse'); void els.btnSkipNext.offsetWidth; els.btnSkipNext.classList.add('pulse'); els.btnSkipNext.scrollIntoView({behavior:'smooth',block:'nearest'}); }
         }
       } catch (e){
         const reasonText = wrongDiagnosisByUnit(q, els.answer.value, String(e?.message || e || '答案格式錯誤'));
@@ -2089,8 +2092,8 @@
           tsEnd,
         });
         showBanner('warn', `格式或輸入有誤（不扣分）。\n${reasonText}\n（可先按提示或看完整解題，確認答案格式）`);
+        if (els.btnSkipNext) { els.btnSkipNext.style.display = ''; els.btnSkipNext.classList.remove('pulse'); void els.btnSkipNext.offsetWidth; els.btnSkipNext.classList.add('pulse'); els.btnSkipNext.scrollIntoView({behavior:'smooth',block:'nearest'}); }
       }
-      if (els.btnSkipNext) els.btnSkipNext.style.display = '';
     });
 
     els.btnNext?.addEventListener('click', () => {

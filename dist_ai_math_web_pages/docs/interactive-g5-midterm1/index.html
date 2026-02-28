@@ -28,8 +28,10 @@
     .btn.toggle-on{background:rgba(46,160,67,.16); border-color:rgba(46,160,67,.65)}
     .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
     .btn.bad{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
-    .btn-skip-next{display:block;width:100%;margin-top:10px;padding:14px 0;border-radius:12px;border:2px solid rgba(46,160,67,.7);background:rgba(46,160,67,.18);color:#b7f5c9;font-size:17px;font-weight:700;cursor:pointer;text-align:center;letter-spacing:1px;transition:background .15s}
-    .btn-skip-next:hover{background:rgba(46,160,67,.32)}
+    .btn-skip-next{display:block;width:100%;margin-top:14px;padding:18px 0;border-radius:14px;border:2px solid rgba(46,160,67,.85);background:rgba(46,160,67,.22);color:#b7f5c9;font-size:20px;font-weight:800;cursor:pointer;text-align:center;letter-spacing:2px;transition:background .15s;box-shadow:0 0 12px rgba(46,160,67,.25)}
+    .btn-skip-next:hover{background:rgba(46,160,67,.38);box-shadow:0 0 20px rgba(46,160,67,.4)}
+    .btn-skip-next.pulse{animation:skipPulse 1.2s ease-in-out 3}
+    @keyframes skipPulse{0%,100%{box-shadow:0 0 12px rgba(46,160,67,.25)}50%{box-shadow:0 0 28px rgba(46,160,67,.65);border-color:rgba(46,160,67,1)}}
     .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px}
     .banner.muted{color:var(--muted)}
     .banner.ok{border-color:rgba(46,160,67,.65); color:#b7f5c9; background:rgba(46,160,67,.10)}
@@ -118,7 +120,7 @@
         </div>
 
         <div id="banner" class="banner muted">提示：答案通常是分數或整數；若題目單位是「人/棵/元/公里」通常是整數。</div>
-        <button class="btn-skip-next" id="btnSkipNext" style="display:none">做下一題 ➜</button>
+        <button class="btn-skip-next" id="btnSkipNext" style="display:none">沒關係，做下一題 ➜</button>
         <div id="hints"></div>
         <div id="solution"></div>
 
@@ -2158,8 +2160,8 @@
           state.hintStepIndex = 1;
           state.hintUsed = Math.max(state.hintUsed, 1);
         }
+        if (els.btnSkipNext) { els.btnSkipNext.style.display = ''; els.btnSkipNext.classList.remove('pulse'); void els.btnSkipNext.offsetWidth; els.btnSkipNext.classList.add('pulse'); els.btnSkipNext.scrollIntoView({behavior:'smooth',block:'nearest'}); }
       }
-      if (els.btnSkipNext) els.btnSkipNext.style.display = '';
     });
 
     updateBankMeta();
