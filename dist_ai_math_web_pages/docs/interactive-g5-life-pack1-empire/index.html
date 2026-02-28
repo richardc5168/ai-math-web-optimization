@@ -28,6 +28,8 @@
     .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
     .btn.bad{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
     .btn.warn{border-color:rgba(210,153,34,.7); background:rgba(210,153,34,.10)}
+    .btn-skip-next{display:block;width:100%;margin-top:10px;padding:14px 0;border-radius:12px;border:2px solid rgba(46,160,67,.7);background:rgba(46,160,67,.18);color:#b7f5c9;font-size:17px;font-weight:700;cursor:pointer;text-align:center;letter-spacing:1px;transition:background .15s}
+    .btn-skip-next:hover{background:rgba(46,160,67,.32)}
 
     .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px; white-space:pre-wrap}
     .banner.muted{color:var(--muted)}
@@ -346,6 +348,7 @@
         <button class="btn warn" id="btnShowSteps">看完整解題</button>
       </div>
       <div class="banner muted" id="banner">提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。卡住就按「下一層提示」或「給我下一步」。</div>
+      <button class="btn-skip-next" id="btnSkipNext" style="display:none">做下一題 ➜</button>
       <div id="hints"></div>
       <div id="solution"></div>
       <div class="row" style="margin-top:8px">
@@ -528,6 +531,7 @@
       btnNext: document.getElementById('btnNext'),
       nextHint: document.getElementById('nextHint'),
       btnCheck: document.getElementById('btnCheck'),
+      btnSkipNext: document.getElementById('btnSkipNext'),
 
       // game
       gUnit: document.getElementById('gUnit'),
@@ -704,6 +708,7 @@
       if (els.qText) els.qText.textContent = q ? q.question : '（題庫中沒有符合條件的題目）';
       applyAnswerUI(q, 'practice');
       showBanner('muted', '提示：先標出「已知 / 未知 / 單位」→ 寫算式 → 計算。卡住就按「下一層提示」或「給我下一步」。');
+      if (els.btnSkipNext) els.btnSkipNext.style.display = 'none';
 
       // focus empire to this unit
       if (q && q.kind) setSelectedUnit(q.kind);
@@ -1213,6 +1218,8 @@
 
     els.btnReset?.addEventListener('click', () => showQuestion(state.q));
 
+    els.btnSkipNext?.addEventListener('click', () => els.btnNew?.click());
+
     els.btnHint?.addEventListener('click', () => {
       const level = clampHintLevel(els.hintLevel.value || '1');
       showHintForLevel(level);
@@ -1271,6 +1278,7 @@
       } catch (e){
         showBanner('warn', `格式或輸入有誤（不扣分）。\n${String(e?.message || e || '答案格式錯誤')}\n（可先按提示或看完整解題，確認答案格式）`);
       }
+      if (els.btnSkipNext) els.btnSkipNext.style.display = '';
     });
 
     els.btnNext?.addEventListener('click', () => {

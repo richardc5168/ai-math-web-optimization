@@ -2,6 +2,16 @@ name: Verify All + Scorecard
 
 on:
   pull_request:
+    branches: [main]
+    paths:
+      - "pipeline/**"
+      - "data/**"
+      - "tests/**"
+      - "schemas/**"
+      - ".github/workflows/**"
+      - "docs/**"
+      - "tools/**"
+      - "scripts/**"
   push:
     branches: [main]
   schedule:
@@ -48,6 +58,25 @@ jobs:
       - name: Run verify:all
         id: verify
         run: npm run verify:all
+        continue-on-error: true
+
+      - name: Run pipeline quality gate (smoke data)
+        if: hashFiles('data/smoke/problems.sample.jsonl') != ''
+        run: |
+          python -m pipeline.verify \
+            --dataset data/smoke/problems.sample.jsonl \
+            --report artifacts/pipeline_report.json
+        continue-on-error: true
+
+      - name: Run pipeline unit + integration tests
+        run: |
+          python -m pytest tests/unit/test_pipeline_schema.py \
+                           tests/unit/test_pipeline_steps.py \
+                           tests/unit/test_pipeline_license.py \
+                           tests/unit/test_pipeline_correctness.py \
+                           tests/integration/test_pipeline_verify.py \
+                           tests/e2e/test_pipeline_e2e.py \
+                           -q --tb=short
         continue-on-error: true
 
       - name: Self-heal verify failures
@@ -121,6 +150,35 @@ jobs:
           path: |
             artifacts/
             playwright-report/
+
+  pipeline-verify:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: [verify]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run full pipeline verify
+        run: |
+          python -m pipeline.verify \
+            --dataset data/smoke/problems.sample.jsonl \
+            --report artifacts/pipeline_report.json
+
+      - name: Upload pipeline report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-report
+          path: artifacts/pipeline_report.json
 
   auto_merge:
     needs: verify

@@ -28,6 +28,8 @@
     .btn.toggle-on{background:rgba(46,160,67,.16); border-color:rgba(46,160,67,.65)}
     .btn.good{border-color:rgba(46,160,67,.65); background:rgba(46,160,67,.14)}
     .btn.bad{border-color:rgba(248,81,73,.65); background:rgba(248,81,73,.08)}
+    .btn-skip-next{display:block;width:100%;margin-top:10px;padding:14px 0;border-radius:12px;border:2px solid rgba(46,160,67,.7);background:rgba(46,160,67,.18);color:#b7f5c9;font-size:17px;font-weight:700;cursor:pointer;text-align:center;letter-spacing:1px;transition:background .15s}
+    .btn-skip-next:hover{background:rgba(46,160,67,.32)}
     .banner{border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px; margin-top:10px}
     .banner.muted{color:var(--muted)}
     .banner.ok{border-color:rgba(46,160,67,.65); color:#b7f5c9; background:rgba(46,160,67,.10)}
@@ -135,6 +137,7 @@
         </div>
 
         <div id="banner" class="banner muted">提示：來源卷題目可先作答再開解答核對；互動題可直接檢查答案並看分層提示。</div>
+        <button class="btn-skip-next" id="btnSkipNext" style="display:none">做下一題 ➜</button>
         <div id="hints"></div>
         <div id="solution"></div>
 
@@ -1874,6 +1877,7 @@
       studentState: document.getElementById('studentState'),
       btnNext: document.getElementById('btnNext'),
       nextHint: document.getElementById('nextHint'),
+      btnSkipNext: document.getElementById('btnSkipNext'),
     };
 
     function updateShortHintButton(){
@@ -2400,6 +2404,7 @@
       const kindLabel = getKindLabel(kindCode);
       els.banner.className = 'banner muted';
       els.banner.textContent = `題目已載入（${q.id || '-'} / ${kindLabel}）。建議：先圈總量/分數/單位，再列式。`;
+      if (els.btnSkipNext) els.btnSkipNext.style.display = 'none';
 
       const qUrl = String(q.source_question_url || '');
       const aUrl = String(q.source_answer_url || '');
@@ -2602,6 +2607,8 @@
       setBannerMuted('已清空。');
     });
 
+    els.btnSkipNext?.addEventListener('click', () => els.btnNew?.click());
+
     els.btnHint.addEventListener('click', () => {
       const q = state.q;
       if (!q){ setBannerBad('請先按「出新題」出一題。'); return; }
@@ -2747,6 +2754,7 @@
           state.hintUsed = Math.max(state.hintUsed, 1);
         }
       }
+      if (els.btnSkipNext) els.btnSkipNext.style.display = '';
     });
 
     updateBankMeta();

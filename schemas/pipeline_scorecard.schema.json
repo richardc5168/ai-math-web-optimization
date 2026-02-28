@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pipeline verification scorecard",
+  "description": "Schema for the output of pipeline/verify.py — per-problem gate results and aggregate report.",
+  "type": "object",
+  "required": ["total", "passed", "failed_count", "pass_rate", "results", "failures"],
+  "properties": {
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total problems verified"
+    },
+    "passed": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of problems passing all four gates"
+    },
+    "failed_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of problems failing at least one gate"
+    },
+    "pass_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Fraction of problems passing (0–1)"
+    },
+    "topic_coverage": {
+      "type": "object",
+      "description": "Map of topic_code → count of problems covering that code",
+      "additionalProperties": { "type": "integer" }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "gate", "reasons", "passed", "score"],
+        "properties": {
+          "id": { "type": "string" },
+          "gate": {
+            "type": "object",
+            "required": ["schema", "correctness", "steps", "license"],
+            "properties": {
+              "schema": { "type": "boolean" },
+              "correctness": { "type": "boolean" },
+              "steps": { "type": "boolean" },
+              "license": { "type": "boolean" }
+            }
+          },
+          "reasons": {
+            "type": "object",
+            "properties": {
+              "schema": { "type": "string" },
+              "correctness": { "type": "string" },
+              "steps": { "type": "string" },
+              "license": { "type": "string" }
+            }
+          },
+          "passed": { "type": "boolean" },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Weighted score: correctness(40) + step_consistency(25) + step_completeness(15) + answer_reasonableness(10) + anti_cheat(10)"
+          }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "line": { "type": "integer" },
+          "id": { "type": "string" },
+          "error": { "type": "string" },
+          "reasons": { "type": "object" }
+        }
+      }
+    }
+  }
+}
