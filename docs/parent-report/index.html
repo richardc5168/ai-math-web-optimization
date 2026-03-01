@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>家長遠端報告｜AI 數學</title>
+  <meta name="description" content="家長遠端查看孩子作答狀況：正確率、耗時、弱點分析、錯題摘要" />
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#0f1733; --card:#121c3d;
+      --text:#e6edf3; --muted:#9aa4b2; --line:#243055;
+      --accent:#58a6ff; --ok:#2ea043; --bad:#f85149; --warn:#d29922;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65}
+    .wrap{max-width:720px;margin:0 auto;padding:16px}
+    h1{margin:0 0 6px 0;font-size:20px;font-weight:900}
+    .small{color:var(--muted);font-size:12px;line-height:1.6}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
+    .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .kpi .box{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px}
+    .kpi .label{color:var(--muted);font-size:12px}
+    .kpi .value{font-size:22px;font-weight:900;margin-top:4px}
+    .pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid rgba(88,166,255,.35);color:var(--accent);background:rgba(88,166,255,.08)}
+    .pill.ok{border-color:rgba(46,160,67,.55);color:#b7f5c9;background:rgba(46,160,67,.08)}
+    .pill.bad{border-color:rgba(248,81,73,.45);color:#ffb4af;background:rgba(248,81,73,.08)}
+    .pill.warn{border-color:rgba(210,153,34,.45);color:#ffe8bd;background:rgba(210,153,34,.08)}
+    table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+    th,td{border-bottom:1px solid rgba(255,255,255,.08);padding:8px 6px;text-align:left}
+    th{color:var(--muted);font-weight:700}
+    .banner{border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;margin-top:10px}
+    .banner.ok{border-color:rgba(46,160,67,.65);color:#b7f5c9;background:rgba(46,160,67,.10)}
+    .banner.bad{border-color:rgba(248,81,73,.65);color:#ffd2cf;background:rgba(248,81,73,.08)}
+    .banner.warn{border-color:rgba(210,153,34,.65);color:#ffe8bd;background:rgba(210,153,34,.08)}
+    .banner.muted{color:var(--muted)}
+    button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid rgba(88,166,255,.45);background:rgba(88,166,255,.12);color:var(--text);cursor:pointer;font-weight:700;font-size:14px}
+    button:hover{background:rgba(88,166,255,.20)}
+    button.primary{background:rgba(46,160,67,.14);border-color:rgba(46,160,67,.65)}
+    input{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:10px;padding:10px;font-size:15px;width:100%}
+    a{color:var(--accent)}
+    .chart-bar{display:flex;align-items:flex-end;gap:4px;height:100px;margin-top:10px}
+    .chart-bar .bar{flex:1;border-radius:4px 4px 0 0;min-width:18px;position:relative;transition:height .3s}
+    .chart-bar .bar .lbl{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap}
+    .chart-bar .bar .val{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text)}
+    @media(max-width:480px){.kpi{grid-template-columns:1fr}}
+    #loginGate h2{margin:0 0 12px 0}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📊 家長遠端報告</h1>
+  <div class="small">由學生端產生連結，家長在此輸入密碼查看最近作答統計。</div>
+
+  <!-- ═══ Login Gate ═══ -->
+  <div id="loginGate" class="card" style="border-color:var(--accent)">
+    <h2>🔒 請輸入家長密碼</h2>
+    <div class="small" style="margin-bottom:12px">
+      孩子在學習頁面登入後，可產生此報告連結。<br>
+      請輸入孩子設定的「家長密碼」查看報告。
+    </div>
+    <div class="row">
+      <input id="pinInput" type="password" placeholder="家長密碼（4~6位數字）" maxlength="6" style="max-width:200px" autocomplete="off" />
+      <button class="primary" id="btnUnlock">解鎖查看</button>
+    </div>
+    <div id="pinError" style="color:#f85149;font-size:13px;margin-top:8px;display:none"></div>
+    <div id="noDataMsg" class="banner muted" style="display:none">
+      ⚠️ 網址中沒有報告資料。請讓孩子在學習頁面點「生成家長報告連結」產生新連結。
+    </div>
+  </div>
+
+  <!-- ═══ Report Dashboard ═══ -->
+  <div id="dashboard" class="hidden">
+    <div class="card" style="border-color:var(--ok)">
+      <div class="row">
+        <div>
+          <div class="small">學生</div>
+          <div id="rptName" style="font-size:18px;font-weight:900">—</div>
+        </div>
+        <div style="margin-left:auto;text-align:right">
+          <div class="small">報告產生時間</div>
+          <div id="rptTime" class="small">—</div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:6px">
+        最近 <span id="rptDays">7</span> 天作答狀況摘要
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi" id="kpiGrid"></div>
+
+    <!-- hint distribution -->
+    <div class="card">
+      <div style="font-weight:800">提示使用分布</div>
+      <div class="small">Level 0 = 不看提示就答對，Level 3 = 需要完整步驟提示</div>
+      <div id="hintChart" class="chart-bar"></div>
+      <div id="stuckLevel" class="banner muted" style="margin-top:12px"></div>
+    </div>
+
+    <!-- daily chart -->
+    <div class="card">
+      <div style="font-weight:800">每日作答量</div>
+      <div class="small">每天做了幾題 + 正確率</div>
+      <div id="dailyChart" class="chart-bar"></div>
+    </div>
+
+    <!-- weakness -->
+    <div class="card">
+      <div style="font-weight:800">弱點 TOP 5（需補強）</div>
+      <div class="small">依錯題數 + 提示依賴度排序</div>
+      <div id="weakTable"></div>
+    </div>
+
+    <!-- recent wrong -->
+    <div class="card">
+      <div style="font-weight:800">最近錯題摘要（最多 5 題）</div>
+      <div class="small">含學生答案、正解、錯誤類型</div>
+      <div id="wrongList"></div>
+    </div>
+
+    <!-- advice -->
+    <div class="card" style="border-color:var(--warn)">
+      <div style="font-weight:800">📋 家長建議</div>
+      <div id="adviceBox" class="banner muted"></div>
+    </div>
+
+    <!-- actions -->
+    <div class="card">
+      <div class="row">
+        <button id="btnCopyText">📋 複製文字報告</button>
+        <a href="../" style="text-decoration:none"><button style="background:transparent;border-color:rgba(255,255,255,.18)">← 回到 AI MATH WEB</button></a>
+      </div>
+      <div id="copyMsg" style="color:#2ea043;font-size:13px;margin-top:8px;display:none">✅ 已複製到剪貼簿</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtMs(ms){
+    const s = Math.round(Number(ms||0)/1000);
+    if (s < 60) return s + '秒';
+    return Math.floor(s/60) + '分' + String(s%60).padStart(2,'0') + '秒';
+  }
+
+  /* ─── decode URL data ─── */
+  function decodeData(encoded){
+    try {
+      const json = decodeURIComponent(escape(atob(decodeURIComponent(encoded))));
+      return JSON.parse(json);
+    } catch { return null; }
+  }
+
+  /* ─── parse URL ─── */
+  const params = new URLSearchParams(window.location.search);
+  const encodedData = params.get('d');
+
+  if (!encodedData){
+    document.getElementById('noDataMsg').style.display = 'block';
+    document.getElementById('pinInput').disabled = true;
+    document.getElementById('btnUnlock').disabled = true;
+    return;
+  }
+
+  const data = decodeData(encodedData);
+  if (!data || !data.d){
+    document.getElementById('noDataMsg').style.display = 'block';
+    document.getElementById('noDataMsg').textContent = '⚠️ 報告資料格式錯誤，請讓孩子重新產生連結。';
+    return;
+  }
+
+  /* ─── PIN verification ─── */
+  document.getElementById('btnUnlock').addEventListener('click', unlock);
+  document.getElementById('pinInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') unlock();
+  });
+
+  function unlock(){
+    const pin = document.getElementById('pinInput').value.trim();
+    if (data.pin && pin !== data.pin){
+      const err = document.getElementById('pinError');
+      err.textContent = '密碼錯誤，請重試';
+      err.style.display = 'block';
+      return;
+    }
+    document.getElementById('loginGate').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    renderDashboard(data);
+  }
+
+  /* ─── render ─── */
+  function renderDashboard(d){
+    const r = d.d;
+    document.getElementById('rptName').textContent = d.name || '未知';
+    document.getElementById('rptTime').textContent = d.ts ? new Date(d.ts).toLocaleString('zh-TW') : '—';
+    document.getElementById('rptDays').textContent = String(d.days || 7);
+
+    /* KPI */
+    const kpiGrid = document.getElementById('kpiGrid');
+    const kpis = [
+      { label: '作答題數', value: String(r.total || 0) },
+      { label: '正確率', value: r.total ? (r.accuracy + '%') : '—' },
+      { label: '平均耗時', value: r.total ? fmtMs(r.avgMs) : '—' },
+      { label: '答對題數', value: String(r.correct || 0) },
+    ];
+    kpiGrid.innerHTML = kpis.map(k =>
+      `<div class="box"><div class="label">${esc(k.label)}</div><div class="value">${esc(k.value)}</div></div>`
+    ).join('');
+
+    /* hint chart */
+    const hintChart = document.getElementById('hintChart');
+    const hd = r.hintDist || [0,0,0,0];
+    const maxH = Math.max(1, ...hd);
+    const hintLabels = ['不看提示', 'Level 1', 'Level 2', 'Level 3'];
+    const hintColors = ['#2ea043','#58a6ff','#d29922','#f85149'];
+    hintChart.innerHTML = hd.map((v, i) => {
+      const pct = Math.max(4, v / maxH * 100);
+      return `<div class="bar" style="height:${pct}%;background:${hintColors[i]}">
+        <span class="val">${v}</span>
+        <span class="lbl">${hintLabels[i]}</span>
+      </div>`;
+    }).join('');
+
+    /* stuck level */
+    const stuckEl = document.getElementById('stuckLevel');
+    const stuckArr = [1,2,3].map(l => ({l, c: hd[l]||0})).sort((a,b) => b.c - a.c);
+    const stuckLv = stuckArr[0].c ? stuckArr[0].l : 0;
+    if (stuckLv){
+      stuckEl.className = 'banner warn';
+      stuckEl.innerHTML = `卡關提示階：<strong>Level ${stuckLv}</strong>（最常在此層才解題）<br>
+        <span class="small">建議：${stuckLv >= 3 ? '觀念基礎需加強，建議從基礎題練起' : stuckLv >= 2 ? '列式能力需練習，建議多做「列式→計算」步驟' : '觀念OK，但計算易出錯，建議練驗算習慣'}</span>`;
+    } else {
+      stuckEl.className = 'banner ok';
+      stuckEl.textContent = '目前幾乎不看提示就能答對，表現優秀！';
+    }
+
+    /* daily chart */
+    const dailyChart = document.getElementById('dailyChart');
+    const daily = r.daily || {};
+    const days = Object.keys(daily).sort();
+    if (days.length){
+      const maxD = Math.max(1, ...days.map(k => daily[k].n));
+      dailyChart.innerHTML = days.map(day => {
+        const dd = daily[day];
+        const pct = Math.max(4, dd.n / maxD * 100);
+        const acc = dd.n ? Math.round(dd.ok / dd.n * 100) : 0;
+        const color = acc >= 80 ? '#2ea043' : acc >= 60 ? '#d29922' : '#f85149';
+        return `<div class="bar" style="height:${pct}%;background:${color}">
+          <span class="val">${dd.n}題 ${acc}%</span>
+          <span class="lbl">${day.slice(5)}</span>
+        </div>`;
+      }).join('');
+    } else {
+      dailyChart.innerHTML = '<div class="small">尚無每日資料</div>';
+    }
+
+    /* weakness */
+    const weakTable = document.getElementById('weakTable');
+    const weak = r.weak || [];
+    if (weak.length){
+      let html = '<table><thead><tr><th>#</th><th>主題</th><th>題型</th><th>錯題</th><th>提示≥2</th></tr></thead><tbody>';
+      weak.forEach((w, i) => {
+        html += `<tr><td>${i+1}</td><td>${esc(w.t)}</td><td>${esc(w.k)}</td><td><span class="pill bad">${w.w}</span></td><td>${w.h2||0}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      weakTable.innerHTML = html;
+    } else {
+      weakTable.innerHTML = '<div class="banner ok">目前沒有明顯弱點！繼續保持 🎉</div>';
+    }
+
+    /* wrong list */
+    const wrongList = document.getElementById('wrongList');
+    const wrongs = r.wrong || [];
+    if (wrongs.length){
+      let html = '';
+      wrongs.forEach((w, i) => {
+        html += `<div class="banner bad" style="margin-top:${i?'8':'0'}px">
+          <div style="font-weight:700">${i+1}. ${esc(w.t)} / ${esc(w.k)}</div>
+          <div class="small" style="margin-top:4px;color:#ffd2cf">${esc(w.q)}</div>
+          <div style="margin-top:4px;font-size:13px">
+            學生答案：<strong>${esc(w.sa)}</strong>　正解：<strong>${esc(w.ca)}</strong>
+            ${w.et ? '　錯誤類型：<span class="pill bad">' + esc(w.et) + '</span>' : ''}
+          </div>
+          ${w.ed ? '<div class="small" style="margin-top:4px;color:#ffe8bd">診斷：' + esc(w.ed) + '</div>' : ''}
+        </div>`;
+      });
+      wrongList.innerHTML = html;
+    } else {
+      wrongList.innerHTML = '<div class="banner ok">最近沒有錯題記錄 ✅</div>';
+    }
+
+    /* advice */
+    const adviceBox = document.getElementById('adviceBox');
+    const advices = [];
+    if (r.total < 5) advices.push('目前作答數較少，建議每天至少做 5~10 題練習。');
+    if (r.accuracy < 60) advices.push('正確率偏低，建議先做基礎題加強觀念，不要急著做進階題。');
+    else if (r.accuracy < 80) advices.push('正確率還有進步空間，建議錯題先印出來重做一次，觀念才會穩固。');
+    else advices.push('正確率不錯！可以嘗試更多進階活用題挑戰。');
+    if (stuckLv >= 3) advices.push('孩子常需要完整步驟提示才能解題，建議把錯題的「完整步驟」抄一遍再做同型 2 題。');
+    else if (stuckLv >= 2) advices.push('孩子常卡在列式階段，建議練習「把題意翻成算式」的步驟。');
+    if (weak.length) advices.push('弱點主題：' + weak.map(w => w.t).join('、') + '。建議針對這些主題多練 5~10 題。');
+    if (r.avgMs > 120000) advices.push('平均耗時偏長，可能需要加強基本運算速度。');
+    adviceBox.className = 'banner warn';
+    adviceBox.innerHTML = advices.map((a, i) => `${i+1}. ${esc(a)}`).join('<br>');
+
+    /* copy text */
+    document.getElementById('btnCopyText').addEventListener('click', async () => {
+      const lines = [];
+      lines.push(`【家長遠端報告】${d.name || '未知'}`);
+      lines.push(`報告時間：${d.ts ? new Date(d.ts).toLocaleString('zh-TW') : '—'}`);
+      lines.push(`期間：最近 ${d.days || 7} 天`);
+      lines.push('');
+      lines.push(`作答題數：${r.total || 0}`);
+      lines.push(`正確率：${r.total ? r.accuracy + '%（' + r.correct + '/' + r.total + '）' : '—'}`);
+      lines.push(`平均耗時：${r.total ? fmtMs(r.avgMs) : '—'}`);
+      lines.push(`卡關提示階：${stuckLv ? 'Level ' + stuckLv : '（幾乎不看提示）'}`);
+      lines.push(`提示分布：0:${hd[0]||0}  1:${hd[1]||0}  2:${hd[2]||0}  3:${hd[3]||0}`);
+      if (weak.length){
+        lines.push('');
+        lines.push('弱點 TOP：');
+        weak.forEach((w, i) => lines.push(`  ${i+1}) ${w.t} / ${w.k}（錯:${w.w}）`));
+      }
+      if (wrongs.length){
+        lines.push('');
+        lines.push('最近錯題：');
+        wrongs.forEach((w, i) => {
+          lines.push(`  ${i+1}) ${w.t}：${w.q}`);
+          lines.push(`     學生答：${w.sa}　正解：${w.ca}`);
+        });
+      }
+      lines.push('');
+      lines.push('家長建議：');
+      advices.forEach((a, i) => lines.push(`  ${i+1}. ${a}`));
+
+      try {
+        await navigator.clipboard.writeText(lines.join('\n'));
+        const msg = document.getElementById('copyMsg');
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 2500);
+      } catch {}
+    });
+  }
+})();
+</script>
+</body>
+</html>

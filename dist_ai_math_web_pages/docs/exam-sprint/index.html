@@ -80,6 +80,7 @@
     <span class="chip" id="bankMeta">題庫載入中…</span>
     <span class="chip"><strong>快捷鍵</strong>：Enter 檢查｜N 新題｜1/2/3 提示｜S 詳解</span>
   </div>
+  <div id="studentAuthBar" style="margin-top:10px"></div>
 </header>
 
 <main>
@@ -172,8 +173,11 @@
       <div id="plan" class="banner muted">尚未生成。</div>
 
       <hr style="border:0;border-top:1px solid rgba(255,255,255,.10); margin:14px 0;">
+      <div class="row" style="margin-bottom:8px">
+        <a class="btn" href="../parent-report/" style="font-size:12px;padding:6px 10px">📊 家長遠端報告頁</a>
+      </div>
       <div class="small">
-        <b>提示</b>：這頁紀錄只存在本機 localStorage；不會影響任何既有題型。
+        <b>提示</b>：登入帳號後可產生「家長報告連結」，家長在手機/電腦打開即可遠端查看作答狀況。
       </div>
     </aside>
   </div>
@@ -183,6 +187,7 @@
 <script src="./diagnosis.js"></script>
 <script src="../shared/coach_event_log.js"></script>
 <script src="../shared/attempt_telemetry.js"></script>
+<script src="../shared/student_auth.js"></script>
 <script src="../shared/ux_enhancer.js"></script>
 <script src="../shared/hint_engine.js"></script>
 <script>
@@ -1666,6 +1671,7 @@
   }
 
   init();
+  window.AIMathStudentAuth?.injectLoginUI(document.getElementById('studentAuthBar'));
   window.AIMathUXEnhancer?.init({
     moduleId: 'exam-sprint',
     nextModulePath: '../interactive-g5-empire/',
