@@ -1531,8 +1531,8 @@
 
     var html = '';
 
-    /* Step progress indicator for all levels */
-    html += buildStepIndicatorSVG(lv);
+    /* Step progress indicator hidden — avoid student confusion with L1/L2 labels */
+    /* html += buildStepIndicatorSVG(lv); */
 
     /* --- L1: 觀念鎖定 (all families) — context-specific --- */
     if (lv === 1){
