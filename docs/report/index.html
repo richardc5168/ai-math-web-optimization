@@ -118,6 +118,16 @@
       <div id="box24hRetrySession" style="margin-top:10px"></div>
     </div>
 
+    <!-- ── 最近 3 天獨立分析 ── -->
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:900; font-size:16px">最近 3 天做題分析（獨立）</div>
+      <div class="small" style="margin-top:4px">固定看最近 72 小時，與前一個 72 小時對比趨勢。</div>
+      <span id="pill3d" class="tag pill" style="margin-top:6px">3天：—</span>
+      <div id="box3dKpi" style="margin-top:10px"></div>
+      <div id="box3dDelta" style="margin-top:10px"></div>
+      <div id="box3dRemedy" style="margin-top:10px"></div>
+    </div>
+
     <div class="grid">
       <div class="card">
         <div class="small">總題數</div>
@@ -1209,6 +1219,116 @@
           </div>
         `;
       }).join('');
+    }
+
+    // ── 3-day window functions ──
+
+    function computeWindowMetrics(items) {
+      const n = items.length;
+      const correct = items.filter(e => e?.is_correct === true).length;
+      const hinted = items.filter(e => {
+        const h = e?.hint_count || e?.hints_used || 0;
+        return Number(h) > 0;
+      }).length;
+      const times = items.map(e => {
+        const dur = Number(e?.duration_ms || e?.time_spent_ms || 0);
+        return dur > 0 ? dur : 0;
+      }).filter(t => t > 0);
+      const avgTime = times.length ? (times.reduce((a, b) => a + b, 0) / times.length) : 0;
+      return {
+        total: n,
+        accuracy: n ? (correct / n) : 0,
+        avg_time_ms: Math.round(avgTime),
+        hint_dependency: n ? (hinted / n) : 0,
+      };
+    }
+
+    function computeWindowDelta(curr, prev) {
+      if (window.AIMathReportAggregate?.compareWindow) {
+        return window.AIMathReportAggregate.compareWindow(curr, prev);
+      }
+      // Inline fallback
+      return {
+        delta_total: (curr?.total || 0) - (prev?.total || 0),
+        delta_accuracy: (curr?.accuracy || 0) - (prev?.accuracy || 0),
+        delta_avg_time_ms: (curr?.avg_time_ms || 0) - (prev?.avg_time_ms || 0),
+        delta_hint_dependency: (curr?.hint_dependency || 0) - (prev?.hint_dependency || 0),
+      };
+    }
+
+    function renderLatest3d(uid, attempts3d, prev3d) {
+      const pill = $('pill3d');
+      const kpiBox = $('box3dKpi');
+      const deltaBox = $('box3dDelta');
+      const remedyBox = $('box3dRemedy');
+      if (!pill || !kpiBox) return;
+
+      const curr = computeWindowMetrics(attempts3d);
+      const prev = computeWindowMetrics(prev3d);
+      const delta = computeWindowDelta(curr, prev);
+
+      pill.textContent = `3天：${curr.total} 題｜正確率 ${pct(curr.accuracy)}`;
+
+      if (!curr.total) {
+        kpiBox.innerHTML = '<div class="small">最近 3 天沒有作答紀錄。</div>';
+        if (deltaBox) deltaBox.innerHTML = '';
+        if (remedyBox) remedyBox.innerHTML = '';
+        return;
+      }
+
+      // KPI card
+      kpiBox.innerHTML = `
+        <div class="row" style="gap:12px; flex-wrap:wrap">
+          <div><span class="small">題數</span><div class="kpi" style="font-size:18px">${curr.total}</div></div>
+          <div><span class="small">正確率</span><div class="kpi" style="font-size:18px">${pct(curr.accuracy)}</div></div>
+          <div><span class="small">平均時間</span><div class="kpi" style="font-size:18px">${sec(curr.avg_time_ms)}</div></div>
+          <div><span class="small">提示依賴率</span><div class="kpi" style="font-size:18px">${pct(curr.hint_dependency)}</div></div>
+        </div>
+      `;
+
+      // Delta card
+      if (deltaBox) {
+        const accArrow = delta.delta_accuracy > 0.01 ? '↑' : delta.delta_accuracy < -0.01 ? '↓' : '→';
+        const accClass = delta.delta_accuracy > 0.01 ? 'good' : delta.delta_accuracy < -0.01 ? 'bad' : '';
+        const hintArrow = delta.delta_hint_dependency < -0.01 ? '↓ 改善' : delta.delta_hint_dependency > 0.01 ? '↑ 需注意' : '→ 持平';
+        const hintClass = delta.delta_hint_dependency < -0.01 ? 'good' : delta.delta_hint_dependency > 0.01 ? 'bad' : '';
+        deltaBox.innerHTML = `
+          <div style="font-weight:700; margin-bottom:6px">vs 前 3 天 Δ 變化</div>
+          <div class="row" style="gap:12px; flex-wrap:wrap">
+            <span class="tag ${accClass}">正確率 ${accArrow} ${(delta.delta_accuracy * 100).toFixed(1)}%</span>
+            <span class="tag">題數 ${delta.delta_total >= 0 ? '+' : ''}${delta.delta_total}</span>
+            <span class="tag ${hintClass}">提示依賴 ${hintArrow}</span>
+            <span class="tag">時間 ${delta.delta_avg_time_ms >= 0 ? '+' : ''}${(delta.delta_avg_time_ms / 1000).toFixed(1)}s</span>
+          </div>
+        `;
+      }
+
+      // Top wrong categories + remedy
+      if (remedyBox) {
+        const wrong3d = attempts3d.filter(e => e?.is_correct === false);
+        const kindCounts = {};
+        for (const e of wrong3d) {
+          const k = e?.kind || e?.topic || 'unknown';
+          kindCounts[k] = (kindCounts[k] || 0) + 1;
+        }
+        const topKinds = Object.entries(kindCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+        if (topKinds.length) {
+          const kindList = topKinds.map(([k, c]) => `<li>${safeStr(kindNameZh(k))}（${c} 錯）</li>`).join('');
+          const advice = curr.accuracy < 0.6
+            ? '建議先回顧基礎觀念，再做 5 題同類練習。'
+            : curr.accuracy < 0.8
+              ? '進步中！集中練習弱點題型各 3 題即可。'
+              : '表現不錯，維持每天少量練習鞏固即可。';
+          remedyBox.innerHTML = `
+            <div style="font-weight:700">Top 錯題類別</div>
+            <ol style="margin:4px 0 0 18px; padding:0">${kindList}</ol>
+            <div style="margin-top:8px; font-weight:700">補救建議</div>
+            <div class="small">${advice}</div>
+          `;
+        } else {
+          remedyBox.innerHTML = '<div class="small">3 天內無錯題，太棒了！🎉</div>';
+        }
+      }
     }
 
     function updateRetrySessionStatus(allAttempts){
@@ -2895,6 +3015,19 @@
         if (hEl) hEl.innerHTML = '<div class="small">（七天以前沒有作答紀錄）</div>';
       }
       renderLatest24h(uid, attempts24h);
+
+      // ── 最近 3 天 vs 前 3 天 ──
+      const threeDayMs = Date.now() - 3 * 24 * 60 * 60 * 1000;
+      const sixDayMs = Date.now() - 6 * 24 * 60 * 60 * 1000;
+      const attempts3d = allFiltered.filter(a => {
+        const t = Number(a?.ts_end || a?.ts_start || 0);
+        return t >= threeDayMs;
+      });
+      const prev3d = allFiltered.filter(a => {
+        const t = Number(a?.ts_end || a?.ts_start || 0);
+        return t >= sixDayMs && t < threeDayMs;
+      });
+      renderLatest3d(uid, attempts3d, prev3d);
 
       // ── 本週 vs 上週 比較 ──
       const fourteenDayMs = Date.now() - 14 * 24 * 60 * 60 * 1000;
