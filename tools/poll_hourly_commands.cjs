@@ -48,6 +48,24 @@ const ALLOWED_NPM_SCRIPTS = new Set([
   'autonomous:dry'
 ]);
 
+const SAFE_COMMIT_PATHS = [
+  'golden/grade5_pack_v1.jsonl',
+  'golden/improvement_baseline.json',
+  'golden/improvement_trend_history.jsonl',
+  'golden/error_memory.jsonl',
+  'docs/improvement/latest.json',
+  'docs/shared/hint_engine.js',
+  'dist_ai_math_web_pages/docs/improvement/latest.json',
+  'dist_ai_math_web_pages/docs/shared/hint_engine.js',
+  'tools/hint_diagram_known_issues.json',
+  'docs/**/bank.js',
+  'dist_ai_math_web_pages/docs/**/bank.js',
+  'docs/**/g56_core_foundation.json',
+  'dist_ai_math_web_pages/docs/**/g56_core_foundation.json',
+  'data/generated/',
+  'data/human_queue/'
+];
+
 function argValue(name, fallback) {
   const idx = process.argv.indexOf(name);
   if (idx < 0 || idx + 1 >= process.argv.length) return fallback;
@@ -261,22 +279,28 @@ function runPostValidation() {
   return { pass: true, stage: 'validated', status: 0, reason: '' };
 }
 
-function autoCommitForCommand(commandId) {
+function autoCommitForCommand(commandId, commitScope) {
   const statusRes = runCommand('git', ['status', '--porcelain']);
   const dirty = Boolean(statusRes.stdout && statusRes.stdout.trim());
   if (!dirty) {
     return { pass: true, status: 0, committed: false, pushed: false, commit_hash: null, reason: 'no changes' };
   }
 
-  const addRes = runCommand('git', ['add', '-A']);
+  const addArgs = commitScope === 'all' ? ['add', '-A'] : ['add', '--', ...SAFE_COMMIT_PATHS];
+  const addRes = runCommand('git', addArgs);
   if (!addRes.pass) {
     return { pass: false, status: addRes.status, committed: false, pushed: false, commit_hash: null, reason: addRes.stderr || 'git add failed' };
+  }
+
+  const stagedRes = runCommand('git', ['diff', '--cached', '--name-only']);
+  if (!stagedRes.stdout || !stagedRes.stdout.trim()) {
+    return { pass: true, status: 0, committed: false, pushed: false, commit_hash: null, reason: 'no staged changes in scope' };
   }
 
   const commitMsg = `automation: execute command ${commandId} with verified checks`;
   let commitRes = runCommand('git', ['commit', '--no-verify', '-m', commitMsg]);
   if (!commitRes.pass) {
-    runCommand('git', ['add', '-A']);
+    runCommand('git', addArgs);
     commitRes = runCommand('git', ['commit', '--no-verify', '-m', commitMsg]);
   }
   if (!commitRes.pass) {
@@ -327,7 +351,8 @@ async function runOnce(commandFilePath, commandUrl, statePath, runLogPath, lates
     if (result.pass) {
       validation = runPostValidation();
       if (validation.pass) {
-        commitResult = autoCommitForCommand(cmd.id);
+        const commitScope = String(cmd.commit_scope || 'tracked').trim().toLowerCase();
+        commitResult = autoCommitForCommand(cmd.id, commitScope === 'all' ? 'all' : 'tracked');
       }
     }
 

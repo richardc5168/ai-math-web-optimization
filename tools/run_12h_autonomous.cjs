@@ -43,6 +43,7 @@ const STEP_TIMEOUT_SEC = Number(argValue('--step-timeout-sec', '1800'));
 const ROLLBACK_TAG_PREFIX = argValue('--rollback-tag-prefix', 'rollback/autonomous-before');
 const NO_PUSH_ROLLBACK_TAG = hasFlag('--no-push-rollback-tag');
 const CONTINUE_ON_ITERATION_ERROR = !hasFlag('--stop-on-iteration-error');
+const HINTS_ONLY = hasFlag('--hints-only');
 const py            = pythonCmd();
 
 // ── Helpers ───────────────────────────────────────────────
@@ -149,8 +150,22 @@ const TRACKED_PATHS = [
   'data/human_queue/',
 ];
 
+const HINT_TRACKED_PATHS = [
+  'golden/grade5_pack_v1.jsonl',
+  'docs/shared/hint_engine.js',
+  'dist_ai_math_web_pages/docs/shared/hint_engine.js',
+  'docs/improvement/latest.json',
+  'dist_ai_math_web_pages/docs/improvement/latest.json',
+  'tools/hint_diagram_known_issues.json',
+  'docs/**/bank.js',
+  'dist_ai_math_web_pages/docs/**/bank.js',
+  'docs/**/g56_core_foundation.json',
+  'dist_ai_math_web_pages/docs/**/g56_core_foundation.json',
+];
+
 function stageFiles() {
-  return runCommand('git', ['add', '--', ...TRACKED_PATHS]);
+  const targetPaths = HINTS_ONLY ? HINT_TRACKED_PATHS : TRACKED_PATHS;
+  return runCommand('git', ['add', '--', ...targetPaths]);
 }
 
 function resetFiles() {
@@ -352,6 +367,7 @@ async function main() {
   console.log(`  Hours: ${MAX_HOURS} | Interval: ${INTERVAL_MIN}min | Push: ${!NO_PUSH} | DryRun: ${DRY_RUN}`);
   console.log(`  Step timeout: ${STEP_TIMEOUT_SEC}s`);
   console.log(`  Continue on iteration error: ${CONTINUE_ON_ITERATION_ERROR}`);
+  console.log(`  Hints-only mode: ${HINTS_ONLY}`);
   console.log(`  Started: ${ts()}`);
   console.log(`  Will stop at: ${new Date(endAt).toISOString()}`);
   console.log(`${'='.repeat(60)}\n`);
@@ -396,18 +412,26 @@ async function main() {
       }
 
       // Phase 1: Pipeline (generate + solve)
-      pipelineOk = phasePipeline(logs);
-      if (pipelineOk) totalPipelineRuns++;
+      if (HINTS_ONLY) {
+        pipelineOk = true;
+      } else {
+        pipelineOk = phasePipeline(logs);
+        if (pipelineOk) totalPipelineRuns++;
+      }
 
       // Phase 2: Hint optimization
       hintsOk = phaseHints(logs);
       if (!hintsOk) overallPass = false;
 
       // Phase 3: Content expansion
-      phaseContent(logs); // non-fatal
+      if (!HINTS_ONLY) {
+        phaseContent(logs); // non-fatal
+      }
 
       // Agent loop (error memory + hourly commands + idle triggers)
-      runAgentLoop(logs);
+      if (!HINTS_ONLY) {
+        runAgentLoop(logs);
+      }
 
       // Phase 4: Validation (GATE)
       const validateOk = phaseValidate(logs);
