@@ -330,6 +330,12 @@
         var reg;
         try { reg = JSON.parse(content); } catch(e){ reg = {}; }
         if (!reg.entries) reg.entries = {};
+        var oldEntry = reg.entries[nameKey] || null;
+        if (oldEntry && oldEntry.data && oldEntry.data.d && oldEntry.data.d.practice){
+          if (!entry.data) entry.data = {};
+          if (!entry.data.d) entry.data.d = {};
+          entry.data.d.practice = oldEntry.data.d.practice;
+        }
         reg.entries[nameKey] = entry;
         reg._r = 'v1';
         return fetch(GIST_API, {
@@ -389,6 +395,63 @@
       return null;
     })
     .catch(function(){ return null; });
+  }
+
+  function recordPracticeResult(name, result){
+    var nameKey = normalizeName(name);
+    if (!nameKey) return Promise.resolve(false);
+    var score = Math.max(0, Number(result && result.score || 0));
+    var total = Math.max(1, Number(result && result.total || 1));
+    var event = {
+      ts: Date.now(),
+      score: score,
+      total: total,
+      topic: String(result && result.topic || ''),
+      kind: String(result && result.kind || ''),
+      mode: String(result && result.mode || 'quiz')
+    };
+    return fetch(GIST_API, {
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': 'token ' + GIST_PAT
+      }
+    })
+    .then(function(resp){
+      if (!resp.ok) throw new Error('gist read ' + resp.status);
+      return resp.json();
+    })
+    .then(function(gist){
+      var content = '{}';
+      try { content = gist.files['registry.json'].content; } catch(e){}
+      var reg;
+      try { reg = JSON.parse(content); } catch(e){ reg = {}; }
+      if (!reg.entries) reg.entries = {};
+      var entry = reg.entries[nameKey] || { pin: '', cloud_ts: Date.now(), data: { v:1, name: name || '', ts: Date.now(), days:7, d:{} } };
+      if (!entry.data) entry.data = { v:1, name: name || '', ts: Date.now(), days:7, d:{} };
+      if (!entry.data.d) entry.data.d = {};
+      if (!entry.data.d.practice) entry.data.d.practice = { events: [] };
+      if (!Array.isArray(entry.data.d.practice.events)) entry.data.d.practice.events = [];
+      entry.data.d.practice.events.push(event);
+      if (entry.data.d.practice.events.length > 80){
+        entry.data.d.practice.events = entry.data.d.practice.events.slice(-80);
+      }
+      entry.cloud_ts = Date.now();
+      reg.entries[nameKey] = entry;
+      reg._r = 'v1';
+      return fetch(GIST_API, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github+json',
+          'Authorization': 'token ' + GIST_PAT
+        },
+        body: JSON.stringify({
+          files: { 'registry.json': { content: JSON.stringify(reg) } }
+        })
+      });
+    })
+    .then(function(resp){ return !!(resp && resp.ok); })
+    .catch(function(){ return false; });
   }
 
   /* hook into AIMathAttemptTelemetry.appendAttempt to auto-sync */
@@ -550,6 +613,7 @@
     injectLoginUI,
     scheduleCloudSync,
     forceCloudSync: doCloudSync,
-    lookupStudentReport
+    lookupStudentReport,
+    recordPracticeResult
   };
 })();

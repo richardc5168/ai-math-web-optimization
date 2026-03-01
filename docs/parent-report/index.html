@@ -150,6 +150,12 @@
       <div id="practiceLab" class="banner muted" style="margin-top:8px">請先在「最近錯題摘要」點「再練一題」。</div>
     </div>
 
+    <div class="card" style="border-color:var(--ok)">
+      <div style="font-weight:800">📚 本週再練成效</div>
+      <div class="small">統計最近 7 天在本頁「再練/小測驗」的作答成效</div>
+      <div id="practiceSummary" class="banner muted" style="margin-top:8px">尚無再練紀錄。</div>
+    </div>
+
     <!-- advice -->
     <div class="card" style="border-color:var(--warn)">
       <div style="font-weight:800">📋 家長建議</div>
@@ -427,9 +433,35 @@
   /* ─── render ─── */
   function renderDashboard(d){
     const r = d.d;
+
+    function renderPracticeSummary(){
+      var box = document.getElementById('practiceSummary');
+      if (!box) return;
+      var events = (r.practice && Array.isArray(r.practice.events)) ? r.practice.events : [];
+      var since = Date.now() - 7 * 86400000;
+      var recent = events.filter(function(e){ return Number(e.ts || 0) >= since; });
+      if (!recent.length){
+        box.className = 'banner muted';
+        box.textContent = '最近 7 天尚無再練紀錄。';
+        return;
+      }
+      var totalQ = recent.reduce(function(s, e){ return s + Number(e.total || 0); }, 0);
+      var correctQ = recent.reduce(function(s, e){ return s + Number(e.score || 0); }, 0);
+      var acc = totalQ ? Math.round(correctQ / totalQ * 100) : 0;
+      var latest = recent[recent.length - 1] || null;
+      var latestText = latest ? (new Date(latest.ts).toLocaleString('zh-TW') + '｜' + (latest.topic || '未分類') + ' / ' + (latest.kind || '練習')) : '—';
+      box.className = acc >= 80 ? 'banner ok' : acc >= 60 ? 'banner warn' : 'banner bad';
+      box.innerHTML =
+        '最近 7 天再練：<strong>' + recent.length + '</strong> 次　' +
+        '總題數：<strong>' + totalQ + '</strong>　' +
+        '答對：<strong>' + correctQ + '</strong>　' +
+        '正確率：<strong>' + acc + '%</strong><br>' +
+        '<span class="small">最近一次：' + esc(latestText) + '</span>';
+    }
     document.getElementById('rptName').textContent = d.name || '未知';
     document.getElementById('rptTime').textContent = d.ts ? new Date(d.ts).toLocaleString('zh-TW') : '—';
     document.getElementById('rptDays').textContent = String(d.days || 7);
+    renderPracticeSummary();
 
     /* 24h section */
     var h24 = r.h24 || { total:0, correct:0, accuracy:0, avgMs:0, hintDist:[0,0,0,0], modules:[] };
@@ -589,7 +621,29 @@
         var quizTotal = 3;
         var quizIndex = 1;
         var quizScore = 0;
+        var quizRecorded = false;
         var current = buildPracticeFromWrong(w);
+
+        function persistPractice(score, total){
+          if (quizRecorded) return;
+          quizRecorded = true;
+          if (!window.AIMathStudentAuth || !window.AIMathStudentAuth.recordPracticeResult) return;
+          var ev = {
+            score: score,
+            total: total,
+            topic: String(w.t || ''),
+            kind: String(w.k || ''),
+            mode: quizMode ? 'quiz3' : 'single'
+          };
+          window.AIMathStudentAuth.recordPracticeResult(d.name || '', ev).then(function(ok){
+            if (!ok) return;
+            if (!r.practice) r.practice = { events: [] };
+            if (!Array.isArray(r.practice.events)) r.practice.events = [];
+            r.practice.events.push({ ts: Date.now(), score: score, total: total, topic: ev.topic, kind: ev.kind, mode: ev.mode });
+            if (r.practice.events.length > 80) r.practice.events = r.practice.events.slice(-80);
+            renderPracticeSummary();
+          });
+        }
 
         function normAns(v){ return String(v || '').trim().replace(/\s+/g,'').toLowerCase(); }
         function renderCurrentCard(feedbackHtml){
@@ -652,6 +706,7 @@
               if (isCorrect) quizScore++;
               if (quizIndex >= quizTotal){
                 var acc = Math.round((quizScore / quizTotal) * 100);
+                persistPractice(quizScore, quizTotal);
                 renderCurrentCard('🏁 小測完成：' + quizScore + '/' + quizTotal + '（' + acc + '%）');
                 document.getElementById('practiceAnswer').disabled = true;
                 document.getElementById('practiceCheck').disabled = true;
@@ -673,6 +728,7 @@
           if (finishEl){
             finishEl.addEventListener('click', function(){
               var taken = Math.max(1, quizIndex - 1);
+              persistPractice(quizScore, taken);
               var acc = Math.round((quizScore / taken) * 100);
               renderCurrentCard('🏁 已結束：目前 ' + quizScore + '/' + taken + '（' + acc + '%）');
               document.getElementById('practiceAnswer').disabled = true;
@@ -706,6 +762,7 @@
       wrongList.innerHTML = '<div class="banner ok">最近沒有錯題記錄 ✅</div>';
       document.getElementById('detailedAnalysis').innerHTML = '<div class="banner ok" style="margin-top:8px">目前沒有可分析的錯題，建議維持每日練習節奏。</div>';
       document.getElementById('practiceLab').textContent = '目前沒有錯題可生成同類練習題。';
+      renderPracticeSummary();
     }
 
     /* advice */
