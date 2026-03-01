@@ -3,7 +3,7 @@
   "appName": "AI Math APP",
   "webDir": "www",
   "server": {
-    "url": "https://richardc5168.github.io/APP/docs/",
+    "url": "https://richardc5168.github.io/APP/",
     "cleartext": false,
     "androidScheme": "https"
   },
