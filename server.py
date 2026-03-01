@@ -2820,6 +2820,64 @@ def parent_weekly(student_id: int, days: int = 7, x_api_key: str = Header(..., a
         else:
             break
 
+    # ── recent_windows: 24h / 3d time-based stats ──
+    def _window_stats(conn_w, sid, hours):
+        """Return {total, accuracy, avg_time_sec, hint_dependency} for a time window."""
+        since_w = (datetime.now() - timedelta(hours=hours)).isoformat(timespec="seconds")
+        row = conn_w.execute(
+            """
+            SELECT
+              COUNT(*) AS n,
+              SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS c,
+              AVG(COALESCE(time_spent_sec, 0)) AS avg_t,
+              SUM(CASE WHEN hint_level_used > 0 THEN 1 ELSE 0 END) AS hinted
+            FROM attempts
+            WHERE student_id=? AND ts>=?
+            """,
+            (sid, since_w),
+        ).fetchone()
+        n = int(row["n"] or 0)
+        c = int(row["c"] or 0)
+        avg_t = float(row["avg_t"] or 0)
+        hinted = int(row["hinted"] or 0)
+        return {
+            "total": n,
+            "accuracy": round(c / n, 4) if n else 0.0,
+            "avg_time_sec": round(avg_t, 2),
+            "hint_dependency": round(hinted / n, 4) if n else 0.0,
+        }
+
+    h24 = _window_stats(conn, student_id, 24)
+    prev24 = _window_stats(conn, student_id, 48)
+    prev24_n = prev24["total"] - h24["total"]
+    prev24_only = {
+        "total": prev24_n,
+        "accuracy": round((prev24["accuracy"] * prev24["total"] - h24["accuracy"] * h24["total"]) / max(prev24_n, 1), 4) if prev24_n > 0 else 0.0,
+        "avg_time_sec": round(prev24["avg_time_sec"], 2),
+        "hint_dependency": round((prev24["hint_dependency"] * prev24["total"] - h24["hint_dependency"] * h24["total"]) / max(prev24_n, 1), 4) if prev24_n > 0 else 0.0,
+    }
+    d3 = _window_stats(conn, student_id, 72)
+    prev_d3_full = _window_stats(conn, student_id, 144)
+    prev_d3_n = prev_d3_full["total"] - d3["total"]
+    prev_d3_only = {
+        "total": prev_d3_n,
+        "accuracy": round((prev_d3_full["accuracy"] * prev_d3_full["total"] - d3["accuracy"] * d3["total"]) / max(prev_d3_n, 1), 4) if prev_d3_n > 0 else 0.0,
+        "avg_time_sec": round(prev_d3_full["avg_time_sec"], 2),
+        "hint_dependency": round((prev_d3_full["hint_dependency"] * prev_d3_full["total"] - d3["hint_dependency"] * d3["total"]) / max(prev_d3_n, 1), 4) if prev_d3_n > 0 else 0.0,
+    }
+
+    def _delta(curr_w, prev_w):
+        return {k: round(curr_w.get(k, 0) - prev_w.get(k, 0), 4) for k in ("total", "accuracy", "avg_time_sec", "hint_dependency")}
+
+    recent_windows = {
+        "h24": h24,
+        "d3": d3,
+        "delta": {
+            "h24_vs_prev24h": _delta(h24, prev24_only),
+            "d3_vs_prev3d": _delta(d3, prev_d3_only),
+        },
+    }
+
     conn.close()
 
     total_attempts = int(totals["total_attempts"] or 0)
@@ -2915,6 +2973,7 @@ def parent_weekly(student_id: int, days: int = 7, x_api_key: str = Header(..., a
         "weakness_top3": weakness_top3,
         "topic_table": topic_table,
         "next_week_plan": next_week_plan,
+        "recent_windows": recent_windows,
     }
 
 

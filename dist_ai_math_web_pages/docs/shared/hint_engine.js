@@ -25,6 +25,62 @@
   var ENABLE_KEY = 'aimath.hintEngine.enabled';
   var TRACK_KEY  = 'aimath.hintEffectiveness';
 
+  /* ============================================================
+   * 0b. 提示文案規格器 (Hint Clarity Spec)
+   *     統一管控 L1/L2/L3/L4 品質門檻
+   * ============================================================ */
+  var HINT_SPEC = {
+    L1_MAX_CHARS: 60,
+    L2_FORMULA_KEYWORDS: /列式|算式|先寫成|寫出|化成|通分|擴分|約分|乘以|除以|加上|減去/,
+    L3_ANSWER_GATE: true  /* enforceL3Gate already handles this */
+  };
+
+  /**
+   * applyHintSpec(text, level, question)
+   * Post-process hint text to enforce clarity policy per level.
+   * Returns sanitized text. Never breaks existing flow.
+   */
+  function applyHintSpec(text, level, question) {
+    var h = String(text || '');
+    var lv = Number(level) || 1;
+
+    /* L1: concept direction — enforce char limit */
+    if (lv === 1 && h.length > HINT_SPEC.L1_MAX_CHARS) {
+      /* Truncate to nearest sentence/phrase boundary within limit */
+      var cut = h.substring(0, HINT_SPEC.L1_MAX_CHARS);
+      var lastPunc = Math.max(cut.lastIndexOf('。'), cut.lastIndexOf('，'), cut.lastIndexOf('！'), cut.lastIndexOf('；'));
+      if (lastPunc > HINT_SPEC.L1_MAX_CHARS * 0.4) {
+        h = cut.substring(0, lastPunc + 1) + '…';
+      } else {
+        h = cut + '…';
+      }
+    }
+
+    /* L2: formula guidance — inject formula keyword if missing */
+    if (lv === 2 && !HINT_SPEC.L2_FORMULA_KEYWORDS.test(h)) {
+      h = '💡 試著列式看看：\n' + h;
+    }
+
+    /* L3/L4: answer stripping handled by enforceL3Gate — extra safety here */
+    if (lv >= 3 && question && HINT_SPEC.L3_ANSWER_GATE) {
+      h = stripAnswerFromHint(h, question.answer || '');
+    }
+
+    return h;
+  }
+
+  /**
+   * sanitizeHintText(text) — clean up common formatting issues in hint text.
+   */
+  function sanitizeHintText(text) {
+    var h = String(text || '');
+    /* Remove doubled punctuation */
+    h = h.replace(/。{2,}/g, '。').replace(/，{2,}/g, '，');
+    /* Trim excessive whitespace */
+    h = h.replace(/\n{3,}/g, '\n\n').trim();
+    return h;
+  }
+
   function isEnabled(){
     var qs = new URLSearchParams(window.location.search || '');
     var q  = (qs.get('hint_engine') || '').toLowerCase();
@@ -2856,6 +2912,10 @@
       text = enforceL3Gate(text, q);
     }
 
+    /* Apply hint clarity spec */
+    text = sanitizeHintText(text);
+    text = applyHintSpec(text, lv, q);
+
     /* Format with tier decoration */
     text = formatHintWithTier(text, lv, q);
 
@@ -3276,6 +3336,11 @@
     /* Utilities */
     extractFractions: extractFractions,
     extractIntegers: extractIntegers,
+
+    /* Hint clarity spec */
+    applyHintSpec: applyHintSpec,
+    sanitizeHintText: sanitizeHintText,
+    HINT_SPEC: HINT_SPEC,
 
     /* Page integration */
     setCurrentQuestion: setCurrentQuestion

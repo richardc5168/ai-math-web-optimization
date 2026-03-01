@@ -408,6 +408,22 @@
     };
   }
 
+  /**
+   * compareWindow(curr, prev) — compare two window metric sets.
+   * Each input: { total, accuracy, avg_time_ms, hint_dependency }
+   * Returns deltas (curr − prev) for each metric.
+   */
+  function compareWindow(curr, prev) {
+    const c = curr || {};
+    const p = prev || {};
+    return {
+      delta_total: (Number(c.total) || 0) - (Number(p.total) || 0),
+      delta_accuracy: (Number(c.accuracy) || 0) - (Number(p.accuracy) || 0),
+      delta_avg_time_ms: (Number(c.avg_time_ms) || 0) - (Number(p.avg_time_ms) || 0),
+      delta_hint_dependency: (Number(c.hint_dependency) || 0) - (Number(p.hint_dependency) || 0),
+    };
+  }
+
   window.AIMathReportAggregate = {
     classifyQuadrant,
     hintDepthKey,
@@ -419,5 +435,6 @@
     recommend,
     pickTopWeaknesses,
     remedyLabel,
+    compareWindow,
   };
 })();

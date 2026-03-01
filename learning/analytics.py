@@ -121,7 +121,7 @@ def get_student_analytics(conn: sqlite3.Connection, *, student_id: str, window_d
         c = int(row["c"] or 0)
         return {"days": days, "attempts": n, "accuracy": (c / n) if n else 0.0}
 
-    trend = [_acc_for_days(7), _acc_for_days(14), _acc_for_days(30)]
+    trend = [_acc_for_days(1), _acc_for_days(3), _acc_for_days(7), _acc_for_days(14), _acc_for_days(30)]
 
     return {
         "student_id": student_id,
