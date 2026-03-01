@@ -860,34 +860,34 @@
       const k = String(kind || '');
 
       if (k.includes('fraction') || k.includes('reciprocal') || k.includes('remaining_by_fraction')){
-        if (lv === 1) return '先看題目中的基準量（全部或剩下），再決定用乘法還是加減。';
-        if (lv === 2) return '分數題先通分或約分，列式後按步驟一行一行算。';
-        return '最後確認結果是否為最簡分數，並用反算檢查。';
+        if (lv === 1) return '先看基準量是全部還是剩下。';
+        if (lv === 2) return '列式後先通分/約分再算。';
+        return '結果約分到最簡並反算檢查。';
       }
       if (k.includes('percent') || k.includes('find_percent') || k.includes('cheng_increase')){
-        if (lv === 1) return '百分率先轉成倍率（p% = p/100）。';
-        if (lv === 2) return '先判斷是求部分、求全體，還是求增減後數值。';
-        return '算完把結果代回原式，確認邏輯成立。';
+        if (lv === 1) return '先把百分率轉倍率。';
+        if (lv === 2) return '先判斷求部分、全體或增減後。';
+        return '把結果代回原式檢查。';
       }
       if (k.includes('time_') || k.includes('clock_')){
-        if (lv === 1) return '時間題先統一格式，再做加減乘除。';
-        if (lv === 2) return '遇到 60 進位或借位，先把分鐘處理乾淨。';
-        return '最後檢查是否跨日，並確認格式符合題目要求。';
+        if (lv === 1) return '先統一時間格式。';
+        if (lv === 2) return '60 進位，不夠減先借位。';
+        return '檢查跨日與格式。';
       }
       if (k.includes('area_') || k.includes('surface_') || k.includes('cm3_') || k.includes('liter_') || k.includes('ha_') || k.includes('km2_') || k.includes('displacement')){
-        if (lv === 1) return '先判斷是面積、體積還是單位換算。';
-        if (lv === 2) return '代公式前先把單位統一，再逐步計算。';
-        return '答案後面要帶正確單位，並檢查量級是否合理。';
+        if (lv === 1) return '先判斷題型：面積/體積/換算。';
+        if (lv === 2) return '先統一單位，再代公式。';
+        return '檢查單位與量級是否合理。';
       }
       if (k.includes('solve_') || k.includes('equation') || k.includes('line_')){
-        if (lv === 1) return '先讀懂題目關係，再把關鍵量寫成式子。';
-        if (lv === 2) return '依序運算，不要同一行做太多步。';
-        return '最後回代檢查或對照圖表趨勢確認答案。';
+        if (lv === 1) return '先抓關係並列式。';
+        if (lv === 2) return '按順序一步一步算。';
+        return '最後回代或對照圖表檢查。';
       }
 
-      if (lv === 1) return '先圈出已知與未知，確認要用哪個概念。';
-      if (lv === 2) return '把題目翻成算式後，再逐步運算。';
-      return '最後做估算或反算檢查答案。';
+      if (lv === 1) return '先圈已知與未知。';
+      if (lv === 2) return '先列式再運算。';
+      return '最後做估算或反算檢查。';
     }
 
     function getNormalizedHint(q, level){

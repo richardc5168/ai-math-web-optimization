@@ -353,26 +353,26 @@
       const type = String(it && it.type || '').toLowerCase();
 
       if (type.includes('div_with_remainder')){
-        if (lv === 1) return '先確認是「幾組」與「剩下多少」，所以要用有餘數除法。';
-        if (lv === 2) return '列式後先求商，再用「被除數 − 除數×商」求餘數。';
-        return '檢查：餘數一定要小於除數，再把商與餘數一起寫完整。';
+        if (lv === 1) return '先分清「幾組」與「剩下多少」。';
+        if (lv === 2) return '先求商，再求餘數。';
+        return '檢查餘數要小於除數。';
       }
 
       if (type.includes('time_')){
-        if (lv === 1) return '先把時間統一成同一單位（秒或小時）再運算。';
-        if (lv === 2) return '依題意做乘除，必要時用 1日=24時、1分=60秒換算。';
-        return '最後把結果換回題目要求格式，並檢查位值是否合理。';
+        if (lv === 1) return '先統一時間單位。';
+        if (lv === 2) return '照題意做換算與運算。';
+        return '換回題目格式再檢查。';
       }
 
       if (type.includes('arithmetic_distributive')){
-        if (lv === 1) return '先看能不能用分配律，把大算式拆成好算的小算式。';
-        if (lv === 2) return '先乘後加減，逐步寫清楚每一段運算。';
-        return '最後反向檢查一次，確認和原式等值。';
+        if (lv === 1) return '先想能不能用分配律拆式。';
+        if (lv === 2) return '先乘後加減，分步寫清楚。';
+        return '最後反向代回檢查。';
       }
 
-      if (lv === 1) return '先圈出已知、未知與單位，確認要用哪種運算。';
-      if (lv === 2) return '把題目翻成算式後，按步驟一行一行計算。';
-      return '算完用反代或估算做檢查，再寫最終答案。';
+      if (lv === 1) return '先圈已知、未知與單位。';
+      if (lv === 2) return '先列式，再逐步計算。';
+      return '最後用反算或估算檢查。';
     }
 
     function getNormalizedHint(it, level){

@@ -507,50 +507,50 @@
     const volumeAreaKinds = new Set(['rect_cm3','composite','composite3','rect_find_height','cube_find_edge','cm3_to_m3','m3_to_cm3','surface_area_rect_prism','area_tiling','decimal_dims','mixed_units']);
 
     if (fracAddKinds.has(kind)){
-      if (lv === 1) return '觀念：分數加減先看分母；同分母直接算分子，不同分母先通分。';
-      if (lv === 2) return '步驟：先找公分母，再把每個分數改成同分母。';
-      return '完成分子加減後，約分到最簡分數，最後檢查答案大小是否合理。';
+      if (lv === 1) return '先看分母：同分母直接算，不同先通分。';
+      if (lv === 2) return '列式後先通分，再做分子加減。';
+      return '最後約分成最簡分數並反算檢查。';
     }
 
     if (fracWordKinds.has(kind)){
-      if (lv === 1) return '觀念：先圈出「全部、部分、剩下」與「要找什麼」。';
-      if (lv === 2) return '把題意翻成算式：先算比例，再乘上（或除以）總量。';
-      return '算完做反推驗算：把答案代回題意，檢查是否符合情境。';
+      if (lv === 1) return '先圈「全部、部分、要求量」。';
+      if (lv === 2) return '先寫比例，再乘/除總量。';
+      return '把答案代回題意檢查是否合理。';
     }
 
     if (decimalKinds.has(kind)){
-      if (lv === 1) return '觀念：小數運算先對齊位值（或先當整數算）。';
-      if (lv === 2) return '先算整數部分，再處理小數點位數與位置。';
-      return '用估算檢查量級：答案應與題目數字大小關係一致。';
+      if (lv === 1) return '小數題先列一個式子即可。';
+      if (lv === 2) return '先算主體，再點回小數點。';
+      return '用反算＋估算檢查答案大小。';
     }
 
     if (ratioPercentKinds.has(kind)){
-      if (lv === 1) return '觀念：百分率先換成倍率（% ÷ 100）。';
-      if (lv === 2) return '先判斷是「求部分、求全體」或「增加/減少後」。';
-      return '完成後反代驗算：把結果帶回原式確認成立。';
+      if (lv === 1) return '先把 % 轉倍率（p% = p/100）。';
+      if (lv === 2) return '先判斷求部分、全體或增減後。';
+      return '結果代回原式做反查。';
     }
 
     if (timeKinds.has(kind)){
-      if (lv === 1) return '觀念：先統一時間格式（時:分 或 分鐘）。';
-      if (lv === 2) return '加法超過 60 進位；減法不夠減先借位。';
-      return '最後換回題目指定格式，並檢查是否跨日。';
+      if (lv === 1) return '先統一成同一時間單位。';
+      if (lv === 2) return '超過 60 進位，不夠減先借位。';
+      return '換回題目格式並檢查跨日。';
     }
 
     if (volumeAreaKinds.has(kind)){
-      if (lv === 1) return '觀念：先判斷求體積還是面積，公式不同。';
-      if (lv === 2) return '把已知長寬高（或底高）代入公式，逐步計算。';
-      return '最後檢查單位：面積是平方、體積是立方。';
+      if (lv === 1) return '先判斷面積或體積。';
+      if (lv === 2) return '代公式一步一步算。';
+      return '檢查單位：平方/立方是否正確。';
     }
 
     if (kind === 'shopping_two_step' || kind === 'general'){
-      if (lv === 1) return '觀念：這是兩步驟生活題，先找第一步，再接第二步。';
-      if (lv === 2) return '把每一步算式分開寫，避免一次混算。';
-      return '檢查每一步單位是否一致，最後再寫答案。';
+      if (lv === 1) return '先分成第一步、第二步。';
+      if (lv === 2) return '每一步分開列式計算。';
+      return '檢查單位一致再寫答案。';
     }
 
-    if (lv === 1) return '觀念：先讀懂題目在問什麼，圈出已知與未知。';
-    if (lv === 2) return '先列出算式或步驟順序，再逐步計算。';
-    return '最後做驗算與單位檢查，確認答案合理。';
+    if (lv === 1) return '先圈已知與未知。';
+    if (lv === 2) return '列式後逐步計算。';
+    return '最後做反算與單位檢查。';
   }
 
   function withLevelPrefix(text, level){

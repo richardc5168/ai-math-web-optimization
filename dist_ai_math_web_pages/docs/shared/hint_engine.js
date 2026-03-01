@@ -1,5 +1,5 @@
 /**
- * hint_engine.js — 全站提示優化引擎 v2.17
+ * hint_engine.js — 全站提示優化引擎 v2.18
  *
  * 四級視覺鷹架系統：
  *  L1 觀念鎖定 — 圈重點、辨題型、基準切換警示
@@ -31,6 +31,8 @@
    * ============================================================ */
   var HINT_SPEC = {
     L1_MAX_CHARS: 60,
+    L2_MAX_CHARS: 80,
+    L3_MAX_CHARS: 80,
     L2_FORMULA_KEYWORDS: /列式|算式|先寫成|寫出|化成|通分|擴分|約分|乘以|除以|加上|減去/,
     L3_ANSWER_GATE: true  /* enforceL3Gate already handles this */
   };
@@ -59,6 +61,14 @@
     /* L2: formula guidance — inject formula keyword if missing */
     if (lv === 2 && !HINT_SPEC.L2_FORMULA_KEYWORDS.test(h)) {
       h = '💡 試著列式看看：\n' + h;
+    }
+
+    if (lv === 2 && h.length > HINT_SPEC.L2_MAX_CHARS){
+      h = h.substring(0, HINT_SPEC.L2_MAX_CHARS).replace(/\s+$/,'') + '…';
+    }
+
+    if (lv === 3 && h.length > HINT_SPEC.L3_MAX_CHARS){
+      h = h.substring(0, HINT_SPEC.L3_MAX_CHARS).replace(/\s+$/,'') + '…';
     }
 
     /* L3/L4: answer stripping handled by enforceL3Gate — extra safety here */
@@ -298,7 +308,7 @@
     return true;
   }
 
-  function isSimpleDecimalOneStep(q, text){
+  function isSimpleOneStepHint(q, text, family){
     var kind = String((q && q.kind) || '');
     var simpleKinds = {
       d_div_int: 1,
@@ -308,9 +318,27 @@
       decimal_times_integer: 1,
       decimal_mul: 1,
       d_mul_d: 1,
-      decimal_times_decimal: 1
+      decimal_times_decimal: 1,
+      fraction_add_unlike: 1,
+      fraction_sub_mixed: 1,
+      find_percent: 1,
+      percent_discount: 1,
+      cheng_increase: 1,
+      solve_ax: 1,
+      solve_x_div_d: 1,
+      solve_x_plus_a: 1
     };
     if (simpleKinds[kind]) return true;
+
+    if (family === 'decimal' || family === 'fracAdd' || family === 'percent' || family === 'simpleEquation'){
+      var s0 = String(text || '');
+      var opCount = (s0.match(/[÷\/×*+\-]/g) || []).length;
+      var nums0 = s0.match(/\d+(?:\.\d+)?/g) || [];
+      if (opCount <= 1 && nums0.length >= 2 && nums0.length <= 3){
+        if (/(一共|合計|剩下|找回|公升|毫升|公頃|平方|體積|面積|折線|表格|圖表)/.test(s0)) return false;
+        return true;
+      }
+    }
 
     var s = String(text || '');
     if (!/[÷\/×*]/.test(s)) return false;
@@ -1625,7 +1653,7 @@
     /* --- L2: 畫圖 (SVG diagrams) --- */
     if (lv === 2){
       var pureCalc = isPureCalculation(text);
-      var simpleDecimal = (family === 'decimal' && isSimpleDecimalOneStep(q, text));
+      var simpleOneStep = isSimpleOneStepHint(q, text, family);
 
       /* Pure calculation: show simple step-by-step text instead of diagrams */
       if (pureCalc && (family === 'fracRemain' || family === 'fracWord' || family === 'fracAdd') && fracs.length >= 1){
@@ -1665,21 +1693,37 @@
         return html;
       }
 
-      if (simpleDecimal){
+      if (simpleOneStep){
         var opDiv = /÷|\//.test(text);
         var opMul = /×|\*/.test(text);
         html += '<div class="he-rich-l2" style="line-height:1.9">';
-        html += '📝 單步題先列一個式子，不用另外畫圖：<br>';
-        html += '① 先寫算式：<strong>' + escapeHTML(text) + '</strong><br>';
-        if (opDiv){
-          html += '② 小數除法重點：小數點對齊，不夠除就補 0 繼續除<br>';
-          html += '③ 先估算範圍（約等於整數 ÷ 整數），確認答案大小合理';
-        } else if (opMul){
-          html += '② 先當整數乘，再把小數點點回去<br>';
-          html += '③ 先估算範圍，檢查小數位數是否合理';
+        html += '📝 這題一個式子就能完成，不用複雜圖：<br>';
+        if (family === 'decimal'){
+          html += '① 先寫算式：<strong>' + escapeHTML(text) + '</strong><br>';
+          if (opDiv){
+            html += '② 小數點對齊，不夠除就補 0 繼續除<br>';
+            html += '③ 先估算範圍，確認答案大小合理';
+          } else if (opMul){
+            html += '② 先當整數算，再把小數點點回去<br>';
+            html += '③ 檢查小數位數是否合理';
+          } else {
+            html += '② 依算式一步算完<br>';
+            html += '③ 用估算快速檢查';
+          }
+        } else if (family === 'fracAdd' && fracs.length >= 2){
+          html += '① 列式：<strong>' + fracs[0].num + '/' + fracs[0].den + ' ○ ' + fracs[1].num + '/' + fracs[1].den + '</strong><br>';
+          html += '② 分母不同先通分，分母相同直接算分子<br>';
+          html += '③ 最後約分成最簡分數';
+        } else if (family === 'percent'){
+          html += '① 先寫算式（部分=原量×倍率，或 全體=部分÷倍率）<br>';
+          html += '② % 先換成 /100；折數先換成 /10<br>';
+          html += '③ 檢查增加/折扣方向是否合理';
+        } else if (family === 'simpleEquation'){
+          html += '① 先把 x 留在等號一邊<br>';
+          html += '② 等號兩邊做相同運算（移項）<br>';
+          html += '③ 代回原式檢查';
         } else {
-          html += '② 依照算式一步算完<br>';
-          html += '③ 用估算快速檢查大小是否合理';
+          html += '① 先列式<br>② 依序一步算完<br>③ 反算檢查';
         }
         html += '</div>';
         return html;
@@ -1923,22 +1967,36 @@
 
     /* --- L3: 讀圖得分數 (grid + labels) --- */
     if (lv === 3){
-      var simpleDecimalL3 = (family === 'decimal' && isSimpleDecimalOneStep(q, text));
+      var simpleOneStepL3 = isSimpleOneStepHint(q, text, family);
 
-      if (simpleDecimalL3){
+      if (simpleOneStepL3){
         var opDiv3 = /÷|\//.test(text);
         var opMul3 = /×|\*/.test(text);
-        html += '<div class="he-rich-l3">📊 這題用「反算 + 估算」就夠，不需要複雜圖。</div>';
+        html += '<div class="he-rich-l3">📊 單步題用「反算 + 估算」檢查就夠。</div>';
         html += '<div style="font-size:11px;color:#e5e7eb;margin:6px 0;line-height:1.9">';
-        if (opDiv3){
-          html += '① 反算檢查：<strong>商 × 除數</strong> 應回到原數附近<br>';
-          html += '② 估算檢查：答案應比被除數小（除數 > 1 時）';
-        } else if (opMul3){
-          html += '① 反算檢查：<strong>積 ÷ 一個因數</strong> 應回到另一個因數<br>';
-          html += '② 估算檢查：整數部分與小數位數是否合理';
+        if (family === 'decimal'){
+          if (opDiv3){
+            html += '① 反算：<strong>商 × 除數</strong> 應回到原數附近<br>';
+            html += '② 估算：答案大小要合理';
+          } else if (opMul3){
+            html += '① 反算：<strong>積 ÷ 一個因數</strong> 應回到另一個因數<br>';
+            html += '② 估算：整數部分與小數位數合理';
+          } else {
+            html += '① 反算一次確認可回推<br>';
+            html += '② 用估算確認量級';
+          }
+        } else if (family === 'fracAdd'){
+          html += '① 檢查是否已通分<br>';
+          html += '② 檢查結果是否已約分到最簡';
+        } else if (family === 'percent'){
+          html += '① 檢查倍率換算（% ↔ /100，折 ↔ /10）<br>';
+          html += '② 代回題意確認增減方向';
+        } else if (family === 'simpleEquation'){
+          html += '① 代回原式，確認左邊=右邊<br>';
+          html += '② 檢查運算方向有沒有做反';
         } else {
-          html += '① 反算一次確認算式可回推<br>';
-          html += '② 用估算確認答案量級';
+          html += '① 反算一次<br>';
+          html += '② 檢查量級與單位';
         }
         html += '</div>';
         return html;
