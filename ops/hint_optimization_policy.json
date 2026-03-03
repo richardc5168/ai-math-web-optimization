@@ -21,6 +21,17 @@
       "fraction application"
     ]
   },
+  "custom_hint_banks": {
+    "description": "Banks with manually optimized hints (emoji 🔍📊✏️🎯 + unit-specific L4). Do NOT overwrite hints[3] (L4) during autotune.",
+    "banks": [
+      {
+        "module": "interactive-g5-life-pack1plus-empire",
+        "variable": "G5_LIFE_PACK1PLUS_BANK",
+        "protect_levels": [3],
+        "note": "L4 has unit-specific verification prompts, not boilerplate"
+      }
+    ]
+  },
   "modes": {
     "simple_one_step_keywords": [
       "打折",
