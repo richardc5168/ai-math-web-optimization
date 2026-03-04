@@ -72,6 +72,8 @@
     ,"cloud:optimize:once": "node tools/run_cloud_autonomous.cjs --once"
     ,"cloud:optimize:dry": "node tools/run_cloud_autonomous.cjs --once --dry-run"
     ,"audit:diagrams": "node tools/audit_hint_diagrams.cjs"
+    ,"commands:issues:poll": "node tools/poll_github_issue_commands.cjs --watch --interval-sec 60 --allowed-author richardc5168"
+    ,"commands:issues:once": "node tools/poll_github_issue_commands.cjs --once --allowed-author richardc5168"
     ,"app:mobile:install": "npm --prefix app_mobile install"
     ,"app:mobile:add:android": "npm --prefix app_mobile run cap:add:android"
     ,"app:mobile:sync": "npm --prefix app_mobile run cap:sync:android"
