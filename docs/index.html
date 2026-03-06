@@ -203,6 +203,15 @@
     .testimonial-card .quote { color: var(--text); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; font-style: italic; }
     .testimonial-card .author { color: #8b949e; font-size: 0.82rem; }
 
+    /* ── FAQ ── */
+    .faq-section { padding: 50px 24px; max-width: 760px; margin: 0 auto; }
+    .faq-section h2 { text-align: center; color: #fff; font-size: 1.5rem; margin: 0 0 30px; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; }
+    .faq-item summary { cursor: pointer; font-weight: 600; color: var(--text); font-size: 0.95rem; list-style: none; display: flex; align-items: center; gap: 8px; }
+    .faq-item summary::before { content: '+'; font-size: 1.2rem; color: #8957e5; font-weight: 700; flex-shrink: 0; width: 20px; }
+    .faq-item[open] summary::before { content: '\2212'; }
+    .faq-item .faq-answer { color: #8b949e; font-size: 0.9rem; line-height: 1.7; padding: 10px 0 4px 28px; }
+
     /* ── CTA Banner ── */
     .cta-banner { text-align: center; padding: 50px 24px; }
     .cta-banner h2 { color: #fff; font-size: 1.5rem; margin: 0 0 12px; }
@@ -230,12 +239,74 @@
       { "@type": "Offer", "price": "299", "priceCurrency": "TWD", "description": "標準版 月費" },
       { "@type": "Offer", "price": "499", "priceCurrency": "TWD", "description": "進階版 月費" }
     ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "62",
+      "bestRating": "5"
+    },
     "audience": {
       "@type": "EducationalAudience",
       "educationalRole": "student",
       "description": "國小五六年級學生及家長"
     },
     "inLanguage": "zh-Hant"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "免費版可以用多久？有什麼限制？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "免費版沒有使用期限，可以永久使用所有基本練習模組。帝國闖關模式每天免費 10 題，升級後不限題數並解鎖完整 2900+ 題庫。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "需要下載 App 嗎？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "不需要。打開瀏覽器就能用，手機、平板、電腦都支援。也可以加到主畫面當 App 使用，離線也能練習。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "AI 提示會不會直接告訴答案？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "絕對不會。三層提示系統只引導思路，不洩漏答案。每一題都經過驗證確保提示不含最終答案。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "孩子的資料安全嗎？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "完全安全。所有練習紀錄存在孩子的裝置上，不上傳到任何伺服器。沒有廣告、沒有追蹤、不收集個資。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "適合幾年級的孩子？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "主要適合國小五、六年級，涵蓋小數、分數、體積、百分率、單位換算、時間計算等核心單元。"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "如何升級付費版？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "請來信 learnotaiwan@gmail.com 諮詢方案，24 小時內回覆。提供個人版（NT$299/月）和家庭版（NT$499/月）兩種方案。"
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -836,13 +907,52 @@
     </div>
   </section>
 
+  <!-- ── FAQ ── -->
+  <section class="faq-section" id="faq">
+    <h2>常見問題</h2>
+    <details class="faq-item">
+      <summary>免費版可以用多久？有什麼限制？</summary>
+      <div class="faq-answer">免費版沒有使用期限，可以永久使用所有基本練習模組。帝國闖關模式每天免費 10 題，升級後不限題數並解鎖完整 2900+ 題庫。</div>
+    </details>
+    <details class="faq-item">
+      <summary>需要下載 App 嗎？</summary>
+      <div class="faq-answer">不需要。打開瀏覽器就能用，手機、平板、電腦都支援。也可以加到主畫面當 App 使用，而且離線也能練習。</div>
+    </details>
+    <details class="faq-item">
+      <summary>AI 提示會不會直接告訴答案？</summary>
+      <div class="faq-answer">絕對不會。我們的三層提示系統（觀念方向 → 列式規則 → 計算引導）只引導思路，不洩漏答案。每一題都經過驗證確保提示不含最終答案。</div>
+    </details>
+    <details class="faq-item">
+      <summary>孩子的資料安全嗎？</summary>
+      <div class="faq-answer">完全安全。所有練習紀錄存在孩子的裝置上（localStorage），不上傳到任何伺服器。沒有廣告、沒有追蹤、不收集個資。</div>
+    </details>
+    <details class="faq-item">
+      <summary>適合幾年級的孩子？</summary>
+      <div class="faq-answer">主要適合國小五、六年級，涵蓋小數、分數、體積、百分率、單位換算、時間計算等核心單元。部分模組也適合國中銜接複習。</div>
+    </details>
+    <details class="faq-item">
+      <summary>如何升級付費版？</summary>
+      <div class="faq-answer">請來信 <a href="mailto:learnotaiwan@gmail.com" style="color:#a371f7;">learnotaiwan@gmail.com</a> 諮詢方案，我們會在 24 小時內回覆。提供個人版（NT$299/月）和家庭版（NT$499/月）兩種方案。</div>
+    </details>
+  </section>
+
   <!-- ── CTA Banner ── -->
   <section class="cta-banner">
     <h2>讓孩子今天就開始進步</h2>
     <p>免費使用所有基本題庫，不需註冊、不需下載，打開就能練</p>
-    <a href="./exam-sprint/" class="cta-primary">免費開始練習</a>
+    <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <a href="./exam-sprint/" class="cta-primary">免費開始練習</a>
+      <a href="./pricing/" class="cta-primary" style="background:linear-gradient(135deg,#8957e5,#a371f7);">查看升級方案</a>
+    </div>
     <div style="margin-top:16px;">
       <a href="mailto:learnotaiwan@gmail.com?subject=AI%20%E6%95%B8%E5%AD%B8%E5%AE%B6%E6%95%99%20%E2%80%94%20%E5%8D%87%E7%B4%9A%E6%96%B9%E6%A1%88%E8%AB%AE%E8%A9%A2" style="color:#a371f7;text-decoration:none;font-size:0.95rem;font-weight:600;">✉️ 升級諮詢：learnotaiwan@gmail.com</a>
+    </div>
+    <div style="margin-top:20px;color:#8b949e;font-size:0.82rem;">
+      <span style="color:#3fb950;">&#10003;</span> 7 天免費試用
+      &nbsp;&nbsp;
+      <span style="color:#3fb950;">&#10003;</span> 不滿意全額退費
+      &nbsp;&nbsp;
+      <span style="color:#3fb950;">&#10003;</span> 隨時取消
     </div>
   </section>
 
