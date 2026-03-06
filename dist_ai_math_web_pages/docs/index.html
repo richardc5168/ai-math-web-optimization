@@ -132,6 +132,15 @@
       .metric-grid { grid-template-columns: 1fr; }
     }
 
+    /* ── How It Works ── */
+    .how-section { max-width: 960px; margin: 0 auto; padding: 50px 24px 30px; }
+    .how-section h2 { text-align: center; color: #fff; font-size: 1.5rem; margin: 0 0 30px; }
+    .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .how-step { text-align: center; }
+    .how-step .step-num { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(88,166,255,0.15); color: var(--accent); font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
+    .how-step h3 { color: #fff; font-size: 1rem; margin: 0 0 6px; }
+    .how-step p { color: #8b949e; font-size: 0.85rem; margin: 0; }
+
     /* ── Testimonial ── */
     .testimonial-section { background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 50px 24px; }
     .testimonial-section h2 { text-align: center; color: #fff; font-size: 1.5rem; margin: 0 0 30px; }
@@ -239,6 +248,33 @@
         <div class="icon">🔒</div>
         <h3>安全無廣告</h3>
         <p>無第三方廣告、無社群功能，專注學習。資料存在本機，保護孩子隱私。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ── -->
+  <section class="how-section">
+    <h2>使用流程超簡單</h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <h3>打開網頁</h3>
+        <p>不需下載 App、不需註冊帳號。打開網頁就能開始練習。</p>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <h3>選擇主題練習</h3>
+        <p>依考試範圍或弱點選擇分數、小數、體積等主題，開始答題。</p>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <h3>卡住時看 AI 提示</h3>
+        <p>不會的題目按「提示」，AI 用老師口吻一步步引導，不直接給答案。</p>
+      </div>
+      <div class="how-step">
+        <div class="step-num">4</div>
+        <h3>家長查看報告</h3>
+        <p>練習完自動統計弱點，家長在手機上隨時查看學習進度。</p>
       </div>
     </div>
   </section>
