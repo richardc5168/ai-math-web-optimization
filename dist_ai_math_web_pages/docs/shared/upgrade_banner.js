@@ -1,0 +1,97 @@
+/**
+ * AIMathUpgradeBanner — lightweight upgrade prompt for free modules
+ * Shows a dismissible bottom banner after user has been active for a while.
+ * Auto-detects answer submissions by observing button clicks.
+ * Uses localStorage to avoid showing too frequently.
+ */
+(function(){
+  'use strict';
+  var STORAGE_KEY = 'aimath_upgrade_banner_v1';
+  var SHOW_AFTER_CLICKS = 5;
+  var SHOW_AFTER_MS = 120000; // 2 minutes fallback
+  var DISMISS_HOURS = 24;
+  var EMAIL = 'learnotaiwan@gmail.com';
+  var SUBJECT = encodeURIComponent('AI 數學家教 — 升級方案諮詢');
+
+  function shouldShow(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var data = JSON.parse(raw);
+        if (data.dismissed && (Date.now() - data.dismissed) < DISMISS_HOURS * 3600000) {
+          return false;
+        }
+      }
+    } catch(e){}
+    return true;
+  }
+
+  function dismiss(){
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ dismissed: Date.now() }));
+    } catch(e){}
+  }
+
+  function createBanner(){
+    if (document.getElementById('upgrade-banner')) return;
+    var bar = document.createElement('div');
+    bar.id = 'upgrade-banner';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#161b22 0%,#1c2333 100%);border-top:2px solid #8957e5;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:.88rem;box-shadow:0 -2px 12px rgba(0,0,0,0.4);';
+
+    var text = document.createElement('span');
+    text.style.cssText = 'color:#c9d1d9;';
+    text.textContent = '\u2728 \u5347\u7d1a\u89e3\u9396 2900+ \u984c\u5b8c\u6574\u984c\u5eab\u3001\u904a\u6232\u5316\u5e1d\u570b\u95d6\u95dc\u3001AI \u88dc\u6551\u5efa\u8b70';
+
+    var btn = document.createElement('a');
+    btn.href = 'mailto:' + EMAIL + '?subject=' + SUBJECT;
+    btn.style.cssText = 'display:inline-block;background:#8957e5;color:#fff;padding:6px 18px;border-radius:6px;font-weight:700;text-decoration:none;font-size:.85rem;white-space:nowrap;';
+    btn.textContent = '\u2709\ufe0f \u4e86\u89e3\u65b9\u6848';
+
+    var close = document.createElement('button');
+    close.style.cssText = 'background:none;border:none;color:#8b949e;font-size:1.2rem;cursor:pointer;padding:4px 8px;line-height:1;';
+    close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'close');
+    close.onclick = function(){
+      bar.style.display = 'none';
+      dismiss();
+    };
+
+    bar.appendChild(text);
+    bar.appendChild(btn);
+    bar.appendChild(close);
+    document.body.appendChild(bar);
+  }
+
+  if (!shouldShow()) return;
+
+  // Auto-detect: count button clicks that look like answer submissions
+  var clickCount = 0;
+  var shown = false;
+  document.addEventListener('click', function(e){
+    if (shown) return;
+    var t = e.target;
+    if (!t) return;
+    var tag = (t.tagName || '').toLowerCase();
+    // Detect clicks on buttons/links that look like check/submit
+    if (tag === 'button' || (tag === 'a' && t.className && t.className.indexOf('btn') >= 0)){
+      var txt = (t.textContent || '').trim();
+      if (txt.indexOf('\u6aa2\u67e5') >= 0 || txt.indexOf('\u78ba\u8a8d') >= 0 ||
+          txt.indexOf('\u63d0\u4ea4') >= 0 || txt.indexOf('\u6b63\u78ba') >= 0 ||
+          txt.indexOf('check') >= 0 || txt.length < 6) {
+        clickCount++;
+        if (clickCount >= SHOW_AFTER_CLICKS) {
+          shown = true;
+          createBanner();
+        }
+      }
+    }
+  }, true);
+
+  // Fallback: show after 2 minutes of page usage
+  setTimeout(function(){
+    if (!shown && shouldShow()) {
+      shown = true;
+      createBanner();
+    }
+  }, SHOW_AFTER_MS);
+})();

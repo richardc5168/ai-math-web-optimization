@@ -6,6 +6,7 @@ SRC = os.path.join(BASE, 'docs')
 DST = os.path.join(BASE, 'dist_ai_math_web_pages', 'docs')
 
 TARGETS = [
+    'shared/upgrade_banner.js',
     'pricing/index.html', 'about/index.html', 'terms/index.html', 'privacy/index.html',
     'exam-sprint/index.html',
     'fraction-g5/index.html','g5-grand-slam/index.html','interactive-g5-midterm1/index.html',
