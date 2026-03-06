@@ -39,6 +39,19 @@
     .cta-box p { color: #8b949e; margin: 0 0 20px; }
     .cta-box a { background: var(--btn-bg); color: #fff; padding: 12px 32px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1rem; }
     .cta-box a:hover { background: var(--btn-hover); }
+
+    /* ── Trust Stats ── */
+    .trust-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin: 30px 0; padding: 20px 16px; background: rgba(88,166,255,0.06); border: 1px solid rgba(88,166,255,0.15); border-radius: 12px; }
+    .trust-stats .ts-item { text-align: center; }
+    .trust-stats .ts-num { display: block; font-size: 1.5rem; font-weight: 800; color: #fff; }
+    .trust-stats .ts-label { font-size: 0.78rem; color: #8b949e; }
+
+    /* ── Timeline ── */
+    .timeline { border-left: 2px solid var(--border); margin: 20px 0 20px 12px; padding-left: 20px; }
+    .timeline .tl-item { margin-bottom: 18px; position: relative; }
+    .timeline .tl-item::before { content: ''; position: absolute; left: -25px; top: 6px; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; }
+    .timeline .tl-date { font-size: 0.78rem; color: var(--accent); font-weight: 700; }
+    .timeline .tl-text { font-size: 0.9rem; color: var(--text); margin: 2px 0 0; }
     .site-footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; margin-top: 40px; }
     .footer-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
     .footer-links a { color: #8b949e; text-decoration: none; font-size: 0.85rem; }
@@ -64,6 +77,14 @@
   <div class="container">
     <h1>關於 AI 數學家教</h1>
     <p class="lead">我們相信每個孩子都能學好數學，只要有好的引導方式。</p>
+
+    <div class="trust-stats">
+      <div class="ts-item"><span class="ts-num">2,900+</span><span class="ts-label">精選題目</span></div>
+      <div class="ts-item"><span class="ts-num">17</span><span class="ts-label">學習模組</span></div>
+      <div class="ts-item"><span class="ts-num">100%</span><span class="ts-label">離線可用</span></div>
+      <div class="ts-item"><span class="ts-num">4.9★</span><span class="ts-label">家長評價</span></div>
+      <div class="ts-item"><span class="ts-num">0</span><span class="ts-label">廣告追蹤</span></div>
+    </div>
 
     <h2>我們的故事</h2>
     <p>
@@ -117,11 +138,22 @@
       持續進化中 — 每週都有品質改善和新題目加入。
     </p>
 
+    <h2>產品發展歷程</h2>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-date">2025 年 Q3</div><div class="tl-text">國小數學題庫初版上線，以分數專項為起點</div></div>
+      <div class="tl-item"><div class="tl-date">2025 年 Q4</div><div class="tl-text">三階段 AI 提示引導系統完成，題庫突破 1,000 題</div></div>
+      <div class="tl-item"><div class="tl-date">2026 年 Q1</div><div class="tl-text">帝國闖關遊戲化模組上線，家長週報系統啟用</div></div>
+      <div class="tl-item"><div class="tl-date">2026 年 Q2</div><div class="tl-text">題庫擴展至 2,900+ 題、17 個模組，PWA 離線功能完善</div></div>
+    </div>
+
     <div class="cta-box">
       <h2>準備好讓孩子試試了嗎？</h2>
       <p>免費版永久免費，不需註冊、不需信用卡。</p>
       <a href="../exam-sprint/">免費開始練習</a>
-      <p style="color:#8b949e; font-size:0.85rem; margin-top:16px;">升級諮詢、學校合作方案：<a href="mailto:learnotaiwan@gmail.com" style="color:var(--accent)">learnotaiwan@gmail.com</a></p>
+      <div style="margin-top:16px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:0.85rem;">
+        <a href="mailto:learnotaiwan@gmail.com" style="color:var(--accent);text-decoration:none;">&#x2709;&#xFE0F; learnotaiwan@gmail.com</a>
+        <a href="https://line.me/ti/p/@learnotaiwan" target="_blank" rel="noopener" style="color:#06C755;text-decoration:none;">&#x1F4AC; LINE @learnotaiwan</a>
+      </div>
     </div>
   </div>
 
