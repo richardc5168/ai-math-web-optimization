@@ -36,16 +36,27 @@
     if (document.getElementById('upgrade-banner')) return;
     var bar = document.createElement('div');
     bar.id = 'upgrade-banner';
-    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#161b22 0%,#1c2333 100%);border-top:2px solid #8957e5;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:.88rem;box-shadow:0 -2px 12px rgba(0,0,0,0.4);';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#161b22 0%,#1c2333 100%);border-top:2px solid #8957e5;padding:14px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:.88rem;box-shadow:0 -4px 16px rgba(0,0,0,0.5);';
 
     var text = document.createElement('span');
     text.style.cssText = 'color:#c9d1d9;';
-    text.textContent = '\u2728 \u5347\u7d1a\u89e3\u9396 2900+ \u984c\u5b8c\u6574\u984c\u5eab\u3001\u904a\u6232\u5316\u5e1d\u570b\u95d6\u95dc\u3001AI \u88dc\u6551\u5efa\u8b70';
+    text.innerHTML = '\u2728 \u5347\u7d1a\u89e3\u9396 <strong style="color:#fff">2,900+</strong> \u984c\u5b8c\u6574\u984c\u5eab\u3001\u904a\u6232\u5316\u95d6\u95dc\u3001AI \u88dc\u6551\u5efa\u8b70';
 
-    var btn = document.createElement('a');
-    btn.href = 'mailto:' + EMAIL + '?subject=' + SUBJECT;
-    btn.style.cssText = 'display:inline-block;background:#8957e5;color:#fff;padding:6px 18px;border-radius:6px;font-weight:700;text-decoration:none;font-size:.85rem;white-space:nowrap;';
-    btn.textContent = '\u2709\ufe0f \u4e86\u89e3\u65b9\u6848';
+    var btnWrap = document.createElement('span');
+    btnWrap.style.cssText = 'display:flex;gap:8px;flex-wrap:nowrap;';
+
+    var btn1 = document.createElement('a');
+    btn1.href = '../pricing/';
+    btn1.style.cssText = 'display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:7px 18px;border-radius:6px;font-weight:700;text-decoration:none;font-size:.85rem;white-space:nowrap;';
+    btn1.textContent = '\ud83d\udcb0 \u67e5\u770b\u65b9\u6848';
+
+    var btn2 = document.createElement('a');
+    btn2.href = 'mailto:' + EMAIL + '?subject=' + SUBJECT;
+    btn2.style.cssText = 'display:inline-block;border:1px solid #8957e5;color:#a371f7;padding:6px 14px;border-radius:6px;font-weight:700;text-decoration:none;font-size:.85rem;white-space:nowrap;';
+    btn2.textContent = '\u2709\ufe0f \u514d\u8cbb\u8a66\u7528';
+
+    btnWrap.appendChild(btn1);
+    btnWrap.appendChild(btn2);
 
     var close = document.createElement('button');
     close.style.cssText = 'background:none;border:none;color:#8b949e;font-size:1.2rem;cursor:pointer;padding:4px 8px;line-height:1;';
@@ -57,7 +68,7 @@
     };
 
     bar.appendChild(text);
-    bar.appendChild(btn);
+    bar.appendChild(btnWrap);
     bar.appendChild(close);
     document.body.appendChild(bar);
   }
