@@ -219,7 +219,8 @@
 
     /* ── Performance ── */
     .testimonial-section, .faq-section, .cta-banner, #pricing-preview { content-visibility: auto; contain-intrinsic-size: auto 500px; }
-    #scrollProgress{position:fixed;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--btn-bg,#238636),#58a6ff);z-index:9999;transition:width 60ms linear;pointer-events:none}
+    .bg-gradient-parent, .bg-gradient-growth { content-visibility: auto; contain-intrinsic-size: auto 400px; }
+        #scrollProgress{position:fixed;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--btn-bg,#238636),#58a6ff);z-index:9999;transition:width 60ms linear;pointer-events:none;will-change:width}
 
     /* ── Reduced motion ── */
     @media (prefers-reduced-motion:reduce) {
@@ -247,7 +248,7 @@
     .faq-item[open] .faq-answer { max-height:500px; padding:10px 0 4px 28px; }
 
     /* ── Scroll-to-top ── */
-    .scroll-top { position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; background:var(--btn-bg,#238636); color:#fff; border:none; font-size:1.2rem; cursor:pointer; opacity:0; visibility:hidden; transition:opacity .3s, visibility .3s, transform .3s; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; }
+    .scroll-top { position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; background:var(--btn-bg,#238636); color:#fff; border:none; font-size:1.2rem; cursor:pointer; opacity:0; visibility:hidden; transition:opacity .3s, visibility .3s, transform .3s; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; will-change:opacity,transform; }
     .scroll-top.visible { opacity:1; visibility:visible; }
     .scroll-top:hover { transform:translateY(-3px); background:var(--btn-hover,#2ea043); }
     @media (prefers-reduced-motion:reduce) { .scroll-top { transition:none; } }
