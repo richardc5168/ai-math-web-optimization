@@ -419,17 +419,17 @@
   </nav>
 
   <!-- ── Hero ── -->
-  <section class="hero">
-    <h1>數學成績<span class="highlight">平均提升 24%</span>的 AI 家教</h1>
-    <p class="subtitle">
+  <section class="hero" id="hero" data-variant="" data-test="hero-v1">
+    <h1 data-ab-el="headline">數學成績<span class="highlight">平均提升 24%</span>的 AI 家教</h1>
+    <p class="subtitle" data-ab-el="subtitle">
       專為國小五六年級設計，2,900+ 道精選題目搭配三階段 AI 提示引導，
       不直接給答案，讓孩子真正理解每一道題。<strong style="color:#c9d1d9">家長週報即時掌握進度</strong>。
     </p>
     <div class="cta-row">
-      <a href="./interactive-g5-empire/" class="cta-primary">&#x1F3F0; 免費開始闖關</a>
-      <a href="./exam-sprint/" class="cta-secondary">考前衝刺練習</a>
+      <a href="./interactive-g5-empire/" class="cta-primary" data-ab-el="cta-primary">&#x1F3F0; 免費開始闖關</a>
+      <a href="./exam-sprint/" class="cta-secondary" data-ab-el="cta-secondary">考前衝刺練習</a>
     </div>
-    <p style="margin:18px 0 0;font-size:0.82rem;color:#8b949e">&#x2705; 免費體驗，不需註冊｜&#x1F6E1;&#xFE0F; 7 天不滿意全額退費</p>
+    <p style="margin:18px 0 0;font-size:0.82rem;color:#8b949e" data-ab-el="trust-line">&#x2705; 免費體驗，不需註冊｜&#x1F6E1;&#xFE0F; 7 天不滿意全額退費</p>
   </section>
 
   <!-- ── Trust Badges ── -->
@@ -1469,5 +1469,20 @@
   })();
   </script>
   <script src="shared/cookie_consent.js"></script>
+  <script>
+  /* A/B hero variant selector — assigns variant and logs to localStorage */
+  (function(){
+    var hero = document.getElementById('hero');
+    if (!hero) return;
+    var key = 'aimath_hero_variant';
+    var v;
+    try { v = localStorage.getItem(key); } catch(e){}
+    if (!v) {
+      v = Math.random() < 0.5 ? 'A' : 'B';
+      try { localStorage.setItem(key, v); } catch(e){}
+    }
+    hero.setAttribute('data-variant', v);
+  })();
+  </script>
 </body>
 </html>
