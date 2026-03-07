@@ -85,9 +85,15 @@
     .top-nav .nav-links a.active { color: var(--accent); font-weight: 700; }
     .top-nav .nav-cta { background: var(--btn-bg); color: #fff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: background 0.2s; }
     .top-nav .nav-cta:hover { background: var(--btn-hover); }
+    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; padding:4px 8px; line-height:1; }
     @media (max-width: 640px) {
-      .top-nav { padding: 10px 14px; }
+      .top-nav { padding: 10px 14px; flex-wrap: wrap; }
+      .nav-toggle { display: inline-block; }
+      .top-nav .nav-links { display: none; width: 100%; flex-direction: column; gap: 0; margin-top: 8px; }
+      .top-nav .nav-links.open { display: flex; }
+      .top-nav .nav-links a { display: block; padding: 10px 0; border-bottom: 1px solid var(--border); }
       .top-nav .nav-links a.hide-mobile { display: none; }
+      .top-nav .nav-links.open a.hide-mobile { display: block; }
     }
 
     /* ── Page Header ── */
@@ -119,7 +125,8 @@
       <img src="../icons/icon-192.png" alt="AI 數學" width="28" height="28" decoding="async">
       AI 數學家教
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="開啟選單" aria-expanded="false">&#x2630;</button>
+    <div class="nav-links" id="navLinks">
       <a href="./" class="active hide-mobile">任務中心</a>
       <a href="../#modes" class="hide-mobile">挑戰模式</a>
       <a href="../report/" class="hide-mobile">家長週報</a>
@@ -548,6 +555,18 @@
     }, { threshold: 0.1 });
     var els = document.querySelectorAll('.reveal');
     for (var i = 0; i < els.length; i++) io.observe(els[i]);
+  })();
+  </script>
+  <script>
+  (function(){
+    var btn = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function(){
+      var open = links.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.innerHTML = open ? '&times;' : '&#x2630;';
+    });
   })();
   </script>
 </body>

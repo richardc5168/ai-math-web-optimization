@@ -70,9 +70,16 @@
     .top-nav .nav-links a:hover { color: #fff; }
     .top-nav .nav-cta { background: var(--btn-bg); color: #fff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: background 0.2s; }
     .top-nav .nav-cta:hover { background: var(--btn-hover); }
+    .nav-toggle { display:none; background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; padding:4px 8px; line-height:1; }
     @media (max-width: 640px) {
-      .top-nav { padding: 10px 14px; }
-      .top-nav .nav-links a.hide-mobile { display: none; }
+      .top-nav { padding: 10px 14px; flex-wrap:wrap; }
+      .nav-toggle { display:block; }
+      .top-nav .nav-links { display:none; width:100%; flex-direction:column; gap:0; padding-top:10px; border-top:1px solid var(--border); margin-top:10px; }
+      .top-nav .nav-links.open { display:flex; }
+      .top-nav .nav-links a.hide-mobile { display:block; }
+      .top-nav .nav-links a { padding:10px 0; border-bottom:1px solid rgba(48,54,61,0.5); }
+      .top-nav .nav-links a:last-child { border-bottom:none; }
+      .top-nav .nav-cta { margin-top:8px; text-align:center; display:block; }
     }
 
     /* ── Hero ── */
@@ -293,7 +300,8 @@
       <img src="icons/icon-192.png" alt="AI 數學" width="28" height="28" fetchpriority="high">
       AI 數學家教
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="開啟選單" aria-expanded="false">&#x2630;</button>
+    <div class="nav-links" id="navLinks">
       <a href="./task-center/" class="hide-mobile">任務中心</a>
       <a href="#modes" class="hide-mobile">挑戰模式</a>
       <a href="#reports" class="hide-mobile">家長週報</a>
@@ -1008,6 +1016,20 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function(){});
     }
+  </script>
+
+  <!-- ── Nav Toggle ── -->
+  <script>
+  (function(){
+    var btn = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
+    if (!btn || !links) return;
+    btn.addEventListener('click', function(){
+      var open = links.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.innerHTML = open ? '&times;' : '&#x2630;';
+    });
+  })();
   </script>
 
   <!-- ── Page Load ── -->
