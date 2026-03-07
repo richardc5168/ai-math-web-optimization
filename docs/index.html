@@ -27,6 +27,12 @@
   <link rel="preload" href="icons/icon-192.png" as="image" type="image/png">
   <link rel="dns-prefetch" href="https://line.me">
   <style>
+    /* ── Loading screen ── */
+    #pageLoader { position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#0d1117;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease; }
+    #pageLoader.hide { opacity:0;pointer-events:none; }
+    #pageLoader .ld-ring { width:44px;height:44px;border:3px solid #30363d;border-top-color:#58a6ff;border-radius:50%;animation:ldSpin .8s linear infinite; }
+    #pageLoader .ld-text { color:#8b949e;font-size:.85rem;margin-top:12px;font-family:system-ui,sans-serif; }
+    @keyframes ldSpin { to{transform:rotate(360deg)} }
     :root {
       --bg: #0d1117;
       --card-bg: #161b22;
@@ -348,6 +354,7 @@
   <link rel="canonical" href="./">
 </head>
 <body>
+  <div id="pageLoader"><div class="ld-ring"></div><div class="ld-text">載入中…</div></div>
 
   <!-- ── Global Nav ── -->
   <nav class="top-nav">
@@ -1273,6 +1280,12 @@
     document.getElementById('exitPopupClose').onclick = function(){ popup.style.display = 'none'; };
     popup.onclick = function(e){ if (e.target === popup) popup.style.display = 'none'; };
   })();
+  </script>
+  <script>
+  window.addEventListener('load', function(){
+    var ld = document.getElementById('pageLoader');
+    if (ld) { ld.classList.add('hide'); setTimeout(function(){ ld.remove(); }, 500); }
+  });
   </script>
 </body>
 </html>
