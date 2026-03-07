@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>任務中心｜AI 數學家教</title>
+  <meta name="description" content="每天都有挑戰等你來破關——暖身任務、弱點補強、限時挑戰、帝國主線。完成任務解鎖領地與徽章。">
+
+  <!-- PWA -->
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#58a6ff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="../icons/icon-192.png">
+
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #58a6ff;
+      --btn-bg: #238636;
+      --btn-hover: #2ea043;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+
+    /* ── Scroll reveal ── */
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity .5s ease, transform .5s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* ── Nav ── */
+    .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.95); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .top-nav .brand { font-size: 1.15rem; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .top-nav .brand img { width: 28px; height: 28px; border-radius: 6px; }
+    .top-nav .nav-links { display: flex; gap: 18px; align-items: center; }
+    .top-nav .nav-links a { color: var(--text); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .top-nav .nav-links a:hover { color: #fff; }
+    .top-nav .nav-links a.active { color: var(--accent); font-weight: 700; }
+    .top-nav .nav-cta { background: var(--btn-bg); color: #fff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
+    @media (max-width: 640px) {
+      .top-nav { padding: 10px 14px; }
+      .top-nav .nav-links a.hide-mobile { display: none; }
+    }
+
+    /* ── Page Header ── */
+    .page-header { text-align: center; padding: 36px 24px 8px; }
+    .page-header h1 { color: #fff; font-size: 1.8rem; margin: 0 0 8px; }
+    .page-header p { color: #8b949e; font-size: 0.95rem; margin: 0; }
+    @media (max-width: 640px) {
+      .page-header { padding: 24px 16px 4px; }
+      .page-header h1 { font-size: 1.4rem; }
+    }
+
+    /* ── Footer ── */
+    .site-footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; }
+    .site-footer a { color: #8b949e; text-decoration: none; font-size: 0.82rem; margin: 0 10px; }
+    .site-footer a:hover { color: var(--accent); }
+    .footer-copy { color: #484f58; font-size: 0.78rem; margin-top: 12px; }
+  </style>
+  <link rel="stylesheet" href="../shared/game_motion.css">
+  <link rel="stylesheet" href="../shared/quest_platform.css">
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav class="top-nav" aria-label="主選單">
+    <a class="brand" href="../">
+      <img src="../icons/icon-192.png" alt="AI 數學" width="28" height="28">
+      AI 數學家教
+    </a>
+    <div class="nav-links">
+      <a href="./" class="active hide-mobile">任務中心</a>
+      <a href="../#modes" class="hide-mobile">挑戰模式</a>
+      <a href="../report/" class="hide-mobile">家長週報</a>
+      <a href="../interactive-g5-empire/" class="nav-cta">開始挑戰</a>
+    </div>
+  </nav>
+
+  <!-- ── Page Header ── -->
+  <div class="page-header">
+    <h1>&#x1F5FA;&#xFE0F; 任務中心</h1>
+    <p>每天都有新挑戰——完成任務、佔領領地、解鎖成就</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       HUD — Task Center Top Bar
+       ══════════════════════════════════════════ -->
+  <div class="hud-bar" id="hudBar">
+    <div class="hud-item">
+      <span class="hud-icon">&#x1F4CB;</span>
+      <div class="hud-info">
+        <span class="hud-val" id="hudAvail">6</span>
+        <span class="hud-lbl">今日可做任務</span>
+      </div>
+    </div>
+    <div class="hud-item">
+      <span class="hud-icon">&#x2705;</span>
+      <div class="hud-info">
+        <span class="hud-val" id="hudDone">2</span>
+        <span class="hud-lbl">已完成任務</span>
+      </div>
+    </div>
+    <div class="hud-item">
+      <span class="hud-icon">&#x1F525;</span>
+      <div class="hud-info">
+        <span class="hud-val" id="hudStreak">4</span>
+        <span class="hud-lbl">目前連勝</span>
+      </div>
+    </div>
+    <div class="hud-item">
+      <span class="hud-icon">&#x1F3F0;</span>
+      <div class="hud-info">
+        <span class="hud-val" id="hudLand">+2</span>
+        <span class="hud-lbl">本週新領地</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Weekly Goal Progress ── -->
+  <div class="tc-section" style="padding-top:24px;padding-bottom:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="color:#fff;font-size:0.88rem;font-weight:600;">&#x1F3AF; 本週目標進度</span>
+      <span style="color:#3fb950;font-size:0.85rem;font-weight:700;">5 / 10 任務</span>
+    </div>
+    <div class="tc-progress-bar">
+      <div class="tc-progress-fill" style="width:50%;"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       A — 今日任務
+       ══════════════════════════════════════════ -->
+  <div class="tc-section reveal">
+    <h2 class="tc-section-title">&#x2600;&#xFE0F; 今日任務</h2>
+    <div class="quest-grid">
+
+      <!-- 暖身 -->
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F31F;</div>
+          <div>
+            <h3 class="quest-title">今日暖身：小數乘法速算</h3>
+            <p class="quest-purpose">先熱個身，把運算手感找回來</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff">&#x2B50; 新手</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 5 分鐘</span>
+          <span class="quest-status quest-status-new">未開始</span>
+        </div>
+        <div class="quest-reward">完成即獲 <strong>3 顆星星</strong></div>
+        <a href="../interactive-decimal-g5/" class="quest-cta">開始暖身</a>
+      </div>
+
+      <!-- 主線 -->
+      <div class="quest-card quest-main">
+        <div class="quest-header">
+          <div class="quest-icon">&#x2694;&#xFE0F;</div>
+          <div>
+            <h3 class="quest-title">今日主線：帝國擴張第 5 關</h3>
+            <p class="quest-purpose">再答對 8 題，這塊領地就是你的</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff adv">&#x2B50;&#x2B50; 進階</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 10 分鐘</span>
+          <span class="quest-status quest-status-active">進行中</span>
+        </div>
+        <div class="quest-reward">佔領 <strong>2 塊領地</strong> + 煙火慶祝</div>
+        <a href="../interactive-g5-empire/" class="quest-cta">繼續征服</a>
+      </div>
+
+      <!-- 加分挑戰 -->
+      <div class="quest-card quest-timed">
+        <div class="quest-header">
+          <div class="quest-icon">&#x23F0;</div>
+          <div>
+            <h3 class="quest-title">加分挑戰：90 秒小數對決</h3>
+            <p class="quest-purpose">挑戰速度，試試能不能刷新紀錄</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff sprint">&#x1F525; 衝刺</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 90 秒</span>
+          <span class="quest-status quest-status-new">未開始</span>
+        </div>
+        <div class="quest-reward">破紀錄解鎖 <strong>速算徽章</strong></div>
+        <a href="../interactive-decimal-g5/" class="quest-cta">接受挑戰</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       B — 本週任務
+       ══════════════════════════════════════════ -->
+  <div class="tc-section reveal">
+    <h2 class="tc-section-title">&#x1F4C5; 本週任務</h2>
+    <div class="quest-grid">
+
+      <!-- 弱點補強 -->
+      <div class="quest-card quest-weakness">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F3AF;</div>
+          <div>
+            <h3 class="quest-title">弱點補強：分數通分</h3>
+            <p class="quest-purpose">本週最該先補的弱點，補完後面更好打</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff adv">&#x2B50;&#x2B50; 進階</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 10 分鐘</span>
+          <span class="quest-status quest-status-new">未開始</span>
+        </div>
+        <div class="quest-reward">完成 10 題解鎖 <strong>1 塊新領地</strong></div>
+        <a href="../fraction-g5/" class="quest-cta">開始補強</a>
+      </div>
+
+      <!-- 連勝任務 -->
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F525;</div>
+          <div>
+            <h3 class="quest-title">連勝挑戰：連對 5 題</h3>
+            <p class="quest-purpose">連勝 5 題，堡壘升級！</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff">&#x2B50; 新手</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 5 分鐘</span>
+          <span class="quest-status quest-status-active">3/5</span>
+        </div>
+        <div class="quest-reward">連對 5 題獲得 <strong>堡壘升級</strong></div>
+        <a href="../interactive-g5-empire/" class="quest-cta">繼續挑戰</a>
+      </div>
+
+      <!-- 限時挑戰 -->
+      <div class="quest-card quest-timed">
+        <div class="quest-header">
+          <div class="quest-icon">&#x26A1;</div>
+          <div>
+            <h3 class="quest-title">限時挑戰：比率百分率速算</h3>
+            <p class="quest-purpose">90 秒內挑戰高分，刷新最快紀錄</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff sprint">&#x1F525; 衝刺</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 90 秒</span>
+          <span class="quest-status quest-status-new">未開始</span>
+        </div>
+        <div class="quest-reward">高分解鎖 <strong>百分率達人徽章</strong></div>
+        <a href="../ratio-percent-g5/" class="quest-cta">接受挑戰</a>
+      </div>
+
+      <!-- 弱點補強 2 -->
+      <div class="quest-card quest-weakness">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F50D;</div>
+          <div>
+            <h3 class="quest-title">弱點補強：小數點位值判斷</h3>
+            <p class="quest-purpose">最近常卡關的題型，多練幾題就能突破</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff">&#x2B50; 新手</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 5 分鐘</span>
+          <span class="quest-status quest-status-done">&#x2705; 已完成</span>
+        </div>
+        <div class="quest-reward">已獲 <strong>2 顆星星</strong></div>
+        <a href="../decimal-unit4/" class="quest-cta" style="background:#30363d;cursor:default;">已完成</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       弱點補強專區
+       ══════════════════════════════════════════ -->
+  <section class="tc-section bg-gradient-parent reveal" style="padding-top:36px;padding-bottom:36px;border-bottom:1px solid var(--border);">
+    <h2 class="tc-section-title">&#x1F3AF; 本週弱點補強任務</h2>
+    <p style="color:#8b949e;font-size:0.88rem;margin:0 0 20px;">根據你的作答紀錄與錯題分析，以下是本週最需要加強的項目</p>
+    <div class="quest-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
+
+      <div class="quest-card quest-weakness">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F534;</div>
+          <div>
+            <h3 class="quest-title">分數乘法反推原量</h3>
+            <p class="quest-purpose">本週最該先補：正確率僅 45%</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff adv">弱點 #1</span>
+          <span class="quest-tag quest-tag-time">先做 10 題</span>
+        </div>
+        <a href="../fraction-word-g5/" class="quest-cta">立即補強</a>
+      </div>
+
+      <div class="quest-card quest-weakness">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F7E0;</div>
+          <div>
+            <h3 class="quest-title">小數點位值判斷</h3>
+            <p class="quest-purpose">最近常卡關：正確率 58%</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff adv">弱點 #2</span>
+          <span class="quest-tag quest-tag-time">先做 10 題</span>
+        </div>
+        <a href="../decimal-unit4/" class="quest-cta">立即補強</a>
+      </div>
+
+      <div class="quest-card quest-weakness">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F7E1;</div>
+          <div>
+            <h3 class="quest-title">百分率應用題</h3>
+            <p class="quest-purpose">雖然答對，但仍太依賴提示</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff">提示依賴高</span>
+          <span class="quest-tag quest-tag-time">一鍵重練</span>
+        </div>
+        <a href="../ratio-percent-g5/" class="quest-cta">一鍵重練</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       C — 成就與獎勵區
+       ══════════════════════════════════════════ -->
+  <div class="tc-section reveal">
+    <h2 class="tc-section-title">&#x1F3C6; 成就與獎勵</h2>
+
+    <!-- Stats row -->
+    <div class="dash-grid" style="margin-bottom:24px;">
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F525;</div>
+        <div class="dash-val val-gold">4</div>
+        <div class="dash-lbl">今日連勝</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">&#x2705;</div>
+        <div class="dash-val val-green">8</div>
+        <div class="dash-lbl">本週達標次數</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F4C6;</div>
+        <div class="dash-val val-blue">5</div>
+        <div class="dash-lbl">連續學習天數</div>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <h3 style="color:#fff;font-size:1rem;margin:0 0 12px;">已解鎖徽章</h3>
+    <div class="badge-row" style="margin-bottom:16px;">
+      <div class="badge-item">
+        <span class="badge-icon">&#x2B50;</span>
+        <span>首次闖關</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-icon">&#x1F525;</span>
+        <span>連勝 3 題</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-icon">&#x1F3F0;</span>
+        <span>佔領第一塊領地</span>
+      </div>
+    </div>
+
+    <!-- Next unlock -->
+    <h3 style="color:#fff;font-size:1rem;margin:0 0 12px;">下一個可解鎖</h3>
+    <div class="badge-row">
+      <div class="badge-item badge-next">
+        <span class="badge-icon">&#x1F6E1;&#xFE0F;</span>
+        <div>
+          <div>堡壘升級</div>
+          <div class="badge-next-hint">再完成 2 個任務即可升級</div>
+        </div>
+      </div>
+      <div class="badge-item badge-next">
+        <span class="badge-icon">&#x1F3C5;</span>
+        <div>
+          <div>連勝 5 題徽章</div>
+          <div class="badge-next-hint">再連對 1 題即可獲得</div>
+        </div>
+      </div>
+      <div class="badge-item badge-locked">
+        <span class="badge-icon">&#x1F512;</span>
+        <span>速算王者（連續 10 天登入）</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       新手引導 (空狀態)
+       ══════════════════════════════════════════ -->
+  <section class="tc-section reveal" style="padding-top:12px;">
+    <div style="background:linear-gradient(135deg,rgba(88,166,255,0.06),rgba(163,113,247,0.06));border:1px solid rgba(88,166,255,0.15);border-radius:16px;padding:32px 24px;text-align:center;">
+      <h2 style="color:#fff;font-size:1.2rem;margin:0 0 8px;">&#x1F44B; 第一次來嗎？從這裡開始</h2>
+      <p style="color:#8b949e;font-size:0.88rem;margin:0 0 24px;">不用被這麼多選項嚇到，跟著三步就能上手</p>
+      <div class="onboard-steps">
+        <div class="onboard-step">
+          <div class="onboard-step-num">1</div>
+          <h4>先做一個暖身任務</h4>
+          <p>簡單的小數計算，找回手感</p>
+          <a href="../interactive-decimal-g5/" style="display:inline-block;margin-top:10px;color:var(--accent);text-decoration:none;font-weight:600;">開始暖身 &#x2192;</a>
+        </div>
+        <div class="onboard-step">
+          <div class="onboard-step-num">2</div>
+          <h4>挑一個帝國主線關卡</h4>
+          <p>答對就佔領地，不會的用提示</p>
+          <a href="../interactive-g5-empire/" style="display:inline-block;margin-top:10px;color:var(--accent);text-decoration:none;font-weight:600;">進入帝國 &#x2192;</a>
+        </div>
+        <div class="onboard-step">
+          <div class="onboard-step-num">3</div>
+          <h4>請家長看第一次週報</h4>
+          <p>自動統計弱點，知道下一步</p>
+          <a href="../report/" style="display:inline-block;margin-top:10px;color:#a371f7;text-decoration:none;font-weight:600;">查看週報 &#x2192;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Final CTA ── -->
+  <section style="text-align:center;padding:40px 24px 48px;">
+    <div class="dual-cta">
+      <a href="../interactive-g5-empire/" class="cta-child">&#x2694;&#xFE0F; 開始今日挑戰</a>
+      <a href="../report/" class="cta-parent">&#x1F4CA; 家長查看週報</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <div>
+      <a href="../">首頁</a>
+      <a href="../interactive-g5-empire/">帝國闖關</a>
+      <a href="../exam-sprint/">考前衝刺</a>
+      <a href="../report/">家長週報</a>
+      <a href="../pricing/">方案</a>
+    </div>
+    <div class="footer-copy">&copy; 2025-2026 AI 數學家教. All rights reserved.</div>
+  </footer>
+
+  <!-- ── Scroll Reveal ── -->
+  <script>
+  (function(){
+    if (!('IntersectionObserver' in window)) {
+      var els = document.querySelectorAll('.reveal');
+      for (var i = 0; i < els.length; i++) els[i].classList.add('visible');
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) {
+          entries[i].target.classList.add('visible');
+          io.unobserve(entries[i].target);
+        }
+      }
+    }, { threshold: 0.1 });
+    var els = document.querySelectorAll('.reveal');
+    for (var i = 0; i < els.length; i++) io.observe(els[i]);
+  })();
+  </script>
+</body>
+</html>

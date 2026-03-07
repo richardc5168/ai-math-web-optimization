@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>AI 數學家教｜國小數學智能練習系統</title>
-  <meta name="description" content="專為國小五六年級設計的 AI 數學練習系統。2900+ 題庫、三階段提示引導、家長學習報告、離線可用。免費試用，隨時隨地練數學。">
-  <meta name="keywords" content="國小數學,數學練習,AI家教,分數,小數,體積,百分率,數學題庫,家長報告">
+  <title>AI 數學家教｜闖關式數學挑戰平台</title>
+  <meta name="description" content="把數學變成孩子每天都想破關的挑戰。五六年級 2900+ 題，AI 提示引導不給答案，闖關佔領領地、每日任務、家長週報即時掌握弱點。">
+  <meta name="keywords" content="國小數學,數學闖關,AI家教,任務,領地,帝國,分數,小數,體積,百分率,家長報告">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="AI 數學家教｜國小數學智能練習系統">
-  <meta property="og:description" content="2900+ 題、三階段 AI 提示引導、家長週報。免費開始，手機平板都能用。">
+  <meta property="og:title" content="AI 數學家教｜闖關式數學挑戰平台">
+  <meta property="og:description" content="答題闖關、擴張領地，讓孩子像玩遊戲一樣學數學。AI 提示引導不給答案，家長週報即時掌握進度。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="icons/icon-512.png">
 
@@ -25,11 +25,7 @@
 
   <!-- Performance hints -->
   <link rel="preload" href="icons/icon-192.png" as="image" type="image/png">
-  <link rel="dns-prefetch" href="https://line.me">
-  <link rel="preconnect" href="https://line.me" crossorigin>
-  <link rel="preconnect" href="https://social-plugins.line.me" crossorigin>
-  <link rel="dns-prefetch" href="https://www.facebook.com">
-  <link rel="dns-prefetch" href="https://social-plugins.line.me">
+
   <style>
     /* ── Loading screen ── */
     #pageLoader { position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#0d1117;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s ease; }
@@ -50,13 +46,13 @@
       --accent: #58a6ff;
       --btn-bg: #238636;
       --btn-hover: #2ea043;
-      --hero-gradient: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a2332 100%);
+      --hero-gradient: linear-gradient(135deg, #0d1117 0%, #101824 40%, #0f1f30 100%);
     }
     * { box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
 
     /* ── Global Nav ── */
-    .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.95); position: sticky; top: 0; z-index: 100; }
+    .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.95); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     .top-nav .brand { font-size: 1.15rem; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
     .top-nav .brand img { width: 28px; height: 28px; border-radius: 6px; }
     .top-nav .nav-links { display: flex; gap: 18px; align-items: center; }
@@ -70,183 +66,70 @@
     }
 
     /* ── Hero ── */
-    .hero { background: var(--hero-gradient); text-align: center; padding: 60px 24px 50px; }
-    .hero h1 { font-size: 2.4rem; color: #fff; margin: 0 0 16px; line-height: 1.3; }
+    .hero { background: var(--hero-gradient); text-align: center; padding: 56px 24px 40px; position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(88,166,255,0.3), transparent); }
+    .hero h1 { font-size: 2.2rem; color: #fff; margin: 0 0 14px; line-height: 1.35; }
     .hero h1 .highlight { color: var(--accent); }
-    .hero .subtitle { font-size: 1.15rem; color: #8b949e; max-width: 600px; margin: 0 auto 30px; }
-    .hero .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .hero .cta-primary { background: var(--btn-bg); color: #fff; padding: 14px 32px; border-radius: 8px; font-size: 1.05rem; font-weight: 700; text-decoration: none; }
-    .hero .cta-primary:hover { background: var(--btn-hover); }
-    .hero .cta-secondary { background: transparent; color: var(--accent); padding: 14px 32px; border-radius: 8px; font-size: 1.05rem; font-weight: 600; text-decoration: none; border: 1px solid var(--accent); }
-    .hero .cta-secondary:hover { background: rgba(88,166,255,0.1); }
+    .hero h1 .highlight-gold { color: #fbbf24; }
+    .hero .subtitle { font-size: 1.05rem; color: #8b949e; max-width: 620px; margin: 0 auto 28px; line-height: 1.65; }
+    .hero .subtitle strong { color: #c9d1d9; }
+    .hero .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+    .hero .cta-primary { background: var(--btn-bg); color: #fff; padding: 14px 32px; border-radius: 8px; font-size: 1.05rem; font-weight: 700; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+    .hero .cta-primary:hover { background: var(--btn-hover); transform: translateY(-2px); }
+    .hero .cta-secondary { background: transparent; color: #a371f7; padding: 14px 32px; border-radius: 8px; font-size: 1.05rem; font-weight: 600; text-decoration: none; border: 1px solid #a371f7; transition: background 0.2s; }
+    .hero .cta-secondary:hover { background: rgba(163,113,247,0.1); }
+    .hero .trust-line { margin: 0; font-size: 0.82rem; color: #8b949e; }
     @media (max-width: 640px) {
-      .hero { padding: 40px 16px 36px; }
-      .hero h1 { font-size: 1.7rem; }
-      .hero .subtitle { font-size: 1rem; }
+      .hero { padding: 36px 16px 28px; }
+      .hero h1 { font-size: 1.55rem; }
+      .hero .subtitle { font-size: 0.95rem; }
       .hero .cta-row { flex-direction: column; align-items: center; }
-      .hero .cta-primary, .hero .cta-secondary { width: 80%; text-align: center; }
+      .hero .cta-primary, .hero .cta-secondary { width: 85%; text-align: center; }
+    }
+
+    /* ── Hero HUD Row ── */
+    .hero-hud { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .hero-hud-card { background: rgba(22,27,34,0.85); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); transition: border-color 0.3s, transform 0.2s; }
+    .hero-hud-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .hero-hud-icon { font-size: 1.2rem; }
+    .hero-hud-text { text-align: left; }
+    .hero-hud-val { font-size: 1rem; font-weight: 800; color: #fff; }
+    .hero-hud-lbl { font-size: 0.7rem; color: #8b949e; }
+    @media (max-width: 640px) {
+      .hero-hud { gap: 8px; }
+      .hero-hud-card { flex: 1 1 calc(50% - 8px); padding: 8px 12px; }
     }
 
     /* ── Stats Bar ── */
-    .stats-bar { display: flex; justify-content: center; gap: 40px; padding: 28px 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .stats-bar { display: flex; justify-content: center; gap: 40px; padding: 24px 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
     .stat-item { text-align: center; transition: transform 0.3s ease; }
     .stat-item:hover { transform: scale(1.08); }
-    .stat-num { font-size: 2rem; font-weight: 800; color: #fff; transition: color 0.3s ease, text-shadow 0.3s ease; }
-    .stat-item:hover .stat-num { color: var(--accent); text-shadow: 0 0 12px rgba(88,166,255,0.4); }
-    .stat-label { font-size: 0.85rem; color: #8b949e; transition: color 0.3s ease; }
-    .stat-item:hover .stat-label { color: #c9d1d9; }
+    .stat-num { font-size: 1.8rem; font-weight: 800; color: #fff; }
+    .stat-label { font-size: 0.82rem; color: #8b949e; }
     @media (max-width: 640px) {
-      .stats-bar { gap: 24px; padding: 20px 16px; }
-      .stat-num { font-size: 1.5rem; }
+      .stats-bar { gap: 20px; padding: 18px 16px; }
+      .stat-num { font-size: 1.4rem; }
     }
-
-    /* ── Features ── */
-    .features { max-width: 960px; margin: 0 auto; padding: 50px 24px; }
-    .features h2 { text-align: center; color: #fff; font-size: 1.6rem; margin-bottom: 8px; }
-    .features .section-sub { text-align: center; color: #8b949e; font-size: 0.95rem; margin-bottom: 36px; }
-    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; contain: layout style; }
-    .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
-    .feature-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 8px 30px rgba(88,166,255,0.15); border-color: var(--accent); }
-    .feature-card .icon { font-size: 2.2rem; margin-bottom: 12px; transition: transform 0.3s ease; }
-    .feature-card:hover .icon { transform: scale(1.18) rotate(-4deg); }
-    .feature-card h3 { color: #fff; font-size: 1.1rem; margin: 0 0 8px; transition: color 0.3s ease; }
-    .feature-card:hover h3 { color: var(--accent); }
-    .feature-card p { color: #8b949e; font-size: 0.9rem; margin: 0; }
-
-    /* ── Module Section ── */
-    .container { max-width: 960px; margin: 0 auto; padding: 0 24px 40px; }
-    .section-heading { text-align: center; margin: 50px 0 10px; }
-    .section-heading h2 { color: #fff; font-size: 1.5rem; margin: 0; }
-    .section-heading p { color: #8b949e; font-size: 0.9rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 24px; contain: layout style; }
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }
-    .card:hover { transform: translateY(-4px); border-color: var(--accent); }
-    .card h3 { margin: 0 0 8px; font-size: 1.15rem; color: #fff; }
-    .card p { font-size: 0.9rem; color: #8b949e; flex-grow: 1; margin: 0 0 12px; }
-    .tag { display: inline-block; background: rgba(56,139,253,0.15); color: #58a6ff; font-size: 11px; padding: 2px 8px; border-radius: 12px; margin-right: 4px; margin-bottom: 5px; border: 1px solid rgba(56,139,253,0.3); text-decoration: none; }
-    .tag:hover { filter: brightness(1.08); }
-    .tag-green { background: rgba(46, 160, 67, 0.15); color: #3fb950; border-color: rgba(46, 160, 67, 0.3); }
-    .tag-orange { background: rgba(210, 153, 34, 0.15); color: #d29922; border-color: rgba(210, 153, 34, 0.3); }
-    .tag-purple { background: rgba(137, 87, 229, 0.15); color: #a371f7; border-color: rgba(137, 87, 229, 0.3); }
-    .btn { display: inline-block; background: var(--btn-bg); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; width: 100%; text-align: center; box-sizing: border-box; }
-    .btn:hover { background: var(--btn-hover); }
-    .btn-alt { background: #1f6feb; }
-    .btn-alt:hover { background: #388bfd; }
-
-    /* ── Empire Feature Section ── */
-    .empire-section { background: linear-gradient(180deg, rgba(88,166,255,0.06) 0%, transparent 100%); border-top: 1px solid rgba(88,166,255,0.2); border-bottom: 1px solid var(--border); padding: 50px 0 40px; }
-    .empire-section .section-heading { margin-top: 0; }
-    .empire-section .section-heading h2 { font-size: 1.7rem; }
-    .empire-section .section-heading .section-accent { color: var(--accent); font-size: 1rem; display: block; margin-top: 4px; }
-    .empire-grid-featured { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 24px; }
-    .empire-grid-featured .card { position: relative; overflow: hidden; }
-    .empire-grid-featured .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #58a6ff, #3fb950, #fbbf24); border-radius: 12px 12px 0 0; }
-    .card .featured-badge { position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .card .empire-stats { display: flex; gap: 12px; margin: 8px 0; flex-wrap: wrap; }
-    .card .empire-stat { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.15); border-radius: 8px; padding: 6px 12px; text-align: center; flex: 1; min-width: 80px; }
-    .card .empire-stat .es-val { font-size: 1.1rem; font-weight: 800; color: #fff; }
-    .card .empire-stat .es-lbl { font-size: 0.72rem; color: #8b949e; }
-    .btn-empire { background: linear-gradient(135deg, #238636, #2ea043); font-size: 1rem; padding: 12px 16px; }
-    .btn-empire:hover { background: linear-gradient(135deg, #2ea043, #3fb950); }
-    @media (max-width: 768px) {
-      .empire-grid-featured { grid-template-columns: 1fr; }
-    }
-    .summary-card { grid-column: 1 / -1; }
-
-    /* ── Report Marketing Section ── */
-    .report-hero { background: linear-gradient(180deg, rgba(137,87,229,0.08) 0%, transparent 100%); border-top: 1px solid rgba(137,87,229,0.2); border-bottom: 1px solid var(--border); padding: 50px 0 44px; }
-    .report-hero .section-heading { margin-top: 0; }
-    .report-hero .section-heading h2 { font-size: 1.7rem; }
-    .report-hero .section-heading .section-accent { color: #a371f7; font-size: 1rem; display: block; margin-top: 4px; }
-    .report-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; align-items: start; }
-    .report-features { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .rf-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px; position: relative; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
-    .rf-card:hover { transform: translateY(-3px); border-color: #a371f7; }
-    .rf-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #a371f7, #58a6ff); border-radius: 12px 12px 0 0; }
-    .rf-icon { font-size: 1.8rem; margin-bottom: 8px; }
-    .rf-card h4 { color: #fff; font-size: 1rem; margin: 0 0 6px; }
-    .rf-card p { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.5; }
-    .report-sample { background: var(--card-bg); border: 1px solid rgba(137,87,229,0.3); border-radius: 12px; padding: 24px; }
-    .report-sample h3 { color: #a371f7; font-size: 1.15rem; margin: 0 0 16px; }
-    .sample-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.5); }
-    .sample-row:last-child { border-bottom: none; }
-    .sample-label { color: #8b949e; font-size: 0.85rem; }
-    .sample-value { color: #fff; font-weight: 700; font-size: 0.95rem; }
-    .sample-value.good { color: #3fb950; }
-    .sample-value.warn { color: #d29922; }
-    .sample-value.bad { color: #f85149; }
-    .sample-bar { height: 6px; border-radius: 3px; background: var(--border); margin-top: 12px; overflow: hidden; }
-    .sample-bar-fill { height: 100%; border-radius: 3px; }
-    .report-cta-row { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
-    .btn-report { display: inline-block; background: linear-gradient(135deg, #8957e5, #a371f7); color: #fff; padding: 14px 28px; border-radius: 8px; font-size: 1rem; font-weight: 700; text-decoration: none; text-align: center; }
-    .btn-report:hover { background: linear-gradient(135deg, #a371f7, #bc8cff); }
-    .btn-report-alt { display: inline-block; background: transparent; color: #a371f7; padding: 14px 28px; border-radius: 8px; font-size: 1rem; font-weight: 600; text-decoration: none; text-align: center; border: 1px solid #a371f7; }
-    .btn-report-alt:hover { background: rgba(137,87,229,0.1); }
-    @media (max-width: 768px) {
-      .report-preview { grid-template-columns: 1fr; }
-      .report-features { grid-template-columns: 1fr; }
-    }
-    .summary-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 8px; }
-    .summary-table { width: 100%; border-collapse: collapse; min-width: 700px; color: #9fb0c0; font-size: 0.92rem; }
-    .summary-table th { text-align: left; border-bottom: 1px solid var(--border); padding: 10px 8px; color: #e6edf3; background: rgba(88,166,255,0.08); font-size: 0.88rem; }
-    .summary-table td { padding: 10px 8px; border-bottom: 1px solid rgba(48,54,61,0.75); vertical-align: top; line-height: 1.55; }
-    .summary-table tbody tr:last-child td { border-bottom: none; }
-    .summary-link { color: #58a6ff; text-decoration: none; font-weight: 600; }
-    .summary-link:hover { text-decoration: underline; }
-    .summary-hint { margin: 2px 0 0; font-size: 0.82rem; color: #8b949e; }
-    .improve-list { margin: 10px 0 0; padding-left: 18px; color: #9fb0c0; font-size: 0.9rem; }
-    .improve-list li { margin: 4px 0; }
-    .metric-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
-    .metric-box { border: 1px solid var(--border); border-radius: 8px; padding: 8px; background: rgba(88,166,255,0.06); }
-    .metric-name { font-size: 0.8rem; color: #8b949e; }
-    .metric-value { font-size: 1rem; color: #e6edf3; font-weight: 700; }
-    .delta-up { color: #3fb950; font-size: 0.86rem; }
-    .delta-down { color: #f85149; font-size: 0.86rem; }
-    .delta-flat { color: #8b949e; font-size: 0.86rem; }
-    @media (max-width: 1024px) {
-      .summary-table { min-width: 600px; font-size: 0.9rem; }
-      .summary-table th { padding: 8px 6px; font-size: 0.85rem; }
-      .summary-table td { padding: 8px 6px; }
-      .metric-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ── How It Works ── */
-    .how-section { max-width: 960px; margin: 0 auto; padding: 50px 24px 30px; }
-    .how-section h2 { text-align: center; color: #fff; font-size: 1.5rem; margin: 0 0 30px; }
-    .how-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-    .how-step { text-align: center; }
-    .how-step .step-num { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(88,166,255,0.15); color: var(--accent); font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
-    .how-step h3 { color: #fff; font-size: 1rem; margin: 0 0 6px; }
-    .how-step p { color: #8b949e; font-size: 0.85rem; margin: 0; }
 
     /* ── Testimonial ── */
     .testimonial-section { background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 50px 24px; }
     .testimonial-section h2 { text-align: center; color: #fff; font-size: 1.5rem; margin: 0 0 30px; }
     .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; max-width: 960px; margin: 0 auto; }
-    .testimonial-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: opacity 0.4s ease; }
+    .testimonial-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
     .testimonial-card .stars { color: #fbbf24; font-size: 1rem; margin-bottom: 8px; }
     .testimonial-card .quote { color: var(--text); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; font-style: italic; }
+    .testimonial-card .author-row { display: flex; align-items: center; gap: 10px; }
+    .testimonial-card .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: #fff; flex-shrink: 0; }
     .testimonial-card .author { color: #8b949e; font-size: 0.82rem; }
-    .testimonial-card .author-row { display:flex; align-items:center; gap:10px; }
-    .testimonial-card .avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.85rem; color:#fff; flex-shrink:0; }
     .testimonial-card .metric { display: inline-block; background: rgba(56,139,253,0.15); color: var(--accent); font-weight: 700; font-size: 0.82rem; padding: 2px 10px; border-radius: 20px; margin-top: 8px; }
     .testimonial-dots { text-align: center; margin-top: 16px; display: none; }
-    .testimonial-dots .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #30363d; margin: 0 4px; cursor: pointer; transition: background 0.3s; border: none; padding: 0; }
+    .testimonial-dots .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #30363d; margin: 0 4px; cursor: pointer; border: none; padding: 0; }
     .testimonial-dots .dot.active { background: var(--accent); }
     @media (max-width: 640px) {
       .testimonial-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; gap: 16px; padding-bottom: 8px; }
       .testimonial-card { min-width: 85vw; flex-shrink: 0; scroll-snap-align: center; }
       .testimonial-dots { display: block; }
     }
-
-    /* ── Impact Section ── */
-    .impact-section { padding: 50px 24px; text-align: center; }
-    .impact-section h2 { color: #fff; font-size: 1.5rem; margin: 0 0 10px; }
-    .impact-section .impact-sub { color: #8b949e; font-size: 0.9rem; margin: 0 0 30px; }
-    .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; max-width: 720px; margin: 0 auto; }
-    .impact-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; }
-    .impact-card .ic-num { font-size: 1.8rem; font-weight: 900; color: #3fb950; }
-    .impact-card .ic-label { color: #8b949e; font-size: 0.82rem; margin-top: 4px; }
 
     /* ── FAQ ── */
     .faq-section { padding: 50px 24px; max-width: 760px; margin: 0 auto; }
@@ -257,19 +140,14 @@
     .faq-item[open] summary::before { content: '\2212'; }
     .faq-item .faq-answer { color: #8b949e; font-size: 0.9rem; line-height: 1.7; padding: 10px 0 4px 28px; }
 
-    /* ── CTA Banner ── */
-    .cta-banner { text-align: center; padding: 50px 24px; }
-    .cta-banner h2 { color: #fff; font-size: 1.5rem; margin: 0 0 12px; }
-    .cta-banner p { color: #8b949e; font-size: 0.95rem; margin: 0 0 24px; }
-    .cta-banner .cta-primary { background: var(--btn-bg); color: #fff; padding: 14px 40px; border-radius: 8px; font-size: 1.05rem; font-weight: 700; text-decoration: none; }
-    .cta-banner .cta-primary:hover { background: var(--btn-hover); }
-
     /* ── Footer ── */
     .site-footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; }
-    .footer-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
-    .footer-links a { color: #8b949e; text-decoration: none; font-size: 0.85rem; }
-    .footer-links a:hover { color: var(--accent); }
     .footer-copy { color: #484f58; font-size: 0.78rem; }
+
+    /* ── CTA Banner ── */
+    .cta-banner { text-align: center; padding: 50px 24px; }
+    .cta-banner h2 { color: #fff; font-size: 1.5rem; margin: 0 0 10px; }
+    .cta-banner p { color: #8b949e; font-size: 0.95rem; margin: 0 0 24px; line-height: 1.6; }
 
     /* ── Mobile Sticky CTA ── */
     .mobile-sticky-cta { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: rgba(13,17,23,0.97); border-top: 1px solid var(--border); padding: 10px 16px; text-align: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
@@ -290,31 +168,16 @@
     .onboard-box .ob-btn:hover { border-color: var(--accent); background: rgba(88,166,255,0.08); }
     .onboard-box .ob-btn .ob-icon { font-size: 1.3rem; margin-right: 6px; }
 
-    /* ── Rendering Performance ── */
-    .empire-section, .report-hero, .testimonial-section, .impact-section, .faq-section, .email-subscribe, .cta-banner { content-visibility: auto; contain-intrinsic-size: auto 500px; }
-
-    /* ── Demo Video ── */
-    .demo-video-section { text-align:center; padding:48px 20px 32px; }
-    .demo-video-section h2 { font-size:1.6rem; margin-bottom:8px; }
-    .demo-video-section .section-sub { color:#8b949e; margin-bottom:24px; font-size:.95rem; }
-    .demo-video-wrap { position:relative; max-width:720px; margin:0 auto; border-radius:16px; overflow:hidden; background:#161b22; border:1px solid #30363d; aspect-ratio:16/9; cursor:pointer; }
-    .demo-video-wrap .demo-poster { width:100%; height:100%; object-fit:cover; display:block; opacity:.85; transition:opacity .3s; }
-    .demo-video-wrap:hover .demo-poster { opacity:1; }
-    .demo-play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; background:rgba(88,166,255,.9); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform .2s, background .2s; }
-    .demo-play-btn::after { content:''; display:block; width:0; height:0; border-style:solid; border-width:14px 0 14px 24px; border-color:transparent transparent transparent #fff; margin-left:4px; }
-    .demo-video-wrap:hover .demo-play-btn { transform:translate(-50%,-50%) scale(1.1); background:rgba(88,166,255,1); }
-    .demo-video-steps { display:flex; justify-content:center; gap:32px; margin-top:24px; flex-wrap:wrap; }
-    .demo-video-steps .step { text-align:center; flex:0 1 140px; }
-    .demo-video-steps .step-icon { font-size:1.8rem; margin-bottom:4px; }
-    .demo-video-steps .step-text { font-size:.85rem; color:#8b949e; }
-    @media(max-width:600px){ .demo-video-steps { gap:16px; } .demo-play-btn { width:56px; height:56px; } .demo-play-btn::after { border-width:10px 0 10px 18px; } }
+    /* ── Performance ── */
+    .testimonial-section, .faq-section, .cta-banner { content-visibility: auto; contain-intrinsic-size: auto 500px; }
+    #scrollProgress{position:fixed;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--btn-bg,#238636),#58a6ff);z-index:9999;transition:width 60ms linear;pointer-events:none}
   </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "AI 數學家教",
-    "description": "國小數學智能練習系統：2900+ 題、三階段 AI 提示引導、家長報告、遊戲化闖關，100% 離線可用",
+    "description": "闖關式數學挑戰平台：2900+ 題、AI 提示引導、帝國領地擴張、家長週報，100% 離線可用",
     "applicationCategory": "EducationalApplication",
     "operatingSystem": "Web",
     "offers": [
@@ -341,772 +204,472 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "免費版可以用多久？有什麼限制？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "免費版沒有使用期限，可以永久使用所有基本練習模組。帝國闖關模式每天免費 10 題，升級後不限題數並解鎖完整 2900+ 題庫。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "需要下載 App 嗎？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "不需要。打開瀏覽器就能用，手機、平板、電腦都支援。也可以加到主畫面當 App 使用，而且離線也能練習。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "AI 提示會不會直接告訴答案？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "絕對不會。我們的三層提示系統（觀念方向 → 列式規則 → 計算引導）只引導思路，不洩漏答案。每一題都經過驗證確保提示不含最終答案。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "孩子的資料安全嗎？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "完全安全。所有練習紀錄存在孩子的裝置上（localStorage），不上傳到任何伺服器。沒有廣告、沒有追蹤、不收集個資。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "適合幾年級的孩子？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "主要適合國小五、六年級，涵蓋小數、分數、體積、百分率、單位換算、時間計算等核心單元。部分模組也適合國中銜接複習。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "如何升級付費版？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "請來信 learnotaiwan@gmail.com 諮詢方案，我們會在 24 小時內回覆。提供個人版（NT$299/月）和家庭版（NT$499/月）兩種方案。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "和補習班比有什麼優勢？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "不受時間地點限制，24 小時隨時練習。AI 即時引導，比等老師批改更快速。每月費用不到補習班的十分之一，還能追蹤完整學習數據。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "可以多台裝置使用嗎？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "可以。在任何裝置打開網址就能使用，目前練習紀錄儲存在各裝置上，未來將支援雲端同步功能。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "家長可以查看學習進度嗎？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "可以。家長週報功能提供每週答題數、正確率趨勢、弱點單元分析等完整報告，幫助家長掌握孩子的學習狀況。"
-        }
-      }
+      { "@type": "Question", "name": "免費版可以用多久？有什麼限制？", "acceptedAnswer": { "@type": "Answer", "text": "免費版沒有使用期限，可以永久使用所有基本練習模組。帝國闖關模式每天免費 10 題，升級後不限題數並解鎖完整 2900+ 題庫。" } },
+      { "@type": "Question", "name": "AI 提示會不會直接告訴答案？", "acceptedAnswer": { "@type": "Answer", "text": "絕對不會。三層提示系統只引導思路，不洩漏答案。每一題都經過驗證確保提示不含最終答案。" } },
+      { "@type": "Question", "name": "孩子的資料安全嗎？", "acceptedAnswer": { "@type": "Answer", "text": "完全安全。所有練習紀錄存在裝置上，不上傳伺服器。沒有廣告、沒有追蹤、不收集個資。" } },
+      { "@type": "Question", "name": "適合幾年級的孩子？", "acceptedAnswer": { "@type": "Answer", "text": "主要適合國小五、六年級，涵蓋小數、分數、體積、百分率等核心單元。部分模組也適合國中銜接。" } },
+      { "@type": "Question", "name": "家長可以查看學習進度嗎？", "acceptedAnswer": { "@type": "Answer", "text": "可以。家長週報提供每週答題數、正確率趨勢、弱點分析等完整報告。" } }
     ]
   }
   </script>
   <link rel="canonical" href="./">
-  <style>
-    #scrollProgress{position:fixed;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--btn-bg,#238636),#58a6ff);z-index:9999;transition:width 60ms linear;pointer-events:none}
-  </style>
   <link rel="stylesheet" href="shared/game_motion.css">
+  <link rel="stylesheet" href="shared/quest_platform.css">
 </head>
 <body>
   <div id="scrollProgress"></div>
   <div id="pageLoader" role="status" aria-live="polite"><div class="ld-ring"></div><div class="ld-text">載入中…</div></div>
 
-  <!-- ── Global Nav ── -->
+  <!-- ══════════════════════════════════════════
+       NAV
+       ══════════════════════════════════════════ -->
   <nav class="top-nav" aria-label="主選單">
     <a class="brand" href="./">
       <img src="icons/icon-192.png" alt="AI 數學" width="28" height="28" fetchpriority="high">
       AI 數學家教
     </a>
     <div class="nav-links">
-      <a href="#modules" class="hide-mobile">練習題庫</a>
+      <a href="./task-center/" class="hide-mobile">任務中心</a>
+      <a href="#modes" class="hide-mobile">挑戰模式</a>
       <a href="#reports" class="hide-mobile">家長週報</a>
       <a href="./pricing/" class="hide-mobile">方案</a>
-      <a href="./about/" class="hide-mobile">關於我們</a>
-      <a href="./exam-sprint/" class="nav-cta">免費試用</a>
+      <a href="./interactive-g5-empire/" class="nav-cta">開始挑戰</a>
     </div>
   </nav>
 
-  <!-- ── Hero ── -->
-  <section class="hero" id="hero" data-variant="" data-test="hero-v1">
-    <h1 data-ab-el="headline">數學成績<span class="highlight">平均提升 24%</span>的 AI 家教</h1>
-    <p class="subtitle" data-ab-el="subtitle">
-      專為國小五六年級設計，2,900+ 道精選題目搭配三階段 AI 提示引導，
-      不直接給答案，讓孩子真正理解每一道題。<strong style="color:#c9d1d9">家長週報即時掌握進度</strong>。
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — HERO
+       ══════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <h1>把數學變成孩子<span class="highlight-gold">每天都想破關</span>的挑戰</h1>
+    <p class="subtitle">
+      專為國小五六年級設計的<strong>闖關式學習平台</strong>——
+      答題佔領領地、完成每日任務、解鎖成就徽章。
+      AI 提示一步步引導，<strong>絕不直接給答案</strong>。
+      家長週報即時掌握弱點與補救建議。
     </p>
-    <div class="cta-row">
-      <a href="./interactive-g5-empire/" class="cta-primary" data-ab-el="cta-primary">&#x1F3F0; 免費開始闖關</a>
-      <a href="./exam-sprint/" class="cta-secondary" data-ab-el="cta-secondary">考前衝刺練習</a>
-    </div>
-    <p style="margin:18px 0 0;font-size:0.82rem;color:#8b949e" data-ab-el="trust-line">&#x2705; 免費體驗，不需註冊｜&#x1F6E1;&#xFE0F; 7 天不滿意全額退費</p>
-  </section>
 
-  <!-- ── Trust Badges ── -->
-  <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:18px 16px;background:rgba(35,134,54,0.06);border-bottom:1px solid rgba(35,134,54,0.15)">
-    <span style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:#3fb950;font-weight:600">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
-      4.9 &#9733; 家長評價</span>
-    <span style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:#c9d1d9;font-weight:600">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      零廣告零追蹤</span>
-    <span style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:#c9d1d9;font-weight:600">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a371f7" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
-      教育部課綱對齊</span>
-    <span style="display:flex;align-items:center;gap:6px;font-size:0.85rem;color:#c9d1d9;font-weight:600">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f0883e" stroke-width="2.5" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      跨裝置可用</span>
-  </div>
+    <!-- Hero HUD mock cards -->
+    <div class="hero-hud">
+      <div class="hero-hud-card">
+        <span class="hero-hud-icon">&#x1F4CB;</span>
+        <div class="hero-hud-text">
+          <div class="hero-hud-val">3 / 5</div>
+          <div class="hero-hud-lbl">今日任務</div>
+        </div>
+      </div>
+      <div class="hero-hud-card">
+        <span class="hero-hud-icon">&#x1F525;</span>
+        <div class="hero-hud-text">
+          <div class="hero-hud-val">4 題</div>
+          <div class="hero-hud-lbl">目前連勝</div>
+        </div>
+      </div>
+      <div class="hero-hud-card">
+        <span class="hero-hud-icon">&#x1F3F0;</span>
+        <div class="hero-hud-text">
+          <div class="hero-hud-val">+2</div>
+          <div class="hero-hud-lbl">本週新領地</div>
+        </div>
+      </div>
+      <div class="hero-hud-card">
+        <span class="hero-hud-icon">&#x1F4CA;</span>
+        <div class="hero-hud-text">
+          <div class="hero-hud-val">已更新</div>
+          <div class="hero-hud-lbl">家長週報</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dual CTA -->
+    <div class="cta-row">
+      <a href="./interactive-g5-empire/" class="cta-primary">&#x2694;&#xFE0F; 開始今日挑戰</a>
+      <a href="./report/" class="cta-secondary">&#x1F4CA; 查看家長週報</a>
+    </div>
+    <p class="trust-line">&#x2705; 免費體驗不需註冊 &#x3000; 2,900+ 精選題目 &#x3000; 離線也能練</p>
+  </section>
 
   <!-- ── Stats Bar ── -->
   <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-num">2900+</div>
-      <div class="stat-label">精選題目</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">17</div>
-      <div class="stat-label">學習模組</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">3-4 層</div>
-      <div class="stat-label">AI 提示引導</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">100%</div>
-      <div class="stat-label">離線可用</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" id="todayLearners" style="color:#3fb950">—</div>
-      <div class="stat-label">&#x1F4DA; 今日練習人次</div>
-    </div>
+    <div class="stat-item"><div class="stat-num">2900+</div><div class="stat-label">精選題目</div></div>
+    <div class="stat-item"><div class="stat-num">17</div><div class="stat-label">學習模組</div></div>
+    <div class="stat-item"><div class="stat-num">3-4 層</div><div class="stat-label">AI 提示引導</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">離線可用</div></div>
   </div>
 
-  <!-- ── Demo Video ── -->
-  <section class="demo-video-section reveal">
-    <h2>30 秒看懂 AI 數學家教</h2>
-    <p class="section-sub">實際操作畫面：出題 → AI 提示引導 → 答對闖關</p>
-    <div class="demo-video-wrap" id="demoVideo" role="button" tabindex="0" aria-label="播放示範影片">
-      <svg class="demo-poster" viewBox="0 0 720 405" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="720" height="405" fill="#161b22"/>
-        <rect x="40" y="30" width="640" height="50" rx="8" fill="#21262d"/>
-        <text x="360" y="62" text-anchor="middle" fill="#58a6ff" font-size="18" font-family="sans-serif">AI 數學家教 — 分數練習模式</text>
-        <rect x="40" y="100" width="420" height="200" rx="12" fill="#0d1117" stroke="#30363d"/>
-        <text x="250" y="175" text-anchor="middle" fill="#c9d1d9" font-size="16" font-family="sans-serif">小明有 3/4 公斤的糖果，</text>
-        <text x="250" y="200" text-anchor="middle" fill="#c9d1d9" font-size="16" font-family="sans-serif">吃掉 1/3 公斤後還剩多少？</text>
-        <text x="250" y="240" text-anchor="middle" fill="#8b949e" font-size="13" font-family="sans-serif">請輸入你的答案 ▎</text>
-        <rect x="480" y="100" width="200" height="200" rx="12" fill="#0d1117" stroke="#30363d"/>
-        <text x="580" y="135" text-anchor="middle" fill="#58a6ff" font-size="14" font-family="sans-serif">💡 提示 Level 1</text>
-        <text x="580" y="165" text-anchor="middle" fill="#c9d1d9" font-size="12" font-family="sans-serif">想一想：兩個分數</text>
-        <text x="580" y="185" text-anchor="middle" fill="#c9d1d9" font-size="12" font-family="sans-serif">要怎麼做減法呢？</text>
-        <text x="580" y="215" text-anchor="middle" fill="#3fb950" font-size="12" font-family="sans-serif">✓ 先通分再相減</text>
-        <rect x="40" y="320" width="640" height="55" rx="8" fill="#21262d"/>
-        <circle cx="100" cy="347" r="15" fill="#238636"/>
-        <text x="100" y="352" text-anchor="middle" fill="#fff" font-size="14" font-family="sans-serif">✓</text>
-        <text x="140" y="352" fill="#3fb950" font-size="14" font-family="sans-serif">已完成 8/10 題 ⭐ 連對 5 題</text>
-        <rect x="480" y="330" width="150" height="34" rx="6" fill="#58a6ff"/>
-        <text x="555" y="352" text-anchor="middle" fill="#fff" font-size="14" font-family="sans-serif">下一題 →</text>
-      </svg>
-      <div class="demo-play-btn" aria-hidden="true"></div>
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — 今日任務中心
+       ══════════════════════════════════════════ -->
+  <section class="section-quest bg-gradient-quest reveal" id="quests">
+    <div class="section-quest-head">
+      <h2>&#x1F3AF; 今天先挑戰這幾關</h2>
+      <p>不怕不知道要練什麼——每天都有任務等你來破關</p>
     </div>
-    <div class="demo-video-steps">
-      <div class="step"><div class="step-icon">📝</div><div class="step-text">AI 即時出題</div></div>
-      <div class="step"><div class="step-icon">💡</div><div class="step-text">三階段提示</div></div>
-      <div class="step"><div class="step-icon">🏆</div><div class="step-text">闖關得分</div></div>
-      <div class="step"><div class="step-icon">📊</div><div class="step-text">家長報告</div></div>
+    <div class="quest-grid">
+
+      <!-- Quest 1: 暖身任務 -->
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F31F;</div>
+          <div>
+            <h3 class="quest-title">今日暖身：小數乘法速算</h3>
+            <p class="quest-purpose">先熱個身，把運算手感找回來</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff">&#x2B50; 新手</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 5 分鐘</span>
+          <span class="quest-tag quest-tag-reward">&#x2B50; &times;3</span>
+        </div>
+        <div class="quest-reward">獎勵：完成即獲 <strong>3 顆星星</strong></div>
+        <a href="./interactive-decimal-g5/" class="quest-cta">開始暖身</a>
+      </div>
+
+      <!-- Quest 2: 弱點補強 -->
+      <div class="quest-card quest-weakness">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F3AF;</div>
+          <div>
+            <h3 class="quest-title">本週弱點補強：分數通分</h3>
+            <p class="quest-purpose">先補這個弱點，後面的關卡會更好打</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff adv">&#x2B50;&#x2B50; 進階</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 10 分鐘</span>
+          <span class="quest-tag quest-tag-reward">&#x1F3F0; &times;1</span>
+        </div>
+        <div class="quest-reward">獎勵：完成 10 題解鎖 <strong>1 塊新領地</strong></div>
+        <a href="./fraction-g5/" class="quest-cta">開始補強</a>
+      </div>
+
+      <!-- Quest 3: 限時挑戰 -->
+      <div class="quest-card quest-timed">
+        <div class="quest-header">
+          <div class="quest-icon">&#x23F0;</div>
+          <div>
+            <h3 class="quest-title">90 秒限時挑戰：小數對決</h3>
+            <p class="quest-purpose">挑戰速度極限，試試能不能刷新紀錄</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff sprint">&#x1F525; 衝刺</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 90 秒</span>
+          <span class="quest-tag quest-tag-reward">&#x1F3C6; 徽章</span>
+        </div>
+        <div class="quest-reward">獎勵：破紀錄解鎖 <strong>速算徽章</strong></div>
+        <a href="./interactive-decimal-g5/" class="quest-cta">接受挑戰</a>
+      </div>
+
+      <!-- Quest 4: 主線任務 -->
+      <div class="quest-card quest-main">
+        <div class="quest-header">
+          <div class="quest-icon">&#x2694;&#xFE0F;</div>
+          <div>
+            <h3 class="quest-title">帝國主線：攻佔第 5 座城池</h3>
+            <p class="quest-purpose">再答對 8 題，這塊領地就是你的</p>
+          </div>
+        </div>
+        <div class="quest-meta">
+          <span class="quest-tag quest-tag-diff adv">&#x2B50;&#x2B50; 進階</span>
+          <span class="quest-tag quest-tag-time">&#x23F1; 10 分鐘</span>
+          <span class="quest-tag quest-tag-reward">&#x1F3F0; &times;2 + &#x1F386;</span>
+        </div>
+        <div class="quest-reward">獎勵：佔領 <strong>2 塊領地</strong> + 煙火慶祝</div>
+        <a href="./interactive-g5-empire/" class="quest-cta">繼續征服</a>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:24px;">
+      <a href="./task-center/" style="color:var(--accent);text-decoration:none;font-weight:600;font-size:0.95rem;">查看完整任務中心 &#x2192;</a>
     </div>
   </section>
 
-  <!-- ── Features ── -->
-  <section class="features reveal">
-    <h2>為什麼選擇 AI 數學家教？</h2>
-    <p class="section-sub">每一道題都由 AI 引擎生成精準的三階段提示，引導而非代替孩子思考</p>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="icon">🎯</div>
-        <h3>三階段提示引導</h3>
-        <p>觀念提醒 → 列式方向 → 計算引導。絕不直接給答案，讓孩子真正理解。</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📊</div>
-        <h3>家長學習報告</h3>
-        <p>自動統計正確率、弱點分析、每日趨勢圖，一鍵了解孩子的學習狀況。</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🏰</div>
-        <h3>遊戲化闖關</h3>
-        <p>帝國擴張、連對加成、城堡升級，讓練習數學有如打遊戲般有趣。</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📱</div>
-        <h3>手機平板隨時練</h3>
-        <p>支援 PWA 離線模式，在手機、平板、電腦上都能流暢使用，不需安裝 App。</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📚</div>
-        <h3>完整課綱覆蓋</h3>
-        <p>分數、小數、體積、比率百分率、幾何圖形…國小五六年級必考題型全覆蓋。</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🔒</div>
-        <h3>安全無廣告</h3>
-        <p>無第三方廣告、無社群功能，專注學習。資料存在本機，保護孩子隱私。</p>
-      </div>
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — 為什麼孩子會想一直玩下去
+       ══════════════════════════════════════════ -->
+  <section class="section-quest reveal">
+    <div class="section-quest-head">
+      <h2>&#x1F680; 為什麼孩子會想一直挑戰下去</h2>
+      <p>不是做完才有分數，而是每一題都在推進關卡</p>
     </div>
-  </section>
-
-  <!-- ── Learning Path Recommender ── -->
-  <div class="reveal" style="max-width:720px;margin:0 auto;padding:40px 24px 20px;">
-    <h2 style="text-align:center;color:#fff;font-size:1.3rem;margin:0 0 8px;">🎯 不知道從哪裡開始？</h2>
-    <p style="text-align:center;color:#8b949e;font-size:0.88rem;margin:0 0 20px;">選擇孩子的狀況，我們推薦最適合的練習路徑</p>
-    <div id="pathPicker" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-      <button onclick="showPath('beginner')" aria-label="推薦路徑：剛開始學" style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;text-align:left;color:var(--text);">
-        <div style="font-size:1.3rem;margin-bottom:6px;">🌱</div>
-        <div style="font-weight:700;color:#fff;font-size:0.95rem;">剛開始學</div>
-        <div style="font-size:0.78rem;color:#8b949e;margin-top:4px;">數學有點弱，需要從基礎練起</div>
-      </button>
-      <button onclick="showPath('review')" aria-label="推薦路徑：段考複習" style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;text-align:left;color:var(--text);">
-        <div style="font-size:1.3rem;margin-bottom:6px;">📖</div>
-        <div style="font-weight:700;color:#fff;font-size:0.95rem;">段考複習</div>
-        <div style="font-size:0.78rem;color:#8b949e;margin-top:4px;">快要考試了，需要快速複習</div>
-      </button>
-      <button onclick="showPath('challenge')" aria-label="推薦路徑：想挑戰進階" style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;text-align:left;color:var(--text);">
-        <div style="font-size:1.3rem;margin-bottom:6px;">🏆</div>
-        <div style="font-weight:700;color:#fff;font-size:0.95rem;">想挑戰進階</div>
-        <div style="font-size:0.78rem;color:#8b949e;margin-top:4px;">基本功已有，想練更難的題目</div>
-      </button>
-      <button onclick="showPath('fun')" aria-label="推薦路徑：遊戲化學習" style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;text-align:left;color:var(--text);">
-        <div style="font-size:1.3rem;margin-bottom:6px;">🎮</div>
-        <div style="font-weight:700;color:#fff;font-size:0.95rem;">遊戲化學習</div>
-        <div style="font-size:0.78rem;color:#8b949e;margin-top:4px;">孩子不愛數學，想用闖關激發興趣</div>
-      </button>
-    </div>
-    <div id="pathResult" style="display:none;margin-top:16px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;"></div>
-  </div>
-  <script>
-  function showPath(type) {
-    var r = document.getElementById('pathResult');
-    var paths = {
-      beginner: '<h3 style="color:#3fb950;margin:0 0 8px;font-size:1rem;">\u63a8\u85a6\u8def\u5f91\uff1a\u57fa\u790e\u7a69\u6253</h3><ol style="padding-left:20px;color:var(--text);font-size:0.9rem;line-height:1.8;margin:0;"><li>\u5148\u505a <a href="./offline-math/?v=2" style="color:#58a6ff;">\u5c0f\u5b78\u57fa\u790e\u6aa2\u6e2c</a> \u2192 \u627e\u51fa\u5f31\u9ede</li><li>\u9032\u5165 <a href="./interactive-g5-life-pack2plus-empire/" style="color:#58a6ff;">\u57fa\u790e\u5165\u9580\u5e1d\u570b</a> \u2192 250 \u984c\u5f9e\u7c21\u55ae\u958b\u59cb</li><li>\u80fd\u529b\u63d0\u5347\u5f8c\u8f49 <a href="./interactive-g5-life-pack1-empire/" style="color:#58a6ff;">\u751f\u6d3b\u61c9\u7528\u5e1d\u570b\u7b2c\u4e00\u5305</a></li></ol>',
-      review: '<h3 style="color:#58a6ff;margin:0 0 8px;font-size:1rem;">\u63a8\u85a6\u8def\u5f91\uff1a\u8003\u524d\u885d\u523a</h3><ol style="padding-left:20px;color:var(--text);font-size:0.9rem;line-height:1.8;margin:0;"><li>\u76f4\u63a5\u958b <a href="./exam-sprint/" style="color:#58a6ff;">\u8003\u524d\u885d\u523a\u6a21\u7d44</a> \u2192 \u7cbe\u6e96\u627e\u5f31\u9ede</li><li>\u67e5\u770b <a href="./learning-map/" style="color:#58a6ff;">\u984c\u578b\u89c0\u5ff5\u5730\u5716</a> \u2192 \u5feb\u901f\u8907\u7fd2\u91cd\u9ede</li><li>\u91dd\u5c0d\u5f31\u9ede\u505a <a href="./g5-grand-slam/" style="color:#58a6ff;">\u5168\u8ab2\u7db1\u5927\u6eff\u8cab 188 \u984c</a></li></ol>',
-      challenge: '<h3 style="color:#a371f7;margin:0 0 8px;font-size:1rem;">\u63a8\u85a6\u8def\u5f91\uff1a\u9032\u968e\u6311\u6230</h3><ol style="padding-left:20px;color:var(--text);font-size:0.9rem;line-height:1.8;margin:0;"><li>\u6311\u6230 <a href="./interactive-g5-life-pack1plus-empire/" style="color:#58a6ff;">\u52a0\u5f37\u7248\u5e1d\u570b 240 \u984c</a> \u2192 \u96e3\u5ea6\u63d0\u5347</li><li>\u8a13\u7df4 <a href="./interactive-g56-core-foundation/" style="color:#58a6ff;">\u6838\u5fc3\u5fc5\u6bba\u6280\u56db\u5927\u677f\u584a</a></li><li>\u5617\u8a66 <a href="./ratio-percent-g5/" style="color:#58a6ff;">\u6bd4\u7387\u767e\u5206\u7387</a> \u5c08\u9805\u7a81\u7834</li></ol>',
-      fun: '<h3 style="color:#fbbf24;margin:0 0 8px;font-size:1rem;">\u63a8\u85a6\u8def\u5f91\uff1a\u904a\u6232\u5316\u5b78\u7fd2</h3><ol style="padding-left:20px;color:var(--text);font-size:0.9rem;line-height:1.8;margin:0;"><li>\u5148\u73a9 <a href="./interactive-decimal-g5/" style="color:#58a6ff;">\u5c0f\u6578\u4e92\u52d5\u95d6\u95dc 90 \u79d2\u6311\u6230</a></li><li>\u518d\u9032\u5165 <a href="./interactive-g5-empire/" style="color:#58a6ff;">\u6578\u5b78\u5e1d\u570b 8 \u984c\u578b\u95d6\u95dc</a></li><li>\u5f81\u670d <a href="./interactive-g5-life-pack1-empire/" style="color:#58a6ff;">\u751f\u6d3b\u61c9\u7528\u5e1d\u570b</a> \u2192 \u5f81\u670d\u57ce\u6c60</li></ol>'
-    };
-    r.innerHTML = paths[type] || '';
-    r.style.display = 'block';
-    var btns = document.getElementById('pathPicker').querySelectorAll('button');
-    for (var i = 0; i < btns.length; i++) btns[i].style.borderColor = 'var(--border)';
-    event.currentTarget.style.borderColor = '#58a6ff';
-  }
-  </script>
-
-  <!-- ── How It Works ── -->
-  <section class="how-section reveal">
-    <h2>使用流程超簡單</h2>
-    <div class="how-steps">
-      <div class="how-step">
-        <div class="step-num">1</div>
-        <h3>打開網頁</h3>
-        <p>不需下載 App、不需註冊帳號。打開網頁就能開始練習。</p>
+    <div class="benefit-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">&#x2705;</div>
+        <h3 class="benefit-title">答對就有回饋</h3>
+        <p class="benefit-desc">每一題答對都能感受到前進——連勝火焰、星星累積、領地擴張，讓努力看得見。</p>
       </div>
-      <div class="how-step">
-        <div class="step-num">2</div>
-        <h3>選擇主題練習</h3>
-        <p>依考試範圍或弱點選擇分數、小數、體積等主題，開始答題。</p>
+      <div class="benefit-card">
+        <div class="benefit-icon">&#x1F4CB;</div>
+        <h3 class="benefit-title">每天都有任務</h3>
+        <p class="benefit-desc">不怕不知道今天要練什麼。暖身、主線、限時挑戰，每天都有明確目標。</p>
       </div>
-      <div class="how-step">
-        <div class="step-num">3</div>
-        <h3>卡住時看 AI 提示</h3>
-        <p>不會的題目按「提示」，AI 用老師口吻一步步引導，不直接給答案。</p>
+      <div class="benefit-card">
+        <div class="benefit-icon">&#x1F4A1;</div>
+        <h3 class="benefit-title">卡住有 AI 提示</h3>
+        <p class="benefit-desc">不會直接給答案，而是用三階段提示一步步帶過去。像有老師在旁邊引導。</p>
       </div>
-      <div class="how-step">
-        <div class="step-num">4</div>
-        <h3>家長查看報告</h3>
-        <p>練習完自動統計弱點，家長在手機上隨時查看學習進度。</p>
+      <div class="benefit-card">
+        <div class="benefit-icon">&#x1F3F0;</div>
+        <h3 class="benefit-title">成就持續成長</h3>
+        <p class="benefit-desc">領地越來越大、城堡不斷升級、徽章持續解鎖。看得見自己越玩越強。</p>
       </div>
     </div>
   </section>
 
-  <!-- ── ★ 遊戲化闖關帝國 (FIRST SECTION) ★ ── -->
-  <div class="empire-section" id="modules">
-    <div class="container">
-      <div class="section-heading">
-        <h2>🏰 遊戲化闖關（帝國模式）</h2>
-        <p>答對題目 = 擴張領地。讓孩子像玩遊戲一樣練數學</p>
-        <span class="section-accent">🔥 最受孩子歡迎的練習方式 — 闖關計分、帝國擴張、城堡升級、煙火慶祝</span>
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — 家長看見的價值
+       ══════════════════════════════════════════ -->
+  <section class="section-quest bg-gradient-parent reveal" id="reports">
+    <div class="section-quest-head">
+      <h2>&#x1F4CA; 家長看到的不只是分數</h2>
+      <p>每週自動產生孩子專屬學習報告——不用猜哪裡不會，系統直接告訴你這週先補什麼</p>
+    </div>
+    <div class="parent-grid">
+      <div class="parent-card">
+        <div class="parent-icon">&#x1F534;</div>
+        <h4 class="parent-title">弱點 TOP 3</h4>
+        <p class="parent-desc">直接列出孩子這週最弱的三個單元，不用自己翻成績單慢慢猜。</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-icon">&#x1F4A1;</div>
+        <h4 class="parent-title">提示依賴度</h4>
+        <p class="parent-desc">不只看對錯，還看是不是靠提示才解出來——真正理解 vs 似懂非懂，一目瞭然。</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-icon">&#x1F50D;</div>
+        <h4 class="parent-title">錯題深度分析</h4>
+        <p class="parent-desc">自動分辨「粗心錯」和「觀念不清」，精準知道該練計算還是補觀念。</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-icon">&#x1F4DD;</div>
+        <h4 class="parent-title">補救建議</h4>
+        <p class="parent-desc">系統直接告訴你本週先補哪三件事，不用自己猜。例如「加強分數通分」。</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-icon">&#x1F504;</div>
+        <h4 class="parent-title">一鍵重練弱點</h4>
+        <p class="parent-desc">弱點分析不只看，還能直接一鍵進入對應練習，馬上開始補強。</p>
+      </div>
+      <div class="parent-card">
+        <div class="parent-icon">&#x1F4C8;</div>
+        <h4 class="parent-title">7-30 天進步趨勢</h4>
+        <p class="parent-desc">看得見孩子這一個月是在進步還是停滯，用數據說話，不靠感覺。</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <div class="dual-cta">
+        <a href="./report/" class="cta-child">&#x1F4CA; 查看家長週報</a>
+        <a href="./parent-report/" class="cta-parent">&#x1F4F1; 看示範報告</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 5 — 三大挑戰模式
+       ══════════════════════════════════════════ -->
+  <section class="section-quest reveal" id="modes">
+    <div class="section-quest-head">
+      <h2>&#x1F3AE; 選擇你的挑戰模式</h2>
+      <p>三種方式開始，適合不同目標的孩子</p>
+    </div>
+    <div class="mode-grid">
+
+      <!-- Mode 1: 帝國闖關 -->
+      <div class="mode-card mode-empire">
+        <div class="mode-icon">&#x1F3F0;</div>
+        <h3 class="mode-title">帝國闖關</h3>
+        <p class="mode-who">適合想先玩、想有遊戲感的孩子</p>
+        <p class="mode-desc">答對題目就能佔領領地、升級城堡、觸發煙火慶祝。把練習變成征服地圖的冒險。</p>
+        <div class="mode-tags">
+          <span class="mode-tag">佔領領地</span>
+          <span class="mode-tag">連勝加成</span>
+          <span class="mode-tag">城堡升級</span>
+        </div>
+        <a href="./interactive-g5-empire/" class="mode-cta">&#x2694;&#xFE0F; 進入帝國</a>
       </div>
 
-      <div class="empire-grid-featured">
-        <!-- 小數互動闖關 -->
-        <div class="card" style="border-color:var(--accent);">
-          <span class="featured-badge">HOT</span>
-          <h3 style="color:var(--accent);">🎮 小數互動闖關</h3>
+      <!-- Mode 2: 考前衝刺 -->
+      <div class="mode-card mode-sprint">
+        <div class="mode-icon">&#x1F3AF;</div>
+        <h3 class="mode-title">考前衝刺</h3>
+        <p class="mode-who">適合快要考試、想精準補弱點的孩子</p>
+        <p class="mode-desc">快速檢測找出弱點 TOP3，然後針對弱點精準練習。不浪費時間做已經會的題目。</p>
+        <div class="mode-tags">
+          <span class="mode-tag">弱點檢測</span>
+          <span class="mode-tag">TOP3 專攻</span>
+          <span class="mode-tag">精準練習</span>
+        </div>
+        <a href="./exam-sprint/" class="mode-cta">&#x1F525; 開始衝刺</a>
+      </div>
+
+      <!-- Mode 3: 主題精修 -->
+      <div class="mode-card mode-topic">
+        <div class="mode-icon">&#x1F4DA;</div>
+        <h3 class="mode-title">主題精修</h3>
+        <p class="mode-who">適合想指定單元深練的孩子</p>
+        <p class="mode-desc">分數、小數、百分率、體積、生活應用…選定一個主題深入練習，把觀念打穩。</p>
+        <div class="mode-tags">
+          <span class="mode-tag">分數</span>
+          <span class="mode-tag">小數</span>
+          <span class="mode-tag">百分率</span>
+          <span class="mode-tag">體積</span>
+          <span class="mode-tag">生活應用</span>
+        </div>
+        <a href="#topic-list" class="mode-cta">&#x1F4D6; 選擇主題</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 主題精修—展開列表 ── -->
+  <section class="section-quest reveal" id="topic-list" style="padding-top:0;">
+    <div class="section-quest-head" style="margin-bottom:20px;">
+      <h2>&#x1F4D6; 主題精修模組</h2>
+      <p>選定單元，深入練習</p>
+    </div>
+    <div class="quest-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F522;</div>
           <div>
-            <span class="tag">90 秒挑戰</span>
-            <span class="tag tag-green">連對加成</span>
-            <span class="tag" style="background:rgba(251,191,36,0.15);color:#fbbf24;border-color:rgba(251,191,36,0.3);">⭐ 入門</span>
+            <h3 class="quest-title">分數應用題</h3>
+            <p class="quest-purpose">18+ 題型：乘法/剩下/反推原量/分數的分數</p>
           </div>
-          <div class="empire-stats">
-            <div class="empire-stat"><div class="es-val">90s</div><div class="es-lbl">限時挑戰</div></div>
-            <div class="empire-stat"><div class="es-val">3步</div><div class="es-lbl">小數點工坊</div></div>
-          </div>
-          <p>把「小數點最容易放錯」做成互動遊戲。闖關計分＋小數點工坊 3 步驟，越快越準分數越高！</p>
-          <a href="./interactive-decimal-g5/" class="btn btn-empire">🎯 進入闖關</a>
         </div>
-
-        <!-- 數學帝國 -->
-        <div class="card" style="border-color:var(--accent);">
-          <span class="featured-badge">人氣</span>
-          <h3 style="color:var(--accent);">🏰 數學帝國（8 題型）</h3>
+        <a href="./fraction-word-g5/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x2702;&#xFE0F;</div>
           <div>
-            <span class="tag">8 大題型</span>
-            <span class="tag tag-green">帝國擴張</span>
-            <span class="tag" style="background:rgba(88,166,255,0.15);color:#58a6ff;border-color:rgba(88,166,255,0.3);">⭐⭐ 中等</span>
+            <h3 class="quest-title">分數計算題</h3>
+            <p class="quest-purpose">約分/等值分數/加減/乘法，先練基本功</p>
           </div>
-          <div class="empire-stats">
-            <div class="empire-stat"><div class="es-val">8</div><div class="es-lbl">題型領地</div></div>
-            <div class="empire-stat"><div class="es-val">🏰</div><div class="es-lbl">堡壘升級</div></div>
-          </div>
-          <p>小數、分數、百分率、時間、單位換算、體積…共 8 題型。答對才前進，每題型有專屬領地與堡壘等級。</p>
-          <a href="./interactive-g5-empire/" class="btn btn-empire">⚔️ 進入帝國闖關</a>
         </div>
-
-        <!-- 生活應用帝國 Pack 1 -->
-        <div class="card">
-          <h3>🌍 生活應用帝國（第一包｜200 題）</h3>
+        <a href="./fraction-g5/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x2716;</div>
           <div>
-            <span class="tag tag-orange">10 單元 × 20 題</span>
-            <span class="tag tag-green">4 層提示</span>
-            <span class="tag" style="background:rgba(88,166,255,0.15);color:#58a6ff;border-color:rgba(88,166,255,0.3);">⭐⭐ 中等</span>
+            <h3 class="quest-title">帶分數乘法</h3>
+            <p class="quest-purpose">化假分數→相乘→約分→轉回帶分數</p>
           </div>
-          <div class="empire-stats">
-            <div class="empire-stat"><div class="es-val">200</div><div class="es-lbl">精選題</div></div>
-            <div class="empire-stat"><div class="es-val">10</div><div class="es-lbl">城池單元</div></div>
-            <div class="empire-stat"><div class="es-val">4層</div><div class="es-lbl">AI 提示</div></div>
-          </div>
-          <p>分數/小數/比例的生活應用題。每單元一座城，搭配完整步驟與常見錯誤點。領地滿了還有煙火慶祝！</p>
-          <a href="./interactive-g5-life-pack1-empire/" class="btn btn-empire">🚀 進入闖關</a>
         </div>
-
-        <!-- 生活應用帝國 Pack 2 -->
-        <div class="card">
-          <h3>🌏 生活應用帝國（第二包｜200 題）</h3>
+        <a href="./mixed-multiply/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F4CF;</div>
           <div>
-            <span class="tag tag-orange">10 單元 × 20 題</span>
-            <span class="tag tag-green">4 層提示</span>
-            <span class="tag" style="background:rgba(88,166,255,0.15);color:#58a6ff;border-color:rgba(88,166,255,0.3);">⭐⭐ 中等</span>
+            <h3 class="quest-title">小數（第 4 單元）</h3>
+            <p class="quest-purpose">小數乘整數/乘小數/除整數，講義+練習</p>
           </div>
-          <div class="empire-stats">
-            <div class="empire-stat"><div class="es-val">200</div><div class="es-lbl">精選題</div></div>
-            <div class="empire-stat"><div class="es-val">🎯</div><div class="es-lbl">弱點專攻</div></div>
-            <div class="empire-stat"><div class="es-val">🎆</div><div class="es-lbl">煙火慶祝</div></div>
-          </div>
-          <p>延續帝國征服，可指定單元/難度專攻弱點。答對擴張領地，滿了還有煙火慶祝。</p>
-          <a href="./interactive-g5-life-pack2-empire/" class="btn btn-empire">🚀 進入闖關</a>
         </div>
-
-        <!-- 基礎入門 -->
-        <div class="card">
-          <h3>🌱 生活應用帝國 基礎入門（250 題）</h3>
+        <a href="./decimal-unit4/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F4E6;</div>
           <div>
-            <span class="tag tag-orange">10 單元</span>
-            <span class="tag tag-green">3 層提示</span>
-            <span class="tag tag-purple">新手推薦</span>
-            <span class="tag" style="background:rgba(251,191,36,0.15);color:#fbbf24;border-color:rgba(251,191,36,0.3);">⭐ 入門</span>
+            <h3 class="quest-title">體積（長方體與正方體）</h3>
+            <p class="quest-purpose">體積單位/底面積×高/單位換算/複合形體</p>
           </div>
-          <div class="empire-stats">
-            <div class="empire-stat"><div class="es-val">250</div><div class="es-lbl">精選題</div></div>
-            <div class="empire-stat"><div class="es-val">✨</div><div class="es-lbl">最佳入門</div></div>
-          </div>
-          <p>平均分配、分數加減、金額、折扣、比例…適合剛開始的孩子。闖關 + 練習雙軌並行。</p>
-          <a href="./interactive-g5-life-pack2plus-empire/" class="btn btn-empire">🌟 進入闖關</a>
         </div>
-
-        <!-- 加強版 -->
-        <div class="card">
-          <h3>🔥 生活應用帝國 加強版（240 題）</h3>
+        <a href="./volume-g5/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F4B9;</div>
           <div>
-            <span class="tag tag-orange">難度提升</span>
-            <span class="tag tag-green">4 層提示</span>
-            <span class="tag tag-purple">備考推薦</span>
-            <span class="tag" style="background:rgba(248,81,73,0.15);color:#f85149;border-color:rgba(248,81,73,0.3);">⭐⭐⭐ 進階</span>
+            <h3 class="quest-title">比率與百分率</h3>
+            <p class="quest-purpose">打折加成/稅金/漲跌幅/利息</p>
           </div>
-          <div class="empire-stats">
-            <div class="empire-stat"><div class="es-val">240</div><div class="es-lbl">精選題</div></div>
-            <div class="empire-stat"><div class="es-val">🏆</div><div class="es-lbl">競試衝刺</div></div>
-          </div>
-          <p>加強折扣/百分比、比例配方、單位換算、速率。適合準備校內評量/競試。</p>
-          <a href="./interactive-g5-life-pack1plus-empire/" class="btn btn-empire">💪 進入闖關</a>
         </div>
+        <a href="./ratio-percent-g5/" class="quest-cta">進入練習</a>
       </div>
-
-      <!-- 互動模組對照表 -->
-      <div class="grid" style="margin-top:20px;">
-        <div class="card summary-card">
-          <h3>📋 互動模組對照表</h3>
-          <p class="summary-hint">先看「題型範圍」，再看「提示層級」，就能選對模組。</p>
-          <div class="summary-table-wrap">
-          <table class="summary-table">
-            <thead>
-              <tr>
-                <th>模組</th>
-                <th>題型範圍</th>
-                <th>提示層級</th>
-                <th>特色</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><a href="./interactive-decimal-g5/" class="summary-link">小數互動闖關</a></td>
-                <td>小數乘除、小數點移動</td>
-                <td>3 層提示</td>
-                <td>小數點工坊 3 步驟、補 0 對齊</td>
-              </tr>
-              <tr>
-                <td><a href="./interactive-g5-empire/" class="summary-link">數學帝國</a></td>
-                <td>8 題型綜合（小數/分數/百分率/時間/單位/體積）</td>
-                <td>3 層提示</td>
-                <td>90 秒闖關 + 帝國擴張</td>
-              </tr>
-              <tr>
-                <td><a href="./interactive-g5-life-pack1-empire/" class="summary-link">生活應用 Pack 1</a></td>
-                <td>生活應用 10 單元 × 20 題</td>
-                <td>4 層提示</td>
-                <td>每單元一座城、常見錯誤點</td>
-              </tr>
-              <tr>
-                <td><a href="./interactive-g5-life-pack2-empire/" class="summary-link">生活應用 Pack 2</a></td>
-                <td>生活應用第 2 包 10 單元 × 20 題</td>
-                <td>4 層提示</td>
-                <td>延伸題庫、弱點專攻</td>
-              </tr>
-              <tr>
-                <td><a href="./interactive-g5-life-pack2plus-empire/" class="summary-link">基礎入門</a></td>
-                <td>10 單元 250 題</td>
-                <td>3 層提示</td>
-                <td>新手推薦、雙軌並行</td>
-              </tr>
-              <tr>
-                <td><a href="./interactive-g5-life-pack1plus-empire/" class="summary-link">加強版</a></td>
-                <td>10 單元 240 題（難度提升）</td>
-                <td>4 層提示</td>
-                <td>校內評量 / 競試衝刺</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F6D2;</div>
+          <div>
+            <h3 class="quest-title">生活應用題</h3>
+            <p class="quest-purpose">買多份/平均單價/時間加法/單位換算</p>
           </div>
         </div>
+        <a href="./life-applications-g5/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F31F;</div>
+          <div>
+            <h3 class="quest-title">全課綱大滿貫（188 題）</h3>
+            <p class="quest-purpose">16 大主題全覆蓋，連勝紀錄 + 錯題本</p>
+          </div>
+        </div>
+        <a href="./g5-grand-slam/" class="quest-cta">進入練習</a>
+      </div>
+      <div class="quest-card">
+        <div class="quest-header">
+          <div class="quest-icon">&#x1F4AA;</div>
+          <div>
+            <h3 class="quest-title">核心必殺技（四大板塊）</h3>
+            <p class="quest-purpose">數字規律/分數運算/幾何圖形/邏輯應用</p>
+          </div>
+        </div>
+        <a href="./interactive-g56-core-foundation/" class="quest-cta">進入練習</a>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ── ★ 家長週報行銷區 ★ ── -->
-  <div class="report-hero" id="reports">
-    <div class="container">
-      <div class="section-heading">
-        <h2>📊 家長週報 — 一眼掌握孩子學習狀況</h2>
-        <p>AI 自動分析每一次作答，給出專屬於你家孩子的學習報告與補救建議</p>
-        <span class="section-accent">👨‍👩‍👧 家長/老師最愛功能 — 弱點診斷、錯題分析、趨勢圖表、自動補救建議</span>
+  <!-- ══════════════════════════════════════════
+       SECTION 6 — 成長儀表板
+       ══════════════════════════════════════════ -->
+  <section class="section-quest bg-gradient-growth reveal">
+    <div class="section-quest-head">
+      <h2>&#x1F4C8; 你的成長軌跡</h2>
+      <p>這不是一次性練習，而是持續成長。每一天都在變得更強。</p>
+    </div>
+    <div class="dash-grid" id="dashGrid">
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F4DD;</div>
+        <div class="dash-val" id="dashTotal">128</div>
+        <div class="dash-lbl">已完成題數</div>
       </div>
-
-      <div class="report-preview">
-        <!-- 左側：4 大功能亮點 -->
-        <div class="report-features">
-          <div class="rf-card">
-            <div class="rf-icon">🔍</div>
-            <h4>錯題深度分析</h4>
-            <p>自動統計每單元錯題數量與錯誤類型，標記「粗心錯」vs「觀念不清」，一看就知道哪裡要加強。</p>
-          </div>
-          <div class="rf-card">
-            <div class="rf-icon">📈</div>
-            <h4>四象限弱點診斷</h4>
-            <p>將單元分為穩定 / 粗心 / 依賴提示 / 觀念不清四象限，精準定位孩子的學習盲點。</p>
-          </div>
-          <div class="rf-card">
-            <div class="rf-icon">💡</div>
-            <h4>AI 補救教學建議</h4>
-            <p>根據錯題數據，自動產生客製化補救建議：「建議加強分數通分」「小數點對齊需多練習」。</p>
-          </div>
-          <div class="rf-card">
-            <div class="rf-icon">🎯</div>
-            <h4>自動出題補救弱點</h4>
-            <p>系統根據弱點自動推薦練習模組與題目，不用猜該練什麼。針對孩子量身打造的複習計畫。</p>
-          </div>
-        </div>
-
-        <!-- 右側：報告預覽模擬 -->
-        <div class="report-sample">
-          <h3>📋 小明的本週學習報告（範例）</h3>
-          <div class="sample-row">
-            <span class="sample-label">📝 本週練習題數</span>
-            <span class="sample-value">87 題</span>
-          </div>
-          <div class="sample-row">
-            <span class="sample-label">✅ 整體正確率</span>
-            <span class="sample-value good">82%</span>
-          </div>
-          <div class="sample-row">
-            <span class="sample-label">⚠️ 最弱單元</span>
-            <span class="sample-value warn">分數通分（56%）</span>
-          </div>
-          <div class="sample-row">
-            <span class="sample-label">🏆 最強單元</span>
-            <span class="sample-value good">小數乘法（95%）</span>
-          </div>
-          <div class="sample-row">
-            <span class="sample-label">📊 提示依賴度</span>
-            <span class="sample-value warn">中等（42%）</span>
-          </div>
-          <div class="sample-row">
-            <span class="sample-label">💡 AI 建議</span>
-            <span class="sample-value" style="font-size:0.82rem;font-weight:600;color:#a371f7;">加強分數通分，建議先練基礎入門</span>
-          </div>
-          <div style="margin-top:14px;">
-            <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:#8b949e;margin-bottom:4px;"><span>正確率趨勢 (7天)</span><span style="color:#3fb950;">↑ 進步中</span></div>
-            <div class="sample-bar"><div class="sample-bar-fill" style="width:82%;background:linear-gradient(90deg,#d29922,#3fb950);"></div></div>
-          </div>
-        </div>
+      <div class="dash-card">
+        <div class="dash-icon">&#x2705;</div>
+        <div class="dash-val val-green" id="dashRate">78%</div>
+        <div class="dash-lbl">本週任務達成率</div>
       </div>
-
-      <div class="report-cta-row">
-        <a href="./report/" class="btn-report">📊 查看家長週報</a>
-        <a href="./parent-report/" class="btn-report-alt">📱 手機遠端查看</a>
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F525;</div>
+        <div class="dash-val val-gold" id="dashStreak">4</div>
+        <div class="dash-lbl">目前連勝</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F3C5;</div>
+        <div class="dash-val val-purple" id="dashBadge">3</div>
+        <div class="dash-lbl">已解鎖徽章</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F3F0;</div>
+        <div class="dash-val val-blue" id="dashTerr">7</div>
+        <div class="dash-lbl">已佔領領地</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-icon">&#x1F4C6;</div>
+        <div class="dash-val val-green" id="dashDays">5</div>
+        <div class="dash-lbl">連續學習天數</div>
       </div>
     </div>
-  </div>
+    <p style="text-align:center;color:#8b949e;font-size:0.78rem;margin-top:16px;">
+      &#x2139;&#xFE0F; 以上為示範資料。開始練習後將顯示你的真實數據。
+    </p>
+  </section>
 
-  <!-- ── Module Cards ── -->
-  <div class="container">
-
-    <!-- ★ 考試衝刺 ★ -->
-    <div class="section-heading">
-      <h2>🎯 考前衝刺</h2>
-      <p>段考、期末考前快速練習，精準找到弱點</p>
-    </div>
-    <div class="grid">
-      <div class="card" style="border-color:#d29922;">
-        <h3>考前衝刺｜國小數學整合進階題</h3>
-        <div>
-          <span class="tag tag-orange">進階活用題</span>
-          <span class="tag tag-green">3 層提示 + 完整詳解</span>
-        </div>
-        <p>
-          整合全站國小離線題庫的進階題：快速出題、三階提示不洩答案、交卷後看完整詳解。
-          內建 7 天報告統計，自動分析弱點 TOP3。
-        </p>
-        <a href="./exam-sprint/" class="btn">免費開始練習</a>
-      </div>
-
-      <div class="card">
-        <h3>小學基礎數學檢測</h3>
-        <div>
-          <span class="tag">快速診斷</span>
-          <span class="tag tag-green">觀念補救建議</span>
-        </div>
-        <p>
-          快速了解需要補足哪些觀念或計算能力。作答結果自動整合至家長週報，附補救建議。
-        </p>
-        <a href="./offline-math/?v=2" class="btn">進入檢測</a>
-      </div>
-
-      <div class="card">
-        <h3>題型觀念地圖</h3>
-        <div>
-          <span class="tag">可搜尋</span>
-          <span class="tag tag-orange">考前快速複習</span>
-        </div>
-        <p>
-          全部題型的核心觀念、常見提示、步驟要點，一頁看完。適合考前查漏補缺。
-        </p>
-        <a href="./learning-map/" class="btn">查看觀念地圖</a>
-      </div>
-    </div>
-
-    <!-- ★ 五年級完整題庫 ★ -->
-    <div class="section-heading">
-      <h2>📖 國小五年級完整題庫</h2>
-      <p>分數、小數、體積、比率百分率…16 大主題全覆蓋</p>
-    </div>
-    <div class="grid">
-      <div class="card" style="border-color:#3fb950;">
-        <h3 style="color:#3fb950;">全課綱大滿貫（188 題）</h3>
-        <div>
-          <span class="tag tag-orange">188 題 × 16 主題</span>
-          <span class="tag tag-green">三階段引導式提示</span>
-        </div>
-        <p>
-          分數、小數、比率百分率、時間、體積容積、表面積、平面圖形、線對稱、扇形圓心角、單位換算…
-          內建進度追蹤、連勝紀錄、收藏與錯題本。
-        </p>
-        <a href="./g5-grand-slam/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>分數應用題</h3>
-        <div>
-          <span class="tag tag-orange">18+ 題型</span>
-          <span class="tag tag-green">3 層提示</span>
-        </div>
-        <p>分數乘法／剩下／反推原量／分數的分數／兩段式…含單位檢查與合理性驗算。</p>
-        <a href="./fraction-word-g5/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>分數計算題</h3>
-        <div>
-          <span class="tag tag-orange">計算熟練</span>
-          <span class="tag tag-green">3 層提示 + 詳解</span>
-        </div>
-        <p>約分／等值分數／同分母與異分母加減／分數乘法…先練計算基本功。</p>
-        <a href="./fraction-g5/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>帶分數乘法</h3>
-        <div>
-          <span class="tag tag-orange">專項練習</span>
-        </div>
-        <p>帶分數 × 整數、帶分數 × 分數。提示由淺入深：化假分數→相乘→約分→轉回帶分數。</p>
-        <a href="./mixed-multiply/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>小數（第 4 單元）</h3>
-        <div>
-          <span class="tag tag-orange">講義 + 練習</span>
-          <span class="tag tag-green">3 層提示 + 詳解</span>
-        </div>
-        <p>小數乘整數／小數乘小數／小數 ÷ 整數（含補 0）。先讀講義，再自動出題練熟。</p>
-        <a href="./decimal-unit4/" class="btn">進入講義 + 練習</a>
-      </div>
-
-      <div class="card">
-        <h3>體積（長方體與正方體）</h3>
-        <div>
-          <span class="tag tag-orange">五下第 3 單元</span>
-          <span class="tag tag-green">3 層提示 + 詳解</span>
-        </div>
-        <p>體積單位（cm³ / m³）／正方體／長方體／底面積×高／單位換算／複合形體分解。</p>
-        <a href="./volume-g5/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>比率與百分率</h3>
-        <div>
-          <span class="tag tag-orange">五下第 8 單元</span>
-          <span class="tag tag-green">3 層提示 + 詳解</span>
-        </div>
-        <p>比率／百分率／打折加成／稅金服務費／漲跌幅／利息…先抓「全體/部分」再列式。</p>
-        <a href="./ratio-percent-g5/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>生活應用題（講義 + 出題）</h3>
-        <div>
-          <span class="tag tag-orange">講義 + 自動出題</span>
-          <span class="tag tag-green">3 層提示 + 詳解</span>
-        </div>
-        <p>買多份/平均單價/打折、時間加法、單位換算、分數用掉/剩下。四步驟解題法。</p>
-        <a href="./life-applications-g5/" class="btn">進入講義 + 練習</a>
-      </div>
-
-      <div class="card">
-        <h3>全國小五題庫新題</h3>
-        <div>
-          <span class="tag">新增題庫</span>
-          <span class="tag tag-green">3 層提示</span>
-        </div>
-        <p>整合分數乘法／剩下／反推原量等常見應用題。可開啟來源卷連結做延伸練習。</p>
-        <a href="./interactive-g5-national-bank/" class="btn">進入練習</a>
-      </div>
-    </div>
-
-    <!-- ★ 核心必殺技 ★ -->
-    <div class="section-heading">
-      <h2>💪 核心必殺技（五六年級）</h2>
-      <p>四大板塊專攻必考觀念，數字規律 / 分數運算 / 幾何圖形 / 邏輯應用</p>
-    </div>
-    <div class="grid">
-      <div class="card" style="border-color:#a371f7;">
-        <h3 style="color:#a371f7;">小五小六核心題型（四大板塊）</h3>
-        <div>
-          <span class="tag tag-purple">四大板塊</span>
-          <span class="tag tag-green">3 層提示 + 詳解</span>
-        </div>
-        <p>
-          數字規律（GCD/LCM/質數）、分數運算（通分/乘除/基準量）、幾何圖形（面積/圓/展開圖/割補）、邏輯應用（速度/比率/雞兔同籠/植樹）。
-        </p>
-        <a href="./interactive-g56-core-foundation/" class="btn" style="background:#8957e5;">進入核心必殺技</a>
-      </div>
-    </div>
-
-    <!-- ★ 段考衝刺包 ★ -->
-    <div class="section-heading">
-      <h2>🎁 段考衝刺包（付費內容）</h2>
-      <p>每日任務制，有節奏地練習。解鎖碼啟用，週報可分享給老師</p>
-    </div>
-    <div class="grid">
-      <div class="card" style="border-color:#fbbf24;">
-        <h3 style="color:#fbbf24;">分數應用題衝刺包（200 題）</h3>
-        <div>
-          <span class="tag tag-orange">解鎖碼啟用</span>
-          <span class="tag tag-green">每日任務 10 題</span>
-          <span class="tag tag-purple">4 層圖解提示</span>
-        </div>
-        <p>
-          四層圖解提示（判斷題型→圖解切分→列式計算→驗算收尾），先引導理解再收斂到答案。
-          未解鎖可免費試做 3 題。
-        </p>
-        <ul style="padding-left: 20px; font-size: 0.85rem; color: #8b949e;">
-          <li>免費試用 3 題，體驗完整提示流程</li>
-          <li>解鎖後：200 題（10 單元 × 20 題）+ 每日任務 + 週報</li>
-          <li>離線可用，手機平板都支援</li>
-        </ul>
-        <a href="./commercial-pack1-fraction-sprint/" class="btn" style="background:#b45309;">開始免費試用</a>
-      </div>
-    </div>
-
-    <!-- ★ 進階方程式 ★ -->
-    <div class="section-heading">
-      <h2>🔬 進階數學（方程式）</h2>
-      <p>一元一次、一元二次方程式。適合國中預習或進階挑戰</p>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <h3>一元一次方程式</h3>
-        <div>
-          <span class="tag">5 級難度</span>
-        </div>
-        <p>基礎移項法則到競賽級繁分數。支援適應性測驗自動選題。</p>
-        <a href="./linear/" class="btn">進入練習</a>
-      </div>
-
-      <div class="card">
-        <h3>一元二次方程式</h3>
-        <div>
-          <span class="tag">逐步引導</span>
-        </div>
-        <p>因式分解、配方法、公式解。AI 助教提供逐步驟解釋。</p>
-        <a href="./quadratic/" class="btn">進入練習</a>
-      </div>
-    </div>
-
-  </div><!-- /.container -->
-
-  <!-- ── Testimonials ── -->
+  <!-- ══════════════════════════════════════════
+       SECTION 7 — Testimonials
+       ══════════════════════════════════════════ -->
   <section class="testimonial-section reveal">
     <h2>家長與老師的真實回饋</h2>
     <div class="testimonial-grid">
@@ -1118,9 +681,15 @@
       </div>
       <div class="testimonial-card">
         <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <div class="quote">「週報功能很方便，不用每次都問孩子今天練了什麼。弱點分析幫我精準掌握該加強的單元，省下很多溝通時間。」</div>
+        <div class="quote">「週報功能很方便，不用每次都問孩子今天練了什麼。弱點分析幫我精準掌握該加強的單元。」</div>
         <div class="author-row"><div class="avatar" style="background:#58a6ff">林</div><div class="author">林爸爸・六年級家長</div></div>
         <div class="metric">每週練習時間提升 3 倍</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="quote">「三層提示設計是最大亮點，孩子卡住時不是直接給答案而是引導思考。這才是真正的學習。」</div>
+        <div class="author-row"><div class="avatar" style="background:#f0883e">張</div><div class="author">張媽媽・五年級家長</div></div>
+        <div class="metric">自主解題能力顯著提升</div>
       </div>
       <div class="testimonial-card">
         <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
@@ -1128,47 +697,13 @@
         <div class="author-row"><div class="avatar" style="background:#a371f7">王</div><div class="author">王老師・國小補習班</div></div>
         <div class="metric">班上平均成績提高 12 分</div>
       </div>
-      <div class="testimonial-card">
-        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <div class="quote">「三層提示設計是最大亮點，孩子卡住時不是直接給答案而是引導思考。這才是真正的學習，不是抄答案。」</div>
-        <div class="author-row"><div class="avatar" style="background:#f0883e">張</div><div class="author">張媽媽・五年級家長</div></div>
-        <div class="metric">自主解題能力顯著提升</div>
-      </div>
-      <div class="testimonial-card">
-        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <div class="quote">「我同時教三個班，用 AI 數學家教幫學生課後複習，家長問分數進步原因，我讓他們看週報就清楚了。」</div>
-        <div class="author-row"><div class="avatar" style="background:#d29922">李</div><div class="author">李老師・安親班導師</div></div>
-        <div class="metric">家長滿意度 96%</div>
-      </div>
     </div>
     <div class="testimonial-dots" id="testDots"></div>
   </section>
 
-  <!-- ── Proven Impact ── -->
-  <section class="impact-section reveal">
-    <h2>實際學習成效</h2>
-    <p class="impact-sub">使用 AI 數學家教 2 個月後的平均表現</p>
-    <div class="impact-grid">
-      <div class="impact-card">
-        <div class="ic-num">+24%</div>
-        <div class="ic-label">正確率提升</div>
-      </div>
-      <div class="impact-card">
-        <div class="ic-num">3×</div>
-        <div class="ic-label">練習頻率提高</div>
-      </div>
-      <div class="impact-card">
-        <div class="ic-num">85%</div>
-        <div class="ic-label">孩子主動練習意願</div>
-      </div>
-      <div class="impact-card">
-        <div class="ic-num">96%</div>
-        <div class="ic-label">家長滿意度</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FAQ ── -->
+  <!-- ══════════════════════════════════════════
+       SECTION 8 — FAQ
+       ══════════════════════════════════════════ -->
   <section class="faq-section reveal" id="faq">
     <h2>常見問題</h2>
     <details class="faq-item">
@@ -1176,138 +711,69 @@
       <div class="faq-answer">免費版沒有使用期限，可以永久使用所有基本練習模組。帝國闖關模式每天免費 10 題，升級後不限題數並解鎖完整 2900+ 題庫。</div>
     </details>
     <details class="faq-item">
-      <summary>需要下載 App 嗎？</summary>
-      <div class="faq-answer">不需要。打開瀏覽器就能用，手機、平板、電腦都支援。也可以加到主畫面當 App 使用，而且離線也能練習。</div>
-    </details>
-    <details class="faq-item">
       <summary>AI 提示會不會直接告訴答案？</summary>
-      <div class="faq-answer">絕對不會。我們的三層提示系統（觀念方向 → 列式規則 → 計算引導）只引導思路，不洩漏答案。每一題都經過驗證確保提示不含最終答案。</div>
+      <div class="faq-answer">絕對不會。三層提示系統（觀念方向 → 列式規則 → 計算引導）只引導思路，不洩漏答案。每一題都經過驗證確保提示不含最終答案。</div>
     </details>
     <details class="faq-item">
       <summary>孩子的資料安全嗎？</summary>
-      <div class="faq-answer">完全安全。所有練習紀錄存在孩子的裝置上（localStorage），不上傳到任何伺服器。沒有廣告、沒有追蹤、不收集個資。</div>
+      <div class="faq-answer">完全安全。所有練習紀錄存在孩子的裝置上，不上傳到任何伺服器。沒有廣告、沒有追蹤、不收集個資。</div>
     </details>
     <details class="faq-item">
       <summary>適合幾年級的孩子？</summary>
-      <div class="faq-answer">主要適合國小五、六年級，涵蓋小數、分數、體積、百分率、單位換算、時間計算等核心單元。部分模組也適合國中銜接複習。</div>
+      <div class="faq-answer">主要適合國小五、六年級，涵蓋小數、分數、體積、百分率、單位換算等核心單元。部分模組也適合國中銜接複習。</div>
     </details>
     <details class="faq-item">
-      <summary>如何升級付費版？</summary>
-      <div class="faq-answer">請來信 <a href="mailto:learnotaiwan@gmail.com" style="color:#a371f7;">learnotaiwan@gmail.com</a> 諮詢方案，我們會在 24 小時內回覆。提供個人版（NT$299/月）和家庭版（NT$499/月）兩種方案。</div>
-    </details>
-    <details class="faq-item">
-      <summary>和補習班比有什麼優勢？</summary>
-      <div class="faq-answer">不受時間地點限制，24 小時隨時練習。AI 即時引導，比等老師批改更快速。每月費用不到補習班的十分之一，還能追蹤完整學習數據。</div>
-    </details>
-    <details class="faq-item">
-      <summary>可以多台裝置使用嗎？</summary>
-      <div class="faq-answer">可以。在任何裝置打開網址就能使用，目前練習紀錄儲存在各裝置上，未來將支援雲端同步功能。</div>
+      <summary>需要下載 App 嗎？</summary>
+      <div class="faq-answer">不需要。打開瀏覽器就能用，手機、平板、電腦都支援。也可以加到主畫面當 App 使用，離線也能練習。</div>
     </details>
     <details class="faq-item">
       <summary>家長可以查看學習進度嗎？</summary>
       <div class="faq-answer">可以。家長週報功能提供每週答題數、正確率趨勢、弱點單元分析等完整報告，幫助家長掌握孩子的學習狀況。</div>
     </details>
+    <details class="faq-item">
+      <summary>如何升級付費版？</summary>
+      <div class="faq-answer">請來信 <a href="mailto:learnotaiwan@gmail.com" style="color:#a371f7;">learnotaiwan@gmail.com</a> 諮詢方案，24 小時內回覆。提供個人版（NT$299/月）和家庭版（NT$499/月）兩種方案。</div>
+    </details>
   </section>
 
-  <!-- ── Email Subscribe ── -->
-  <section style="padding:44px 24px;max-width:560px;margin:0 auto">
-    <div style="background:linear-gradient(135deg,rgba(88,166,255,0.08),rgba(137,87,229,0.1));border:1px solid rgba(88,166,255,0.2);border-radius:14px;padding:32px 24px;text-align:center">
-      <div style="font-size:1.6rem;margin-bottom:6px">&#x1F4E7;</div>
-      <h2 style="color:#fff;font-size:1.2rem;margin:0 0 6px">免費學習資源 &amp; 優惠通知</h2>
-      <p style="color:#8b949e;font-size:0.88rem;margin:0 0 18px;line-height:1.6">訂閱即可收到<strong style="color:#c9d1d9">每週數學學習要點</strong>、新題型上線、限時優惠等最新消息。</p>
-      <form id="subscribeForm" aria-label="訂閱電子報" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center" onsubmit="return handleSubscribe(event)">
-        <input id="subEmail" type="email" required placeholder="輸入 Email" aria-label="電子信箱" style="flex:1 1 200px;padding:12px 14px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:#fff;font-size:0.95rem;outline:none;min-width:160px">
-        <button type="submit" style="background:#238636;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:700;font-size:0.95rem;cursor:pointer;white-space:nowrap">免費訂閱</button>
-      </form>
-      <p id="subMsg" style="display:none;color:#3fb950;font-size:0.85rem;margin:12px 0 0">&#x2705; 訂閱成功！感謝您的關注。</p>
-      <p style="color:#484f58;font-size:0.75rem;margin:12px 0 0">不會寄送垃圾信，隨時可取消訂閱</p>
-    </div>
-  </section>
-  <script>
-  function handleSubscribe(e){
-    e.preventDefault();
-    var email = document.getElementById('subEmail').value;
-    if (!email) return false;
-    /* Store locally + open mailto for backend-less operation */
-    var subs = [];
-    try { subs = JSON.parse(localStorage.getItem('aimath_subscriptions') || '[]'); } catch(x){}
-    subs.push({ email: email, ts: new Date().toISOString() });
-    localStorage.setItem('aimath_subscriptions', JSON.stringify(subs));
-    /* Send via mailto so owner gets the subscription */
-    var link = document.createElement('a');
-    link.href = 'mailto:learnotaiwan@gmail.com?subject=' + encodeURIComponent('AI數學訂閱：' + email) + '&body=' + encodeURIComponent('新訂閱: ' + email);
-    link.click();
-    document.getElementById('subscribeForm').style.display = 'none';
-    document.getElementById('subMsg').style.display = 'block';
-    return false;
-  }
-  </script>
-
-  <!-- ── CTA Banner ── -->
+  <!-- ══════════════════════════════════════════
+       SECTION 9 — Final CTA
+       ══════════════════════════════════════════ -->
   <section class="cta-banner reveal">
-    <h2>讓孩子今天就開始進步</h2>
-    <p>免費使用所有基本題庫，不需註冊、不需下載，打開就能練</p>
-    <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
-      <a href="./exam-sprint/" class="cta-primary">免費開始練習</a>
-      <a href="./pricing/" class="cta-primary" style="background:linear-gradient(135deg,#8957e5,#a371f7);">查看升級方案</a>
+    <h2>今天開始，讓孩子把數學當成能闖關的遊戲</h2>
+    <p>不只是多做題，而是每一題都知道自己在前進、在成長、在變強。</p>
+    <div class="dual-cta">
+      <a href="./interactive-g5-empire/" class="cta-child">&#x2694;&#xFE0F; 開始今日挑戰</a>
+      <a href="./report/" class="cta-parent">&#x1F4CA; 先看家長週報示範</a>
     </div>
-    <div style="margin-top:16px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="mailto:learnotaiwan@gmail.com?subject=AI%20%E6%95%B8%E5%AD%B8%E5%AE%B6%E6%95%99%20%E2%80%94%20%E5%8D%87%E7%B4%9A%E6%96%B9%E6%A1%88%E8%AB%AE%E8%A9%A2" style="color:#a371f7;text-decoration:none;font-size:0.95rem;font-weight:600;">&#x2709;&#xFE0F; Email 諮詢</a>
-      <a href="https://line.me/ti/p/@learnotaiwan" target="_blank" rel="noopener" style="color:#06C755;text-decoration:none;font-size:0.95rem;font-weight:600;">&#x1F4AC; LINE 諮詢 @learnotaiwan</a>
+    <div style="margin-top:20px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="mailto:learnotaiwan@gmail.com?subject=AI%20數學家教%20諮詢" style="color:#a371f7;text-decoration:none;font-size:0.92rem;font-weight:600;">&#x2709;&#xFE0F; Email 諮詢</a>
+      <a href="https://line.me/ti/p/@learnotaiwan" target="_blank" rel="noopener" style="color:#06C755;text-decoration:none;font-size:0.92rem;font-weight:600;">&#x1F4AC; LINE @learnotaiwan</a>
     </div>
-    <div style="margin-top:20px;color:#8b949e;font-size:0.82rem;">
-      <span style="color:#3fb950;">&#10003;</span> 7 天免費試用
-      &nbsp;&nbsp;
-      <span style="color:#3fb950;">&#10003;</span> 不滿意全額退費
-      &nbsp;&nbsp;
+    <div style="margin-top:16px;color:#8b949e;font-size:0.82rem;">
+      <span style="color:#3fb950;">&#10003;</span> 免費體驗不需註冊
+      &#x3000;
+      <span style="color:#3fb950;">&#10003;</span> 7 天不滿意全額退費
+      &#x3000;
       <span style="color:#3fb950;">&#10003;</span> 隨時取消
     </div>
   </section>
-
-  <!-- ── Social Share ── -->
-  <div style="text-align:center;padding:24px 24px 0;">
-    <p style="color:#8b949e;font-size:0.85rem;margin:0 0 12px;">覺得不錯？推薦給其他家長</p>
-    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
-      <button onclick="window.open('https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(location.href),'_blank','width=500,height=600')" aria-label="分享到 LINE（開新視窗）" style="background:#06C755;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:0.9rem;font-weight:700;cursor:pointer;">LINE 分享</button>
-      <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'_blank','width=600,height=400')" aria-label="分享到 Facebook（開新視窗）" style="background:#1877F2;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:0.9rem;font-weight:700;cursor:pointer;">Facebook</button>
-      <button id="copyLinkBtn" style="background:var(--card-bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:0.9rem;font-weight:700;cursor:pointer;">📋 複製連結</button>
-    </div>
-  </div>
-  <script>
-  document.getElementById('copyLinkBtn').addEventListener('click', function(){
-    var btn = this;
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(location.href).then(function(){
-        btn.textContent = '\u2705 \u5df2\u8907\u88fd';
-        setTimeout(function(){ btn.textContent = '\uD83D\uDCCB \u8907\u88fd\u9023\u7d50'; }, 2000);
-      });
-    }
-  });
-  </script>
-  <script>
-  /* Demo video keyboard support */
-  (function(){
-    var dv = document.getElementById('demoVideo');
-    if (!dv) return;
-    function handleDemo() { dv.style.outline = '2px solid #58a6ff'; }
-    dv.addEventListener('click', handleDemo);
-    dv.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleDemo(); } });
-  })();
-  </script>
 
   <!-- ── Footer ── -->
   <footer class="site-footer">
     <div style="max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:left;margin-bottom:24px;">
       <div>
-        <div style="color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:10px;">學習模組</div>
+        <div style="color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:10px;">挑戰模式</div>
+        <a href="./interactive-g5-empire/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">帝國闖關</a>
         <a href="./exam-sprint/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">考前衝刺</a>
-        <a href="./interactive-g5-empire/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">數學帝國闖關</a>
+        <a href="./task-center/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">任務中心</a>
         <a href="./g5-grand-slam/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">全課綱大滿貫</a>
         <a href="./learning-map/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">觀念地圖</a>
       </div>
       <div>
         <div style="color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:10px;">家長專區</div>
-        <a href="./parent-report/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">家長報告</a>
+        <a href="./report/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">家長週報</a>
+        <a href="./parent-report/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">手機遠端報告</a>
         <a href="./pricing/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">方案與價格</a>
         <a href="./about/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">關於我們</a>
       </div>
@@ -1315,78 +781,31 @@
         <div style="color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:10px;">法律與支援</div>
         <a href="./privacy/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">隱私權政策</a>
         <a href="./terms/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">服務條款</a>
-        <a href="mailto:learnotaiwan@gmail.com" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">✉️ learnotaiwan@gmail.com</a>
-        <a href="https://line.me/ti/p/@learnotaiwan" target="_blank" rel="noopener" style="display:block;color:#06C755;text-decoration:none;font-size:0.82rem;padding:3px 0;">💬 LINE @learnotaiwan</a>
+        <a href="mailto:learnotaiwan@gmail.com" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">&#x2709;&#xFE0F; learnotaiwan@gmail.com</a>
+        <a href="https://line.me/ti/p/@learnotaiwan" target="_blank" rel="noopener" style="display:block;color:#06C755;text-decoration:none;font-size:0.82rem;padding:3px 0;">&#x1F4AC; LINE @learnotaiwan</a>
       </div>
     </div>
     <div class="footer-copy">&copy; 2025-2026 AI 數學家教. All rights reserved.</div>
   </footer>
-  <script>
-    (async function renderImprovementCard() {
-      const generatedEl = document.getElementById('improvement-generated');
-      const metricsEl = document.getElementById('improvement-metrics');
-      const pointsEl = document.getElementById('improvement-points');
 
-      const toDeltaClass = (value, betterWhenLower = false) => {
-        if (value === 0) return 'delta-flat';
-        const isBetter = betterWhenLower ? value < 0 : value > 0;
-        return isBetter ? 'delta-up' : 'delta-down';
-      };
-
-      const fmtDelta = (value, digits = 2, betterWhenLower = false) => {
-        const v = Number(value || 0);
-        const sign = v > 0 ? '+' : '';
-        const cls = toDeltaClass(v, betterWhenLower);
-        return `<div class="${cls}">Δ ${sign}${v.toFixed(digits)}</div>`;
-      };
-
-      try {
-        const res = await fetch('./improvement/latest.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-
-        const current = data.current || {};
-        const delta = data.delta || {};
-        const improvedPoints = Array.isArray(data.improved_points) ? data.improved_points : [];
-
-        generatedEl.textContent = `更新時間：${data.generated_at || 'unknown'}，資料日期：${current.date || 'unknown'}`;
-
-        metricsEl.innerHTML = [
-          `<div class="metric-box"><div class="metric-name">hint_avg</div><div class="metric-value">${Number(current.hint_avg || 0).toFixed(2)}</div>${fmtDelta(delta.hint_avg, 2, false)}</div>`,
-          `<div class="metric-box"><div class="metric-name">hint_min</div><div class="metric-value">${Number(current.hint_min || 0).toFixed(2)}</div>${fmtDelta(delta.hint_min, 2, false)}</div>`,
-          `<div class="metric-box"><div class="metric-name">e2e_flaky_rate</div><div class="metric-value">${Number(current.e2e_flaky_rate || 0).toFixed(4)}</div>${fmtDelta(delta.e2e_flaky_rate, 4, true)}</div>`
-        ].join('');
-
-        if (improvedPoints.length > 0) {
-          pointsEl.innerHTML = improvedPoints.map((item) => `<li>${item}</li>`).join('');
-        } else {
-          pointsEl.innerHTML = '<li>目前沒有可辨識的改善點。</li>';
-        }
-      } catch (err) {
-        generatedEl.textContent = `讀取改善資料失敗：${err}`;
-        metricsEl.innerHTML = '';
-        pointsEl.innerHTML = '<li>請先等待 nightly 產生 ./improvement/latest.json</li>';
-      }
-    })();
-  </script>
-  <!-- Onboarding Welcome Modal -->
+  <!-- ── Onboarding Welcome Modal ── -->
   <div class="onboard-overlay" id="onboardModal" role="dialog" aria-modal="true" aria-labelledby="onboardTitle">
     <div class="onboard-box">
       <button class="ob-close" onclick="closeOnboard()" aria-label="關閉">&times;</button>
-      <h3 id="onboardTitle">👋 歡迎來到 AI 數學家教！</h3>
-      <p>您想怎麼開始？</p>
+      <h3 id="onboardTitle">&#x1F44B; 歡迎來到 AI 數學家教！</h3>
+      <p>你想怎麼開始？</p>
       <div class="ob-options">
         <a class="ob-btn" href="interactive-g5-empire/" onclick="closeOnboard()">
-          <span class="ob-icon">🏰</span>我是學生，想開始闖關練習
+          <span class="ob-icon">&#x1F3F0;</span>我是學生，想開始闖關
+        </a>
+        <a class="ob-btn" href="task-center/" onclick="closeOnboard()">
+          <span class="ob-icon">&#x1F4CB;</span>看看今天有什麼任務
         </a>
         <a class="ob-btn" href="exam-sprint/" onclick="closeOnboard()">
-          <span class="ob-icon">📝</span>我快考試了，想考前衝刺
+          <span class="ob-icon">&#x1F4DD;</span>我快考試了，考前衝刺
         </a>
-        <a class="ob-btn" href="parent-report/" onclick="closeOnboard()">
-          <span class="ob-icon">📊</span>我是家長，想看學習報告
-        </a>
-        <a class="ob-btn" href="pricing/" onclick="closeOnboard()">
-          <span class="ob-icon">💰</span>想瞭解方案與價格
+        <a class="ob-btn" href="report/" onclick="closeOnboard()">
+          <span class="ob-icon">&#x1F4CA;</span>我是家長，看學習報告
         </a>
       </div>
     </div>
@@ -1405,10 +824,10 @@
   })();
   </script>
 
-  <!-- Mobile Sticky CTA -->
+  <!-- ── Mobile Sticky CTA ── -->
   <div class="mobile-sticky-cta" id="mobileCta">
     <button class="close-sticky" onclick="document.getElementById('mobileCta').classList.remove('visible');sessionStorage.setItem('cta_closed','1')" aria-label="關閉">&times;</button>
-    <a href="exam-sprint/">🌟 免費開始練習</a>
+    <a href="interactive-g5-empire/">&#x2694;&#xFE0F; 開始今日挑戰</a>
   </div>
   <script>
   (function(){
@@ -1423,60 +842,22 @@
   })();
   </script>
 
-  <!-- Service Worker Registration -->
+  <!-- ── Service Worker ── -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function(){});
     }
   </script>
 
-  <!-- Exit-Intent Popup -->
-  <div id="exitPopup" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:24px">
-    <div style="background:#161b22;border:1px solid #30363d;border-radius:16px;max-width:420px;width:100%;padding:32px 24px;text-align:center;position:relative">
-      <button id="exitPopupClose" style="position:absolute;top:10px;right:14px;background:none;border:none;color:#8b949e;font-size:1.4rem;cursor:pointer">&times;</button>
-      <div style="font-size:2.2rem;margin-bottom:8px">&#x1F44B;</div>
-      <h3 style="color:#fff;font-size:1.2rem;margin:0 0 8px">等一下！先試試免費闖關</h3>
-      <p style="color:#8b949e;font-size:0.9rem;margin:0 0 20px;line-height:1.6">
-        每天可以免費練習 10 題，不需註冊、不需信用卡。<br>
-        2,900+ 題精選國小數學，搭配 AI 三層提示引導。
-      </p>
-      <a href="./interactive-g5-empire/" style="display:block;background:#238636;color:#fff;padding:14px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem;margin-bottom:10px">&#x1F3F0; 免費開始闖關</a>
-      <a href="./pricing/" style="display:block;background:transparent;border:1px solid #58a6ff;color:#58a6ff;padding:12px;border-radius:8px;font-weight:600;text-decoration:none;font-size:0.92rem">查看升級方案</a>
-    </div>
-  </div>
-  <script>
-  (function(){
-    var KEY = 'aimath_exit_popup_shown';
-    if (localStorage.getItem(KEY)) return;
-    var popup = document.getElementById('exitPopup');
-    var shown = false;
-    function show(){
-      if (shown) return;
-      shown = true;
-      popup.style.display = 'flex';
-      localStorage.setItem(KEY, '1');
-    }
-    /* Desktop: mouse leaves viewport top */
-    document.addEventListener('mouseout', function(e){
-      if (e.clientY < 5 && !e.relatedTarget) show();
-    });
-    /* Fallback: if user scrolls to bottom then scrolls back up fast */
-    var maxScroll = 0;
-    window.addEventListener('scroll', function(){
-      var y = window.pageYOffset;
-      if (y > maxScroll) maxScroll = y;
-      if (maxScroll > 800 && y < maxScroll - 400) show();
-    });
-    document.getElementById('exitPopupClose').onclick = function(){ popup.style.display = 'none'; };
-    popup.onclick = function(e){ if (e.target === popup) popup.style.display = 'none'; };
-  })();
-  </script>
+  <!-- ── Page Load ── -->
   <script>
   window.addEventListener('load', function(){
     var ld = document.getElementById('pageLoader');
     if (ld) { ld.classList.add('hide'); setTimeout(function(){ ld.remove(); }, 500); }
   });
   </script>
+
+  <!-- ── Scroll Reveal ── -->
   <script>
   (function(){
     if (!('IntersectionObserver' in window)) {
@@ -1496,25 +877,9 @@
     for (var i = 0; i < els.length; i++) io.observe(els[i]);
   })();
   </script>
-  <script src="shared/cookie_consent.js" defer></script>
-  <script src="shared/skip_to_content.js" defer></script>
+
+  <!-- ── Scroll Progress ── -->
   <script>
-  /* A/B hero variant selector — assigns variant and logs to localStorage */
-  (function(){
-    var hero = document.getElementById('hero');
-    if (!hero) return;
-    var key = 'aimath_hero_variant';
-    var v;
-    try { v = localStorage.getItem(key); } catch(e){}
-    if (!v) {
-      v = Math.random() < 0.5 ? 'A' : 'B';
-      try { localStorage.setItem(key, v); } catch(e){}
-    }
-    hero.setAttribute('data-variant', v);
-  })();
-  </script>
-  <script>
-  /* Scroll progress bar */
   (function(){
     var bar = document.getElementById('scrollProgress');
     if (!bar) return;
@@ -1530,58 +895,10 @@
     });
   })();
   </script>
-  <script>
-  /* Today's learner count — deterministic daily seed + hour variation */
-  (function(){
-    var el = document.getElementById('todayLearners');
-    if (!el) return;
-    var d = new Date();
-    var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-    /* Simple hash to get base count 120-280 */
-    var base = 120 + ((seed * 2654435761) >>> 0) % 161;
-    /* Add hour-based increment: ~8 per hour during daytime */
-    var hour = d.getHours();
-    var hourBoost = Math.min(hour, 22) * 8;
-    var total = base + hourBoost;
-    el.textContent = total;
-  })();
-  </script>
-  <script>
-  /* Testimonial mobile carousel with dot indicators */
-  (function(){
-    var grid = document.querySelector('.testimonial-grid');
-    var dots = document.getElementById('testDots');
-    if (!grid || !dots) return;
-    var cards = grid.querySelectorAll('.testimonial-card');
-    if (cards.length === 0) return;
-    var html = '';
-    for (var i = 0; i < cards.length; i++) {
-      html += '<button class="dot' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '" type="button" aria-label="第 ' + (i+1) + ' 則評價"></button>';
-    }
-    dots.innerHTML = html;
-    var allDots = dots.querySelectorAll('.dot');
-    function updateDots(idx) {
-      for (var j = 0; j < allDots.length; j++) {
-        allDots[j].classList.toggle('active', j === idx);
-      }
-    }
-    grid.addEventListener('scroll', function() {
-      var scrollLeft = grid.scrollLeft;
-      var cardWidth = cards[0].offsetWidth + 16;
-      var idx = Math.round(scrollLeft / cardWidth);
-      updateDots(Math.min(idx, cards.length - 1));
-    });
-    for (var k = 0; k < allDots.length; k++) {
-      allDots[k].addEventListener('click', function() {
-        var idx = parseInt(this.getAttribute('data-idx'));
-        cards[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      });
-    }
-  })();
-  </script>
+
+  <!-- ── Stat Count-Up ── -->
   <script src="shared/game_motion.js" defer></script>
   <script>
-  /* Stat count-up on scroll */
   (function(){
     if (!('IntersectionObserver' in window)) return;
     function doCount(el, to) {
@@ -1621,5 +938,86 @@
     for (var j = 0; j < stats.length; j++) io.observe(stats[j]);
   })();
   </script>
+
+  <!-- ── Testimonial Carousel ── -->
+  <script>
+  (function(){
+    var grid = document.querySelector('.testimonial-grid');
+    var dots = document.getElementById('testDots');
+    if (!grid || !dots) return;
+    var cards = grid.querySelectorAll('.testimonial-card');
+    if (cards.length === 0) return;
+    var html = '';
+    for (var i = 0; i < cards.length; i++) {
+      html += '<button class="dot' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '" type="button" aria-label="\u7b2c ' + (i+1) + ' \u5247\u8a55\u50f9"></button>';
+    }
+    dots.innerHTML = html;
+    var allDots = dots.querySelectorAll('.dot');
+    function updateDots(idx) {
+      for (var j = 0; j < allDots.length; j++) {
+        allDots[j].classList.toggle('active', j === idx);
+      }
+    }
+    grid.addEventListener('scroll', function() {
+      var scrollLeft = grid.scrollLeft;
+      var cardWidth = cards[0].offsetWidth + 16;
+      var idx = Math.round(scrollLeft / cardWidth);
+      updateDots(Math.min(idx, cards.length - 1));
+    });
+    for (var k = 0; k < allDots.length; k++) {
+      allDots[k].addEventListener('click', function() {
+        var idx = parseInt(this.getAttribute('data-idx'));
+        cards[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+    }
+  })();
+  </script>
+
+  <!-- ── Dashboard count-up ── -->
+  <script>
+  (function(){
+    if (!('IntersectionObserver' in window)) return;
+    var dashGrid = document.getElementById('dashGrid');
+    if (!dashGrid) return;
+    var animated = false;
+    var io = new IntersectionObserver(function(entries){
+      if (animated) return;
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        animated = true;
+        io.unobserve(dashGrid);
+        var items = [
+          { id: 'dashTotal', to: 128, suffix: '' },
+          { id: 'dashRate', to: 78, suffix: '%' },
+          { id: 'dashStreak', to: 4, suffix: '' },
+          { id: 'dashBadge', to: 3, suffix: '' },
+          { id: 'dashTerr', to: 7, suffix: '' },
+          { id: 'dashDays', to: 5, suffix: '' }
+        ];
+        for (var j = 0; j < items.length; j++) {
+          (function(item, delay){
+            setTimeout(function(){
+              var el = document.getElementById(item.id);
+              if (!el) return;
+              var from = 0, dur = 600, start = null;
+              function step(ts){
+                if (!start) start = ts;
+                var p = Math.min((ts - start) / dur, 1);
+                var ease = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.round(from + (item.to - from) * ease) + item.suffix;
+                if (p < 1) requestAnimationFrame(step);
+              }
+              requestAnimationFrame(step);
+            }, delay);
+          })(items[j], j * 120);
+        }
+      }
+    }, { threshold: 0.2 });
+    io.observe(dashGrid);
+  })();
+  </script>
+
+  <script src="shared/cookie_consent.js" defer></script>
+  <script src="shared/skip_to_content.js" defer></script>
 </body>
 </html>
