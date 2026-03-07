@@ -133,7 +133,8 @@
     @keyframes hudFadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
     .hero-hud-icon { font-size: 1.2rem; }
     .hero-hud-text { text-align: left; }
-    .hero-hud-val { font-size: 1rem; font-weight: 800; color: #fff; }
+    .hero-hud-val { font-size: 1rem; font-weight: 800; color: #fff; transition: color 0.3s ease, text-shadow 0.3s ease; }
+    .hero-hud-card:hover .hero-hud-val { color: var(--accent); text-shadow: 0 0 8px rgba(88,166,255,0.35); }
     .hero-hud-lbl { font-size: 0.7rem; color: #8b949e; }
     @media (max-width: 640px) {
       .hero-hud { gap: 8px; }
@@ -197,7 +198,8 @@
     .site-footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; }
     .footer-grid { max-width:720px; margin:0 auto 24px; display:grid; grid-template-columns:repeat(3,1fr); gap:24px; text-align:left; }
     .footer-copy { color: #484f58; font-size: 0.78rem; }
-    .site-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .site-footer a { transition: color 0.2s; }
+    .site-footer a:hover { text-decoration: underline; text-underline-offset: 3px; color: var(--accent); }
     @media (max-width: 640px) {
       .footer-grid { grid-template-columns:1fr 1fr; gap:20px 16px; }
     }
