@@ -1046,6 +1046,13 @@
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       btn.innerHTML = open ? '&times;' : '&#x2630;';
     });
+    document.addEventListener('click', function(e){
+      if (!links.classList.contains('open')) return;
+      if (btn.contains(e.target) || links.contains(e.target)) return;
+      links.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#x2630;';
+    });
   })();
   </script>
 
