@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>領地爭霸 — Territory Conquest | AI Math</title>
+<meta name="description" content="答題佔領領地！PaGamO 風格的數學領地爭霸遊戲原型。">
+<link rel="stylesheet" href="../shared/game_motion.css">
+<style>
+/* ── Theme (matches quiz pages) ─────────────────────────── */
+:root {
+  --bg: #0b1020;
+  --panel: #0f1733;
+  --card: #121c3d;
+  --text: #e6edf3;
+  --muted: #9aa4b2;
+  --line: #243055;
+  --accent: #58a6ff;
+  --ok: #2ea043;
+  --bad: #f85149;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { color: var(--accent); text-decoration: none; }
+
+/* ── Nav ─────────────────────────────────────────────────── */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.top-nav .logo { font-weight: 800; font-size: 1.1rem; }
+.top-nav .back { font-size: 0.9rem; }
+
+/* ── Layout ──────────────────────────────────────────────── */
+.game-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .game-wrap { grid-template-columns: 1fr; }
+}
+
+/* ── HUD ─────────────────────────────────────────────────── */
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+}
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+.hud-item .icon { font-size: 1.1rem; }
+.hud-item .val {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  transition: color 0.3s, transform 0.3s;
+}
+.hud-level {
+  margin-left: auto;
+  background: var(--gm-xp);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ── Territory Grid ──────────────────────────────────────── */
+.grid-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+}
+.grid-panel h2 {
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.territory {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+.cell {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: default;
+  transition: transform 0.15s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  user-select: none;
+}
+/* States */
+.cell.locked {
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.12);
+}
+.cell.available {
+  background: rgba(88,166,255,0.08);
+  border-color: rgba(88,166,255,0.3);
+  color: var(--accent);
+  cursor: pointer;
+}
+.cell.available:hover {
+  transform: scale(1.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(88,166,255,0.3);
+}
+.cell.owned {
+  background: rgba(46,160,67,0.18);
+  border-color: rgba(46,160,67,0.45);
+  color: var(--ok);
+}
+.cell.claimed {
+  background: rgba(255,215,0,0.18);
+  border-color: var(--gm-gold);
+  color: var(--gm-gold);
+  animation: gmClaim 0.8s cubic-bezier(.34,1.56,.64,1) both;
+}
+.cell.enemy {
+  background: rgba(248,81,73,0.1);
+  border-color: rgba(248,81,73,0.3);
+  color: var(--bad);
+}
+.cell.boss {
+  background: rgba(167,139,250,0.15);
+  border-color: rgba(167,139,250,0.45);
+  color: var(--gm-xp);
+  font-size: 1.5rem;
+}
+
+/* ── Question Panel ──────────────────────────────────────── */
+.q-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+}
+.q-panel h3 {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.q-panel.idle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  text-align: center;
+}
+.q-text {
+  font-size: 1.2rem;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  min-height: 60px;
+  line-height: 1.6;
+}
+.q-input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.q-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+}
+.q-input:focus { border-color: var(--accent); }
+.q-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.q-btn:active { transform: scale(0.96); }
+.q-btn.primary {
+  background: var(--ok);
+  color: #fff;
+}
+.q-btn.primary:hover { background: #3bb553; }
+.q-btn.secondary {
+  background: var(--accent);
+  color: #fff;
+}
+.q-result {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-weight: 600;
+  display: none;
+}
+.q-result.ok {
+  display: block;
+  background: rgba(46,160,67,0.1);
+  border: 1px solid rgba(46,160,67,0.4);
+  color: #b7f5c9;
+}
+.q-result.bad {
+  display: block;
+  background: rgba(248,81,73,0.08);
+  border: 1px solid rgba(248,81,73,0.4);
+  color: #ffd2cf;
+}
+
+/* ── Legend ───────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ── Toast (reused from quiz_feedback concept) ───────────── */
+.gm-toast-t {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(167,139,250,0.95);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  z-index: 9990;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  animation: gmSlideDown 0.3s ease both;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="logo">🏰 領地爭霸</span>
+  <a class="back" href="../">← 返回首頁</a>
+</nav>
+
+<!-- HUD -->
+<div class="game-wrap">
+  <div class="hud">
+    <div class="hud-item"><span class="icon">⭐</span><span>分數：</span><span class="val" id="hudScore">0</span></div>
+    <div class="hud-item"><span class="icon">🏴</span><span>領地：</span><span class="val" id="hudOwned">0</span>/<span id="hudTotal">36</span></div>
+    <div class="hud-item"><span class="icon">🔥</span><span>連勝：</span><span class="val" id="hudStreak">0</span></div>
+    <div class="hud-item"><span class="icon">❤️</span><span>生命：</span><span class="val" id="hudHP">3</span></div>
+    <span class="hud-level" id="hudLevel">Lv.1 新手</span>
+  </div>
+
+  <!-- Territory Grid -->
+  <div class="grid-panel">
+    <h2>🗺️ 領地地圖</h2>
+    <div class="territory" id="grid"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.1)"></div>未知</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(88,166,255,0.15);border-color:rgba(88,166,255,0.4)"></div>可攻擊</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(46,160,67,0.2);border-color:rgba(46,160,67,0.5)"></div>我的</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(248,81,73,0.15);border-color:rgba(248,81,73,0.4)"></div>敵人</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(167,139,250,0.2);border-color:rgba(167,139,250,0.5)"></div>Boss</div>
+    </div>
+  </div>
+
+  <!-- Question Panel -->
+  <div class="q-panel idle" id="qPanel">
+    <div id="qIdle">👆 點擊地圖上亮起的格子開始挑戰！</div>
+    <div id="qActive" style="display:none">
+      <h3 id="qLabel">挑戰格子</h3>
+      <div class="q-text" id="qText"></div>
+      <div class="q-input-row">
+        <input class="q-input" id="qInput" placeholder="輸入答案…" autocomplete="off">
+        <button class="q-btn primary" id="qSubmit">送出</button>
+      </div>
+      <div class="q-result" id="qResult"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/game_motion.js"></script>
+<script>
+(function () {
+  'use strict';
+  var GM = window.GameMotion;
+
+  /* ── Question Bank (demo) ─────────────────────────────────── */
+  var QUESTIONS = [
+    { q: '3/4 + 1/4 = ?', a: '1' },
+    { q: '1/2 + 1/3 = ?', a: '5/6' },
+    { q: '2/5 + 1/10 = ?', a: '1/2' },
+    { q: '7/8 - 3/8 = ?', a: '1/2' },
+    { q: '3 × 1/4 = ?', a: '3/4' },
+    { q: '5/6 - 1/3 = ?', a: '1/2' },
+    { q: '2/3 + 1/6 = ?', a: '5/6' },
+    { q: '4/5 - 2/5 = ?', a: '2/5' },
+    { q: '1/3 + 2/9 = ?', a: '5/9' },
+    { q: '3/7 + 2/7 = ?', a: '5/7' },
+    { q: '7 × 8 = ?', a: '56' },
+    { q: '12 × 5 = ?', a: '60' },
+    { q: '144 ÷ 12 = ?', a: '12' },
+    { q: '25 × 4 = ?', a: '100' },
+    { q: '1/2 × 2/3 = ?', a: '1/3' },
+    { q: '3/4 ÷ 1/2 = ?', a: '3/2' },
+    { q: '0.5 + 0.25 = ?', a: '0.75' },
+    { q: '1.2 × 5 = ?', a: '6' },
+    { q: '100 - 37 = ?', a: '63' },
+    { q: '8 × 9 = ?', a: '72' },
+    { q: '15 + 28 = ?', a: '43' },
+    { q: '96 ÷ 8 = ?', a: '12' },
+    { q: '1/4 + 1/8 = ?', a: '3/8' },
+    { q: '5/12 + 1/4 = ?', a: '2/3' },
+    { q: '2.5 × 4 = ?', a: '10' },
+    { q: '3/5 × 10 = ?', a: '6' },
+    { q: '7/10 - 3/10 = ?', a: '2/5' },
+    { q: '11 × 11 = ?', a: '121' },
+    { q: '200 ÷ 8 = ?', a: '25' },
+    { q: '1/6 + 1/6 = ?', a: '1/3' },
+    { q: '45 + 55 = ?', a: '100' },
+    { q: '81 ÷ 9 = ?', a: '9' },
+    { q: '3/8 + 1/8 = ?', a: '1/2' },
+    { q: '2 × 2/5 = ?', a: '4/5' },
+    { q: '99 - 33 = ?', a: '66' },
+    { q: '7 × 6 = ?', a: '42' }
+  ];
+
+  /* ── Grid State ───────────────────────────────────────────── */
+  var ROWS = 6, COLS = 6;
+  var cells = [];
+  var state = {
+    score: 0,
+    owned: 0,
+    streak: 0,
+    hp: 3,
+    level: 1,
+    activeCell: null,
+    phase: 'idle'  /* idle | answering */
+  };
+
+  /* Element refs */
+  var elGrid = document.getElementById('grid');
+  var elScore = document.getElementById('hudScore');
+  var elOwned = document.getElementById('hudOwned');
+  var elStreak = document.getElementById('hudStreak');
+  var elHP = document.getElementById('hudHP');
+  var elLevel = document.getElementById('hudLevel');
+  var elPanel = document.getElementById('qPanel');
+  var elIdle = document.getElementById('qIdle');
+  var elActive = document.getElementById('qActive');
+  var elLabel = document.getElementById('qLabel');
+  var elQText = document.getElementById('qText');
+  var elInput = document.getElementById('qInput');
+  var elSubmit = document.getElementById('qSubmit');
+  var elResult = document.getElementById('qResult');
+
+  /* ── Grid Init ────────────────────────────────────────────── */
+  function initGrid() {
+    elGrid.innerHTML = '';
+    cells = [];
+    for (var i = 0; i < ROWS * COLS; i++) {
+      var div = document.createElement('div');
+      div.className = 'cell locked';
+      div.dataset.idx = i;
+      div.textContent = '?';
+      elGrid.appendChild(div);
+      cells.push({ el: div, state: 'locked', idx: i });
+    }
+
+    /* Place boss in center-ish */
+    var bossIdx = Math.floor(ROWS / 2) * COLS + Math.floor(COLS / 2);
+    cells[bossIdx].state = 'boss';
+    cells[bossIdx].el.className = 'cell boss';
+    cells[bossIdx].el.textContent = '👑';
+
+    /* Place enemies randomly */
+    var enemyCount = 6;
+    for (var e = 0; e < enemyCount; e++) {
+      var idx;
+      do { idx = Math.floor(Math.random() * ROWS * COLS); }
+      while (cells[idx].state !== 'locked');
+      cells[idx].state = 'enemy';
+      cells[idx].el.className = 'cell enemy';
+      cells[idx].el.textContent = '👿';
+    }
+
+    /* Start: own corner + unlock adjacent */
+    var startIdx = 0;
+    claimCell(startIdx, true);
+    unlockAdjacent(startIdx);
+
+    /* Click handler */
+    elGrid.addEventListener('click', function (ev) {
+      var target = ev.target;
+      if (!target.classList.contains('cell')) return;
+      var idx = parseInt(target.dataset.idx, 10);
+      if (isNaN(idx)) return;
+      if (cells[idx].state === 'available' || cells[idx].state === 'enemy' || cells[idx].state === 'boss') {
+        startChallenge(idx);
+      }
+    });
+  }
+
+  function claimCell(idx, silent) {
+    cells[idx].state = 'owned';
+    cells[idx].el.className = silent ? 'cell owned' : 'cell claimed';
+    cells[idx].el.textContent = '🏴';
+    if (!silent) {
+      GM.burst(cells[idx].el, 10, ['#ffd700', '#2ea043', '#58a6ff']);
+      setTimeout(function () {
+        cells[idx].el.className = 'cell owned';
+      }, 900);
+    }
+    state.owned = countOwned();
+    elOwned.textContent = state.owned;
+  }
+
+  function countOwned() {
+    var c = 0;
+    for (var i = 0; i < cells.length; i++) {
+      if (cells[i].state === 'owned') c++;
+    }
+    return c;
+  }
+
+  function unlockAdjacent(idx) {
+    var row = Math.floor(idx / COLS);
+    var col = idx % COLS;
+    var neighbors = [
+      [row - 1, col], [row + 1, col],
+      [row, col - 1], [row, col + 1]
+    ];
+    for (var i = 0; i < neighbors.length; i++) {
+      var r = neighbors[i][0], c = neighbors[i][1];
+      if (r < 0 || r >= ROWS || c < 0 || c >= COLS) continue;
+      var ni = r * COLS + c;
+      if (cells[ni].state === 'locked') {
+        cells[ni].state = 'available';
+        cells[ni].el.className = 'cell available';
+        cells[ni].el.textContent = '⚔️';
+      }
+    }
+  }
+
+  /* ── Challenge Flow ───────────────────────────────────────── */
+  var currentQ = null;
+
+  function startChallenge(idx) {
+    if (state.phase === 'answering') return;
+    state.phase = 'answering';
+    state.activeCell = idx;
+
+    var cellType = cells[idx].state;
+    var label = cellType === 'boss' ? '⚔️ Boss 挑戰！' :
+                cellType === 'enemy' ? '⚔️ 攻擊敵人！' : '⚔️ 佔領此格';
+    elLabel.textContent = label;
+
+    /* Pick random question */
+    currentQ = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+    elQText.textContent = currentQ.q;
+    elResult.className = 'q-result';
+    elResult.style.display = 'none';
+    elInput.value = '';
+
+    /* Show panel */
+    elPanel.classList.remove('idle');
+    elIdle.style.display = 'none';
+    elActive.style.display = 'block';
+    elInput.focus();
+
+    /* Highlight active cell */
+    cells[idx].el.style.boxShadow = '0 0 20px rgba(88,166,255,0.5)';
+  }
+
+  function onSubmit() {
+    if (!currentQ || state.phase !== 'answering') return;
+    var ans = elInput.value.trim();
+    if (!ans) return;
+
+    var correct = normalizeAnswer(ans) === normalizeAnswer(currentQ.a);
+    var idx = state.activeCell;
+
+    if (correct) {
+      onCorrectAnswer(idx);
+    } else {
+      onWrongAnswer(idx);
+    }
+
+    /* Clear highlight */
+    if (cells[idx]) {
+      cells[idx].el.style.boxShadow = '';
+    }
+  }
+
+  function normalizeAnswer(s) {
+    return s.replace(/\s/g, '').replace(/\uff0f/g, '/').toLowerCase();
+  }
+
+  function onCorrectAnswer(idx) {
+    elResult.className = 'q-result ok';
+    elResult.textContent = '🎉 答對了！領地已佔領！';
+    elResult.style.display = 'block';
+    GM.pop(elResult);
+
+    state.score += (cells[idx].state === 'boss' ? 50 : cells[idx].state === 'enemy' ? 20 : 10);
+    state.streak++;
+
+    /* Claim cell */
+    claimCell(idx, false);
+    unlockAdjacent(idx);
+
+    /* Update HUD with animations */
+    GM.countUp(elScore, parseInt(elScore.textContent), state.score, 400);
+    GM.flash(elScore);
+    GM.flash(elStreak);
+    elStreak.textContent = state.streak;
+
+    /* Level up check */
+    checkLevelUp();
+
+    /* Streak toast */
+    if (state.streak === 3 || state.streak === 5 || state.streak === 10) {
+      showToast('🔥 連勝 ' + state.streak + ' 題！');
+    }
+
+    /* Win check */
+    if (countOwned() >= ROWS * COLS - 0) {
+      checkWin();
+    }
+
+    state.phase = 'idle';
+    setTimeout(function () {
+      resetPanel();
+    }, 2000);
+  }
+
+  function onWrongAnswer(idx) {
+    elResult.className = 'q-result bad';
+    elResult.textContent = '❌ 答錯了！正確答案是 ' + currentQ.a;
+    elResult.style.display = 'block';
+    GM.shake(elResult);
+
+    state.streak = 0;
+    state.hp--;
+    elStreak.textContent = 0;
+    elHP.textContent = state.hp;
+    GM.flash(elHP);
+    GM.shake(cells[idx].el);
+
+    /* Game over check */
+    if (state.hp <= 0) {
+      setTimeout(function () {
+        showToast('💀 生命歸零！遊戲結束');
+        setTimeout(function () { resetGame(); }, 2000);
+      }, 800);
+    }
+
+    state.phase = 'idle';
+    setTimeout(function () {
+      resetPanel();
+    }, 2500);
+  }
+
+  function resetPanel() {
+    elPanel.classList.add('idle');
+    elIdle.style.display = '';
+    elActive.style.display = 'none';
+    currentQ = null;
+  }
+
+  /* ── Level System ─────────────────────────────────────────── */
+  var LEVELS = [
+    { min: 0,  name: 'Lv.1 新手' },
+    { min: 30, name: 'Lv.2 見習騎士' },
+    { min: 80, name: 'Lv.3 領主' },
+    { min: 150, name: 'Lv.4 大將軍' },
+    { min: 300, name: 'Lv.5 帝王' }
+  ];
+
+  function checkLevelUp() {
+    var newLevel = 1;
+    for (var i = LEVELS.length - 1; i >= 0; i--) {
+      if (state.score >= LEVELS[i].min) {
+        newLevel = i + 1;
+        break;
+      }
+    }
+    if (newLevel > state.level) {
+      state.level = newLevel;
+      elLevel.textContent = LEVELS[newLevel - 1].name;
+      GM.pop(elLevel);
+      showToast('⬆️ 升級！' + LEVELS[newLevel - 1].name);
+    }
+  }
+
+  function checkWin() {
+    var allOwned = true;
+    for (var i = 0; i < cells.length; i++) {
+      if (cells[i].state !== 'owned') { allOwned = false; break; }
+    }
+    if (allOwned) {
+      showToast('🏆 恭喜！你佔領了所有領地！');
+    }
+  }
+
+  /* ── Toast ─────────────────────────────────────────────────── */
+  function showToast(msg) {
+    var t = document.createElement('div');
+    t.className = 'gm-toast-t';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function () {
+      t.style.opacity = '0';
+      t.style.transition = 'opacity 0.4s';
+      setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 500);
+    }, 2500);
+  }
+
+  /* ── Game Reset ────────────────────────────────────────────── */
+  function resetGame() {
+    state.score = 0;
+    state.owned = 0;
+    state.streak = 0;
+    state.hp = 3;
+    state.level = 1;
+    state.phase = 'idle';
+    elScore.textContent = '0';
+    elOwned.textContent = '0';
+    elStreak.textContent = '0';
+    elHP.textContent = '3';
+    elLevel.textContent = 'Lv.1 新手';
+    resetPanel();
+    initGrid();
+  }
+
+  /* ── Events ────────────────────────────────────────────────── */
+  elSubmit.addEventListener('click', onSubmit);
+  elInput.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.keyCode === 13) onSubmit();
+  });
+
+  /* ── Start ──────────────────────────────────────────────── */
+  initGrid();
+})();
+</script>
+</body>
+</html>

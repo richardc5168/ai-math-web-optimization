@@ -420,6 +420,7 @@
   <style>
     #scrollProgress{position:fixed;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--btn-bg,#238636),#58a6ff);z-index:9999;transition:width 60ms linear;pointer-events:none}
   </style>
+  <link rel="stylesheet" href="shared/game_motion.css">
 </head>
 <body>
   <div id="scrollProgress"></div>
@@ -1576,6 +1577,48 @@
         cards[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       });
     }
+  })();
+  </script>
+  <script src="shared/game_motion.js" defer></script>
+  <script>
+  /* Stat count-up on scroll */
+  (function(){
+    if (!('IntersectionObserver' in window)) return;
+    function doCount(el, to) {
+      var from = 0;
+      var dur = 800;
+      var start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(from + (to - from) * ease);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = to;
+      }
+      requestAnimationFrame(step);
+    }
+    var stats = document.querySelectorAll('.stat-num');
+    var counted = {};
+    var io = new IntersectionObserver(function(entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        var el = entries[i].target;
+        var key = el.textContent;
+        if (counted[key]) continue;
+        counted[key] = true;
+        var m = key.match(/^(\d+)/);
+        if (m) {
+          var n = parseInt(m[1], 10);
+          var suffix = key.replace(/^\d+/, '');
+          var origEl = el;
+          doCount(origEl, n);
+          setTimeout(function(e, s){ e.textContent = n + s; }.bind(null, origEl, suffix), 850);
+        }
+        io.unobserve(el);
+      }
+    }, { threshold: 0.3 });
+    for (var j = 0; j < stats.length; j++) io.observe(stats[j]);
   })();
   </script>
 </body>
