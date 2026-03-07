@@ -272,6 +272,22 @@
 
     /* ── Rendering Performance ── */
     .empire-section, .report-hero, .testimonial-section, .impact-section, .faq-section, .email-subscribe, .cta-banner { content-visibility: auto; contain-intrinsic-size: auto 500px; }
+
+    /* ── Demo Video ── */
+    .demo-video-section { text-align:center; padding:48px 20px 32px; }
+    .demo-video-section h2 { font-size:1.6rem; margin-bottom:8px; }
+    .demo-video-section .section-sub { color:#8b949e; margin-bottom:24px; font-size:.95rem; }
+    .demo-video-wrap { position:relative; max-width:720px; margin:0 auto; border-radius:16px; overflow:hidden; background:#161b22; border:1px solid #30363d; aspect-ratio:16/9; cursor:pointer; }
+    .demo-video-wrap .demo-poster { width:100%; height:100%; object-fit:cover; display:block; opacity:.85; transition:opacity .3s; }
+    .demo-video-wrap:hover .demo-poster { opacity:1; }
+    .demo-play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; background:rgba(88,166,255,.9); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform .2s, background .2s; }
+    .demo-play-btn::after { content:''; display:block; width:0; height:0; border-style:solid; border-width:14px 0 14px 24px; border-color:transparent transparent transparent #fff; margin-left:4px; }
+    .demo-video-wrap:hover .demo-play-btn { transform:translate(-50%,-50%) scale(1.1); background:rgba(88,166,255,1); }
+    .demo-video-steps { display:flex; justify-content:center; gap:32px; margin-top:24px; flex-wrap:wrap; }
+    .demo-video-steps .step { text-align:center; flex:0 1 140px; }
+    .demo-video-steps .step-icon { font-size:1.8rem; margin-bottom:4px; }
+    .demo-video-steps .step-text { font-size:.85rem; color:#8b949e; }
+    @media(max-width:600px){ .demo-video-steps { gap:16px; } .demo-play-btn { width:56px; height:56px; } .demo-play-btn::after { border-width:10px 0 10px 18px; } }
   </style>
   <script type="application/ld+json">
   {
@@ -425,6 +441,41 @@
       <div class="stat-label">離線可用</div>
     </div>
   </div>
+
+  <!-- ── Demo Video ── -->
+  <section class="demo-video-section reveal">
+    <h2>30 秒看懂 AI 數學家教</h2>
+    <p class="section-sub">實際操作畫面：出題 → AI 提示引導 → 答對闖關</p>
+    <div class="demo-video-wrap" id="demoVideo" role="button" tabindex="0" aria-label="播放示範影片">
+      <svg class="demo-poster" viewBox="0 0 720 405" xmlns="http://www.w3.org/2000/svg">
+        <rect width="720" height="405" fill="#161b22"/>
+        <rect x="40" y="30" width="640" height="50" rx="8" fill="#21262d"/>
+        <text x="360" y="62" text-anchor="middle" fill="#58a6ff" font-size="18" font-family="sans-serif">AI 數學家教 — 分數練習模式</text>
+        <rect x="40" y="100" width="420" height="200" rx="12" fill="#0d1117" stroke="#30363d"/>
+        <text x="250" y="175" text-anchor="middle" fill="#c9d1d9" font-size="16" font-family="sans-serif">小明有 3/4 公斤的糖果，</text>
+        <text x="250" y="200" text-anchor="middle" fill="#c9d1d9" font-size="16" font-family="sans-serif">吃掉 1/3 公斤後還剩多少？</text>
+        <text x="250" y="240" text-anchor="middle" fill="#8b949e" font-size="13" font-family="sans-serif">請輸入你的答案 ▎</text>
+        <rect x="480" y="100" width="200" height="200" rx="12" fill="#0d1117" stroke="#30363d"/>
+        <text x="580" y="135" text-anchor="middle" fill="#58a6ff" font-size="14" font-family="sans-serif">💡 提示 Level 1</text>
+        <text x="580" y="165" text-anchor="middle" fill="#c9d1d9" font-size="12" font-family="sans-serif">想一想：兩個分數</text>
+        <text x="580" y="185" text-anchor="middle" fill="#c9d1d9" font-size="12" font-family="sans-serif">要怎麼做減法呢？</text>
+        <text x="580" y="215" text-anchor="middle" fill="#3fb950" font-size="12" font-family="sans-serif">✓ 先通分再相減</text>
+        <rect x="40" y="320" width="640" height="55" rx="8" fill="#21262d"/>
+        <circle cx="100" cy="347" r="15" fill="#238636"/>
+        <text x="100" y="352" text-anchor="middle" fill="#fff" font-size="14" font-family="sans-serif">✓</text>
+        <text x="140" y="352" fill="#3fb950" font-size="14" font-family="sans-serif">已完成 8/10 題 ⭐ 連對 5 題</text>
+        <rect x="480" y="330" width="150" height="34" rx="6" fill="#58a6ff"/>
+        <text x="555" y="352" text-anchor="middle" fill="#fff" font-size="14" font-family="sans-serif">下一題 →</text>
+      </svg>
+      <div class="demo-play-btn"></div>
+    </div>
+    <div class="demo-video-steps">
+      <div class="step"><div class="step-icon">📝</div><div class="step-text">AI 即時出題</div></div>
+      <div class="step"><div class="step-icon">💡</div><div class="step-text">三階段提示</div></div>
+      <div class="step"><div class="step-icon">🏆</div><div class="step-text">闖關得分</div></div>
+      <div class="step"><div class="step-icon">📊</div><div class="step-text">家長報告</div></div>
+    </div>
+  </section>
 
   <!-- ── Features ── -->
   <section class="features reveal">
