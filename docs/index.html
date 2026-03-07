@@ -1195,8 +1195,50 @@
   <!-- Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.register('sw.js').catch(function(){});
     }
+  </script>
+
+  <!-- Exit-Intent Popup -->
+  <div id="exitPopup" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;padding:24px">
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:16px;max-width:420px;width:100%;padding:32px 24px;text-align:center;position:relative">
+      <button id="exitPopupClose" style="position:absolute;top:10px;right:14px;background:none;border:none;color:#8b949e;font-size:1.4rem;cursor:pointer">&times;</button>
+      <div style="font-size:2.2rem;margin-bottom:8px">&#x1F44B;</div>
+      <h3 style="color:#fff;font-size:1.2rem;margin:0 0 8px">等一下！先試試免費闖關</h3>
+      <p style="color:#8b949e;font-size:0.9rem;margin:0 0 20px;line-height:1.6">
+        每天可以免費練習 10 題，不需註冊、不需信用卡。<br>
+        2,900+ 題精選國小數學，搭配 AI 三層提示引導。
+      </p>
+      <a href="./interactive-g5-empire/" style="display:block;background:#238636;color:#fff;padding:14px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem;margin-bottom:10px">&#x1F3F0; 免費開始闖關</a>
+      <a href="./pricing/" style="display:block;background:transparent;border:1px solid #58a6ff;color:#58a6ff;padding:12px;border-radius:8px;font-weight:600;text-decoration:none;font-size:0.92rem">查看升級方案</a>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var KEY = 'aimath_exit_popup_shown';
+    if (localStorage.getItem(KEY)) return;
+    var popup = document.getElementById('exitPopup');
+    var shown = false;
+    function show(){
+      if (shown) return;
+      shown = true;
+      popup.style.display = 'flex';
+      localStorage.setItem(KEY, '1');
+    }
+    /* Desktop: mouse leaves viewport top */
+    document.addEventListener('mouseout', function(e){
+      if (e.clientY < 5 && !e.relatedTarget) show();
+    });
+    /* Fallback: if user scrolls to bottom then scrolls back up fast */
+    var maxScroll = 0;
+    window.addEventListener('scroll', function(){
+      var y = window.pageYOffset;
+      if (y > maxScroll) maxScroll = y;
+      if (maxScroll > 800 && y < maxScroll - 400) show();
+    });
+    document.getElementById('exitPopupClose').onclick = function(){ popup.style.display = 'none'; };
+    popup.onclick = function(e){ if (e.target === popup) popup.style.display = 'none'; };
+  })();
   </script>
 </body>
 </html>
