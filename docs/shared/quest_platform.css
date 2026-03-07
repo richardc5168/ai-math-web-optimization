@@ -114,7 +114,8 @@
 }
 
 .quest-title { color: #fff; font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
-.quest-purpose { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.4; }
+.quest-purpose { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.4; transition: color 0.3s ease; }
+.quest-card:hover .quest-purpose { color: #c9d1d9; }
 
 .quest-meta {
   display: flex;
@@ -289,7 +290,8 @@
 .parent-card:hover .parent-icon { transform: scale(1.15) rotate(-8deg); }
 .parent-title { color: #fff; font-size: 0.98rem; font-weight: 700; margin: 0 0 6px; transition: color 0.3s ease; }
 .parent-card:hover .parent-title { color: var(--accent); }
-.parent-desc { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.5; }
+.parent-desc { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.5; transition: color 0.3s ease; }
+.parent-card:hover .parent-desc { color: #c9d1d9; }
 
 /* ── Mode Selector Cards ── */
 .mode-grid {
@@ -434,7 +436,9 @@
   color: #8b949e;
   font-size: 0.95rem;
   margin: 0;
+  transition: color 0.4s ease;
 }
+.section-quest:hover .section-quest-head p { color: #c9d1d9; }
 .section-quest { position:relative; }
 .section-quest::after { content:''; position:absolute; bottom:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(88,166,255,0.12),transparent); pointer-events:none; }
 .section-quest[style*="padding-top:0"]::after,
