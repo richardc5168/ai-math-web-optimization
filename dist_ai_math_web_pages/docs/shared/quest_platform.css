@@ -257,7 +257,8 @@
   background: linear-gradient(90deg, #a371f7, #58a6ff);
   border-radius: 12px 12px 0 0;
 }
-.parent-icon { font-size: 1.6rem; margin-bottom: 8px; }
+.parent-icon { font-size: 1.6rem; margin-bottom: 8px; transition: transform 0.3s ease; }
+.parent-card:hover .parent-icon { transform: scale(1.15); }
 .parent-title { color: #fff; font-size: 0.98rem; font-weight: 700; margin: 0 0 6px; }
 .parent-desc { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.5; }
 
@@ -410,10 +411,13 @@
 .quest-status-active {
   background: rgba(251,191,36,0.12);
   color: #fbbf24;
+  animation: statusGlow 2s ease-in-out infinite;
 }
+@keyframes statusGlow { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 6px rgba(251,191,36,0.3)} }
 .quest-status-done {
   background: rgba(63,185,80,0.12);
   color: #3fb950;
+  box-shadow: 0 0 6px rgba(63,185,80,0.15);
 }
 
 /* ── Dual CTA Row ── */
@@ -495,6 +499,8 @@
   transition: transform 0.2s;
 }
 .badge-item:hover { transform: scale(1.05); }
+.badge-item:hover .badge-icon { animation: badgePop .4s ease; }
+@keyframes badgePop { 0%{transform:scale(1)} 40%{transform:scale(1.3) rotate(-8deg)} 70%{transform:scale(0.95) rotate(4deg)} 100%{transform:scale(1) rotate(0)} }
 .badge-item .badge-icon { font-size: 1.4rem; }
 .badge-item.badge-locked { opacity: 0.45; }
 .badge-next {
@@ -634,4 +640,6 @@
   .benefit-card { transition:none; }
   .tc-progress-fill { transition:none; }
   .dash-card:hover .dash-val { animation:none; }
+  .badge-item:hover .badge-icon { animation:none; }
+  .quest-status-active { animation:none; }
 }
