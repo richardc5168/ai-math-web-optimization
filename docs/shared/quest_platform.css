@@ -304,8 +304,8 @@
 .mode-card.mode-sprint::before { background: linear-gradient(90deg, #f85149, #fb923c); }
 .mode-card.mode-topic::before { background: linear-gradient(90deg, #58a6ff, #a371f7); }
 
-.mode-icon { font-size: 2.8rem; margin-bottom: 12px; transition: transform 0.3s ease; }
-.mode-card:hover .mode-icon { transform: scale(1.15) rotate(-5deg); }
+.mode-icon { font-size: 2.8rem; margin-bottom: 12px; transition: transform 0.3s ease, filter 0.3s ease; }
+.mode-card:hover .mode-icon { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 4px 8px rgba(88,166,255,0.2)); }
 .mode-title { color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 8px; }
 .mode-who { color: var(--accent); font-size: 0.82rem; font-weight: 600; margin: 0 0 10px; }
 .mode-desc { color: #8b949e; font-size: 0.88rem; margin: 0 0 20px; line-height: 1.5; }
@@ -437,7 +437,17 @@
 .quest-status-new {
   background: rgba(88,166,255,0.12);
   color: #58a6ff;
+  position: relative;
+  overflow: hidden;
 }
+.quest-status-new::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: statusShimmer 3s ease-in-out infinite;
+}
+@keyframes statusShimmer { 0%{left:-100%} 50%{left:100%} 100%{left:100%} }
 .quest-status-active {
   background: rgba(251,191,36,0.12);
   color: #fbbf24;
