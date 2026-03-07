@@ -57,16 +57,18 @@
       --hero-gradient: linear-gradient(135deg, #0d1117 0%, #101824 40%, #0f1f30 100%);
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 
     /* ── Global Nav ── */
     .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); background: rgba(13,17,23,0.95); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     .top-nav .brand { font-size: 1.15rem; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
     .top-nav .brand img { width: 28px; height: 28px; border-radius: 6px; }
     .top-nav .nav-links { display: flex; gap: 18px; align-items: center; }
-    .top-nav .nav-links a { color: var(--text); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .top-nav .nav-links a { color: var(--text); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
     .top-nav .nav-links a:hover { color: #fff; }
-    .top-nav .nav-cta { background: var(--btn-bg); color: #fff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
+    .top-nav .nav-cta { background: var(--btn-bg); color: #fff; padding: 6px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: background 0.2s; }
     .top-nav .nav-cta:hover { background: var(--btn-hover); }
     @media (max-width: 640px) {
       .top-nav { padding: 10px 14px; }
