@@ -164,7 +164,14 @@
 
     /* ── Footer ── */
     .site-footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; }
+    .footer-grid { max-width:720px; margin:0 auto 24px; display:grid; grid-template-columns:repeat(3,1fr); gap:24px; text-align:left; }
     .footer-copy { color: #484f58; font-size: 0.78rem; }
+    @media (max-width: 640px) {
+      .footer-grid { grid-template-columns:1fr 1fr; gap:20px 16px; }
+    }
+    @media (max-width: 400px) {
+      .footer-grid { grid-template-columns:1fr; }
+    }
 
     /* ── CTA Banner ── */
     .cta-banner { text-align: center; padding: 50px 24px; }
@@ -732,8 +739,8 @@
   <!-- ══════════════════════════════════════════
        SECTION 7 — Testimonials
        ══════════════════════════════════════════ -->
-  <section class="testimonial-section reveal">
-    <h2>家長與老師的真實回饋</h2>
+  <section class="testimonial-section reveal" aria-labelledby="testimonialTitle">
+    <h2 id="testimonialTitle">&#x1F4AC; 家長與老師的真實回饋</h2>
     <div class="testimonial-grid">
       <div class="testimonial-card">
         <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
@@ -801,10 +808,10 @@
   <!-- ══════════════════════════════════════════
        SECTION 9 — Final CTA
        ══════════════════════════════════════════ -->
-  <section class="cta-banner reveal">
+  <section class="cta-banner reveal" style="background:linear-gradient(180deg,transparent,rgba(88,166,255,0.03) 30%,rgba(63,185,80,0.03) 70%,transparent);border-top:1px solid rgba(88,166,255,0.1);">
     <h2>今天開始，讓孩子把數學當成能闖關的遊戲</h2>
     <p>不只是多做題，而是每一題都知道自己在前進、在成長、在變強。</p>
-    <div class="dual-cta">
+    <div class="dual-cta" style="margin-bottom:8px;">
       <a href="./interactive-g5-empire/" class="cta-child">&#x2694;&#xFE0F; 開始今日挑戰</a>
       <a href="./report/" class="cta-parent">&#x1F4CA; 先看家長週報示範</a>
     </div>
@@ -822,8 +829,8 @@
   </section>
 
   <!-- ── Footer ── -->
-  <footer class="site-footer">
-    <div style="max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:left;margin-bottom:24px;">
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid">
       <div>
         <div style="color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:10px;">挑戰模式</div>
         <a href="./interactive-g5-empire/" style="display:block;color:#8b949e;text-decoration:none;font-size:0.82rem;padding:3px 0;">帝國闖關</a>
