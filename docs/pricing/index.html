@@ -107,6 +107,7 @@
     .billing-toggle .toggle-track .toggle-thumb { width: 22px; height: 22px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.2s; }
     .billing-toggle .toggle-track.on .toggle-thumb { left: 24px; }
     .billing-toggle .save-badge { background: #238636; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.annual-save{display:none;background:linear-gradient(135deg,#238636,#2ea043);color:#fff;font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:12px;margin-left:8px;animation:savePulse 2s ease-in-out infinite}.annual-save.show{display:inline-block}@keyframes savePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
   </style>
   <link rel="canonical" href="./">
   <script type="application/ld+json">
@@ -204,7 +205,7 @@
       <!-- Standard -->
       <div class="plan featured">
         <h2>�зǪ�</h2>
-        <div class="price" id="priceStd">NT$299 <span class="unit">/ ��</span></div>
+        <div class="price" id="priceStd"><span class="annual-save" id="saveStd"></span> NT$299 <span class="unit">/ ��</span></div>
         <p class="desc">�����D�w + �C���������A���Ĥl�R�W�m��</p>
         <ul>
           <li>�K�O���Ҧ��\��</li>
@@ -221,7 +222,7 @@
       <!-- Premium -->
       <div class="plan">
         <h2>�i����</h2>
-        <div class="price" id="pricePrem">NT$499 <span class="unit">/ ��</span></div>
+        <div class="price" id="pricePrem"><span class="annual-save" id="savePrem"></span> NT$499 <span class="unit">/ ��</span></div>
         <p class="desc">���\�� + �֤ߥ����ޡA�Ĩ�q��/�v�խ���</p>
         <ul>
           <li>�зǪ��Ҧ��\��</li>
@@ -476,5 +477,6 @@
   })();
   </script>
 <script src="../shared/cookie_consent.js"></script>
+<script>(function(){var o=window.setBilling;if(!o)return;window.setBilling=function(a){o(a);var s1=document.getElementById('saveStd');var s2=document.getElementById('savePrem');if(a){if(s1){s1.textContent='\u7701 NT$720/\u5E74';s1.className='annual-save show'}if(s2){s2.textContent='\u7701 NT$1200/\u5E74';s2.className='annual-save show'}}else{if(s1)s1.className='annual-save';if(s2)s2.className='annual-save'}}})()</script>
 </body>
 </html>
