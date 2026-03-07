@@ -28,4 +28,10 @@
   <url><loc>https://richardc5168.github.io/ai-math-web/parent-report/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://richardc5168.github.io/ai-math-web/privacy/</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://richardc5168.github.io/ai-math-web/terms/</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://richardc5168.github.io/ai-math-web/report/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://richardc5168.github.io/ai-math-web/coach/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://richardc5168.github.io/ai-math-web/qa/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://richardc5168.github.io/ai-math-web/quadratic/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://richardc5168.github.io/ai-math-web/linear/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://richardc5168.github.io/ai-math-web/agent-status/</loc><changefreq>daily</changefreq><priority>0.4</priority></url>
 </urlset>
