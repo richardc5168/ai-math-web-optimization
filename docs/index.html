@@ -146,8 +146,10 @@
     .stat-item { text-align: center; transition: transform 0.3s ease; }
     .stat-item:hover { transform: scale(1.08); }
     table tr:hover { background: rgba(88,166,255,0.04); }
-    .stat-num { font-size: 1.8rem; font-weight: 800; color: #fff; }
-    .stat-label { font-size: 0.82rem; color: #8b949e; }
+    .stat-num { font-size: 1.8rem; font-weight: 800; color: #fff; transition: color 0.3s ease, text-shadow 0.3s ease; }
+    .stat-item:hover .stat-num { color: var(--accent); text-shadow: 0 0 12px rgba(88,166,255,0.4); }
+    .stat-label { font-size: 0.82rem; color: #8b949e; transition: color 0.3s ease; }
+    .stat-item:hover .stat-label { color: #c9d1d9; }
     @media (max-width: 640px) {
       .stats-bar { gap: 20px; padding: 18px 16px; }
       .stat-num { font-size: 1.4rem; }
@@ -1064,6 +1066,14 @@
       links.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
       btn.innerHTML = '&#x2630;';
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && links.classList.contains('open')){
+        links.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '&#x2630;';
+        btn.focus();
+      }
     });
   })();
   </script>

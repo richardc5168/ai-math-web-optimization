@@ -486,19 +486,19 @@
       <h2 style="color:#fff;font-size:1.2rem;margin:0 0 8px;">&#x1F44B; 第一次來嗎？從這裡開始</h2>
       <p style="color:#8b949e;font-size:0.88rem;margin:0 0 24px;">不用被這麼多選項嚇到，跟著三步就能上手</p>
       <div class="onboard-steps">
-        <div class="onboard-step">
+        <div class="onboard-step stagger-1">
           <div class="onboard-step-num">1</div>
           <h4>先做一個暖身任務</h4>
           <p>簡單的小數計算，找回手感</p>
           <a href="../interactive-decimal-g5/" style="display:inline-block;margin-top:10px;color:var(--accent);text-decoration:none;font-weight:600;">開始暖身 &#x2192;</a>
         </div>
-        <div class="onboard-step">
+        <div class="onboard-step stagger-2">
           <div class="onboard-step-num">2</div>
           <h4>挑一個帝國主線關卡</h4>
           <p>答對就佔領地，不會的用提示</p>
           <a href="../interactive-g5-empire/" style="display:inline-block;margin-top:10px;color:var(--accent);text-decoration:none;font-weight:600;">進入帝國 &#x2192;</a>
         </div>
-        <div class="onboard-step">
+        <div class="onboard-step stagger-3">
           <div class="onboard-step-num">3</div>
           <h4>請家長看第一次週報</h4>
           <p>自動統計弱點，知道下一步</p>
@@ -589,6 +589,14 @@
       links.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
       btn.innerHTML = '&#x2630;';
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && links.classList.contains('open')){
+        links.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '&#x2630;';
+        btn.focus();
+      }
     });
   })();
   </script>
