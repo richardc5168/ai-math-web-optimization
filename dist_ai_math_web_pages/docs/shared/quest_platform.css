@@ -225,7 +225,7 @@
   transform: translateY(-4px);
   box-shadow: 0 6px 24px rgba(88,166,255,0.1);
 }
-.benefit-icon { font-size: 2.2rem; margin-bottom: 14px; }
+.benefit-icon { font-size: 2.2rem; margin-bottom: 14px; filter: drop-shadow(0 2px 6px rgba(88,166,255,0.2)); }
 .benefit-title { color: #fff; font-size: 1.05rem; font-weight: 700; margin: 0 0 8px; }
 .benefit-desc { color: #8b949e; font-size: 0.88rem; margin: 0; line-height: 1.5; }
 
@@ -523,6 +523,11 @@
   flex: 1 1 200px;
   max-width: 280px;
   position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.onboard-step:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
 }
 .onboard-step-num {
   display: inline-flex;
