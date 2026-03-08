@@ -322,7 +322,7 @@
   box-shadow: 0 10px 40px rgba(88,166,255,0.15);
   border-color: var(--accent);
 }
-.mode-card:hover .mode-title { text-shadow: 0 0 8px rgba(255,255,255,0.15); }
+.mode-card:hover .mode-title { text-shadow: 0 0 10px rgba(255,255,255,0.25); }
 .mode-price { transition: text-shadow 0.3s ease; }
 .mode-card:hover .mode-price { text-shadow: 0 0 10px currentColor; }
 .mode-card::before {
