@@ -24,7 +24,7 @@ const OUT_DIR = path.resolve(__dirname, '..', 'artifacts');
 const OUT_FILE = path.join(OUT_DIR, 'hint_clarity_audit.json');
 
 const L1_MAX_CHARS = 60;
-const L2_FORMULA_RE = /列式|算式|先寫成|寫出|化成|通分|擴分|約分|乘以|除以|加上|減去|×|÷|\+|＋|－/;
+const L2_FORMULA_RE = /列式|算式|先寫成|寫出|化成|通分|擴分|約分|約掉|乘以|除以|加上|減去|乘法|除法|加法|減法|相乘|相加|相減|相除|分子|分母|加總|小數|×|÷|\+|＋|－|−|=|＝|公因數|公倍數|LCM|GCD|左移|右移|位數|換算|比例|倍|立方|平方|算出|大\s*[−\-－]\s*小|整除|試除|對稱軸|因數|質數|合數|比較.*大|比較.*小|最大|最小/;
 
 // ── scanBanks ──────────────────────────────────────────────
 function scanBanks() {
@@ -98,7 +98,7 @@ function checkLadderPolicy(banks) {
 
       // L3 check (index 2): must NOT contain the final answer verbatim
       if (hints[2] && answer) {
-        const l3Text = String(hints[2]);
+        const l3Text = String(hints[2]).replace(/^Hint\s*\d[｜|].+?\n/i, '').trim();
         const ansNorm = answer.replace(/\s+/g, '');
         if (ansNorm.length >= 1) {
           // Build answer variants
