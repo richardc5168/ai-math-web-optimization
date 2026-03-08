@@ -474,9 +474,14 @@
     var raw = String(name || '').trim();
     var nameKey = normalizeName(raw);
     if (!nameKey) return Promise.resolve(null);
-    /* public gist — no auth required, has CORS */
+    /* authenticated read — avoids GitHub CDN cache (unauthenticated can be stale 5+ min) */
     return fetch(GIST_API, {
-      headers: { 'Accept': 'application/vnd.github+json' }
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': 'token ' + GIST_PAT,
+        'If-None-Match': ''
+      },
+      cache: 'no-store'
     })
     .then(function(resp){
       if (!resp.ok) return null;

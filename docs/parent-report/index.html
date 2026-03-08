@@ -108,9 +108,11 @@
           <div id="rptTime" class="small">—</div>
         </div>
       </div>
-      <div class="small" style="margin-top:6px">
-        最近 <span id="rptDays">7</span> 天作答狀況摘要
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
+        <div class="small">最近 <span id="rptDays">7</span> 天作答狀況摘要</div>
+        <button id="btnRefresh" class="primary" style="font-size:13px;padding:4px 12px;border-radius:8px">🔄 重新整理</button>
       </div>
+      <div id="cloudSyncTs" class="small" style="color:var(--muted);margin-top:4px"></div>
     </div>
 
     <!-- 24h snapshot -->
@@ -577,6 +579,7 @@
 
   /* ─── unlock logic ─── */
   document.getElementById('btnUnlock').addEventListener('click', unlock);
+  document.getElementById('btnRefresh').addEventListener('click', refreshReport);
   document.getElementById('pinInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') unlock();
   });
@@ -584,11 +587,43 @@
     if (e.key === 'Enter') document.getElementById('pinInput').focus();
   });
 
+  var _lastCloudTs = 0;
+  var _unlockName = '';
+  var _unlockPin = '';
+
   function showDashboard(d){
     hideStatus(); hidePinErr();
     document.getElementById('loginGate').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
     renderDashboard(d);
+    renderSyncTs();
+  }
+
+  function renderSyncTs(){
+    var el = document.getElementById('cloudSyncTs');
+    if (!el) return;
+    if (!_lastCloudTs){ el.textContent = ''; return; }
+    var ago = Math.round((Date.now() - _lastCloudTs) / 60000);
+    el.textContent = '☁️ 上次同步：' + (ago <= 0 ? '剛剛' : ago + ' 分鐘前');
+  }
+
+  function refreshReport(){
+    if (!_unlockName) return;
+    var btn = document.getElementById('btnRefresh');
+    if (btn){ btn.disabled = true; btn.textContent = '⏳ 查詢中…'; }
+    window.AIMathStudentAuth.lookupStudentReport(_unlockName)
+      .then(function(entry){
+        if (entry && entry.data && entry.data.d){
+          data = entry.data;
+          _lastCloudTs = entry.cloud_ts || 0;
+          renderDashboard(data);
+          renderSyncTs();
+        }
+      })
+      .catch(function(){})
+      .then(function(){
+        if (btn){ btn.disabled = false; btn.textContent = '🔄 重新整理'; }
+      });
   }
 
   function unlock(){
@@ -619,6 +654,9 @@
           return;
         }
         data = window.AIMathStudentAuth.collectReportData(7);
+        _unlockName = localName || name;
+        _unlockPin = pin;
+        _lastCloudTs = Date.now();
         if (window.AIMathStudentAuth.forceCloudSync){
           window.AIMathStudentAuth.forceCloudSync();
         } else if (window.AIMathStudentAuth.scheduleCloudSync){
@@ -654,6 +692,9 @@
           return;
         }
         data = entry.data;
+        _unlockName = name;
+        _unlockPin = pin;
+        _lastCloudTs = entry.cloud_ts || 0;
         document.getElementById('btnUnlock').disabled = false;
         showDashboard(data);
       })
