@@ -332,7 +332,7 @@
 .mode-card.mode-topic::before { background: linear-gradient(90deg, #58a6ff, #a371f7); }
 
 .mode-icon { font-size: 2.8rem; margin-bottom: 12px; transition: transform 0.3s ease, filter 0.3s ease; }
-.mode-card:hover .mode-icon { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 4px 8px rgba(88,166,255,0.2)); }
+.mode-card:hover .mode-icon { transform: scale(1.15) rotate(-5deg); filter: drop-shadow(0 4px 8px rgba(88,166,255,0.3)) brightness(1.1); }
 .mode-title { color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 8px; }
 .mode-who { color: var(--accent); font-size: 0.82rem; font-weight: 600; margin: 0 0 10px; }
 .mode-desc { color: #8b949e; font-size: 0.88rem; margin: 0 0 20px; line-height: 1.5; transition: color 0.3s ease; }
@@ -492,7 +492,9 @@
 .popular-badge {
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease;
 }
+.popular-badge:hover { transform: translateX(-50%) scale(1.05); }
 .popular-badge::after {
   content: '';
   position: absolute;
@@ -572,6 +574,7 @@
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 20px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
 .tc-progress-fill {
   height: 100%;
