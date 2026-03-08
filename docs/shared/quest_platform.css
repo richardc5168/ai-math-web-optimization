@@ -259,7 +259,8 @@
 .benefit-card:hover .benefit-icon { filter: drop-shadow(0 4px 10px rgba(88,166,255,0.35)) brightness(1.2); transform: scale(1.12); }
 .benefit-title { color: #fff; font-size: 1.05rem; font-weight: 700; margin: 0 0 8px; transition: color 0.3s ease; }
 .benefit-card:hover .benefit-title { color: var(--accent); }
-.benefit-desc { color: #8b949e; font-size: 0.88rem; margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.benefit-desc { color: #8b949e; font-size: 0.88rem; margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.3s ease; }
+.benefit-card:hover .benefit-desc { color: #c9d1d9; }
 
 /* ── Parent Value Cards ── */
 .parent-grid {
@@ -292,7 +293,7 @@
   border-radius: 12px 12px 0 0;
 }
 .parent-icon { font-size: 1.6rem; margin-bottom: 8px; transition: transform 0.3s ease; }
-.parent-card:hover .parent-icon { transform: scale(1.15) rotate(-8deg); }
+.parent-card:hover .parent-icon { transform: scale(1.15) rotate(-8deg); filter: drop-shadow(0 0 6px rgba(163,113,247,0.3)); }
 .parent-title { color: #fff; font-size: 0.98rem; font-weight: 700; margin: 0 0 6px; transition: color 0.3s ease; }
 .parent-card:hover .parent-title { color: var(--accent); }
 .parent-desc { color: #8b949e; font-size: 0.82rem; margin: 0; line-height: 1.5; transition: color 0.3s ease; }
