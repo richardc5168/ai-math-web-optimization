@@ -364,7 +364,7 @@
 }
 .mode-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(88,166,255,0.25);
+  box-shadow: 0 6px 18px rgba(88,166,255,0.35);
 }
 .mode-empire .mode-cta { background: linear-gradient(135deg, #238636, #2ea043); }
 .mode-empire .mode-cta:hover { background: linear-gradient(135deg, #2ea043, #3fb950); }
@@ -654,6 +654,7 @@
   transform: translateY(-3px);
   border-color: var(--accent);
   box-shadow: 0 4px 16px rgba(88,166,255,0.1);
+  border-left: 3px solid var(--accent);
 }
 .onboard-step-num {
   display: inline-flex;
