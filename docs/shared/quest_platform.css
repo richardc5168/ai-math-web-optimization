@@ -406,6 +406,7 @@
 .dash-val.val-blue { color: #58a6ff; }
 .dash-val.val-purple { color: #a371f7; }
 .dash-card:hover .dash-val.val-green { text-shadow: 0 0 12px rgba(63,185,80,0.3); }
+.dash-card:hover .dash-val.val-gold { text-shadow: 0 0 16px rgba(251,191,36,0.4); }
 .dash-card:hover .dash-val.val-blue { text-shadow: 0 0 12px rgba(88,166,255,0.3); }
 .dash-card:hover .dash-val.val-purple { text-shadow: 0 0 12px rgba(163,113,247,0.3); }
 .dash-lbl { font-size: 0.78rem; color: #8b949e; margin-top: 4px; transition: color 0.3s ease; }
