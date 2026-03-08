@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI 儀表板 — AI 數學家教</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Microsoft JhengHei',sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh}
+.header{background:#161b22;border-bottom:1px solid #30363d;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.header h1{font-size:1.3rem;color:#58a6ff}
+.header .actions{display:flex;gap:8px}
+.header button{background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.85rem}
+.header button:hover{border-color:#58a6ff;color:#58a6ff}
+.header .btn-export{background:#238636;border-color:#238636;color:#fff}
+.header .btn-export:hover{background:#2ea043}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px;text-align:center}
+.kpi-card .label{font-size:.8rem;color:#8b949e;margin-bottom:4px}
+.kpi-card .value{font-size:1.8rem;font-weight:700;color:#58a6ff}
+.kpi-card .sub{font-size:.75rem;color:#8b949e;margin-top:2px}
+.kpi-card.highlight .value{color:#3fb950}
+.kpi-card.warn .value{color:#d29922}
+.kpi-card.danger .value{color:#f85149}
+.section{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.section h2{font-size:1.05rem;color:#e6edf3;margin-bottom:12px;border-bottom:1px solid #30363d;padding-bottom:8px}
+.funnel-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.funnel-bar{height:28px;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:.8rem;font-weight:600;color:#fff;min-width:40px;transition:width .5s ease}
+.event-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.event-table th{text-align:left;padding:8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600}
+.event-table td{padding:8px;border-bottom:1px solid #21262d}
+.event-table tr:hover td{background:#1c2333}
+.empty-state{text-align:center;padding:40px;color:#8b949e}
+.time-filter{display:flex;gap:6px;margin-bottom:16px}
+.time-filter button{background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:.8rem}
+.time-filter button.active{background:#388bfd;border-color:#388bfd;color:#fff}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr}.kpi-card .value{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📊 KPI 儀表板</h1>
+  <div class="actions">
+    <button onclick="refreshData()">🔄 重新整理</button>
+    <button class="btn-export" onclick="exportData()">📥 匯出 JSON</button>
+    <a href="../" style="color:#8b949e;text-decoration:none;padding:6px 14px;font-size:.85rem;">← 首頁</a>
+  </div>
+</div>
+<div class="container">
+  <div class="time-filter">
+    <button class="active" data-range="7" onclick="setRange(7,this)">近 7 天</button>
+    <button data-range="30" onclick="setRange(30,this)">近 30 天</button>
+    <button data-range="0" onclick="setRange(0,this)">全部</button>
+  </div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="section">
+    <h2>🔄 轉換漏斗</h2>
+    <div id="funnel"></div>
+  </div>
+
+  <div class="section">
+    <h2>📈 事件分佈（前 15 名）</h2>
+    <table class="event-table">
+      <thead><tr><th>事件</th><th>次數</th><th>佔比</th></tr></thead>
+      <tbody id="eventDist"></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>🕐 最近事件（最新 50 筆）</h2>
+    <table class="event-table">
+      <thead><tr><th>時間</th><th>事件</th><th>使用者</th><th>頁面</th></tr></thead>
+      <tbody id="recentEvents"></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="../shared/analytics.js"></script>
+<script src="../shared/subscription.js"></script>
+<script>
+(function(){
+  'use strict';
+  var currentRange = 7;
+
+  function setRange(days, btn){
+    currentRange = days;
+    document.querySelectorAll('.time-filter button').forEach(function(b){b.classList.remove('active')});
+    if(btn) btn.classList.add('active');
+    render();
+  }
+  window.setRange = setRange;
+
+  function getFilteredEvents(){
+    if(!window.AIMathAnalytics) return [];
+    var opts = {};
+    if(currentRange > 0) opts.sinceMs = currentRange * 86400000;
+    return window.AIMathAnalytics.query(opts);
+  }
+
+  function render(){
+    var events = getFilteredEvents();
+    var all = window.AIMathAnalytics ? window.AIMathAnalytics.query({}) : [];
+    renderKPIs(events, all);
+    renderFunnel(all);
+    renderEventDist(events);
+    renderRecent(events);
+  }
+
+  function renderKPIs(events, all){
+    var grid = document.getElementById('kpiGrid');
+    var uniqueUsers = {};
+    events.forEach(function(e){if(e.user_id) uniqueUsers[e.user_id]=1});
+    var userCount = Object.keys(uniqueUsers).length;
+
+    function cnt(name){return events.filter(function(e){return e.event===name}).length}
+    var submits = cnt('question_submit') + cnt('question_correct');
+    var corrects = cnt('question_correct');
+    var accuracy = submits > 0 ? Math.round(corrects/submits*100) : 0;
+    var hints = cnt('hint_open');
+    var trialStarts = cnt('trial_start');
+    var checkouts = cnt('checkout_success');
+    var convRate = trialStarts > 0 ? Math.round(checkouts/trialStarts*100) : 0;
+
+    var cards = [
+      {label:'總事件數',value:events.length,cls:''},
+      {label:'獨立使用者',value:userCount,cls:'highlight'},
+      {label:'答題數',value:submits,cls:''},
+      {label:'正確率',value:accuracy+'%',cls:accuracy>=70?'highlight':accuracy>=50?'warn':'danger'},
+      {label:'提示使用',value:hints,cls:''},
+      {label:'試用開通',value:trialStarts,cls:'highlight'},
+      {label:'付費成功',value:checkouts,cls:'highlight'},
+      {label:'Trial→付費',value:convRate+'%',cls:convRate>=10?'highlight':'warn'},
+      {label:'Landing 瀏覽',value:cnt('landing_page_view'),cls:''},
+      {label:'Pricing 瀏覽',value:cnt('pricing_view'),cls:''},
+      {label:'週報瀏覽',value:cnt('weekly_report_view'),cls:''},
+      {label:'升級點擊',value:cnt('upgrade_click'),cls:'warn'}
+    ];
+
+    grid.innerHTML = cards.map(function(c){
+      return '<div class="kpi-card '+c.cls+'"><div class="label">'+c.label+'</div><div class="value">'+c.value+'</div></div>';
+    }).join('');
+  }
+
+  function renderFunnel(all){
+    var funnel = document.getElementById('funnel');
+    var steps = [
+      {name:'Landing 瀏覽',event:'landing_page_view',color:'#388bfd'},
+      {name:'Pricing 瀏覽',event:'pricing_view',color:'#a371f7'},
+      {name:'升級點擊',event:'upgrade_click',color:'#d29922'},
+      {name:'試用開通',event:'trial_start',color:'#3fb950'},
+      {name:'結帳開始',event:'checkout_start',color:'#58a6ff'},
+      {name:'付費成功',event:'checkout_success',color:'#238636'}
+    ];
+    var maxCount = 1;
+    steps.forEach(function(s){
+      s.count = all.filter(function(e){return e.event===s.event}).length;
+      if(s.count > maxCount) maxCount = s.count;
+    });
+    funnel.innerHTML = steps.map(function(s){
+      var w = Math.max(5, Math.round(s.count/maxCount*100));
+      return '<div class="funnel-row"><span style="width:100px;font-size:.8rem;color:#8b949e;flex-shrink:0">'+s.name+'</span>'
+        +'<div class="funnel-bar" style="width:'+w+'%;background:'+s.color+'">'+s.count+'</div></div>';
+    }).join('');
+  }
+
+  function renderEventDist(events){
+    var tbody = document.getElementById('eventDist');
+    var counts = {};
+    events.forEach(function(e){counts[e.event]=(counts[e.event]||0)+1});
+    var sorted = Object.keys(counts).sort(function(a,b){return counts[b]-counts[a]}).slice(0,15);
+    var total = events.length || 1;
+    tbody.innerHTML = sorted.map(function(name){
+      var c = counts[name];
+      return '<tr><td>'+name+'</td><td>'+c+'</td><td>'+Math.round(c/total*100)+'%</td></tr>';
+    }).join('') || '<tr><td colspan="3" class="empty-state">尚無事件資料</td></tr>';
+  }
+
+  function renderRecent(events){
+    var tbody = document.getElementById('recentEvents');
+    var recent = events.slice(-50).reverse();
+    tbody.innerHTML = recent.map(function(e){
+      var d = new Date(e.ts);
+      var time = d.toLocaleDateString('zh-TW')+ ' ' +d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+      var page = (e.page||'').replace(/.*\/docs\//,'/').replace(/\/index\.html$/,'');
+      return '<tr><td>'+time+'</td><td>'+e.event+'</td><td>'+(e.user_id||'-')+'</td><td>'+page+'</td></tr>';
+    }).join('') || '<tr><td colspan="4" class="empty-state">尚無事件資料</td></tr>';
+  }
+
+  function refreshData(){render()}
+  window.refreshData = refreshData;
+
+  function exportData(){
+    if(!window.AIMathAnalytics) return;
+    var json = window.AIMathAnalytics.exportJSON();
+    var blob = new Blob([json],{type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'aimath_analytics_'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  window.exportData = exportData;
+
+  document.addEventListener('DOMContentLoaded', function(){
+    if(window.AIMathAnalytics) window.AIMathAnalytics.track('kpi_dashboard_view',{});
+    render();
+  });
+})();
+</script>
+</body>
+</html>

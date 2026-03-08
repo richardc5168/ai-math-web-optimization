@@ -53,6 +53,29 @@
     }
 
     const ok = saveLog(userId, log);
+
+    // Bridge to AIMathAnalytics if available
+    if (window.AIMathAnalytics && typeof window.AIMathAnalytics.track === 'function'){
+      try {
+        var evName = attemptEvent.is_correct ? 'question_correct' : 'question_submit';
+        window.AIMathAnalytics.track(evName, {
+          unit_id: attemptEvent.unit_id,
+          question_id: attemptEvent.question_id,
+          kind: attemptEvent.kind,
+          is_correct: attemptEvent.is_correct,
+          attempts_count: attemptEvent.attempts_count,
+          hint_shown: attemptEvent.hint ? attemptEvent.hint.shown_count : 0
+        });
+        if (attemptEvent.hint && attemptEvent.hint.shown_count > 0){
+          window.AIMathAnalytics.track('hint_open', {
+            unit_id: attemptEvent.unit_id,
+            question_id: attemptEvent.question_id,
+            levels: attemptEvent.hint.shown_levels
+          });
+        }
+      } catch(e){}
+    }
+
     return { ok, size: log.attempts.length };
   }
 
