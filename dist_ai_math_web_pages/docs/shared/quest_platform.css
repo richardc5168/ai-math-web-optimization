@@ -66,7 +66,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), #3fb950);
+  background: linear-gradient(90deg, var(--accent), #a371f7, #3fb950);
   border-radius: 14px 14px 0 0;
 }
 .quest-card.quest-main::before {
