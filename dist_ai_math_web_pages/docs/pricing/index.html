@@ -192,7 +192,7 @@
           <li>家長週報（本機版）</li>
           <li>離線可用（PWA）</li>
         </ul>
-        <a href="../exam-sprint/" class="btn btn-outline" onclick="trackPricingClick('free')">免費開始</a>
+        <a href="../exam-sprint/" class="btn btn-outline" onclick="trackPricingClick('free','pricing_free_start')">免費開始</a>
       </div>
 
       <!-- Standard -->
@@ -209,7 +209,7 @@
           <li>遠端家長報告（手機查看）</li>
           <li>每日任務 + 學習節奏建議</li>
         </ul>
-        <button class="btn" onclick="handleCheckout('standard')">🎁 免費試用 7 天</button>
+        <button class="btn" onclick="handleCheckout('standard','pricing_standard_trial')">🎁 免費試用 7 天</button>
       </div>
 
       <!-- Premium -->
@@ -226,7 +226,7 @@
           <li>優先取得新題庫更新</li>
           <li>專屬學習進度追蹤</li>
         </ul>
-        <button class="btn" onclick="handleCheckout('family')">🎁 免費試用 7 天</button>
+        <button class="btn" onclick="handleCheckout('family','pricing_family_trial')">🎁 免費試用 7 天</button>
       </div>
     </div>
 
@@ -256,9 +256,9 @@
         </tbody>
       </table>
       <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap;">
-        <a href="#pricing-cards" style="display:inline-block;background:transparent;color:var(--text);border:1px solid var(--border);padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;">免費開始</a>
-        <a href="#pricing-cards" style="display:inline-block;background:var(--accent);color:#fff;padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;">選擇標準版</a>
-        <a href="#pricing-cards" style="display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;">選擇進階版</a>
+        <a href="../exam-sprint/" onclick="trackPricingClick('free','pricing_compare_free')" style="display:inline-block;background:transparent;color:var(--text);border:1px solid var(--border);padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;">免費開始</a>
+        <a href="#pricing-cards" onclick="handleCheckout('standard','pricing_compare_standard');return false;" style="display:inline-block;background:var(--accent);color:#fff;padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;">選擇標準版</a>
+        <a href="#pricing-cards" onclick="handleCheckout('family','pricing_compare_family');return false;" style="display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.9rem;">選擇進階版</a>
       </div>
     </div>
 
@@ -476,14 +476,31 @@
 
 <script>
 var _checkoutPlan = 'standard';
+var _checkoutSource = 'pricing_standard_trial';
 
-function trackPricingClick(plan){
-  if (window.AIMathAnalytics) window.AIMathAnalytics.track('upgrade_click', { plan: plan, source: 'pricing_page' });
+function trackPricingClick(plan, source){
+  var payload = {
+    context: 'pricing',
+    cta_source: source || 'pricing_page'
+  };
+  if (window.AIMathSubscription && typeof window.AIMathSubscription.trackUpgradeClick === 'function') {
+    window.AIMathSubscription.trackUpgradeClick(plan, payload);
+    return;
+  }
+  if (window.AIMathAnalytics) {
+    window.AIMathAnalytics.track('upgrade_click', {
+      plan: plan,
+      plan_type: plan,
+      context: payload.context,
+      cta_source: payload.cta_source
+    });
+  }
 }
 
-function handleCheckout(plan){
+function handleCheckout(plan, source){
   _checkoutPlan = plan;
-  trackPricingClick(plan);
+  _checkoutSource = source || ('pricing_' + plan + '_trial');
+  trackPricingClick(plan, _checkoutSource);
 
   var sub = window.AIMathSubscription ? window.AIMathSubscription.getPlanInfo() : null;
   if (sub && (sub.plan_status === 'paid_active' || sub.plan_status === 'trial')){
@@ -510,7 +527,14 @@ function handleCheckout(plan){
 
 function confirmTrial(){
   if (window.AIMathSubscription){
-    window.AIMathSubscription.startTrial(_checkoutPlan);
+    window.AIMathSubscription.startCheckout(_checkoutPlan, {
+      context: 'pricing',
+      cta_source: _checkoutSource
+    });
+    window.AIMathSubscription.startTrial(_checkoutPlan, {
+      context: 'pricing',
+      cta_source: _checkoutSource
+    });
   }
   document.getElementById('btnConfirmTrial').style.display = 'none';
   document.getElementById('checkoutSuccess').style.display = 'block';
@@ -525,7 +549,16 @@ document.getElementById('checkoutModal').addEventListener('click', function(e){
 });
 
 // Track pricing page view
-if (window.AIMathAnalytics) window.AIMathAnalytics.track('pricing_view', {});
+(function(){
+  if (!window.AIMathAnalytics) return;
+  var info = window.AIMathSubscription ? window.AIMathSubscription.getPlanInfo() : null;
+  window.AIMathAnalytics.track('pricing_view', {
+    context: 'pricing',
+    cta_source: 'pricing_page_view',
+    plan_type: info ? info.plan_type : 'free',
+    plan_status: info ? info.plan_status : 'free'
+  });
+})();
 
 // A/B Test: trial button color
 (function(){

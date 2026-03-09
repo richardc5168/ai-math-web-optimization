@@ -2,7 +2,7 @@
  * AIMathSubscription — 前端訂閱狀態管理
  *
  * 儲存 key: aimath_subscription_v1
- * 方案狀態流：free → trial → paid_active → expired
+ * 方案狀態流：free → checkout_pending → trial / paid_active → expired
  *
  * Mock mode: 完整模擬付費流程，未來可替換為 Stripe webhook。
  * 所有狀態變更都會觸發 analytics event（如果 AIMathAnalytics 可用）。
@@ -10,6 +10,16 @@
 (function(){
   'use strict';
   var KEY = 'aimath_subscription_v1';
+  var CTA_SOURCE_BY_CONTEXT = {
+    'generic': 'upgrade_generic',
+    'post-question': 'upgrade_post_question',
+    'parent-report': 'upgrade_parent_report',
+    'weakness': 'upgrade_weakness',
+    'daily-limit': 'upgrade_daily_limit',
+    'pricing': 'pricing_page',
+    'pricing-standard': 'pricing_standard_trial',
+    'pricing-family': 'pricing_family_trial'
+  };
 
   /* ─── 方案定義 ─── */
   var PLANS = {
@@ -45,6 +55,38 @@
     try { localStorage.setItem(KEY, JSON.stringify(sub)); } catch(e){}
   }
 
+  function defaultSourceForContext(context){
+    return CTA_SOURCE_BY_CONTEXT[String(context || 'generic')] || CTA_SOURCE_BY_CONTEXT.generic;
+  }
+
+  function normalizeMeta(meta){
+    if (typeof meta === 'string') meta = { cta_source: meta };
+    meta = meta || {};
+    return {
+      context: String(meta.context || 'generic'),
+      cta_source: String(meta.cta_source || meta.source || defaultSourceForContext(meta.context))
+    };
+  }
+
+  function buildEventPayload(planType, meta, extra){
+    var sub = getSub();
+    var normalized = normalizeMeta(meta);
+    var payload = {
+      plan: planType || sub.plan_type,
+      plan_type: planType || sub.plan_type,
+      plan_status: sub.plan_status,
+      context: normalized.context,
+      cta_source: normalized.cta_source
+    };
+    var ext = extra || {};
+    for (var key in ext){
+      if (Object.prototype.hasOwnProperty.call(ext, key) && ext[key] != null){
+        payload[key] = ext[key];
+      }
+    }
+    return payload;
+  }
+
   function getSub(){
     var sub = load();
     if (!sub) {
@@ -56,7 +98,12 @@
       if (sub.plan_status === 'trial' || sub.plan_status === 'paid_active'){
         sub.plan_status = 'expired';
         save(sub);
-        trackEvent('subscription_expired', { plan: sub.plan_type });
+        trackEvent('subscription_expired', buildEventPayload(sub.plan_type, {
+          context: 'subscription-expiry',
+          cta_source: 'subscription_expiry_auto'
+        }, {
+          expire: sub.expire_at
+        }));
       }
     }
     return sub;
@@ -109,8 +156,12 @@
     };
   }
 
+  function trackUpgradeClick(planType, meta){
+    trackEvent('upgrade_click', buildEventPayload(planType, meta));
+  }
+
   /* ─── 狀態變更 ─── */
-  function startTrial(planType){
+  function startTrial(planType, meta){
     var plan = planType || 'standard';
     if (!PLANS[plan]) plan = 'standard';
     var now = new Date();
@@ -121,7 +172,10 @@
     sub.trial_start = now.toISOString();
     sub.expire_at = expire.toISOString();
     save(sub);
-    trackEvent('trial_start', { plan: plan, expire: sub.expire_at });
+    trackEvent('trial_start', buildEventPayload(plan, meta, {
+      expire: sub.expire_at,
+      trial_start: sub.trial_start
+    }));
     // A/B conversion: trial start is conversion for trial_btn_color + free_limit
     if (window.AIMathABTest){
       window.AIMathABTest.trackConversion('trial_btn_color', 'trial_start', { plan: plan });
@@ -130,16 +184,16 @@
     return sub;
   }
 
-  function startCheckout(planType){
+  function startCheckout(planType, meta){
     var sub = getSub();
     sub.plan_type = planType || sub.plan_type || 'standard';
     sub.plan_status = 'checkout_pending';
     save(sub);
-    trackEvent('checkout_start', { plan: sub.plan_type });
+    trackEvent('checkout_start', buildEventPayload(sub.plan_type, meta));
     return sub;
   }
 
-  function confirmPayment(planType){
+  function confirmPayment(planType, meta){
     var now = new Date();
     var expire = new Date(now.getTime() + 30 * 86400000); // 月繳
     var sub = getSub();
@@ -148,7 +202,10 @@
     sub.paid_start = now.toISOString();
     sub.expire_at = expire.toISOString();
     save(sub);
-    trackEvent('checkout_success', { plan: sub.plan_type, expire: sub.expire_at });
+    trackEvent('checkout_success', buildEventPayload(sub.plan_type, meta, {
+      expire: sub.expire_at,
+      paid_start: sub.paid_start
+    }));
     // A/B conversion: checkout success
     if (window.AIMathABTest){
       window.AIMathABTest.trackConversion('trial_btn_color', 'checkout_success', { plan: sub.plan_type });
@@ -157,11 +214,11 @@
     return sub;
   }
 
-  function cancelSubscription(){
+  function cancelSubscription(meta){
     var sub = getSub();
     sub.plan_status = 'expired';
     save(sub);
-    trackEvent('subscription_cancel', { plan: sub.plan_type });
+    trackEvent('subscription_cancel', buildEventPayload(sub.plan_type, meta));
     return sub;
   }
 
@@ -198,10 +255,14 @@
   }
 
   /* ─── Upgrade CTA HTML ─── */
-  function buildUpgradeCTA(context){
+  function buildUpgradeCTA(context, options){
     var ctx = context || 'generic';
+    var opts = options || {};
     var sub = getSub();
-    var plan = PLANS[sub.plan_type] || PLANS.free;
+    var trialPlan = opts.planType || 'standard';
+    var normalized = normalizeMeta({ context: ctx, cta_source: opts.cta_source });
+    var trialSource = normalized.cta_source + '_trial';
+    var pricingSource = normalized.cta_source + '_pricing';
 
     if (isPaid()) return ''; // 已付費不顯示
 
@@ -217,7 +278,7 @@
 
     var trialBtn = '';
     if (sub.plan_status === 'free'){
-      trialBtn = '<button onclick="AIMathSubscription.startTrial(\'standard\');location.reload();" '
+      trialBtn = '<button onclick="AIMathSubscription.trackUpgradeClick(\'' + trialPlan + '\',{context:\'' + ctx + '\',cta_source:\'' + trialSource + '\'});AIMathSubscription.startCheckout(\'' + trialPlan + '\',{context:\'' + ctx + '\',cta_source:\'' + trialSource + '\'});AIMathSubscription.startTrial(\'' + trialPlan + '\',{context:\'' + ctx + '\',cta_source:\'' + trialSource + '\'});location.reload();" '
         + 'style="display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:10px 20px;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;margin-right:8px;">'
         + '🎁 免費試用 7 天</button>';
     }
@@ -226,7 +287,7 @@
       + '<div style="color:#c9d1d9;font-size:.92rem;margin-bottom:12px;">' + msg + '</div>'
       + '<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">'
       + trialBtn
-      + '<a href="../pricing/" style="display:inline-block;border:1px solid #58a6ff;color:#58a6ff;padding:10px 20px;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem;">'
+      + '<a href="../pricing/" onclick="AIMathSubscription.trackUpgradeClick(\'' + trialPlan + '\',{context:\'' + ctx + '\',cta_source:\'' + pricingSource + '\'});" style="display:inline-block;border:1px solid #58a6ff;color:#58a6ff;padding:10px 20px;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem;">'
       + '💰 查看方案</a>'
       + '</div>'
       + (sub.plan_status === 'expired' ? '<div style="color:#f85149;font-size:.8rem;margin-top:8px;">試用已到期，升級繼續使用完整功能</div>' : '')
@@ -245,6 +306,7 @@
     getPlanType: getPlanType,
     getPlanStatus: getPlanStatus,
     getPlanInfo: getPlanInfo,
+    trackUpgradeClick: trackUpgradeClick,
     isPaid: isPaid,
     isTrial: isTrial,
     isExpired: isExpired,

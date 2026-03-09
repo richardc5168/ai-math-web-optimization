@@ -11,6 +11,9 @@
   // A/B test: lazily override FREE_LIMIT when free_limit test is available
   function getLimit(){
     try {
+      if (window.AIMathSubscription && window.AIMathSubscription.PLANS && window.AIMathSubscription.PLANS.free) {
+        return Number(window.AIMathSubscription.PLANS.free.limit || FREE_LIMIT);
+      }
       if (window.AIMathABTest) {
         var cfg = window.AIMathABTest.getVariantConfig('free_limit');
         if (cfg && typeof cfg.limit === 'number') return cfg.limit;
@@ -71,7 +74,6 @@
   }
 
   function buildUpgradeHTML(){
-    var mailLink = 'mailto:' + CONTACT_EMAIL + '?subject=' + CONTACT_SUBJECT + '&body=' + CONTACT_BODY;
     return '<div style="text-align:center;padding:20px 0;">'
       + '<div style="font-size:2rem;margin-bottom:8px;">&#x26A0;&#xFE0F;</div>'
       + '<div style="font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:8px;">'
@@ -81,9 +83,9 @@
       + '\u5347\u7d1a\u5f8c\u6bcf\u5929\u4e0d\u9650\u984c\u6578\uff0c\u89e3\u9396\u5b8c\u6574 2,900+ \u984c\u5eab\u3001\u5bb6\u9577\u9031\u5831\u3001AI \u88dc\u6551\u5efa\u8b70'
       + '</div>'
       + '<div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">'
-      + '<a href="' + mailLink + '" style="display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem;">'
-      + '\u2709\ufe0f \u514d\u8cbb\u8a66\u7528 7 \u5929</a>'
-      + '<a href="../pricing/" style="display:inline-block;background:transparent;border:1px solid #58a6ff;color:#58a6ff;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem;">'
+      + '<button onclick="if(window.AIMathSubscription){window.AIMathSubscription.trackUpgradeClick(\'standard\',{context:\'daily-limit\',cta_source:\'upgrade_daily_limit_trial\'});window.AIMathSubscription.startCheckout(\'standard\',{context:\'daily-limit\',cta_source:\'upgrade_daily_limit_trial\'});window.AIMathSubscription.startTrial(\'standard\',{context:\'daily-limit\',cta_source:\'upgrade_daily_limit_trial\'});}location.reload();" style="display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:12px 24px;border:none;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem;cursor:pointer;">'
+      + '\ud83c\udf81 \u514d\u8cbb\u8a66\u7528 7 \u5929</button>'
+      + '<a href="../pricing/" onclick="if(window.AIMathSubscription){window.AIMathSubscription.trackUpgradeClick(\'standard\',{context:\'daily-limit\',cta_source:\'upgrade_daily_limit_pricing\'});}" style="display:inline-block;background:transparent;border:1px solid #58a6ff;color:#58a6ff;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:0.95rem;">'
       + '\u67e5\u770b\u65b9\u6848\u8207\u50f9\u683c</a>'
       + '</div>'
       + '<div style="color:#3fb950;font-size:0.82rem;margin-bottom:8px;">'
