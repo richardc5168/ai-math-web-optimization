@@ -133,7 +133,8 @@
 | 明星場景內容包 | 已完成 | star-pack 頁、四大主題入口、免費/付費 gating |
 | 家長週報 V2 | 已完成 | 概念雷達、補救排序、週報 gating、推薦題組連結 |
 | Landing Page 改版 | 已完成 | Hero、痛點、使用情境、方案預覽、CTA 追蹤 |
-| A/B Testing | 已完成 | 5 個測試設定、variant assignment、conversion tracking、KPI A/B dashboard |
+| A/B Testing | 已完成 | 9 個測試設定、variant assignment、conversion tracking、KPI A/B dashboard |
+| Release Gate / Autonomous Reviewer | 已完成 | release gate 文件、8 小時迭代 reviewer instructions、solution logic audit script |
 
 ---
 
@@ -173,12 +174,12 @@
 |------|:------:|----------|
 | 訂閱/收費 | 75% | 無正式金流；localStorage-only |
 | 每日限制/權限 | 95% | 18/18 模組已掛載 |
-| 事件追蹤 | 70% | 6 事件已定義但未實作 |
-| 明星場景 | 85% | 缺進度條、完成事件 |
-| 家長週報 | 90% | 缺週對週比較；GIST_PAT 暴露 |
-| Landing Page | 80% | CTA 無追蹤；2 A/B 測試未接線 |
-| A/B 測試 | 40% | 3/5 測試已分組但無效果 |
-| 文件 | 95% | 新增 MVP_GAP_LIST.md |
+| 事件追蹤 | 85% | cohort retention 與後端化仍待補強 |
+| 明星場景 | 92% | pack 完成事件與更細單題 metadata 仍可再補 |
+| 家長週報 | 92% | GIST_PAT 暴露；規則式 recommendation 仍可再強化 |
+| Landing Page | 92% | 仍需以真實流量驗證文案效果 |
+| A/B 測試 | 85% | 已擴充 9 個測試，但樣本量仍需累積 |
+| 文件 | 98% | release gate 與 reviewer docs 已補齊 |
 
 > 詳細缺口清單見 MVP_GAP_LIST.md
 
@@ -228,3 +229,129 @@
 
 ### Week 11-12：A/B Testing + 優化
 - 擴充更多測試位點，保留最小可行迭代節奏
+
+---
+
+## 8. 以現有架構落地四大商業主軸
+
+### 8.1 收費閉環資料流
+
+```mermaid
+flowchart LR
+	A[docs/index.html<br/>首頁 CTA] --> B[docs/pricing/index.html<br/>pricing_view]
+	B --> C[docs/shared/subscription.js<br/>startTrial or startCheckout]
+	C --> D[localStorage aimath_subscription_v1]
+	D --> E[docs/shared/daily_limit.js<br/>免費額度 gate]
+	D --> F[docs/parent-report/index.html<br/>完整週報 gate]
+	D --> G[docs/star-pack/index.html<br/>明星題組 gate]
+	C --> H[docs/shared/analytics.js<br/>trial_start / checkout_start / checkout_success]
+```
+
+關鍵檔案與責任：
+
+- `docs/shared/subscription.js`：訂閱狀態機、mock checkout、plan status API
+- `docs/pricing/index.html`：方案比較、升級入口、pricing view 事件
+- `docs/shared/daily_limit.js`：免費版題數限制
+- `docs/shared/student_auth.js`：學生身分與家長 PIN
+- `server.py`, `app_identity.py`：未來正式 payment provider / subscription reconcile 的可延伸後端落點
+
+### 8.2 留存與轉換資料流
+
+```mermaid
+flowchart LR
+	A[各模組頁面] --> B[docs/shared/attempt_telemetry.js]
+	B --> C[localStorage ai_math_attempts_v1::user]
+	A --> D[docs/shared/analytics.js]
+	D --> E[localStorage aimath_analytics_v1]
+	E --> F[docs/kpi/index.html]
+	E --> G[exportJSON]
+	C --> H[docs/parent-report/index.html]
+```
+
+關鍵路由：
+
+- `docs/index.html`：`landing_page_view`
+- `docs/pricing/index.html`：`pricing_view`, `upgrade_click`
+- `docs/*/index.html` 練習頁：`question_start`, `question_submit`, `question_correct`, `hint_open`, `retry_start`, `session_complete`
+- `docs/parent-report/index.html`：`weekly_report_view`, `remedial_recommendation_click`
+- `docs/kpi/index.html`：漏斗、KPI、A/B conversion summary
+
+### 8.3 明星場景資料流
+
+```mermaid
+flowchart LR
+	A[docs/star-pack/index.html] --> B[pack 定義與 topic cards]
+	B --> C[fraction-g5 / fraction-word-g5]
+	B --> D[interactive-decimal-g5 / decimal-unit4]
+	B --> E[ratio-percent-g5]
+	B --> F[life-applications-g5]
+	C --> G[attempt_telemetry]
+	D --> G
+	E --> G
+	F --> G
+	G --> H[parent-report / KPI]
+```
+
+可直接重用的明星模組：
+
+- 分數：`docs/fraction-g5/`, `docs/fraction-word-g5/`, `docs/commercial-pack1-fraction-sprint/`
+- 小數：`docs/interactive-decimal-g5/`, `docs/decimal-unit4/`
+- 百分率：`docs/ratio-percent-g5/`
+- 生活應用：`docs/life-applications-g5/`, `docs/interactive-g5-life-pack*-empire/`
+
+### 8.4 家長週報與補救建議資料流
+
+```mermaid
+flowchart LR
+	A[attempt_telemetry.js] --> B[docs/parent-report/index.html]
+	C[coach_event_log.js] --> B
+	D[Gist cloud report data] --> B
+	B --> E[雷達 / 問題診斷 / 下週建議]
+	E --> F[推薦題組深連結]
+	F --> G[star-pack 或指定 module]
+	B --> H[weekly_report_view / remedial_recommendation_click]
+```
+
+後端與規則式可延伸點：
+
+- `learning/parent_report.py`：summary / analytics / plan / practice_set 聚合
+- `learning/remediation.py`：skill mapping 與補救推薦規則
+- `docs/parent-report/index.html`：前端展示、付費 gating、CTA 深連結
+
+---
+
+## 9. 八階段持續 8 小時優化迭代節奏
+
+原則：每一階段都只做最小可行變更，完成後立刻驗證，再做一個乾淨 commit。不要把 generated noise、內容優化、商業文案、事件 schema 混在同一個 commit。
+
+| 階段 | 聚焦 | 主要檔案 | 驗證 | 建議 commit 訊息 |
+|------|------|----------|------|------------------|
+| 1 | 基線盤點與 frozen scope | `MONETIZATION_MVP_AUDIT.md`, `MVP_GAP_LIST.md`, `ROADMAP_12_WEEKS.md` | `python tools/validate_all_elementary_banks.py`, `python scripts/verify_all.py` | `docs: refresh monetization audit baseline` |
+| 2 | 收費閉環強化 | `docs/shared/subscription.js`, `docs/pricing/index.html`, `docs/shared/daily_limit.js`, `docs/index.html` | 本地 flow walkthrough + 上述驗證 | `feat: harden monetization payment loop` |
+| 3 | 事件 schema 正規化 | `docs/shared/analytics.js`, `docs/shared/attempt_telemetry.js`, `ANALYTICS_SCHEMA.md`, `docs/kpi/index.html` | KPI 檢查 + 事件輸出 | `feat: normalize monetization analytics events` |
+| 4 | 明星場景 pack 成交入口 | `docs/star-pack/index.html`, pack metadata 來源檔 | pack 入口、題後回報、gate 驗證 | `feat: sharpen featured star pack funnel` |
+| 5 | 家長週報與補救 CTA | `docs/parent-report/index.html`, `learning/parent_report.py`, `learning/remediation.py` | 週報 UI + 深連結 + gate 驗證 | `feat: strengthen parent report conversion loop` |
+| 6 | 首頁轉換導向改版 | `docs/index.html`, `docs/shared/abtest.js`, `docs/shared/analytics.js` | CTA click path + KPI check | `feat: refine landing conversion narrative` |
+| 7 | A/B test 實驗收斂 | `docs/shared/abtest.js`, `docs/kpi/index.html`, `AB_TESTING_SPEC.md` | variant assignment / conversion compare | `feat: expand monetization ab coverage` |
+| 8 | 迭代回顧與 release gate | `METRICS_DASHBOARD.md`, `TEST_PAYMENT_FLOW.md`, roadmap docs | `python tools/validate_all_elementary_banks.py`, `python scripts/verify_all.py`, `node tools/cross_validate_remote.cjs` | `docs: record monetization iteration outcomes` |
+
+### 每一階段的固定操作
+
+1. 先列出只會改動的檔案，不碰無關 bank / generated data。
+2. 同步 `docs` 與 `dist_ai_math_web_pages/docs`，避免 pre-commit 被 `docs_dist_identical` 擋下。
+3. 先跑本地驗證：
+	 - `python tools/validate_all_elementary_banks.py`
+	 - `python scripts/verify_all.py`
+4. 若已 push 到 `main` 且 Pages 部署完成，再跑：
+	 - `node tools/cross_validate_remote.cjs`
+5. 驗證通過後再 commit，commit 只包含單一商業目標。
+
+### 最適合 8 小時連續迭代的順序
+
+1. 第 1 小時：只做 baseline、補 audit 與 gap，不碰 UI。
+2. 第 2-3 小時：收費閉環與 CTA source 命名統一。
+3. 第 4 小時：analytics schema 補齊 `topic`, `grade`, `module_id`, `plan_status`, `cta_source`。
+4. 第 5 小時：明星場景 pack 的 entry、completion、upsell 路徑打通。
+5. 第 6 小時：家長週報三個補救 CTA 與 report gating 收斂。
+6. 第 7 小時：首頁文案與 pricing 對齊，並掛 A/B 位點。
+7. 第 8 小時：驗證、整理 KPI、寫 iteration note、提交乾淨 commits。
