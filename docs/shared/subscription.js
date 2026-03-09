@@ -122,6 +122,11 @@
     sub.expire_at = expire.toISOString();
     save(sub);
     trackEvent('trial_start', { plan: plan, expire: sub.expire_at });
+    // A/B conversion: trial start is conversion for trial_btn_color + free_limit
+    if (window.AIMathABTest){
+      window.AIMathABTest.trackConversion('trial_btn_color', 'trial_start', { plan: plan });
+      window.AIMathABTest.trackConversion('free_limit', 'trial_start', { plan: plan });
+    }
     return sub;
   }
 
@@ -144,6 +149,11 @@
     sub.expire_at = expire.toISOString();
     save(sub);
     trackEvent('checkout_success', { plan: sub.plan_type, expire: sub.expire_at });
+    // A/B conversion: checkout success
+    if (window.AIMathABTest){
+      window.AIMathABTest.trackConversion('trial_btn_color', 'checkout_success', { plan: sub.plan_type });
+      window.AIMathABTest.trackConversion('free_limit', 'checkout_success', { plan: sub.plan_type });
+    }
     return sub;
   }
 

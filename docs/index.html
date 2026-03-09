@@ -1474,6 +1474,12 @@ onmouseover="this.style.color='#3ddb6a'" onmouseout="this.style.color='#06C755'"
       document.querySelectorAll(c.sel).forEach(function(el){
         el.addEventListener('click', function(){
           if(window.AIMathAnalytics) window.AIMathAnalytics.track(c.name, { href: el.href || '' });
+          // A/B conversion tracking on specific CTA clicks
+          if(window.AIMathABTest){
+            if(c.name === 'hero_cta_click') window.AIMathABTest.trackConversion('hero_cta', 'click');
+            if(c.name === 'star_pack_entry_click') window.AIMathABTest.trackConversion('star_pack_position', 'click');
+            if(c.name === 'hero_cta_click' || c.name === 'cta_child_click') window.AIMathABTest.trackConversion('pain_order', 'click');
+          }
         });
       });
     });
