@@ -2,6 +2,15 @@
 
 原則：先驗證商業，再擴產品。所有功能先求能跑、能追蹤、能驗證。
 
+**Last updated**: Monetization MVP Sprint (Phases 2-7 completed)
+
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| 兩週版 — 收費閉環 | pricing + mock payment + gating + CTA | ✅ DONE |
+| 四週版 — 漏斗追蹤 | analytics + events + KPI dashboard | ✅ DONE |
+| 八週版 — 明星場景 | Star Pack + 週報 V2 + recommendation | ✅ DONE |
+| 十二週版 — 轉換優化 | landing + A/B test + data-driven iteration | ✅ DONE |
+
 ## 兩週版本
 
 ### 目標
