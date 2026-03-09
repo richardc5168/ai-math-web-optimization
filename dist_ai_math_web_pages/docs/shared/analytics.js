@@ -58,6 +58,20 @@
    */
   function track(name, data){
     var events = loadEvents();
+    var d = data || {};
+    // Auto-enrich: plan_status, module_id
+    if (!d.plan_status) {
+      try {
+        if (window.AIMathSubscription && typeof window.AIMathSubscription.getPlanStatus === 'function') {
+          d.plan_status = window.AIMathSubscription.getPlanStatus();
+        }
+      } catch(e){}
+    }
+    if (!d.module_id) {
+      var parts = location.pathname.replace(/\/+$/, '').split('/');
+      var last = parts[parts.length - 1];
+      if (last && last !== 'docs' && last !== '') d.module_id = last;
+    }
     var event = {
       event: name,
       ts: Date.now(),
@@ -65,7 +79,7 @@
       role: getRole(),
       session_id: getSessionId(),
       page: location.pathname,
-      data: data || {}
+      data: d
     };
     events.push(event);
     saveEvents(events);
@@ -115,6 +129,26 @@
       return Object.keys(set).length;
     }
 
+    // Topic breakdown: accuracy per topic_id (7d)
+    var topicStats = {};
+    recent7.forEach(function(e){
+      if (e.event === 'question_submit' || e.event === 'question_correct'){
+        var tid = (e.data && e.data.topic_id) || 'unknown';
+        if (!topicStats[tid]) topicStats[tid] = { submit: 0, correct: 0 };
+        topicStats[tid].submit++;
+        if (e.event === 'question_correct') topicStats[tid].correct++;
+      }
+    });
+
+    // CTA source breakdown (30d)
+    var ctaSources = {};
+    recent30.forEach(function(e){
+      if (e.event === 'upgrade_click' && e.data && e.data.cta_source){
+        var src = e.data.cta_source;
+        ctaSources[src] = (ctaSources[src] || 0) + 1;
+      }
+    });
+
     return {
       total_events: all.length,
       events_7d: recent7.length,
@@ -128,9 +162,16 @@
       upgrade_clicks: countEvent(all, 'upgrade_click'),
       question_submits_7d: countEvent(recent7, 'question_submit'),
       question_correct_7d: countEvent(recent7, 'question_correct'),
+      question_starts_7d: countEvent(recent7, 'question_start'),
       hint_opens_7d: countEvent(recent7, 'hint_open'),
       report_views_7d: countEvent(recent7, 'weekly_report_view'),
-      landing_views_7d: countEvent(recent7, 'landing_page_view')
+      landing_views_7d: countEvent(recent7, 'landing_page_view'),
+      return_next_day_30d: countEvent(recent30, 'return_next_day'),
+      return_next_week_30d: countEvent(recent30, 'return_next_week'),
+      session_completes_7d: countEvent(recent7, 'session_complete'),
+      remedial_clicks_30d: countEvent(recent30, 'remedial_recommendation_click'),
+      topic_accuracy_7d: topicStats,
+      cta_source_breakdown_30d: ctaSources
     };
   }
 
@@ -144,6 +185,35 @@
   function clearAll(){
     try { localStorage.removeItem(KEY); } catch(e){}
   }
+
+  // ─── Retention detection (return_next_day / return_next_week) ───
+  var LAST_VISIT_KEY = 'aimath_last_visit';
+  (function detectRetention(){
+    try {
+      var now = Date.now();
+      var last = parseInt(localStorage.getItem(LAST_VISIT_KEY), 10);
+      if (last){
+        var gap = now - last;
+        var DAY = 86400000;
+        if (gap >= DAY && gap < 2 * DAY){
+          track('return_next_day', { gap_hours: Math.round(gap / 3600000) });
+        }
+        if (gap >= 7 * DAY && gap < 8 * DAY){
+          track('return_next_week', { gap_days: Math.round(gap / DAY) });
+        }
+      }
+      localStorage.setItem(LAST_VISIT_KEY, String(now));
+    } catch(e){}
+  })();
+
+  // ─── Session complete on page unload ───
+  var sessionStart = Date.now();
+  window.addEventListener('beforeunload', function(){
+    var duration = Math.round((Date.now() - sessionStart) / 1000);
+    if (duration > 2){ // ignore accidental loads
+      track('session_complete', { duration_sec: duration, page: location.pathname });
+    }
+  });
 
   window.AIMathAnalytics = {
     track: track,

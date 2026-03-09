@@ -58,6 +58,20 @@
    */
   function track(name, data){
     var events = loadEvents();
+    var d = data || {};
+    // Auto-enrich: plan_status, module_id
+    if (!d.plan_status) {
+      try {
+        if (window.AIMathSubscription && typeof window.AIMathSubscription.getPlanStatus === 'function') {
+          d.plan_status = window.AIMathSubscription.getPlanStatus();
+        }
+      } catch(e){}
+    }
+    if (!d.module_id) {
+      var parts = location.pathname.replace(/\/+$/, '').split('/');
+      var last = parts[parts.length - 1];
+      if (last && last !== 'docs' && last !== '') d.module_id = last;
+    }
     var event = {
       event: name,
       ts: Date.now(),
@@ -65,7 +79,7 @@
       role: getRole(),
       session_id: getSessionId(),
       page: location.pathname,
-      data: data || {}
+      data: d
     };
     events.push(event);
     saveEvents(events);
@@ -115,6 +129,26 @@
       return Object.keys(set).length;
     }
 
+    // Topic breakdown: accuracy per topic_id (7d)
+    var topicStats = {};
+    recent7.forEach(function(e){
+      if (e.event === 'question_submit' || e.event === 'question_correct'){
+        var tid = (e.data && e.data.topic_id) || 'unknown';
+        if (!topicStats[tid]) topicStats[tid] = { submit: 0, correct: 0 };
+        topicStats[tid].submit++;
+        if (e.event === 'question_correct') topicStats[tid].correct++;
+      }
+    });
+
+    // CTA source breakdown (30d)
+    var ctaSources = {};
+    recent30.forEach(function(e){
+      if (e.event === 'upgrade_click' && e.data && e.data.cta_source){
+        var src = e.data.cta_source;
+        ctaSources[src] = (ctaSources[src] || 0) + 1;
+      }
+    });
+
     return {
       total_events: all.length,
       events_7d: recent7.length,
@@ -135,7 +169,9 @@
       return_next_day_30d: countEvent(recent30, 'return_next_day'),
       return_next_week_30d: countEvent(recent30, 'return_next_week'),
       session_completes_7d: countEvent(recent7, 'session_complete'),
-      remedial_clicks_30d: countEvent(recent30, 'remedial_recommendation_click')
+      remedial_clicks_30d: countEvent(recent30, 'remedial_recommendation_click'),
+      topic_accuracy_7d: topicStats,
+      cta_source_breakdown_30d: ctaSources
     };
   }
 

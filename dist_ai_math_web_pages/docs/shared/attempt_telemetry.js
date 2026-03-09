@@ -62,14 +62,18 @@
           unit_id: attemptEvent.unit_id,
           question_id: attemptEvent.question_id,
           kind: attemptEvent.kind,
+          topic_id: attemptEvent.topic_id || '',
           is_correct: attemptEvent.is_correct,
           attempts_count: attemptEvent.attempts_count,
-          hint_shown: attemptEvent.hint ? attemptEvent.hint.shown_count : 0
+          hint_shown: attemptEvent.hint ? attemptEvent.hint.shown_count : 0,
+          time_ms: attemptEvent.time_ms || 0,
+          error_type: attemptEvent.error_type || ''
         });
         if (attemptEvent.hint && attemptEvent.hint.shown_count > 0){
           window.AIMathAnalytics.track('hint_open', {
             unit_id: attemptEvent.unit_id,
             question_id: attemptEvent.question_id,
+            topic_id: attemptEvent.topic_id || '',
             levels: attemptEvent.hint.shown_levels
           });
         }
