@@ -116,12 +116,18 @@
     .hero .cta-secondary:hover { background: rgba(163,113,247,0.1); border-color: #c9a0ff; }
     .hero .cta-secondary:active { transform: scale(0.96); }
     .hero .trust-line { margin: 0; font-size: 0.82rem; color: #8b949e; }
+    .hero-proof-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; max-width:860px; margin:18px auto 0; position:relative; z-index:1; }
+    .hero-proof-card { background:rgba(22,27,34,0.85); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:left; }
+    .hero-proof-card .kicker { color:#8b949e; font-size:0.72rem; margin-bottom:6px; text-transform:uppercase; letter-spacing:.06em; }
+    .hero-proof-card .title { color:#fff; font-size:0.98rem; font-weight:800; margin-bottom:6px; }
+    .hero-proof-card .desc { color:#9fb0c3; font-size:0.82rem; line-height:1.55; }
     @media (max-width: 640px) {
       .hero { padding: 36px 16px 28px; }
       .hero h1 { font-size: 1.55rem; }
       .hero .subtitle { font-size: 0.95rem; }
       .hero .cta-row { flex-direction: column; align-items: center; }
       .hero .cta-primary, .hero .cta-secondary { width: 85%; text-align: center; min-height:48px; display:flex; align-items:center; justify-content:center; }
+      .hero-proof-grid { grid-template-columns:1fr; }
     }
 
     /* ── Hero HUD Row ── */
@@ -362,12 +368,11 @@
        ══════════════════════════════════════════ -->
   <section class="hero" id="hero" role="banner">
     <div class="hero-radial-pulse" aria-hidden="true"></div>
-    <h1>把數學變成孩子<span class="highlight-gold">每天都想破關</span>的挑戰</h1>
+    <h1>台灣國小五六年級數學補弱<br><span class="highlight-gold">讓孩子每天願意做題</span></h1>
     <p class="subtitle">
-      專為國小五六年級設計的<strong>闖關式學習平台</strong>——
-      答題佔領領地、完成每日任務、解鎖成就徽章。
-      AI 提示一步步引導，<strong>絕不直接給答案</strong>。
-      家長週報自動產生，弱點一目瞭然。
+      專為國小五六年級設計的<strong>數學補弱平台</strong>。
+      孩子用闖關任務持續做題，AI 用分層提示帶著想，<strong>不直接給答案</strong>；
+      家長則能從週報一眼看懂：這週卡在哪裡、下週先補什麼、值不值得續訂。
     </p>
 
     <!-- Hero HUD mock cards -->
@@ -404,11 +409,28 @@
 
     <!-- Dual CTA -->
     <div class="cta-row">
-      <a href="./interactive-g5-empire/" class="cta-primary">&#x2694;&#xFE0F; 開始今日挑戰</a>
-      <a href="./report/" class="cta-secondary">&#x1F4CA; 查看家長週報</a>
+      <a href="./interactive-g5-empire/" class="cta-primary">&#x2694;&#xFE0F; 立即免費試用</a>
+      <a href="./parent-report/" class="cta-secondary">&#x1F4CA; 查看家長週報範例</a>
     </div>
     <p class="trust-line">&#x2705; 免費體驗不需註冊 &#x3000; &#x1F3AF; 2,900+ 精選題目 &#x3000; &#x1F4F1; 離線也能練 &#x3000; &#x1F512; 零廣告、零追蹤</p>
     <p class="trust-line" style="margin-top:6px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:6px;vertical-align:middle;animation:liveDot 2s ease-in-out infinite;"></span>目前有 <strong style="color:#fff;">12</strong> 位同學正在練習中</p>
+    <div class="hero-proof-grid">
+      <div class="hero-proof-card">
+        <div class="kicker">給誰用</div>
+        <div class="title">專門給五六年級數學補弱</div>
+        <div class="desc">聚焦分數、小數、百分率、生活應用題，不先分散到太多年級與主題。</div>
+      </div>
+      <div class="hero-proof-card">
+        <div class="kicker">免費版先拿到</div>
+        <div class="title">每天 10 題 + 闖關動機</div>
+        <div class="desc">不用註冊就能先試做，確認孩子願不願意做、AI 提示是否真的有幫助。</div>
+      </div>
+      <div class="hero-proof-card">
+        <div class="kicker">升級後多什麼</div>
+        <div class="title">完整週報 + 補救建議 + 明星題組</div>
+        <div class="desc">家長看得到完整弱點、孩子做得到推薦題組，形成持續使用與續訂理由。</div>
+      </div>
+    </div>
   </section>
 
   <!-- ── Stats Bar ── -->
