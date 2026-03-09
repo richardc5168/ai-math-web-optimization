@@ -7,6 +7,17 @@
   'use strict';
   var KEY = 'aimath_daily_limit_v1';
   var FREE_LIMIT = 10;
+
+  // A/B test: lazily override FREE_LIMIT when free_limit test is available
+  function getLimit(){
+    try {
+      if (window.AIMathABTest) {
+        var cfg = window.AIMathABTest.getVariantConfig('free_limit');
+        if (cfg && typeof cfg.limit === 'number') return cfg.limit;
+      }
+    } catch(e){}
+    return FREE_LIMIT;
+  }
   var CONTACT_EMAIL = 'learnotaiwan@gmail.com';
   var CONTACT_SUBJECT = encodeURIComponent('AI 數學家教 — 升級方案諮詢');
   var CONTACT_BODY = encodeURIComponent('您好，我想了解 AI 數學家教的付費升級方案。\n\n孩子年級：\n目前使用模組：\n');
@@ -50,13 +61,13 @@
   }
 
   function remaining(){
-    return Math.max(0, FREE_LIMIT - getUsed());
+    return Math.max(0, getLimit() - getUsed());
   }
 
   function isLimitReached(){
     // 付費用戶不限制
     if (window.AIMathSubscription && window.AIMathSubscription.isPaid()) return false;
-    return getUsed() >= FREE_LIMIT;
+    return getUsed() >= getLimit();
   }
 
   function buildUpgradeHTML(){
@@ -64,7 +75,7 @@
     return '<div style="text-align:center;padding:20px 0;">'
       + '<div style="font-size:2rem;margin-bottom:8px;">&#x26A0;&#xFE0F;</div>'
       + '<div style="font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:8px;">'
-      + '\u4eca\u65e5\u514d\u8cbb\u984c\u6578\u5df2\u7528\u5b8c\uff08' + FREE_LIMIT + ' \u984c\uff09'
+      + '\u4eca\u65e5\u514d\u8cbb\u984c\u6578\u5df2\u7528\u5b8c\uff08' + getLimit() + ' \u984c\uff09'
       + '</div>'
       + '<div style="color:#8b949e;font-size:0.9rem;margin-bottom:16px;">'
       + '\u5347\u7d1a\u5f8c\u6bcf\u5929\u4e0d\u9650\u984c\u6578\uff0c\u89e3\u9396\u5b8c\u6574 2,900+ \u984c\u5eab\u3001\u5bb6\u9577\u9031\u5831\u3001AI \u88dc\u6551\u5efa\u8b70'
@@ -79,27 +90,29 @@
       + '\ud83d\udee1\ufe0f 7 \u5929\u5167\u4e0d\u6eff\u610f\u53ef\u5168\u984d\u9000\u8cbb\uff0c\u96f6\u98a8\u96aa'
       + '</div>'
       + '<div style="color:#8b949e;font-size:0.78rem;">'
-      + '\u6216\u660e\u5929\u518d\u4f86\u7e7c\u7e8c\u514d\u8cbb\u7df4\u7fd2 ' + FREE_LIMIT + ' \u984c'
+      + '\u6216\u660e\u5929\u518d\u4f86\u7e7c\u7e8c\u514d\u8cbb\u7df4\u7fd2 ' + getLimit() + ' \u984c'
       + '</div>'
       + '</div>';
   }
 
   function buildCounterHTML(){
+    var lim = getLimit();
     var used = getUsed();
-    var left = remaining();
-    var pct = Math.round((used / FREE_LIMIT) * 100);
+    var left = Math.max(0, lim - used);
+    var pct = Math.round((used / lim) * 100);
     var barColor = left <= 3 ? '#f85149' : left <= 5 ? '#d29922' : '#3fb950';
     return '<div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:#8b949e;">'
       + '<span>\u4eca\u65e5\u514d\u8cbb</span>'
       + '<div style="flex:1;max-width:100px;height:6px;background:#30363d;border-radius:3px;overflow:hidden;">'
       + '<div style="width:' + pct + '%;height:100%;background:' + barColor + ';border-radius:3px;transition:width 0.3s;"></div>'
       + '</div>'
-      + '<span style="color:' + barColor + ';font-weight:700;">' + used + '/' + FREE_LIMIT + '</span>'
+      + '<span style="color:' + barColor + ';font-weight:700;">' + used + '/' + lim + '</span>'
       + '</div>';
   }
 
   window.AIMathDailyLimit = {
     FREE_LIMIT: FREE_LIMIT,
+    getLimit: getLimit,
     CONTACT_EMAIL: CONTACT_EMAIL,
     getUsed: getUsed,
     increment: increment,
