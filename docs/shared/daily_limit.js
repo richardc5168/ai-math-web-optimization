@@ -6,7 +6,23 @@
 (function(){
   'use strict';
   var KEY = 'aimath_daily_limit_v1';
+  var ENFORCE_KEY = 'aimath_daily_limit_enforced_v1';
   var FREE_LIMIT = 10;
+
+  // Temporary business policy: unlimited practice for all users.
+  // To re-enable cap later without code changes, set localStorage key to '1'
+  // or set window.AIMathFlags.dailyLimitEnforced = true.
+  function isLimitEnforced(){
+    try {
+      if (window.AIMathFlags && typeof window.AIMathFlags.dailyLimitEnforced === 'boolean') {
+        return window.AIMathFlags.dailyLimitEnforced;
+      }
+      var v = localStorage.getItem(ENFORCE_KEY);
+      if (v === '1') return true;
+      if (v === '0') return false;
+    } catch(e){}
+    return false;
+  }
 
   // A/B test: lazily override FREE_LIMIT when free_limit test is available
   function getLimit(){
@@ -67,17 +83,20 @@
   }
 
   function remaining(){
+    if (!isLimitEnforced()) return -1;
     if (window.AIMathSubscription && window.AIMathSubscription.isPaid()) return -1;
     return Math.max(0, getLimit() - getUsed());
   }
 
   function isLimitReached(){
+    if (!isLimitEnforced()) return false;
     // 付費用戶不限制
     if (window.AIMathSubscription && window.AIMathSubscription.isPaid()) return false;
     return getUsed() >= getLimit();
   }
 
   function buildUpgradeHTML(){
+    if (!isLimitEnforced()) return '';
     if (window.AIMathSubscription && window.AIMathSubscription.isPaid()) return '';
     return '<div style="text-align:center;padding:20px 0;">'
       + '<div style="font-size:2rem;margin-bottom:8px;">&#x26A0;&#xFE0F;</div>'
@@ -103,6 +122,12 @@
   }
 
   function buildCounterHTML(){
+    if (!isLimitEnforced()){
+      return '<div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:#3fb950;">'
+        + '<span>今日題數</span>'
+        + '<span style="display:inline-block;padding:2px 10px;border-radius:999px;background:rgba(63,185,80,0.15);color:#3fb950;font-weight:700;">無上限</span>'
+        + '</div>';
+    }
     if (window.AIMathSubscription && window.AIMathSubscription.isPaid()){
       return '<div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:#3fb950;">'
         + '<span>\u4eca\u65e5\u984c\u6578</span>'
@@ -125,7 +150,9 @@
 
   window.AIMathDailyLimit = {
     FREE_LIMIT: FREE_LIMIT,
+    ENFORCE_KEY: ENFORCE_KEY,
     getLimit: getLimit,
+    isLimitEnforced: isLimitEnforced,
     CONTACT_EMAIL: CONTACT_EMAIL,
     getUsed: getUsed,
     increment: increment,
