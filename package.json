@@ -43,6 +43,7 @@
     "topic:align": "node tools/build_web_topic_alignment_report.cjs",
     "summary:iteration": "node tools/build_iteration_output_summary.cjs",
     "summary:business": "node tools/build_business_funnel_summary.cjs",
+    "seed:analytics": "node tools/seed_analytics_events.cjs",
     "summary:hints": "node tools/build_hint_optimization_summary.cjs",
     "summary:kpi": "node tools/build_parent_teacher_kpi_report.cjs",
     "gate:business": "node tools/build_business_funnel_summary.cjs --gate",

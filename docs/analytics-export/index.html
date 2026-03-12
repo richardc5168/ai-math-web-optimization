@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 數學家教｜事件資料匯出</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:20px;max-width:800px;margin:0 auto}
+    h1{font-size:1.3rem;margin-bottom:16px;color:#fff}
+    .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px;margin-bottom:16px}
+    .card h2{font-size:1rem;margin-bottom:8px;color:#58a6ff}
+    .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
+    .kpi .box{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;text-align:center}
+    .kpi .label{font-size:.75rem;color:#8b949e}
+    .kpi .value{font-size:1.2rem;font-weight:800;color:#fff}
+    button{background:#1f6feb;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;margin:4px}
+    button:hover{background:#388bfd}
+    button.secondary{background:transparent;border:1px solid #30363d;color:#8b949e}
+    button.secondary:hover{border-color:#58a6ff;color:#58a6ff}
+    textarea{width:100%;background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:10px;font-family:monospace;font-size:.82rem;resize:vertical}
+    .banner{padding:10px 14px;border-radius:8px;font-size:.88rem;margin:8px 0}
+    .banner.ok{background:rgba(63,185,80,.12);color:#3fb950;border:1px solid rgba(63,185,80,.3)}
+    .banner.warn{background:rgba(210,153,34,.12);color:#d29922;border:1px solid rgba(210,153,34,.3)}
+    .banner.muted{background:rgba(139,148,158,.08);color:#8b949e;border:1px solid #21262d}
+    .small{font-size:.8rem;color:#8b949e}
+    a{color:#58a6ff;text-decoration:none}
+    #pinGate{text-align:center;padding:40px 20px}
+    #pinGate input{background:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:10px 14px;font-size:1rem;text-align:center;width:180px;margin-bottom:12px}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <h1>📊 事件資料匯出工具</h1>
+  <div class="small" style="margin-bottom:16px">這是內部工具頁面，用來匯出瀏覽器中的 analytics 事件資料，供 repo 端商業漏斗分析使用。</div>
+
+  <!-- PIN gate -->
+  <div id="pinGate" class="card">
+    <h2>🔐 輸入管理員密碼</h2>
+    <div class="small" style="margin-bottom:12px">此頁面僅限管理員使用。</div>
+    <div><input id="pinInput" type="password" placeholder="管理員密碼" /></div>
+    <div><button onclick="checkPin()">進入</button></div>
+    <div id="pinError" class="banner warn hidden" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Main content -->
+  <div id="mainContent" class="hidden">
+    <!-- KPI Summary -->
+    <div class="card">
+      <h2>即時 KPI</h2>
+      <div id="kpiGrid" class="kpi"></div>
+    </div>
+
+    <!-- Business Funnel -->
+    <div class="card">
+      <h2>商業漏斗（7 天）</h2>
+      <div id="funnelGrid" class="kpi"></div>
+      <div id="funnelHealth" class="banner muted"></div>
+    </div>
+
+    <!-- Export -->
+    <div class="card">
+      <h2>匯出事件資料</h2>
+      <div style="margin-bottom:12px">
+        <button onclick="exportAll()">📋 全部事件 JSON</button>
+        <button onclick="exportBusiness()">📊 商業摘要 JSON</button>
+        <button onclick="downloadAll()">⬇️ 下載全部事件</button>
+        <button onclick="downloadBusiness()">⬇️ 下載商業摘要</button>
+      </div>
+      <div class="small" style="margin-bottom:4px">匯出後請將 JSON 檔存為 <code>artifacts/analytics_events_latest.json</code>，然後執行 <code>npm run summary:business</code>。</div>
+      <textarea id="exportArea" rows="12" readonly placeholder="點擊上方按鈕匯出資料..."></textarea>
+    </div>
+
+    <!-- Seed -->
+    <div class="card">
+      <h2>匯入種子事件（測試用）</h2>
+      <div class="small" style="margin-bottom:8px">貼上 JSON 陣列（事件格式），將合併到現有事件中。僅限測試用途。</div>
+      <textarea id="seedArea" rows="6" placeholder='[{"event":"pricing_view","ts":1710000000000,"user_id":"test","page":"/pricing/"}]'></textarea>
+      <div style="margin-top:8px">
+        <button class="secondary" onclick="seedEvents()">合併匯入</button>
+        <button class="secondary" onclick="clearAllEvents()" style="color:#f85149;border-color:#f85149">⚠️ 清除所有事件</button>
+      </div>
+      <div id="seedMsg" class="banner muted hidden"></div>
+    </div>
+  </div>
+
+  <script src="../shared/analytics.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    var ADMIN_PIN = '5168';
+
+    function $(id){ return document.getElementById(id); }
+
+    window.checkPin = function(){
+      var pin = $('pinInput').value.trim();
+      if (pin === ADMIN_PIN){
+        $('pinGate').classList.add('hidden');
+        $('mainContent').classList.remove('hidden');
+        renderDashboard();
+      } else {
+        var err = $('pinError');
+        err.textContent = '密碼錯誤';
+        err.classList.remove('hidden');
+      }
+    };
+
+    $('pinInput').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') window.checkPin();
+    });
+
+    function renderDashboard(){
+      if (!window.AIMathAnalytics) return;
+      var kpis = window.AIMathAnalytics.computeKPIs();
+
+      // KPI grid
+      var items = [
+        { label: '總事件數', value: kpis.total_events },
+        { label: '7 天事件', value: kpis.events_7d },
+        { label: '7 天活躍用戶', value: kpis.unique_users_7d },
+        { label: '7 天作答', value: kpis.question_submits_7d },
+        { label: '7 天正確', value: kpis.question_correct_7d },
+        { label: '升級點擊', value: kpis.upgrade_clicks },
+        { label: '試用啟動', value: kpis.trial_starts },
+        { label: '報告瀏覽(7d)', value: kpis.report_views_7d }
+      ];
+      $('kpiGrid').innerHTML = items.map(function(k){
+        return '<div class="box"><div class="label">' + k.label + '</div><div class="value">' + k.value + '</div></div>';
+      }).join('');
+
+      // Business funnel
+      var biz = kpis.business_7d || {};
+      var counts = biz.counts || {};
+      var funnelItems = [
+        { label: '定價頁瀏覽', value: counts.pricing_view || 0 },
+        { label: '升級點擊', value: counts.upgrade_click || 0 },
+        { label: '試用啟動', value: counts.trial_start || 0 },
+        { label: '兌換成功', value: counts.redeem_success || 0 },
+        { label: '兌換失敗', value: counts.redeem_fail || 0 },
+        { label: '到期', value: counts.expired || 0 },
+        { label: '報告開啟', value: counts.report_open || 0 },
+        { label: '任務中心', value: counts.task_center_open || 0 }
+      ];
+      $('funnelGrid').innerHTML = funnelItems.map(function(k){
+        return '<div class="box"><div class="label">' + k.label + '</div><div class="value">' + k.value + '</div></div>';
+      }).join('');
+
+      var health = biz.health || 'insufficient_data';
+      var healthMap = {
+        strong: { cls: 'ok', text: '🟢 商業漏斗健康' },
+        watch: { cls: 'warn', text: '🟡 商業漏斗需觀察' },
+        improve: { cls: 'warn', text: '🔴 商業漏斗需改善' },
+        insufficient_data: { cls: 'muted', text: '⏳ 資料不足，無法判斷' }
+      };
+      var h = healthMap[health] || healthMap.insufficient_data;
+      $('funnelHealth').className = 'banner ' + h.cls;
+      $('funnelHealth').textContent = h.text;
+    }
+
+    window.exportAll = function(){
+      $('exportArea').value = window.AIMathAnalytics.exportJSON();
+    };
+
+    window.exportBusiness = function(){
+      $('exportArea').value = window.AIMathAnalytics.exportBusinessSummary();
+    };
+
+    function downloadJSON(filename, data){
+      var blob = new Blob([data], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.downloadAll = function(){
+      downloadJSON('analytics_events_latest.json', window.AIMathAnalytics.exportJSON());
+    };
+
+    window.downloadBusiness = function(){
+      downloadJSON('business_summary.json', window.AIMathAnalytics.exportBusinessSummary());
+    };
+
+    window.seedEvents = function(){
+      var raw = $('seedArea').value.trim();
+      if (!raw){ showSeed('請先貼上 JSON 陣列', 'warn'); return; }
+      try {
+        var arr = JSON.parse(raw);
+        if (!Array.isArray(arr)){ showSeed('必須是 JSON 陣列格式', 'warn'); return; }
+        arr.forEach(function(evt){
+          if (evt && evt.event){
+            window.AIMathAnalytics.track(evt.event, evt.data || evt);
+          }
+        });
+        showSeed('已匯入 ' + arr.length + ' 筆事件', 'ok');
+        renderDashboard();
+      } catch(e){
+        showSeed('JSON 解析失敗：' + e.message, 'warn');
+      }
+    };
+
+    window.clearAllEvents = function(){
+      if (!confirm('確定要清除所有分析事件？此操作不可復原。')) return;
+      window.AIMathAnalytics.clearAll();
+      showSeed('已清除所有事件', 'muted');
+      renderDashboard();
+    };
+
+    function showSeed(msg, cls){
+      var el = $('seedMsg');
+      el.className = 'banner ' + (cls || 'muted');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+  })();
+  </script>
+</body>
+</html>
