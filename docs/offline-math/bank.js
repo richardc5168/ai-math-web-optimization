@@ -2781,5 +2781,4044 @@ window.OFFLINE_MATH_BANK = [
     ],
     "explanation": "先找出兩項都有的相同因數（公因數），用分配律可以算得更快。 → k×a − k×b = k×(a−b)。 → 這題公因數是 388，先改寫成：388×(509−20)。 → 先算括號：509−20=489 → 再乘回去：388×489=189732 → 所以答案是 189732。 → 檢查：把 388×509 和 388×20 分別算出來再相減，結果要一樣。",
     "kind": "general"
+  },
+  {
+    "id": "offline_time-011",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_add",
+    "params": {
+      "h1": 3,
+      "m1": 45,
+      "h2": 2,
+      "m2": 30
+    },
+    "prompt": "3時45分 + 2時30分 = ?",
+    "answer": "6 15",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "時間加法：分鐘和小時分別相加，分鐘滿60進位。"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：45 + 30 = 75，75 ≥ 60，進位 1 時，餘 15 分",
+        "expr": "45+30",
+        "value": "75"
+      },
+      {
+        "k": "compute",
+        "say": "小時：3 + 2 + 1(進位) = 6 時",
+        "expr": "3+2+1",
+        "value": "6"
+      },
+      {
+        "k": "result",
+        "say": "答案是 6時15分。",
+        "value": "6 15"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3時45分 + 2時30分 = ?",
+    "hints": [
+      "分鐘和小時分開加，分鐘超過60要進位。",
+      "45 + 30 = 75 分鐘，75 分鐘等於 1 小時又幾分？",
+      "請完成進位計算，寫出最終答案。"
+    ],
+    "steps": [
+      "時間加法：分鐘和小時分別相加，分鐘滿60進位。",
+      "分鐘：45 + 30 = 75，75 ≥ 60，進位 1 時，餘 15 分",
+      "小時：3 + 2 + 1(進位) = 6 時",
+      "答案是 6時15分。"
+    ],
+    "explanation": "時間加法：分鐘和小時分別相加，分鐘滿60進位。 → 分鐘：45 + 30 = 75，75 ≥ 60，進位 1 時，餘 15 分 → 小時：3 + 2 + 1(進位) = 6 時 → 答案是 6時15分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-012",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_sub",
+    "params": {
+      "h1": 5,
+      "m1": 10,
+      "h2": 2,
+      "m2": 35
+    },
+    "prompt": "5時10分 − 2時35分 = ?",
+    "answer": "2 35",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "時間減法：分鐘不夠減時，向小時借1（=60分）。"
+      },
+      {
+        "k": "compute",
+        "say": "10分 < 35分，需要借位：(5−1)時 = 4時，(10+60)分 = 70分",
+        "expr": "10+60",
+        "value": "70"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：70 − 35 = 35 分",
+        "expr": "70-35",
+        "value": "35"
+      },
+      {
+        "k": "compute",
+        "say": "小時：4 − 2 = 2 時",
+        "expr": "4-2",
+        "value": "2"
+      },
+      {
+        "k": "result",
+        "say": "答案是 2時35分。",
+        "value": "2 35"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "5時10分 − 2時35分 = ?",
+    "hints": [
+      "分鐘不夠減時，從小時借 1（等於 60 分鐘）。",
+      "借位後分鐘變成 10 + 60 = 70 分，再減去 35 分。",
+      "請完成小時的計算並寫出答案。"
+    ],
+    "steps": [
+      "時間減法：分鐘不夠減時，向小時借1（=60分）。",
+      "10分 < 35分，需要借位：(5−1)時 = 4時，(10+60)分 = 70分",
+      "分鐘：70 − 35 = 35 分",
+      "小時：4 − 2 = 2 時",
+      "答案是 2時35分。"
+    ],
+    "explanation": "時間減法：分鐘不夠減時，向小時借1（=60分）。 → 10分 < 35分，需要借位：(5−1)時 = 4時，(10+60)分 = 70分 → 分鐘：70 − 35 = 35 分 → 小時：4 − 2 = 2 時 → 答案是 2時35分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-013",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_mul",
+    "params": {
+      "h": 1,
+      "m": 25,
+      "n": 4
+    },
+    "prompt": "1時25分 × 4 = ?",
+    "answer": "5 40",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "時間乘法：分鐘和小時分別乘，分鐘滿60再進位。"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：25 × 4 = 100 分",
+        "expr": "25*4",
+        "value": "100"
+      },
+      {
+        "k": "compute",
+        "say": "100 分 = 1 時 40 分",
+        "expr": "100/60",
+        "value": "1...40"
+      },
+      {
+        "k": "compute",
+        "say": "小時：1 × 4 + 1(進位) = 5 時",
+        "expr": "1*4+1",
+        "value": "5"
+      },
+      {
+        "k": "result",
+        "say": "答案是 5時40分。",
+        "value": "5 40"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1時25分 × 4 = ?",
+    "hints": [
+      "先把分鐘和小時分別乘以 4。",
+      "25 × 4 = 100 分鐘，100 分鐘要換算成幾時幾分？",
+      "請完成進位並寫出最終答案。"
+    ],
+    "steps": [
+      "時間乘法：分鐘和小時分別乘，分鐘滿60再進位。",
+      "分鐘：25 × 4 = 100 分",
+      "100 分 = 1 時 40 分",
+      "小時：1 × 4 + 1(進位) = 5 時",
+      "答案是 5時40分。"
+    ],
+    "explanation": "時間乘法：分鐘和小時分別乘，分鐘滿60再進位。 → 分鐘：25 × 4 = 100 分 → 100 分 = 1 時 40 分 → 小時：1 × 4 + 1(進位) = 5 時 → 答案是 5時40分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-014",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_div",
+    "params": {
+      "h": 8,
+      "m": 20,
+      "n": 5
+    },
+    "prompt": "8時20分 ÷ 5 = ?",
+    "answer": "1 40",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "時間除法：先除小時，餘數轉成分鐘再加上原分鐘一起除。"
+      },
+      {
+        "k": "compute",
+        "say": "8 ÷ 5 = 1 餘 3，3時 = 180分",
+        "expr": "8/5",
+        "value": "1...3"
+      },
+      {
+        "k": "compute",
+        "say": "180 + 20 = 200 分",
+        "expr": "180+20",
+        "value": "200"
+      },
+      {
+        "k": "compute",
+        "say": "200 ÷ 5 = 40 分",
+        "expr": "200/5",
+        "value": "40"
+      },
+      {
+        "k": "result",
+        "say": "答案是 1時40分。",
+        "value": "1 40"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "8時20分 ÷ 5 = ?",
+    "hints": [
+      "先除小時部分，餘數轉成分鐘。",
+      "8 ÷ 5 = 1 餘 3，3 時等於幾分鐘？加上原有的 20 分一起除。",
+      "請完成分鐘的除法並寫出答案。"
+    ],
+    "steps": [
+      "時間除法：先除小時，餘數轉成分鐘再加上原分鐘一起除。",
+      "8 ÷ 5 = 1 餘 3，3時 = 180分",
+      "180 + 20 = 200 分",
+      "200 ÷ 5 = 40 分",
+      "答案是 1時40分。"
+    ],
+    "explanation": "時間除法：先除小時，餘數轉成分鐘再加上原分鐘一起除。 → 8 ÷ 5 = 1 餘 3，3時 = 180分 → 180 + 20 = 200 分 → 200 ÷ 5 = 40 分 → 答案是 1時40分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-015",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_add",
+    "params": {
+      "h1": 7,
+      "m1": 48,
+      "h2": 3,
+      "m2": 25
+    },
+    "prompt": "7時48分 + 3時25分 = ?",
+    "answer": "11 13",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "時間加法：分鐘和小時分別相加，分鐘滿60進位。"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：48 + 25 = 73 分，73 ≥ 60 → 進位 1 時，餘 13 分",
+        "expr": "48+25",
+        "value": "73"
+      },
+      {
+        "k": "compute",
+        "say": "小時：7 + 3 + 1 = 11 時",
+        "expr": "7+3+1",
+        "value": "11"
+      },
+      {
+        "k": "result",
+        "say": "答案是 11時13分。",
+        "value": "11 13"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "7時48分 + 3時25分 = ?",
+    "hints": [
+      "分鐘和小時分開加，分鐘超過60要進位。",
+      "48 + 25 得到的分鐘數超過 60 嗎？超過要進位。",
+      "請完成進位後寫出答案。"
+    ],
+    "steps": [
+      "時間加法：分鐘和小時分別相加，分鐘滿60進位。",
+      "分鐘：48 + 25 = 73 分，73 ≥ 60 → 進位 1 時，餘 13 分",
+      "小時：7 + 3 + 1 = 11 時",
+      "答案是 11時13分。"
+    ],
+    "explanation": "時間加法：分鐘和小時分別相加，分鐘滿60進位。 → 分鐘：48 + 25 = 73 分，73 ≥ 60 → 進位 1 時，餘 13 分 → 小時：7 + 3 + 1 = 11 時 → 答案是 11時13分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-016",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_sub",
+    "params": {
+      "h1": 10,
+      "m1": 5,
+      "h2": 4,
+      "m2": 50
+    },
+    "prompt": "10時5分 − 4時50分 = ?",
+    "answer": "5 15",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "時間減法：分鐘不夠減時，向小時借1（=60分）再相減。"
+      },
+      {
+        "k": "compute",
+        "say": "5分 < 50分，借位：(10−1) = 9時，(5+60) = 65分",
+        "expr": "5+60",
+        "value": "65"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：65 − 50 = 15 分",
+        "expr": "65-50",
+        "value": "15"
+      },
+      {
+        "k": "compute",
+        "say": "小時：9 − 4 = 5 時",
+        "expr": "9-4",
+        "value": "5"
+      },
+      {
+        "k": "result",
+        "say": "答案是 5時15分。",
+        "value": "5 15"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "10時5分 − 4時50分 = ?",
+    "hints": [
+      "分鐘不夠減時要借位。",
+      "5 分鐘不夠減 50 分鐘，向小時借 1。",
+      "請完成借位後的減法並寫出答案。"
+    ],
+    "steps": [
+      "時間減法：分鐘不夠減時，向小時借1（=60分）再相減。",
+      "5分 < 50分，借位：(10−1) = 9時，(5+60) = 65分",
+      "分鐘：65 − 50 = 15 分",
+      "小時：9 − 4 = 5 時",
+      "答案是 5時15分。"
+    ],
+    "explanation": "時間減法：分鐘不夠減時，向小時借1（=60分）再相減。 → 5分 < 50分，借位：(10−1) = 9時，(5+60) = 65分 → 分鐘：65 − 50 = 15 分 → 小時：9 − 4 = 5 時 → 答案是 5時15分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-017",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_convert",
+    "params": {
+      "minutes": 185
+    },
+    "prompt": "185 分鐘 = ? 時 ? 分",
+    "answer": "3 5",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "把分鐘換成時和分：用除法，185 ÷ 60。"
+      },
+      {
+        "k": "compute",
+        "say": "185 ÷ 60 = 3 餘 5",
+        "expr": "185/60",
+        "value": "3...5"
+      },
+      {
+        "k": "result",
+        "say": "答案是 3 時 5 分。",
+        "value": "3 5"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "185 分鐘 = ? 時 ? 分",
+    "hints": [
+      "1 時 = 60 分，用 185 ÷ 60 來換算。",
+      "185 ÷ 60 的商是幾？餘數是幾？",
+      "請寫出幾時幾分的答案。"
+    ],
+    "steps": [
+      "把分鐘換成時和分：用除法，185 ÷ 60。",
+      "185 ÷ 60 = 3 餘 5",
+      "答案是 3 時 5 分。"
+    ],
+    "explanation": "把分鐘換成時和分：用除法，185 ÷ 60。 → 185 ÷ 60 = 3 餘 5 → 答案是 3 時 5 分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-018",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_convert",
+    "params": {
+      "minutes": 248
+    },
+    "prompt": "248 分鐘 = ? 時 ? 分",
+    "answer": "4 8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "把分鐘換成時和分：248 ÷ 60。"
+      },
+      {
+        "k": "compute",
+        "say": "248 ÷ 60 = 4 餘 8",
+        "expr": "248/60",
+        "value": "4...8"
+      },
+      {
+        "k": "result",
+        "say": "答案是 4 時 8 分。",
+        "value": "4 8"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "248 分鐘 = ? 時 ? 分",
+    "hints": [
+      "1 時 = 60 分，用除法換算。",
+      "248 ÷ 60 的商和餘數是多少？",
+      "請寫出答案。"
+    ],
+    "steps": [
+      "把分鐘換成時和分：248 ÷ 60。",
+      "248 ÷ 60 = 4 餘 8",
+      "答案是 4 時 8 分。"
+    ],
+    "explanation": "把分鐘換成時和分：248 ÷ 60。 → 248 ÷ 60 = 4 餘 8 → 答案是 4 時 8 分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-019",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_elapsed",
+    "params": {
+      "start": "08:45",
+      "end": "11:20"
+    },
+    "prompt": "從上午 8 時 45 分到上午 11 時 20 分，經過多少時間？",
+    "answer": "2 35",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "計算經過時間：用結束時間減去開始時間。"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：20 − 45，不夠減，借位：(11−1)=10時，(20+60)=80分",
+        "value": "80"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：80 − 45 = 35 分",
+        "expr": "80-45",
+        "value": "35"
+      },
+      {
+        "k": "compute",
+        "say": "小時：10 − 8 = 2 時",
+        "expr": "10-8",
+        "value": "2"
+      },
+      {
+        "k": "result",
+        "say": "答案是 2 時 35 分。",
+        "value": "2 35"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "從上午 8 時 45 分到上午 11 時 20 分，經過多少時間？",
+    "hints": [
+      "用結束時間減去開始時間。",
+      "分鐘不夠減要借位。",
+      "請完成計算並寫出經過幾時幾分。"
+    ],
+    "steps": [
+      "計算經過時間：用結束時間減去開始時間。",
+      "分鐘：20 − 45，不夠減，借位：(11−1)=10時，(20+60)=80分",
+      "分鐘：80 − 45 = 35 分",
+      "小時：10 − 8 = 2 時",
+      "答案是 2 時 35 分。"
+    ],
+    "explanation": "計算經過時間：用結束時間減去開始時間。 → 分鐘：20 − 45，不夠減，借位：(11−1)=10時，(20+60)=80分 → 分鐘：80 − 45 = 35 分 → 小時：10 − 8 = 2 時 → 答案是 2 時 35 分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_time-020",
+    "grade": 5,
+    "topic": "time_calc",
+    "type": "time_elapsed",
+    "params": {
+      "start": "14:15",
+      "end": "17:00"
+    },
+    "prompt": "從下午 2 時 15 分到下午 5 時 0 分，經過多少時間？",
+    "answer": "2 45",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "計算經過時間：17:00 − 14:15。"
+      },
+      {
+        "k": "compute",
+        "say": "0 − 15 不夠減，借位：(17−1)=16時，(0+60)=60分",
+        "value": "60"
+      },
+      {
+        "k": "compute",
+        "say": "分鐘：60 − 15 = 45 分",
+        "expr": "60-15",
+        "value": "45"
+      },
+      {
+        "k": "compute",
+        "say": "小時：16 − 14 = 2 時",
+        "expr": "16-14",
+        "value": "2"
+      },
+      {
+        "k": "result",
+        "say": "答案是 2 時 45 分。",
+        "value": "2 45"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "從下午 2 時 15 分到下午 5 時 0 分，經過多少時間？",
+    "hints": [
+      "用 24 小時制計算：17:00 − 14:15。",
+      "分鐘部分 0 − 15 不夠減，需要借位。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "計算經過時間：17:00 − 14:15。",
+      "0 − 15 不夠減，借位：(17−1)=16時，(0+60)=60分",
+      "分鐘：60 − 15 = 45 分",
+      "小時：16 − 14 = 2 時",
+      "答案是 2 時 45 分。"
+    ],
+    "explanation": "計算經過時間：17:00 − 14:15。 → 0 − 15 不夠減，借位：(17−1)=16時，(0+60)=60分 → 分鐘：60 − 15 = 45 分 → 小時：16 − 14 = 2 時 → 答案是 2 時 45 分。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-011",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 457,
+      "b": 12
+    },
+    "prompt": "457 ÷ 12 = ?（有餘數請寫 商...餘數）",
+    "answer": "38...1",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 457 ÷ 12。"
+      },
+      {
+        "k": "compute",
+        "say": "457 ÷ 12 = 38…1",
+        "expr": "457/12",
+        "value": "38...1"
+      },
+      {
+        "k": "check",
+        "say": "檢查：38 × 12 + 1 = 457。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 38...1。",
+        "value": "38...1"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "457 ÷ 12 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：12 的幾倍最接近 457？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 457 ÷ 12。",
+      "457 ÷ 12 = 38…1",
+      "檢查：38 × 12 + 1 = 457。",
+      "答案是 38...1。"
+    ],
+    "explanation": "用長除法計算 457 ÷ 12。 → 457 ÷ 12 = 38…1 → 檢查：38 × 12 + 1 = 457。 → 答案是 38...1。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-012",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 523,
+      "b": 15
+    },
+    "prompt": "523 ÷ 15 = ?（有餘數請寫 商...餘數）",
+    "answer": "34...13",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 523 ÷ 15。"
+      },
+      {
+        "k": "compute",
+        "say": "523 ÷ 15 = 34…13",
+        "expr": "523/15",
+        "value": "34...13"
+      },
+      {
+        "k": "check",
+        "say": "檢查：34 × 15 + 13 = 523。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 34...13。",
+        "value": "34...13"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "523 ÷ 15 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：15 的幾倍最接近 523？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 523 ÷ 15。",
+      "523 ÷ 15 = 34…13",
+      "檢查：34 × 15 + 13 = 523。",
+      "答案是 34...13。"
+    ],
+    "explanation": "用長除法計算 523 ÷ 15。 → 523 ÷ 15 = 34…13 → 檢查：34 × 15 + 13 = 523。 → 答案是 34...13。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-013",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 689,
+      "b": 23
+    },
+    "prompt": "689 ÷ 23 = ?（有餘數請寫 商...餘數）",
+    "answer": "29...22",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 689 ÷ 23。"
+      },
+      {
+        "k": "compute",
+        "say": "689 ÷ 23 = 29…22",
+        "expr": "689/23",
+        "value": "29...22"
+      },
+      {
+        "k": "check",
+        "say": "檢查：29 × 23 + 22 = 689。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 29...22。",
+        "value": "29...22"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "689 ÷ 23 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：23 的幾倍最接近 689？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 689 ÷ 23。",
+      "689 ÷ 23 = 29…22",
+      "檢查：29 × 23 + 22 = 689。",
+      "答案是 29...22。"
+    ],
+    "explanation": "用長除法計算 689 ÷ 23。 → 689 ÷ 23 = 29…22 → 檢查：29 × 23 + 22 = 689。 → 答案是 29...22。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-014",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 841,
+      "b": 17
+    },
+    "prompt": "841 ÷ 17 = ?（有餘數請寫 商...餘數）",
+    "answer": "49...8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 841 ÷ 17。"
+      },
+      {
+        "k": "compute",
+        "say": "841 ÷ 17 = 49…8",
+        "expr": "841/17",
+        "value": "49...8"
+      },
+      {
+        "k": "check",
+        "say": "檢查：49 × 17 + 8 = 841。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 49...8。",
+        "value": "49...8"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "841 ÷ 17 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：17 的幾倍最接近 841？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 841 ÷ 17。",
+      "841 ÷ 17 = 49…8",
+      "檢查：49 × 17 + 8 = 841。",
+      "答案是 49...8。"
+    ],
+    "explanation": "用長除法計算 841 ÷ 17。 → 841 ÷ 17 = 49…8 → 檢查：49 × 17 + 8 = 841。 → 答案是 49...8。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-015",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 1000,
+      "b": 33
+    },
+    "prompt": "1000 ÷ 33 = ?（有餘數請寫 商...餘數）",
+    "answer": "30...10",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 1000 ÷ 33。"
+      },
+      {
+        "k": "compute",
+        "say": "1000 ÷ 33 = 30…10",
+        "expr": "1000/33",
+        "value": "30...10"
+      },
+      {
+        "k": "check",
+        "say": "檢查：30 × 33 + 10 = 1000。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 30...10。",
+        "value": "30...10"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1000 ÷ 33 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：33 的幾倍最接近 1000？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 1000 ÷ 33。",
+      "1000 ÷ 33 = 30…10",
+      "檢查：30 × 33 + 10 = 1000。",
+      "答案是 30...10。"
+    ],
+    "explanation": "用長除法計算 1000 ÷ 33。 → 1000 ÷ 33 = 30…10 → 檢查：30 × 33 + 10 = 1000。 → 答案是 30...10。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-016",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 765,
+      "b": 28
+    },
+    "prompt": "765 ÷ 28 = ?（有餘數請寫 商...餘數）",
+    "answer": "27...9",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 765 ÷ 28。"
+      },
+      {
+        "k": "compute",
+        "say": "765 ÷ 28 = 27…9",
+        "expr": "765/28",
+        "value": "27...9"
+      },
+      {
+        "k": "check",
+        "say": "檢查：27 × 28 + 9 = 765。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 27...9。",
+        "value": "27...9"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "765 ÷ 28 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：28 的幾倍最接近 765？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 765 ÷ 28。",
+      "765 ÷ 28 = 27…9",
+      "檢查：27 × 28 + 9 = 765。",
+      "答案是 27...9。"
+    ],
+    "explanation": "用長除法計算 765 ÷ 28。 → 765 ÷ 28 = 27…9 → 檢查：27 × 28 + 9 = 765。 → 答案是 27...9。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-017",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 932,
+      "b": 41
+    },
+    "prompt": "932 ÷ 41 = ?（有餘數請寫 商...餘數）",
+    "answer": "22...30",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 932 ÷ 41。"
+      },
+      {
+        "k": "compute",
+        "say": "932 ÷ 41 = 22…30",
+        "expr": "932/41",
+        "value": "22...30"
+      },
+      {
+        "k": "check",
+        "say": "檢查：22 × 41 + 30 = 932。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 22...30。",
+        "value": "22...30"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "932 ÷ 41 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：41 的幾倍最接近 932？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 932 ÷ 41。",
+      "932 ÷ 41 = 22…30",
+      "檢查：22 × 41 + 30 = 932。",
+      "答案是 22...30。"
+    ],
+    "explanation": "用長除法計算 932 ÷ 41。 → 932 ÷ 41 = 22…30 → 檢查：22 × 41 + 30 = 932。 → 答案是 22...30。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-018",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 1234,
+      "b": 56
+    },
+    "prompt": "1234 ÷ 56 = ?（有餘數請寫 商...餘數）",
+    "answer": "22...2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 1234 ÷ 56。"
+      },
+      {
+        "k": "compute",
+        "say": "1234 ÷ 56 = 22…2",
+        "expr": "1234/56",
+        "value": "22...2"
+      },
+      {
+        "k": "check",
+        "say": "檢查：22 × 56 + 2 = 1234。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 22...2。",
+        "value": "22...2"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1234 ÷ 56 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：56 的幾倍最接近 1234？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 1234 ÷ 56。",
+      "1234 ÷ 56 = 22…2",
+      "檢查：22 × 56 + 2 = 1234。",
+      "答案是 22...2。"
+    ],
+    "explanation": "用長除法計算 1234 ÷ 56。 → 1234 ÷ 56 = 22…2 → 檢查：22 × 56 + 2 = 1234。 → 答案是 22...2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-019",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 555,
+      "b": 13
+    },
+    "prompt": "555 ÷ 13 = ?（有餘數請寫 商...餘數）",
+    "answer": "42...9",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 555 ÷ 13。"
+      },
+      {
+        "k": "compute",
+        "say": "555 ÷ 13 = 42…9",
+        "expr": "555/13",
+        "value": "42...9"
+      },
+      {
+        "k": "check",
+        "say": "檢查：42 × 13 + 9 = 555。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 42...9。",
+        "value": "42...9"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "555 ÷ 13 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：13 的幾倍最接近 555？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 555 ÷ 13。",
+      "555 ÷ 13 = 42…9",
+      "檢查：42 × 13 + 9 = 555。",
+      "答案是 42...9。"
+    ],
+    "explanation": "用長除法計算 555 ÷ 13。 → 555 ÷ 13 = 42…9 → 檢查：42 × 13 + 9 = 555。 → 答案是 42...9。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-020",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 876,
+      "b": 19
+    },
+    "prompt": "876 ÷ 19 = ?（有餘數請寫 商...餘數）",
+    "answer": "46...2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 876 ÷ 19。"
+      },
+      {
+        "k": "compute",
+        "say": "876 ÷ 19 = 46…2",
+        "expr": "876/19",
+        "value": "46...2"
+      },
+      {
+        "k": "check",
+        "say": "檢查：46 × 19 + 2 = 876。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 46...2。",
+        "value": "46...2"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "876 ÷ 19 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：19 的幾倍最接近 876？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 876 ÷ 19。",
+      "876 ÷ 19 = 46…2",
+      "檢查：46 × 19 + 2 = 876。",
+      "答案是 46...2。"
+    ],
+    "explanation": "用長除法計算 876 ÷ 19。 → 876 ÷ 19 = 46…2 → 檢查：46 × 19 + 2 = 876。 → 答案是 46...2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-021",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 1500,
+      "b": 47
+    },
+    "prompt": "1500 ÷ 47 = ?（有餘數請寫 商...餘數）",
+    "answer": "31...43",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 1500 ÷ 47。"
+      },
+      {
+        "k": "compute",
+        "say": "1500 ÷ 47 = 31…43",
+        "expr": "1500/47",
+        "value": "31...43"
+      },
+      {
+        "k": "check",
+        "say": "檢查：31 × 47 + 43 = 1500。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 31...43。",
+        "value": "31...43"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1500 ÷ 47 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：47 的幾倍最接近 1500？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 1500 ÷ 47。",
+      "1500 ÷ 47 = 31…43",
+      "檢查：31 × 47 + 43 = 1500。",
+      "答案是 31...43。"
+    ],
+    "explanation": "用長除法計算 1500 ÷ 47。 → 1500 ÷ 47 = 31…43 → 檢查：31 × 47 + 43 = 1500。 → 答案是 31...43。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-022",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 2048,
+      "b": 64
+    },
+    "prompt": "2048 ÷ 64 = ?（有餘數請寫 商...餘數）",
+    "answer": "32",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 2048 ÷ 64。"
+      },
+      {
+        "k": "compute",
+        "say": "2048 ÷ 64 = 32",
+        "expr": "2048/64",
+        "value": "32"
+      },
+      {
+        "k": "check",
+        "say": "檢查：32 × 64 = 2048。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 32。",
+        "value": "32"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "2048 ÷ 64 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：64 的幾倍最接近 2048？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 2048 ÷ 64。",
+      "2048 ÷ 64 = 32",
+      "檢查：32 × 64 = 2048。",
+      "答案是 32。"
+    ],
+    "explanation": "用長除法計算 2048 ÷ 64。 → 2048 ÷ 64 = 32 → 檢查：32 × 64 = 2048。 → 答案是 32。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-023",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 999,
+      "b": 37
+    },
+    "prompt": "999 ÷ 37 = ?（有餘數請寫 商...餘數）",
+    "answer": "27",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 999 ÷ 37。"
+      },
+      {
+        "k": "compute",
+        "say": "999 ÷ 37 = 27",
+        "expr": "999/37",
+        "value": "27"
+      },
+      {
+        "k": "check",
+        "say": "檢查：27 × 37 = 999。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 27。",
+        "value": "27"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "999 ÷ 37 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：37 的幾倍最接近 999？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 999 ÷ 37。",
+      "999 ÷ 37 = 27",
+      "檢查：27 × 37 = 999。",
+      "答案是 27。"
+    ],
+    "explanation": "用長除法計算 999 ÷ 37。 → 999 ÷ 37 = 27 → 檢查：27 × 37 = 999。 → 答案是 27。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-024",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 1111,
+      "b": 45
+    },
+    "prompt": "1111 ÷ 45 = ?（有餘數請寫 商...餘數）",
+    "answer": "24...31",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 1111 ÷ 45。"
+      },
+      {
+        "k": "compute",
+        "say": "1111 ÷ 45 = 24…31",
+        "expr": "1111/45",
+        "value": "24...31"
+      },
+      {
+        "k": "check",
+        "say": "檢查：24 × 45 + 31 = 1111。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 24...31。",
+        "value": "24...31"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1111 ÷ 45 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：45 的幾倍最接近 1111？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 1111 ÷ 45。",
+      "1111 ÷ 45 = 24…31",
+      "檢查：24 × 45 + 31 = 1111。",
+      "答案是 24...31。"
+    ],
+    "explanation": "用長除法計算 1111 ÷ 45。 → 1111 ÷ 45 = 24…31 → 檢查：24 × 45 + 31 = 1111。 → 答案是 24...31。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_div-025",
+    "grade": 5,
+    "topic": "division",
+    "type": "long_division",
+    "params": {
+      "a": 777,
+      "b": 16
+    },
+    "prompt": "777 ÷ 16 = ?（有餘數請寫 商...餘數）",
+    "answer": "48...9",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用長除法計算 777 ÷ 16。"
+      },
+      {
+        "k": "compute",
+        "say": "777 ÷ 16 = 48…9",
+        "expr": "777/16",
+        "value": "48...9"
+      },
+      {
+        "k": "check",
+        "say": "檢查：48 × 16 + 9 = 777。"
+      },
+      {
+        "k": "result",
+        "say": "答案是 48...9。",
+        "value": "48...9"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "777 ÷ 16 = ?（有餘數請寫 商...餘數）",
+    "hints": [
+      "這是長除法題目，先估商：16 的幾倍最接近 777？",
+      "用直式除法一步步算，注意對齊位數。",
+      "請完成計算並檢查：商 × 除數 + 餘數 是否等於被除數。"
+    ],
+    "steps": [
+      "用長除法計算 777 ÷ 16。",
+      "777 ÷ 16 = 48…9",
+      "檢查：48 × 16 + 9 = 777。",
+      "答案是 48...9。"
+    ],
+    "explanation": "用長除法計算 777 ÷ 16。 → 777 ÷ 16 = 48…9 → 檢查：48 × 16 + 9 = 777。 → 答案是 48...9。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-011",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "25 × 36 = ?",
+    "answer": "900",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "用分配律或結合律拆解，讓計算更簡便。"
+      },
+      {
+        "k": "compute",
+        "say": "25 × 4 = 100 是好用的組合。"
+      },
+      {
+        "k": "result",
+        "say": "25 × 36 = 25 × 4 × 9 = 100 × 9 = 900。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "25 × 36 = ?",
+    "hints": [
+      "想想 25 和哪個數字相乘會得到整百？",
+      "36 可以拆成 4 × 9，這樣就能利用 25 × 4。",
+      "請完成簡便計算。"
+    ],
+    "steps": [
+      "用分配律或結合律拆解，讓計算更簡便。",
+      "25 × 4 = 100 是好用的組合。",
+      "25 × 36 = 25 × 4 × 9 = 100 × 9 = 900。"
+    ],
+    "explanation": "用分配律或結合律拆解，讓計算更簡便。 → 25 × 4 = 100 是好用的組合。 → 25 × 36 = 25 × 4 × 9 = 100 × 9 = 900。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-012",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "99 × 45 = ?",
+    "answer": "4455",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "利用 99 = 100 − 1，簡化計算。"
+      },
+      {
+        "k": "compute",
+        "say": "99 × 45 = 100 × 45 − 1 × 45 = 4500 − 45。"
+      },
+      {
+        "k": "result",
+        "say": "4500 − 45 = 4455。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "99 × 45 = ?",
+    "hints": [
+      "99 很接近哪個整數？可以改寫成相減的形式。",
+      "(100 − 1) × 45 用分配律展開。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "利用 99 = 100 − 1，簡化計算。",
+      "99 × 45 = 100 × 45 − 1 × 45 = 4500 − 45。",
+      "4500 − 45 = 4455。"
+    ],
+    "explanation": "利用 99 = 100 − 1，簡化計算。 → 99 × 45 = 100 × 45 − 1 × 45 = 4500 − 45。 → 4500 − 45 = 4455。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-013",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "125 × 24 = ?",
+    "answer": "3000",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "125 × 8 = 1000 是好用的組合。"
+      },
+      {
+        "k": "compute",
+        "say": "24 = 8 × 3。"
+      },
+      {
+        "k": "result",
+        "say": "125 × 24 = 125 × 8 × 3 = 1000 × 3 = 3000。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "125 × 24 = ?",
+    "hints": [
+      "125 和哪個數相乘會得到整千？",
+      "24 可以拆成什麼 × 什麼，讓其中一個跟 125 配對？",
+      "請完成計算。"
+    ],
+    "steps": [
+      "125 × 8 = 1000 是好用的組合。",
+      "24 = 8 × 3。",
+      "125 × 24 = 125 × 8 × 3 = 1000 × 3 = 3000。"
+    ],
+    "explanation": "125 × 8 = 1000 是好用的組合。 → 24 = 8 × 3。 → 125 × 24 = 125 × 8 × 3 = 1000 × 3 = 3000。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-014",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "48 × 25 = ?",
+    "answer": "1200",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "25 × 4 = 100，找到可以拆出 4 的因數。"
+      },
+      {
+        "k": "compute",
+        "say": "48 = 12 × 4。"
+      },
+      {
+        "k": "result",
+        "say": "48 × 25 = 12 × 4 × 25 = 12 × 100 = 1200。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "48 × 25 = ?",
+    "hints": [
+      "25 × 4 = 100，48 裡面能拆出 4 嗎？",
+      "48 = 12 × 4，重新組合。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "25 × 4 = 100，找到可以拆出 4 的因數。",
+      "48 = 12 × 4。",
+      "48 × 25 = 12 × 4 × 25 = 12 × 100 = 1200。"
+    ],
+    "explanation": "25 × 4 = 100，找到可以拆出 4 的因數。 → 48 = 12 × 4。 → 48 × 25 = 12 × 4 × 25 = 12 × 100 = 1200。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-015",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "101 × 37 = ?",
+    "answer": "3737",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "101 = 100 + 1，用分配律展開。"
+      },
+      {
+        "k": "compute",
+        "say": "101 × 37 = 100 × 37 + 1 × 37 = 3700 + 37。"
+      },
+      {
+        "k": "result",
+        "say": "3700 + 37 = 3737。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "101 × 37 = ?",
+    "hints": [
+      "101 可以拆成 100 + 1。",
+      "用分配律：(100 + 1) × 37 = ?",
+      "請完成加法計算。"
+    ],
+    "steps": [
+      "101 = 100 + 1，用分配律展開。",
+      "101 × 37 = 100 × 37 + 1 × 37 = 3700 + 37。",
+      "3700 + 37 = 3737。"
+    ],
+    "explanation": "101 = 100 + 1，用分配律展開。 → 101 × 37 = 100 × 37 + 1 × 37 = 3700 + 37。 → 3700 + 37 = 3737。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-016",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "50 × 78 = ?",
+    "answer": "3900",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "50 = 100 ÷ 2，或者把 78 拆成 2 × 39。"
+      },
+      {
+        "k": "compute",
+        "say": "50 × 78 = 50 × 2 × 39 = 100 × 39。"
+      },
+      {
+        "k": "result",
+        "say": "100 × 39 = 3900。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "50 × 78 = ?",
+    "hints": [
+      "50 × 2 = 100，78 可以拆出 2 嗎？",
+      "78 = 2 × 39，重新組合。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "50 = 100 ÷ 2，或者把 78 拆成 2 × 39。",
+      "50 × 78 = 50 × 2 × 39 = 100 × 39。",
+      "100 × 39 = 3900。"
+    ],
+    "explanation": "50 = 100 ÷ 2，或者把 78 拆成 2 × 39。 → 50 × 78 = 50 × 2 × 39 = 100 × 39。 → 100 × 39 = 3900。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-017",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "98 × 15 = ?",
+    "answer": "1470",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "98 = 100 − 2，用分配律。"
+      },
+      {
+        "k": "compute",
+        "say": "98 × 15 = 100 × 15 − 2 × 15 = 1500 − 30。"
+      },
+      {
+        "k": "result",
+        "say": "1500 − 30 = 1470。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "98 × 15 = ?",
+    "hints": [
+      "98 接近 100，差多少？",
+      "用分配律展開 (100 − 2) × 15。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "98 = 100 − 2，用分配律。",
+      "98 × 15 = 100 × 15 − 2 × 15 = 1500 − 30。",
+      "1500 − 30 = 1470。"
+    ],
+    "explanation": "98 = 100 − 2，用分配律。 → 98 × 15 = 100 × 15 − 2 × 15 = 1500 − 30。 → 1500 − 30 = 1470。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-018",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "4 × 37 × 25 = ?",
+    "answer": "3700",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "先找好配對：4 × 25 = 100。"
+      },
+      {
+        "k": "compute",
+        "say": "4 × 37 × 25 = (4×25) × 37 = 100 × 37。"
+      },
+      {
+        "k": "result",
+        "say": "100 × 37 = 3700。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "4 × 37 × 25 = ?",
+    "hints": [
+      "乘法交換律：可以先算哪兩個數相乘比較方便？",
+      "4 × 25 = 100，用結合律重新分組。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "先找好配對：4 × 25 = 100。",
+      "4 × 37 × 25 = (4×25) × 37 = 100 × 37。",
+      "100 × 37 = 3700。"
+    ],
+    "explanation": "先找好配對：4 × 25 = 100。 → 4 × 37 × 25 = (4×25) × 37 = 100 × 37。 → 100 × 37 = 3700。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-019",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "35 × 12 + 35 × 8 = ?",
+    "answer": "700",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "提公因數 35，用分配律合併。"
+      },
+      {
+        "k": "compute",
+        "say": "35 × 12 + 35 × 8 = 35 × (12 + 8) = 35 × 20。"
+      },
+      {
+        "k": "result",
+        "say": "35 × 20 = 700。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "35 × 12 + 35 × 8 = ?",
+    "hints": [
+      "兩項都有共同因數 35，可以提出來。",
+      "35 × (12 + 8) = 35 × ？",
+      "請完成計算。"
+    ],
+    "steps": [
+      "提公因數 35，用分配律合併。",
+      "35 × 12 + 35 × 8 = 35 × (12 + 8) = 35 × 20。",
+      "35 × 20 = 700。"
+    ],
+    "explanation": "提公因數 35，用分配律合併。 → 35 × 12 + 35 × 8 = 35 × (12 + 8) = 35 × 20。 → 35 × 20 = 700。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-020",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "64 × 125 = ?",
+    "answer": "8000",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "125 × 8 = 1000，找 8 的因素。"
+      },
+      {
+        "k": "compute",
+        "say": "64 = 8 × 8。"
+      },
+      {
+        "k": "result",
+        "say": "64 × 125 = 8 × 8 × 125 = 8 × 1000 = 8000。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "64 × 125 = ?",
+    "hints": [
+      "125 × 8 = 1000，64 可以拆出 8 嗎？",
+      "64 = 8 × 8，用結合律重組。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "125 × 8 = 1000，找 8 的因素。",
+      "64 = 8 × 8。",
+      "64 × 125 = 8 × 8 × 125 = 8 × 1000 = 8000。"
+    ],
+    "explanation": "125 × 8 = 1000，找 8 的因素。 → 64 = 8 × 8。 → 64 × 125 = 8 × 8 × 125 = 8 × 1000 = 8000。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-021",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "75 × 44 = ?",
+    "answer": "3300",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "75 × 4 = 300，把 44 拆成 4 × 11。"
+      },
+      {
+        "k": "compute",
+        "say": "75 × 44 = 75 × 4 × 11 = 300 × 11。"
+      },
+      {
+        "k": "result",
+        "say": "300 × 11 = 3300。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "75 × 44 = ?",
+    "hints": [
+      "75 × 4 會得到整百。",
+      "44 可以拆成 4 × 11。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "75 × 4 = 300，把 44 拆成 4 × 11。",
+      "75 × 44 = 75 × 4 × 11 = 300 × 11。",
+      "300 × 11 = 3300。"
+    ],
+    "explanation": "75 × 4 = 300，把 44 拆成 4 × 11。 → 75 × 44 = 75 × 4 × 11 = 300 × 11。 → 300 × 11 = 3300。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-022",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "250 × 36 = ?",
+    "answer": "9000",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "250 × 4 = 1000。"
+      },
+      {
+        "k": "compute",
+        "say": "36 = 4 × 9。"
+      },
+      {
+        "k": "result",
+        "say": "250 × 36 = 250 × 4 × 9 = 1000 × 9 = 9000。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "250 × 36 = ?",
+    "hints": [
+      "250 × 4 = ？",
+      "36 = 4 × 9，利用這個分解。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "250 × 4 = 1000。",
+      "36 = 4 × 9。",
+      "250 × 36 = 250 × 4 × 9 = 1000 × 9 = 9000。"
+    ],
+    "explanation": "250 × 4 = 1000。 → 36 = 4 × 9。 → 250 × 36 = 250 × 4 × 9 = 1000 × 9 = 9000。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-023",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "199 × 6 = ?",
+    "answer": "1194",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "199 = 200 − 1。"
+      },
+      {
+        "k": "compute",
+        "say": "199 × 6 = 200 × 6 − 1 × 6 = 1200 − 6。"
+      },
+      {
+        "k": "result",
+        "say": "1200 − 6 = 1194。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "199 × 6 = ?",
+    "hints": [
+      "199 非常接近 200。",
+      "用 (200 − 1) × 6 展開。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "199 = 200 − 1。",
+      "199 × 6 = 200 × 6 − 1 × 6 = 1200 − 6。",
+      "1200 − 6 = 1194。"
+    ],
+    "explanation": "199 = 200 − 1。 → 199 × 6 = 200 × 6 − 1 × 6 = 1200 − 6。 → 1200 − 6 = 1194。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-024",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "8 × 47 × 125 = ?",
+    "answer": "47000",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "先配對 8 × 125 = 1000。"
+      },
+      {
+        "k": "compute",
+        "say": "8 × 47 × 125 = (8 × 125) × 47 = 1000 × 47。"
+      },
+      {
+        "k": "result",
+        "say": "1000 × 47 = 47000。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "8 × 47 × 125 = ?",
+    "hints": [
+      "哪兩個數相乘可以得到整千？",
+      "8 × 125 = 1000，用交換律重組。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "先配對 8 × 125 = 1000。",
+      "8 × 47 × 125 = (8 × 125) × 47 = 1000 × 47。",
+      "1000 × 47 = 47000。"
+    ],
+    "explanation": "先配對 8 × 125 = 1000。 → 8 × 47 × 125 = (8 × 125) × 47 = 1000 × 47。 → 1000 × 47 = 47000。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dist-025",
+    "grade": 5,
+    "topic": "distributive",
+    "type": "distributive_law",
+    "params": {},
+    "prompt": "56 × 99 + 56 = ?",
+    "answer": "5600",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "56 × 99 + 56 = 56 × 99 + 56 × 1，提公因數。"
+      },
+      {
+        "k": "compute",
+        "say": "= 56 × (99 + 1) = 56 × 100。"
+      },
+      {
+        "k": "result",
+        "say": "56 × 100 = 5600。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "56 × 99 + 56 = ?",
+    "hints": [
+      "56 出現在兩項中，可以提出來。",
+      "56 × 99 + 56 × 1 = 56 × (99 + ?)。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "56 × 99 + 56 = 56 × 99 + 56 × 1，提公因數。",
+      "= 56 × (99 + 1) = 56 × 100。",
+      "56 × 100 = 5600。"
+    ],
+    "explanation": "56 × 99 + 56 = 56 × 99 + 56 × 1，提公因數。 → = 56 × (99 + 1) = 56 × 100。 → 56 × 100 = 5600。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-001",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1/3 + 1/6 = ?",
+    "answer": "1/2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "先通分：1/3 = 2/6。"
+      },
+      {
+        "k": "compute",
+        "say": "2/6 + 1/6 = 3/6 = 1/2（約分）。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1/3 + 1/6 = ?",
+    "hints": [
+      "兩個分數的分母不同，要先通分。",
+      "1/3 的分母 3 和 6 的最小公倍數是 6。",
+      "請完成通分後的加法，別忘了約分。"
+    ],
+    "steps": [
+      "先通分：1/3 = 2/6。",
+      "2/6 + 1/6 = 3/6 = 1/2（約分）。"
+    ],
+    "explanation": "先通分：1/3 = 2/6。 → 2/6 + 1/6 = 3/6 = 1/2（約分）。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-002",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "3/4 − 1/3 = ?",
+    "answer": "5/12",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：3/4 = 9/12，1/3 = 4/12。"
+      },
+      {
+        "k": "compute",
+        "say": "9/12 − 4/12 = 5/12。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3/4 − 1/3 = ?",
+    "hints": [
+      "分母 4 和 3 的最小公倍數是 12。",
+      "把兩個分數都化成 12 為分母。",
+      "請完成減法。"
+    ],
+    "steps": [
+      "通分：3/4 = 9/12，1/3 = 4/12。",
+      "9/12 − 4/12 = 5/12。"
+    ],
+    "explanation": "通分：3/4 = 9/12，1/3 = 4/12。 → 9/12 − 4/12 = 5/12。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-003",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "2/5 + 3/10 = ?",
+    "answer": "7/10",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：2/5 = 4/10。"
+      },
+      {
+        "k": "compute",
+        "say": "4/10 + 3/10 = 7/10。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "2/5 + 3/10 = ?",
+    "hints": [
+      "5 和 10 的公倍數是 10。",
+      "把 2/5 化成分母為 10 的分數。",
+      "請完成加法。"
+    ],
+    "steps": [
+      "通分：2/5 = 4/10。",
+      "4/10 + 3/10 = 7/10。"
+    ],
+    "explanation": "通分：2/5 = 4/10。 → 4/10 + 3/10 = 7/10。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-004",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "5/6 − 1/4 = ?",
+    "answer": "7/12",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：5/6 = 10/12，1/4 = 3/12。"
+      },
+      {
+        "k": "compute",
+        "say": "10/12 − 3/12 = 7/12。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "5/6 − 1/4 = ?",
+    "hints": [
+      "6 和 4 的最小公倍數是 12。",
+      "通分後再減。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "通分：5/6 = 10/12，1/4 = 3/12。",
+      "10/12 − 3/12 = 7/12。"
+    ],
+    "explanation": "通分：5/6 = 10/12，1/4 = 3/12。 → 10/12 − 3/12 = 7/12。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-005",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1/2 + 2/3 = ?",
+    "answer": "7/6",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：1/2 = 3/6，2/3 = 4/6。"
+      },
+      {
+        "k": "compute",
+        "say": "3/6 + 4/6 = 7/6。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1/2 + 2/3 = ?",
+    "hints": [
+      "2 和 3 的公倍數是 6。",
+      "分別化成分母為 6。",
+      "請完成分子相加。"
+    ],
+    "steps": [
+      "通分：1/2 = 3/6，2/3 = 4/6。",
+      "3/6 + 4/6 = 7/6。"
+    ],
+    "explanation": "通分：1/2 = 3/6，2/3 = 4/6。 → 3/6 + 4/6 = 7/6。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-006",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "7/8 − 1/2 = ?",
+    "answer": "3/8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：1/2 = 4/8。"
+      },
+      {
+        "k": "compute",
+        "say": "7/8 − 4/8 = 3/8。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "7/8 − 1/2 = ?",
+    "hints": [
+      "把 1/2 化成分母為 8 的分數。",
+      "1/2 = ?/8。",
+      "請完成減法。"
+    ],
+    "steps": [
+      "通分：1/2 = 4/8。",
+      "7/8 − 4/8 = 3/8。"
+    ],
+    "explanation": "通分：1/2 = 4/8。 → 7/8 − 4/8 = 3/8。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-007",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "2/3 + 1/4 + 1/6 = ?",
+    "answer": "13/12",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分到 12：2/3=8/12，1/4=3/12，1/6=2/12。"
+      },
+      {
+        "k": "compute",
+        "say": "8/12 + 3/12 + 2/12 = 13/12。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "2/3 + 1/4 + 1/6 = ?",
+    "hints": [
+      "3、4、6 的最小公倍數是 12。",
+      "把三個分數都化成分母 12。",
+      "請加總分子。"
+    ],
+    "steps": [
+      "通分到 12：2/3=8/12，1/4=3/12，1/6=2/12。",
+      "8/12 + 3/12 + 2/12 = 13/12。"
+    ],
+    "explanation": "通分到 12：2/3=8/12，1/4=3/12，1/6=2/12。 → 8/12 + 3/12 + 2/12 = 13/12。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-008",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "3/5 − 1/10 = ?",
+    "answer": "1/2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：3/5 = 6/10。"
+      },
+      {
+        "k": "compute",
+        "say": "6/10 − 1/10 = 5/10 = 1/2。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3/5 − 1/10 = ?",
+    "hints": [
+      "把 3/5 化成分母為 10。",
+      "減法後記得約分。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "通分：3/5 = 6/10。",
+      "6/10 − 1/10 = 5/10 = 1/2。"
+    ],
+    "explanation": "通分：3/5 = 6/10。 → 6/10 − 1/10 = 5/10 = 1/2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-009",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1 又 1/3 + 2/3 = ?",
+    "answer": "2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "1 又 1/3 = 4/3（化假分數）。"
+      },
+      {
+        "k": "compute",
+        "say": "4/3 + 2/3 = 6/3 = 2。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1 又 1/3 + 2/3 = ?",
+    "hints": [
+      "先把帶分數化成假分數。",
+      "1 又 1/3 = ?/3。",
+      "請完成加法並化簡。"
+    ],
+    "steps": [
+      "1 又 1/3 = 4/3（化假分數）。",
+      "4/3 + 2/3 = 6/3 = 2。"
+    ],
+    "explanation": "1 又 1/3 = 4/3（化假分數）。 → 4/3 + 2/3 = 6/3 = 2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-010",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "2 又 1/4 − 3/4 = ?",
+    "answer": "3/2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "2 又 1/4 = 9/4。"
+      },
+      {
+        "k": "compute",
+        "say": "9/4 − 3/4 = 6/4 = 3/2。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "2 又 1/4 − 3/4 = ?",
+    "hints": [
+      "先化假分數：2 又 1/4 = ?/4。",
+      "分母相同直接減。",
+      "請約分寫出最簡分數。"
+    ],
+    "steps": [
+      "2 又 1/4 = 9/4。",
+      "9/4 − 3/4 = 6/4 = 3/2。"
+    ],
+    "explanation": "2 又 1/4 = 9/4。 → 9/4 − 3/4 = 6/4 = 3/2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-011",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "5/9 + 2/9 = ?",
+    "answer": "7/9",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "分母相同，直接加分子。"
+      },
+      {
+        "k": "compute",
+        "say": "5/9 + 2/9 = 7/9。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "5/9 + 2/9 = ?",
+    "hints": [
+      "分母相同的分數怎麼相加？",
+      "直接加分子就好。",
+      "請寫出答案。"
+    ],
+    "steps": [
+      "分母相同，直接加分子。",
+      "5/9 + 2/9 = 7/9。"
+    ],
+    "explanation": "分母相同，直接加分子。 → 5/9 + 2/9 = 7/9。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-012",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "4/7 + 2/7 = ?",
+    "answer": "6/7",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "分母相同，加分子：4 + 2 = 6。"
+      },
+      {
+        "k": "compute",
+        "say": "4/7 + 2/7 = 6/7。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "4/7 + 2/7 = ?",
+    "hints": [
+      "分母都是 7，只要加分子。",
+      "4 + 2 = ?",
+      "請寫出答案。"
+    ],
+    "steps": [
+      "分母相同，加分子：4 + 2 = 6。",
+      "4/7 + 2/7 = 6/7。"
+    ],
+    "explanation": "分母相同，加分子：4 + 2 = 6。 → 4/7 + 2/7 = 6/7。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-013",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1/2 + 1/3 + 1/6 = ?",
+    "answer": "1",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分到 6：1/2=3/6，1/3=2/6，1/6=1/6。"
+      },
+      {
+        "k": "compute",
+        "say": "3+2+1 = 6，6/6 = 1。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1/2 + 1/3 + 1/6 = ?",
+    "hints": [
+      "2、3、6 的最小公倍數是 6。",
+      "通分後加總分子。",
+      "分子加起來等於分母就是 1。"
+    ],
+    "steps": [
+      "通分到 6：1/2=3/6，1/3=2/6，1/6=1/6。",
+      "3+2+1 = 6，6/6 = 1。"
+    ],
+    "explanation": "通分到 6：1/2=3/6，1/3=2/6，1/6=1/6。 → 3+2+1 = 6，6/6 = 1。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-014",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "3/8 + 1/4 = ?",
+    "answer": "5/8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "1/4 = 2/8。"
+      },
+      {
+        "k": "compute",
+        "say": "3/8 + 2/8 = 5/8。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3/8 + 1/4 = ?",
+    "hints": [
+      "把 1/4 化成分母 8。",
+      "1/4 = 2/8。",
+      "請完成加法。"
+    ],
+    "steps": [
+      "1/4 = 2/8。",
+      "3/8 + 2/8 = 5/8。"
+    ],
+    "explanation": "1/4 = 2/8。 → 3/8 + 2/8 = 5/8。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-015",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "11/12 − 3/4 = ?",
+    "answer": "1/6",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "3/4 = 9/12。"
+      },
+      {
+        "k": "compute",
+        "say": "11/12 − 9/12 = 2/12 = 1/6。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "11/12 − 3/4 = ?",
+    "hints": [
+      "通分到 12。",
+      "11/12 − 9/12 = ?",
+      "別忘了約分。"
+    ],
+    "steps": [
+      "3/4 = 9/12。",
+      "11/12 − 9/12 = 2/12 = 1/6。"
+    ],
+    "explanation": "3/4 = 9/12。 → 11/12 − 9/12 = 2/12 = 1/6。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-016",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "哪個分數比較大？3/5 還是 2/3？",
+    "answer": "2/3",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分比較：3/5 = 9/15，2/3 = 10/15。"
+      },
+      {
+        "k": "compute",
+        "say": "10/15 > 9/15，所以 2/3 比較大。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "哪個分數比較大？3/5 還是 2/3？",
+    "hints": [
+      "比較分數大小要先通分。",
+      "5 和 3 的公倍數是 15。",
+      "請通分後比較分子大小。"
+    ],
+    "steps": [
+      "通分比較：3/5 = 9/15，2/3 = 10/15。",
+      "10/15 > 9/15，所以 2/3 比較大。"
+    ],
+    "explanation": "通分比較：3/5 = 9/15，2/3 = 10/15。 → 10/15 > 9/15，所以 2/3 比較大。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-017",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "哪個分數比較大？4/9 還是 5/12？",
+    "answer": "4/9",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分到 36：4/9 = 16/36，5/12 = 15/36。"
+      },
+      {
+        "k": "compute",
+        "say": "16/36 > 15/36，所以 4/9 比較大。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "哪個分數比較大？4/9 還是 5/12？",
+    "hints": [
+      "9 和 12 的公倍數是 36。",
+      "分別化成分母 36 再比較。",
+      "請完成比較。"
+    ],
+    "steps": [
+      "通分到 36：4/9 = 16/36，5/12 = 15/36。",
+      "16/36 > 15/36，所以 4/9 比較大。"
+    ],
+    "explanation": "通分到 36：4/9 = 16/36，5/12 = 15/36。 → 16/36 > 15/36，所以 4/9 比較大。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-018",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "5/6 − 2/9 = ?",
+    "answer": "11/18",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分到 18：5/6 = 15/18，2/9 = 4/18。"
+      },
+      {
+        "k": "compute",
+        "say": "15/18 − 4/18 = 11/18。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "5/6 − 2/9 = ?",
+    "hints": [
+      "6 和 9 的最小公倍數是 18。",
+      "通分後再減。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "通分到 18：5/6 = 15/18，2/9 = 4/18。",
+      "15/18 − 4/18 = 11/18。"
+    ],
+    "explanation": "通分到 18：5/6 = 15/18，2/9 = 4/18。 → 15/18 − 4/18 = 11/18。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-019",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1 又 1/5 + 3/10 = ?",
+    "answer": "3/2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "1 又 1/5 = 6/5 = 12/10。"
+      },
+      {
+        "k": "compute",
+        "say": "12/10 + 3/10 = 15/10 = 3/2。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1 又 1/5 + 3/10 = ?",
+    "hints": [
+      "先化假分數再通分。",
+      "1 又 1/5 等於多少個五分之一？",
+      "請完成加法並約分。"
+    ],
+    "steps": [
+      "1 又 1/5 = 6/5 = 12/10。",
+      "12/10 + 3/10 = 15/10 = 3/2。"
+    ],
+    "explanation": "1 又 1/5 = 6/5 = 12/10。 → 12/10 + 3/10 = 15/10 = 3/2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-020",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "3 又 1/2 − 1 又 3/4 = ?",
+    "answer": "7/4",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "3 又 1/2 = 7/2 = 14/4。1 又 3/4 = 7/4。"
+      },
+      {
+        "k": "compute",
+        "say": "14/4 − 7/4 = 7/4。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3 又 1/2 − 1 又 3/4 = ?",
+    "hints": [
+      "先各自化成假分數。",
+      "再通分到相同分母。",
+      "請完成減法。"
+    ],
+    "steps": [
+      "3 又 1/2 = 7/2 = 14/4。1 又 3/4 = 7/4。",
+      "14/4 − 7/4 = 7/4。"
+    ],
+    "explanation": "3 又 1/2 = 7/2 = 14/4。1 又 3/4 = 7/4。 → 14/4 − 7/4 = 7/4。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-021",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1/4 + 1/8 + 1/2 = ?",
+    "answer": "7/8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分到 8：1/4=2/8，1/8=1/8，1/2=4/8。"
+      },
+      {
+        "k": "compute",
+        "say": "2+1+4=7，答案是 7/8。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1/4 + 1/8 + 1/2 = ?",
+    "hints": [
+      "找 4、8、2 的最小公倍數。",
+      "通分後加分子。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "通分到 8：1/4=2/8，1/8=1/8，1/2=4/8。",
+      "2+1+4=7，答案是 7/8。"
+    ],
+    "explanation": "通分到 8：1/4=2/8，1/8=1/8，1/2=4/8。 → 2+1+4=7，答案是 7/8。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-022",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "7/10 − 2/5 = ?",
+    "answer": "3/10",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "2/5 = 4/10。"
+      },
+      {
+        "k": "compute",
+        "say": "7/10 − 4/10 = 3/10。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "7/10 − 2/5 = ?",
+    "hints": [
+      "把 2/5 通分成分母 10。",
+      "2/5 = 4/10。",
+      "請完成減法。"
+    ],
+    "steps": [
+      "2/5 = 4/10。",
+      "7/10 − 4/10 = 3/10。"
+    ],
+    "explanation": "2/5 = 4/10。 → 7/10 − 4/10 = 3/10。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-023",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "2/3 − 1/6 + 1/2 = ?",
+    "answer": "1",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分到 6：2/3=4/6，1/6=1/6，1/2=3/6。"
+      },
+      {
+        "k": "compute",
+        "say": "4/6 − 1/6 + 3/6 = 6/6 = 1。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "2/3 − 1/6 + 1/2 = ?",
+    "hints": [
+      "3、6、2 的公倍數是 6。",
+      "按順序通分後計算。",
+      "請完成並化簡。"
+    ],
+    "steps": [
+      "通分到 6：2/3=4/6，1/6=1/6，1/2=3/6。",
+      "4/6 − 1/6 + 3/6 = 6/6 = 1。"
+    ],
+    "explanation": "通分到 6：2/3=4/6，1/6=1/6，1/2=3/6。 → 4/6 − 1/6 + 3/6 = 6/6 = 1。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-024",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "5/8 + 3/8 = ?",
+    "answer": "1",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "分母相同：5/8 + 3/8 = 8/8 = 1。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "5/8 + 3/8 = ?",
+    "hints": [
+      "分母都是 8，加分子。",
+      "5 + 3 = 8，化成最簡分數。",
+      "8/8 等於多少？"
+    ],
+    "steps": [
+      "分母相同：5/8 + 3/8 = 8/8 = 1。"
+    ],
+    "explanation": "分母相同：5/8 + 3/8 = 8/8 = 1。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_frac-025",
+    "grade": 5,
+    "topic": "fraction",
+    "type": "fraction_add_sub",
+    "params": {},
+    "prompt": "1/6 + 5/12 = ?",
+    "answer": "7/12",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "通分：1/6 = 2/12。"
+      },
+      {
+        "k": "compute",
+        "say": "2/12 + 5/12 = 7/12。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1/6 + 5/12 = ?",
+    "hints": [
+      "6 和 12 的公倍數是 12。",
+      "1/6 化成分母 12。",
+      "請完成加法。"
+    ],
+    "steps": [
+      "通分：1/6 = 2/12。",
+      "2/12 + 5/12 = 7/12。"
+    ],
+    "explanation": "通分：1/6 = 2/12。 → 2/12 + 5/12 = 7/12。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-001",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "3.7 + 2.45 = ?",
+    "answer": "6.15",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "小數加法：對齊小數點。"
+      },
+      {
+        "k": "compute",
+        "say": "3.70 + 2.45 = 6.15。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3.7 + 2.45 = ?",
+    "hints": [
+      "小數加法要對齊小數點。",
+      "3.7 等於 3.70，位數補齊。",
+      "請完成加法。"
+    ],
+    "steps": [
+      "小數加法：對齊小數點。",
+      "3.70 + 2.45 = 6.15。"
+    ],
+    "explanation": "小數加法：對齊小數點。 → 3.70 + 2.45 = 6.15。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-002",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "8.5 − 3.27 = ?",
+    "answer": "5.23",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "對齊小數點：8.50 − 3.27。"
+      },
+      {
+        "k": "compute",
+        "say": "8.50 − 3.27 = 5.23。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "8.5 − 3.27 = ?",
+    "hints": [
+      "8.5 等於 8.50，對齊後再減。",
+      "個位：8−3，十分位：5−2，百分位：0−7（借位）。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "對齊小數點：8.50 − 3.27。",
+      "8.50 − 3.27 = 5.23。"
+    ],
+    "explanation": "對齊小數點：8.50 − 3.27。 → 8.50 − 3.27 = 5.23。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-003",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "4.6 × 3 = ?",
+    "answer": "13.8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "先算 46 × 3 = 138。"
+      },
+      {
+        "k": "compute",
+        "say": "4.6 有一位小數，答案也要一位小數：13.8。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "4.6 × 3 = ?",
+    "hints": [
+      "先不管小數點，算 46 × 3。",
+      "最後數一下原來有幾位小數。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "先算 46 × 3 = 138。",
+      "4.6 有一位小數，答案也要一位小數：13.8。"
+    ],
+    "explanation": "先算 46 × 3 = 138。 → 4.6 有一位小數，答案也要一位小數：13.8。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-004",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "12.5 × 8 = ?",
+    "answer": "100",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "12.5 × 8 = 100。（12.5 × 8 = 100 是常用配對）"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "12.5 × 8 = ?",
+    "hints": [
+      "12.5 × 2 = 25，25 × 4 = 100。",
+      "或直接算 125 × 8 = 1000，回推小數點。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "12.5 × 8 = 100。（12.5 × 8 = 100 是常用配對）"
+    ],
+    "explanation": "12.5 × 8 = 100。（12.5 × 8 = 100 是常用配對）",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-005",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "7.2 ÷ 4 = ?",
+    "answer": "1.8",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "72 ÷ 4 = 18。"
+      },
+      {
+        "k": "compute",
+        "say": "移回小數點：7.2 ÷ 4 = 1.8。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "7.2 ÷ 4 = ?",
+    "hints": [
+      "先去掉小數點算 72 ÷ 4。",
+      "再把小數點放回正確位置。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "72 ÷ 4 = 18。",
+      "移回小數點：7.2 ÷ 4 = 1.8。"
+    ],
+    "explanation": "72 ÷ 4 = 18。 → 移回小數點：7.2 ÷ 4 = 1.8。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-006",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "0.25 + 0.75 = ?",
+    "answer": "1",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "0.25 + 0.75 = 1.00 = 1。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "0.25 + 0.75 = ?",
+    "hints": [
+      "對齊小數點相加。",
+      "百分位：5+5=10，進位。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "0.25 + 0.75 = 1.00 = 1。"
+    ],
+    "explanation": "0.25 + 0.75 = 1.00 = 1。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-007",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "5.04 − 2.6 = ?",
+    "answer": "2.44",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "5.04 − 2.60 = 2.44。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "5.04 − 2.6 = ?",
+    "hints": [
+      "2.6 等於 2.60，對齊位數。",
+      "百分位：4−0=4，十分位：0−6 借位。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "5.04 − 2.60 = 2.44。"
+    ],
+    "explanation": "5.04 − 2.60 = 2.44。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-008",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "0.8 × 0.5 = ?",
+    "answer": "0.4",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "8 × 5 = 40。共兩位小數：0.40 = 0.4。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "0.8 × 0.5 = ?",
+    "hints": [
+      "先不管小數點：8 × 5 = ?",
+      "0.8 有一位小數，0.5 有一位小數，共幾位？",
+      "請完成計算。"
+    ],
+    "steps": [
+      "8 × 5 = 40。共兩位小數：0.40 = 0.4。"
+    ],
+    "explanation": "8 × 5 = 40。共兩位小數：0.40 = 0.4。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-009",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "6.3 ÷ 9 = ?",
+    "answer": "0.7",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "63 ÷ 9 = 7。"
+      },
+      {
+        "k": "compute",
+        "say": "恢復小數點：6.3 ÷ 9 = 0.7。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "6.3 ÷ 9 = ?",
+    "hints": [
+      "先去小數點算 63 ÷ 9。",
+      "再放回小數點。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "63 ÷ 9 = 7。",
+      "恢復小數點：6.3 ÷ 9 = 0.7。"
+    ],
+    "explanation": "63 ÷ 9 = 7。 → 恢復小數點：6.3 ÷ 9 = 0.7。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-010",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "15.6 + 4.44 = ?",
+    "answer": "20.04",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "15.60 + 4.44 = 20.04。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "15.6 + 4.44 = ?",
+    "hints": [
+      "15.6 等於 15.60。",
+      "對齊小數點後逐位相加。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "15.60 + 4.44 = 20.04。"
+    ],
+    "explanation": "15.60 + 4.44 = 20.04。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-011",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "10 − 3.75 = ?",
+    "answer": "6.25",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "10.00 − 3.75 = 6.25。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "10 − 3.75 = ?",
+    "hints": [
+      "10 等於 10.00。",
+      "百分位：0−5 借位，十分位：0−7 再借位。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "10.00 − 3.75 = 6.25。"
+    ],
+    "explanation": "10.00 − 3.75 = 6.25。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-012",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "2.5 × 4 = ?",
+    "answer": "10",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "25 × 4 = 100，有一位小數→ 10.0 = 10。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "2.5 × 4 = ?",
+    "hints": [
+      "25 × 4 = 100。",
+      "2.5 有一位小數。",
+      "移回小數點即可。"
+    ],
+    "steps": [
+      "25 × 4 = 100，有一位小數→ 10.0 = 10。"
+    ],
+    "explanation": "25 × 4 = 100，有一位小數→ 10.0 = 10。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-013",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "9.6 ÷ 8 = ?",
+    "answer": "1.2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "96 ÷ 8 = 12。"
+      },
+      {
+        "k": "compute",
+        "say": "恢復小數：1.2。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "9.6 ÷ 8 = ?",
+    "hints": [
+      "先算 96 ÷ 8。",
+      "再放回小數點。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "96 ÷ 8 = 12。",
+      "恢復小數：1.2。"
+    ],
+    "explanation": "96 ÷ 8 = 12。 → 恢復小數：1.2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-014",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "3.14 + 6.86 = ?",
+    "answer": "10",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "3.14 + 6.86 = 10.00 = 10。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "3.14 + 6.86 = ?",
+    "hints": [
+      "百分位：4+6=10，進位。",
+      "十分位：1+8+1=10，進位。",
+      "請完成加法。"
+    ],
+    "steps": [
+      "3.14 + 6.86 = 10.00 = 10。"
+    ],
+    "explanation": "3.14 + 6.86 = 10.00 = 10。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-015",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "7.5 − 2.8 = ?",
+    "answer": "4.7",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "7.5 − 2.8：十分位 5−8 借位 → 15−8=7，個位 7−1−2=4。"
+      },
+      {
+        "k": "compute",
+        "say": "答案 4.7。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "7.5 − 2.8 = ?",
+    "hints": [
+      "十分位 5 < 8，需要借位。",
+      "借位後 15 − 8 = 7。",
+      "請完成個位計算。"
+    ],
+    "steps": [
+      "7.5 − 2.8：十分位 5−8 借位 → 15−8=7，個位 7−1−2=4。",
+      "答案 4.7。"
+    ],
+    "explanation": "7.5 − 2.8：十分位 5−8 借位 → 15−8=7，個位 7−1−2=4。 → 答案 4.7。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-016",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "0.4 × 0.3 = ?",
+    "answer": "0.12",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "4 × 3 = 12，兩位小數 → 0.12。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "0.4 × 0.3 = ?",
+    "hints": [
+      "不管小數點先算 4 × 3。",
+      "0.4 和 0.3 各一位小數，共幾位？",
+      "請完成計算。"
+    ],
+    "steps": [
+      "4 × 3 = 12，兩位小數 → 0.12。"
+    ],
+    "explanation": "4 × 3 = 12，兩位小數 → 0.12。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-017",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "45.6 ÷ 6 = ?",
+    "answer": "7.6",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "456 ÷ 6 = 76，恢復小數 → 7.6。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "45.6 ÷ 6 = ?",
+    "hints": [
+      "先算 456 ÷ 6。",
+      "再把小數點放回原位。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "456 ÷ 6 = 76，恢復小數 → 7.6。"
+    ],
+    "explanation": "456 ÷ 6 = 76，恢復小數 → 7.6。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-018",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "1.25 + 2.75 + 3.5 = ?",
+    "answer": "7.5",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "1.25 + 2.75 = 4.00 = 4。"
+      },
+      {
+        "k": "compute",
+        "say": "4 + 3.5 = 7.5。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1.25 + 2.75 + 3.5 = ?",
+    "hints": [
+      "先加前兩個：1.25 + 2.75 剛好是整數。",
+      "再加上 3.5。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "1.25 + 2.75 = 4.00 = 4。",
+      "4 + 3.5 = 7.5。"
+    ],
+    "explanation": "1.25 + 2.75 = 4.00 = 4。 → 4 + 3.5 = 7.5。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-019",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "20.5 − 8.25 = ?",
+    "answer": "12.25",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "20.50 − 8.25 = 12.25。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "20.5 − 8.25 = ?",
+    "hints": [
+      "20.5 等於 20.50。",
+      "對齊後逐位相減。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "20.50 − 8.25 = 12.25。"
+    ],
+    "explanation": "20.50 − 8.25 = 12.25。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-020",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "0.6 × 5 = ?",
+    "answer": "3",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "6 × 5 = 30，一位小數 → 3.0 = 3。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "0.6 × 5 = ?",
+    "hints": [
+      "先算 6 × 5。",
+      "加回一位小數。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "6 × 5 = 30，一位小數 → 3.0 = 3。"
+    ],
+    "explanation": "6 × 5 = 30，一位小數 → 3.0 = 3。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-021",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "8.4 ÷ 7 = ?",
+    "answer": "1.2",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "84 ÷ 7 = 12，恢復小數 → 1.2。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "8.4 ÷ 7 = ?",
+    "hints": [
+      "先算 84 ÷ 7。",
+      "再放回小數點。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "84 ÷ 7 = 12，恢復小數 → 1.2。"
+    ],
+    "explanation": "84 ÷ 7 = 12，恢復小數 → 1.2。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-022",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "6.08 + 3.92 = ?",
+    "answer": "10",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "6.08 + 3.92 = 10.00 = 10。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "6.08 + 3.92 = ?",
+    "hints": [
+      "百分位：8+2=10 進位。",
+      "十分位：0+9+1=10 進位。",
+      "請完成加法。"
+    ],
+    "steps": [
+      "6.08 + 3.92 = 10.00 = 10。"
+    ],
+    "explanation": "6.08 + 3.92 = 10.00 = 10。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-023",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "50 − 12.34 = ?",
+    "answer": "37.66",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "50.00 − 12.34 = 37.66。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "50 − 12.34 = ?",
+    "hints": [
+      "50 等於 50.00。",
+      "逐位相減，需多次借位。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "50.00 − 12.34 = 37.66。"
+    ],
+    "explanation": "50.00 − 12.34 = 37.66。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-024",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "1.5 × 1.5 = ?",
+    "answer": "2.25",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "15 × 15 = 225，兩位小數 → 2.25。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "1.5 × 1.5 = ?",
+    "hints": [
+      "先算 15 × 15。",
+      "1.5 有一位小數 × 1.5 有一位小數 = 共幾位？",
+      "請完成計算。"
+    ],
+    "steps": [
+      "15 × 15 = 225，兩位小數 → 2.25。"
+    ],
+    "explanation": "15 × 15 = 225，兩位小數 → 2.25。",
+    "kind": "general"
+  },
+  {
+    "id": "offline_dec-025",
+    "grade": 5,
+    "topic": "decimal",
+    "type": "decimal_ops",
+    "params": {},
+    "prompt": "36.5 ÷ 5 = ?",
+    "answer": "7.3",
+    "teacherSteps": [
+      {
+        "k": "concept",
+        "say": "365 ÷ 5 = 73，恢復小數 → 7.3。"
+      }
+    ],
+    "source": {
+      "pdf": "generated/expand_offline_math",
+      "page": null,
+      "qno": null
+    },
+    "meta": {
+      "generatedAt": "2026-03-12T04:53:26.269Z",
+      "generator": "tools/expand_offline_math.cjs"
+    },
+    "question": "36.5 ÷ 5 = ?",
+    "hints": [
+      "先算 365 ÷ 5。",
+      "放回小數點。",
+      "請完成計算。"
+    ],
+    "steps": [
+      "365 ÷ 5 = 73，恢復小數 → 7.3。"
+    ],
+    "explanation": "365 ÷ 5 = 73，恢復小數 → 7.3。",
+    "kind": "general"
   }
 ];
