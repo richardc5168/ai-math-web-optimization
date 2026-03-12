@@ -129,9 +129,9 @@
   </div>
   <div class="row" style="margin-top:10px">
     <a class="btn ghost" href="../">← 回首頁</a>
-    <span id="unlockBadge" class="badge warn">🔒 未解鎖：可試看 3 題</span>
+    <span id="unlockBadge" class="badge warn">🔒 試看模式：可免費體驗 3 題</span>
     <span id="pwaBadge" class="badge">PWA: 檢查中…</span>
-    <button id="btnParent" class="btn" style="margin-left:auto">家長設定 / 解鎖</button>
+    <button id="btnParent" class="btn" style="margin-left:auto">🔓 解鎖 / 設定</button>
   </div>
   <div id="studentAuthBar" style="margin-top:10px"></div>
 </header>
@@ -240,31 +240,40 @@
 <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="row" style="margin:0 0 8px 0">
-      <h3 style="margin:0">家長設定 / 解鎖</h3>
+      <h3 style="margin:0">🔓 解鎖 / 設定</h3>
       <button class="btn" id="btnClose" style="margin-left:auto">關閉</button>
     </div>
 
-    <div class="banner muted">
-      <b>最快商業閉環：</b>付費解鎖內容包 → 每日任務 → 週報給家長看 → 續費買下一包。
-      <div class="small" style="margin-top:6px">本頁採「本機解鎖碼」設計。注意：純前端解鎖屬於輕量防呆（不是強防盜）。</div>
+    <div class="banner muted" style="line-height:1.7">
+      <b>分數衝刺包</b> — 200 題專攻小五分數應用，含完整提示、解題步驟與週報。
+      <div class="small" style="margin-top:6px">請依序操作：先輸入解鎖碼 → 可選擇設定 PIN 保護。</div>
     </div>
 
-    <h4 style="margin:12px 0 6px 0">(A) 家長 PIN（本機）</h4>
+    <h4 style="margin:12px 0 6px 0;display:flex;align-items:center;gap:8px">
+      <span style="background:#58a6ff;min-width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0d1117">1</span>
+      輸入解鎖碼
+    </h4>
+    <div class="row" style="margin-top:0">
+      <input id="code" placeholder="例如：DEMO-2026-001" />
+      <button class="btn primary" id="btnRedeem">🔓 兌換解鎖</button>
+      <button class="btn danger" id="btnLock" style="font-size:12px">重新鎖上</button>
+    </div>
+    <div class="small">測試碼：<span class="k">DEMO-2026-001</span>（正式碼請向老師或客服索取）</div>
+
+    <h4 style="margin:12px 0 6px 0;display:flex;align-items:center;gap:8px">
+      <span style="background:#58a6ff;min-width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0d1117">2</span>
+      家長 PIN（可選）
+    </h4>
     <div class="row" style="margin-top:0">
       <input id="pin" placeholder="設定或輸入 PIN（4-8 碼）" />
       <button class="btn" id="btnSetPin">設定/更新 PIN</button>
       <span id="pinStatus" class="badge">未設定</span>
     </div>
 
-    <h4 style="margin:12px 0 6px 0">(B) 解鎖碼（Redeem Code）</h4>
-    <div class="row" style="margin-top:0">
-      <input id="code" placeholder="例如：DEMO-2026-001" />
-      <button class="btn primary" id="btnRedeem">兌換解鎖</button>
-      <button class="btn danger" id="btnLock">重新鎖上（測試用）</button>
-    </div>
-    <div class="small">試用碼（Demo）：<span class="k">DEMO-2026-001</span>（之後可換成付費發碼）</div>
-
-    <h4 style="margin:12px 0 6px 0">(C) 資料 / 週報</h4>
+    <h4 style="margin:12px 0 6px 0;display:flex;align-items:center;gap:8px">
+      <span style="background:#58a6ff;min-width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0d1117">3</span>
+      資料管理
+    </h4>
     <div class="row" style="margin-top:0">
       <button class="btn" id="btnExport">匯出學習資料（JSON）</button>
       <button class="btn danger" id="btnReset">清除本機資料</button>
@@ -313,15 +322,16 @@
     const expText = expiresAtMs ? `（到期：${formatDateTime(expiresAtMs)}）` : '';
     const url = (isSafeUrl(CTA.buy) && CTA.buy) || (isSafeUrl(CTA.support) && CTA.support) || '';
     const btn = url
-      ? `<a class="btn primary" href="${escapeHtml(url)}" target="_blank" rel="noopener">續費 / 取得新 15 天解鎖碼</a>`
+      ? `<a class="btn primary" href="${escapeHtml(url)}" target="_blank" rel="noopener">🛒 立即續費 / 取得新解鎖碼</a>`
       : '';
-    const line2 = url
-      ? '想繼續練習：請續費取得新 15 天解鎖碼。'
-      : '想繼續練習：請向老師/客服索取新 15 天解鎖碼。';
     return `
-      <div><b>方案已到期</b>${escapeHtml(expText)}：已停止出題；仍可查看右側週報（歷史紀錄）。</div>
-      <div style="margin-top:6px">${escapeHtml(line2)}</div>
-      ${btn ? `<div class="row" style="margin:10px 0 0 0">${btn}</div>` : ''}
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:40px;margin-bottom:10px">⏳</div>
+        <div><b>方案已到期</b>${escapeHtml(expText)}</div>
+        <div style="margin-top:6px;color:var(--muted)">已停止出題，仍可查看右側週報（歷史紀錄）。</div>
+        <div style="margin-top:12px">${url ? '' : '想繼續練習？請點右上角「🔓 解鎖 / 設定」輸入新碼。'}</div>
+        ${btn ? `<div style="margin:14px 0 0 0">${btn}</div>` : ''}
+      </div>
     `;
   }
 
@@ -528,11 +538,18 @@
     }
 
     if (state.unlocked) {
+      const access = loadAccess(els.profile.value);
+      const exp = access?.expires_at_ms;
       els.unlockBadge.className = 'badge ok';
-      els.unlockBadge.innerText = '✅ 已解鎖：完整 200 題';
+      if (exp) {
+        const daysLeft = Math.max(0, Math.ceil((exp - Date.now()) / 86400000));
+        els.unlockBadge.innerText = `✅ 已解鎖（剩 ${daysLeft} 天）：完整 200 題`;
+      } else {
+        els.unlockBadge.innerText = '✅ 已解鎖：完整 200 題';
+      }
     } else {
       els.unlockBadge.className = 'badge warn';
-      els.unlockBadge.innerText = '🔒 未解鎖：可試看 3 題';
+      els.unlockBadge.innerText = '🔒 試看模式：可免費體驗 3 題';
     }
   }
 
@@ -1792,6 +1809,11 @@
       els.parentMsg.innerText = '請輸入解鎖碼。';
       return;
     }
+    const btn = els.btnRedeem;
+    const origText = btn.innerText;
+    btn.innerText = '驗證中…';
+    btn.disabled = true;
+    try {
     const h = await sha256Hex(raw);
 
     // Resolve code policy: JSON first, then fallback demo.
@@ -1870,6 +1892,10 @@
     }
     els.parentMsg.className = 'banner ok';
     els.parentMsg.innerText = expiresAtMs ? `解鎖成功：有效至 ${formatDateTime(expiresAtMs)}。` : '解鎖成功：已可使用完整內容包。';
+    } finally {
+      btn.innerText = origText;
+      btn.disabled = false;
+    }
   }
 
   function pinIsSet() {
