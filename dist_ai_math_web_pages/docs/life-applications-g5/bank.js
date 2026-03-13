@@ -5168,8 +5168,8 @@ window.LIFE_APPLICATIONS_G5_BANK = [
     },
     "explanation": "正方形周長 = 20×4 = 80（公尺）。",
     "common_mistakes": [
-      "計算粗心。",
-      "單位或標記寫錯。"
+      "忘了扣掉靠牆的邊（不用圍的那一邊）。",
+      "把周長和面積的公式搞混。"
     ]
   },
   {
@@ -5195,8 +5195,8 @@ window.LIFE_APPLICATIONS_G5_BANK = [
     },
     "explanation": "正方形周長 = 6×4 = 24（公尺）。",
     "common_mistakes": [
-      "計算粗心。",
-      "單位或標記寫錯。"
+      "忘了扣掉靠牆的邊（不用圍的那一邊）。",
+      "把周長和面積的公式搞混。"
     ]
   },
   {
@@ -5222,8 +5222,8 @@ window.LIFE_APPLICATIONS_G5_BANK = [
     },
     "explanation": "正方形周長 = 8×4 = 32（公尺）。",
     "common_mistakes": [
-      "計算粗心。",
-      "單位或標記寫錯。"
+      "忘了扣掉靠牆的邊（不用圍的那一邊）。",
+      "把周長和面積的公式搞混。"
     ]
   },
   {
@@ -5276,8 +5276,8 @@ window.LIFE_APPLICATIONS_G5_BANK = [
     },
     "explanation": "正方形周長 = 14×4 = 56（公尺）。",
     "common_mistakes": [
-      "計算粗心。",
-      "單位或標記寫錯。"
+      "忘了扣掉靠牆的邊（不用圍的那一邊）。",
+      "把周長和面積的公式搞混。"
     ]
   },
   {
@@ -5357,8 +5357,8 @@ window.LIFE_APPLICATIONS_G5_BANK = [
     },
     "explanation": "正方形周長 = 18×4 = 72（公尺）。",
     "common_mistakes": [
-      "計算粗心。",
-      "單位或標記寫錯。"
+      "忘了扣掉靠牆的邊（不用圍的那一邊）。",
+      "把周長和面積的公式搞混。"
     ]
   },
   {
@@ -5411,8 +5411,8 @@ window.LIFE_APPLICATIONS_G5_BANK = [
     },
     "explanation": "正方形周長 = 10×4 = 40（公尺）。",
     "common_mistakes": [
-      "計算粗心。",
-      "單位或標記寫錯。"
+      "忘了扣掉靠牆的邊（不用圍的那一邊）。",
+      "把周長和面積的公式搞混。"
     ]
   },
   {
