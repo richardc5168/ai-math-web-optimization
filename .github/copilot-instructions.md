@@ -31,13 +31,15 @@ A change is complete ONLY when:
 ## Bank Expansion Optimization Memory (Auto-learned)
 Before expanding any question bank (adding questions, increasing module counts), **MUST** consult the **Bank Expansion Playbook** in repo memory (`/memories/repo/bank-expansion-playbook.md`). It contains:
 - Proven expansion script template (read→generate→verify→write to docs/ + dist/)
-- L3 hint leak detection patterns and fixes (5+ known leak types)
+- L3 hint leak detection patterns and fixes (8 known leak types + template strategy per kind category)
 - IEEE 754 precision avoidance (NEVER use `parseFloat()` for decimal answers)
 - Bank format variations by module (meta, answer_mode, tags differ per module)
 - ID naming conventions, answer format conventions
 - Dashboard count update procedure
 - Commit workflow with pre-commit hook gotchas
 - Anti-patterns registry (AP-EXP-001 through AP-EXP-007)
+- L3 hint template strategy by kind category (forward/reverse/conversion/decimal/composite)
+- Iterative leak fix strategy (expect 2-5 iterations per 100-question expansion)
 
 ### Expansion Checklist:
 1. Read playbook → understand the target module's format
