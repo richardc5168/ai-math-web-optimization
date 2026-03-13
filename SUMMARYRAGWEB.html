@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAGWEB 商用化總結報告 — 2026-03-13</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#c9d1d9; --muted:#8b949e; --accent:#58a6ff; --green:#3fb950; --red:#f85149; --yellow:#d29922; --orange:#db6d28; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif; background:var(--bg); color:var(--text); line-height:1.7; padding:24px; max-width:1100px; margin:0 auto; }
+  h1 { font-size:28px; margin-bottom:6px; color:#fff; }
+  h2 { font-size:20px; margin:32px 0 12px; color:var(--accent); border-bottom:1px solid var(--line); padding-bottom:6px; }
+  h3 { font-size:16px; margin:20px 0 8px; color:var(--yellow); }
+  .subtitle { color:var(--muted); font-size:14px; margin-bottom:24px; }
+  table { width:100%; border-collapse:collapse; margin:12px 0 20px; font-size:14px; }
+  th, td { border:1px solid var(--line); padding:8px 12px; text-align:left; }
+  th { background:var(--panel); color:var(--accent); font-weight:600; white-space:nowrap; }
+  td { vertical-align:top; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+  .badge.green { background:rgba(63,185,80,.15); color:var(--green); }
+  .badge.yellow { background:rgba(210,153,34,.15); color:var(--yellow); }
+  .badge.red { background:rgba(248,81,73,.15); color:var(--red); }
+  .badge.blue { background:rgba(88,166,255,.15); color:var(--accent); }
+  .score-bar { height:8px; border-radius:4px; background:var(--line); margin-top:4px; }
+  .score-fill { height:100%; border-radius:4px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; margin:12px 0; }
+  .card h3 { margin-top:0; }
+  .top-item { display:flex; gap:12px; align-items:flex-start; margin:14px 0; }
+  .top-num { min-width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; color:#0d1117; flex-shrink:0; }
+  .top-num.r { background:var(--red); }
+  .top-num.o { background:var(--orange); }
+  .top-num.y { background:var(--yellow); }
+  ul { padding-left:20px; margin:6px 0; }
+  li { margin:3px 0; }
+  .timeline { position:relative; padding-left:28px; margin:16px 0; }
+  .timeline::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:var(--line); }
+  .tl-item { position:relative; margin:14px 0; }
+  .tl-item::before { content:''; position:absolute; left:-22px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); }
+  .conclusion { background:rgba(88,166,255,.08); border:1px solid rgba(88,166,255,.25); border-radius:10px; padding:16px 20px; margin:24px 0; font-size:15px; line-height:1.8; }
+  .footer { text-align:center; color:var(--muted); font-size:12px; margin-top:40px; padding-top:16px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<h1>RAGWEB 商用化總結報告</h1>
+<div class="subtitle">AI Math Web 迭代優化摘要 &amp; 商用改善建議 — 生成日期：2026-03-13</div>
+
+<!-- ====== SECTION 1: 迭代成果 ====== -->
+<h2>一、8 輪迭代成果總覽</h2>
+
+<table>
+  <thead>
+    <tr><th>輪次</th><th>主題</th><th>關鍵成果</th><th>狀態</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>分析儀表板 + 種子資料</td><td>analytics-export 管理頁面、1,233 筆模擬事件、業務漏斗從 insufficient_data → watch</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>2</td><td>低題數模組擴充</td><td>offline-math 30→120 題、g56 24→102 題，全平台總計 5,720 題</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>3</td><td>家長報告付費牆強化</td><td>模糊預覽門檻（blur overlay）、4 週進步趨勢圖、動態 CTA 文案</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>4</td><td>留存機制</td><td>每日簽到 toast、里程碑慶祝（3/5/7/10/14/21/30/50/100 天）</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>5</td><td>全面驗證週期</td><td>5,720 題 0 問題、業務一致性 0 問題、11/11 checklist 通過</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>6</td><td>提示品質審計</td><td>修復 1 個 L3 答案洩漏 + 4 個 L2 缺公式 + 1 個 L1 過長 + 改進驗證器</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>7</td><td>商用包 UX 優化</td><td>編號步驟流程、兌換 loading 狀態、剩餘天數徽章、到期 CTA 改善</td><td><span class="badge green">✅ 完成</span></td></tr>
+    <tr><td>8</td><td>最終驗證部署</td><td>全部 5 套審計通過，推送至 origin/main</td><td><span class="badge green">✅ 完成</span></td></tr>
+  </tbody>
+</table>
+
+<!-- ====== SECTION 2: 品質指標 ====== -->
+<h2>二、平台健康指標</h2>
+
+<table>
+  <thead>
+    <tr><th>檢查項</th><th>結果</th><th>詳情</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>題庫驗證（含嚴格 hint leak）</td><td><span class="badge green">✅ PASS</span></td><td>17 模組、5,720 題、0 問題</td></tr>
+    <tr><td>業務內容一致性</td><td><span class="badge green">✅ PASS</span></td><td>0 問題、health=strong</td></tr>
+    <tr><td>提示清晰度審計</td><td><span class="badge green">✅ PASS</span></td><td>0 違規</td></tr>
+    <tr><td>提示圖解審計</td><td><span class="badge green">✅ PASS</span></td><td>0 錯誤、1 info（已知非阻斷）</td></tr>
+    <tr><td>Pre-commit 嚴格清單</td><td><span class="badge green">✅ PASS</span></td><td>11/11 通過、122 檔 docs/dist 一致</td></tr>
+    <tr><td>業務漏斗</td><td><span class="badge yellow">⚠️ WATCH</span></td><td>daily=improve、d7=watch（種子資料）</td></tr>
+  </tbody>
+</table>
+
+<!-- ====== SECTION 3: 商用化評分 ====== -->
+<h2>三、商用化就緒度評分</h2>
+
+<table>
+  <thead>
+    <tr><th>領域</th><th>分數</th><th>狀態</th><th>可視化</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>學生參與（遊戲化）</td><td>88/100</td><td><span class="badge green">✅ 優秀</span></td>
+      <td><div class="score-bar"><div class="score-fill" style="width:88%;background:var(--green)"></div></div></td>
+    </tr>
+    <tr>
+      <td>內容深度</td><td>85/100</td><td><span class="badge green">✅ 優秀</span></td>
+      <td><div class="score-bar"><div class="score-fill" style="width:85%;background:var(--green)"></div></div></td>
+    </tr>
+    <tr>
+      <td>家長報告頁面</td><td>82/100</td><td><span class="badge green">✅ 良好</span></td>
+      <td><div class="score-bar"><div class="score-fill" style="width:82%;background:var(--green)"></div></div></td>
+    </tr>
+    <tr>
+      <td>分析追蹤框架</td><td>70/100</td><td><span class="badge yellow">⚠️ 基礎就緒</span></td>
+      <td><div class="score-bar"><div class="score-fill" style="width:70%;background:var(--yellow)"></div></div></td>
+    </tr>
+    <tr>
+      <td>轉換漏斗</td><td>65/100</td><td><span class="badge yellow">⚠️ 需優化</span></td>
+      <td><div class="score-bar"><div class="score-fill" style="width:65%;background:var(--yellow)"></div></div></td>
+    </tr>
+    <tr>
+      <td><strong>付費流程</strong></td><td><strong>30/100</strong></td><td><span class="badge red">🔴 致命阻斷</span></td>
+      <td><div class="score-bar"><div class="score-fill" style="width:30%;background:var(--red)"></div></div></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ====== SECTION 4: TOP 5 改進 ====== -->
+<h2>四、🔴 最需要改進的 TOP 5（家長買單關鍵）</h2>
+
+<div class="card">
+  <div class="top-item">
+    <div class="top-num r">1</div>
+    <div>
+      <h3>沒有真實付款接口 — 收入 100% 被阻斷</h3>
+      <p><strong>問題：</strong><code>subscription.js</code> 中 <code>mock_mode: true</code> 寫死，所有付費按鈕都是模擬。即使家長想付錢也付不了。</p>
+      <p><strong>方案：</strong></p>
+      <ul>
+        <li>串接綠界（ECPay）或 Stripe</li>
+        <li>替換 pricing 頁面的模擬按鈕為真實結帳</li>
+        <li>實作 webhook 回調確認付款</li>
+      </ul>
+      <p><strong>估計：</strong>1-2 週</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top-item">
+    <div class="top-num r">2</div>
+    <div>
+      <h3>訂閱狀態沒有後端持久化 — 換裝置就全部消失</h3>
+      <p><strong>問題：</strong>所有購買記錄、訂閱狀態都存在瀏覽器 <code>localStorage</code>。家長花了錢，小孩換台電腦就看不到了。</p>
+      <p><strong>方案：</strong></p>
+      <ul>
+        <li>用 Firebase / Supabase 做訂閱表</li>
+        <li><code>subscription.js</code> 狀態改變時同步到雲端</li>
+        <li>支援跨裝置存取（家庭方案最多 5 台）</li>
+      </ul>
+      <p><strong>估計：</strong>2-3 週</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top-item">
+    <div class="top-num o">3</div>
+    <div>
+      <h3>付費與免費的價值差異不夠明確 — 帝國模式完全免費</h3>
+      <p><strong>問題：</strong>帝國模式（最吸引小孩的遊戲化核心）目前完全免費，家長沒有動力付費。預計 60% LTV 損失。</p>
+      <p><strong>方案：</strong></p>
+      <ul>
+        <li>帝國模式設「試用門檻」（免費玩 7 天或 50 題後需升級）</li>
+        <li>價格頁加明確的「免費 vs 付費」功能對照表</li>
+        <li>加入家長見證 / 社會證據</li>
+        <li>加入「進步保證」信任標誌</li>
+      </ul>
+      <p><strong>估計：</strong>3-5 天</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top-item">
+    <div class="top-num o">4</div>
+    <div>
+      <h3>沒有家長帳號系統 — 無法跨裝置、無法推播</h3>
+      <p><strong>問題：</strong>沒有 email 註冊 / 登入，家長無法跨裝置管理、無法收到進度通知。</p>
+      <p><strong>影響：</strong></p>
+      <ul>
+        <li>無法發送「試用即將到期」提醒 → 續費率低</li>
+        <li>無法做 email 行銷 → 無法推播新內容包</li>
+        <li>家長換手機就失去所有資料 → 印象極差</li>
+      </ul>
+      <p><strong>方案：</strong>實作簡易 email+PIN 註冊 → 關聯學生帳號 → 開啟 email 週報</p>
+      <p><strong>估計：</strong>2-3 週</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top-item">
+    <div class="top-num y">5</div>
+    <div>
+      <h3>商用包兌換碼沒有後端驗證 — 安全性弱</h3>
+      <p><strong>問題：</strong>兌換碼是前端 SHA-256 hash 比對。任何人看原始碼就能找到規則，無法追蹤使用數量。</p>
+      <p><strong>方案：</strong></p>
+      <ul>
+        <li>加入後端 API 驗證碼（Cloudflare Worker 即可）</li>
+        <li>記錄使用次數、通路來源</li>
+        <li>支援限量碼、團購碼等商業運營</li>
+      </ul>
+      <p><strong>估計：</strong>1 週</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 5: 路線圖 ====== -->
+<h2>五、建議 MVP 上線路線圖</h2>
+
+<div class="timeline">
+  <div class="tl-item">
+    <strong>第 1-2 週</strong>：串接付款（綠界 / Stripe）+ 移除 mock_mode
+  </div>
+  <div class="tl-item">
+    <strong>第 3-4 週</strong>：家長帳號系統 + 訂閱後端持久化 + 帳號管理頁
+  </div>
+  <div class="tl-item">
+    <strong>第 5 週</strong>：帝國模式設門檻 + 價格頁強化價值差異 + 兌換碼後端
+  </div>
+  <div class="tl-item">
+    <strong>第 6 週</strong>：軟上線（台灣市場，小規模測試，50 位付費用戶目標）
+  </div>
+  <div class="tl-item">
+    <strong>第 7-8 週</strong>：根據反饋修正 + 加入 email 週報 + 擴量行銷
+  </div>
+</div>
+
+<!-- ====== SECTION 6: 三方視角 ====== -->
+<h2>六、三方視角快照</h2>
+
+<table>
+  <thead>
+    <tr><th>角色</th><th>✅ 已就緒</th><th>❌ 缺失</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>家長</strong></td>
+      <td>進度報告清楚、有付費牆預覽、有週趨勢圖</td>
+      <td>無法付款、購買紀錄會消失、價值差異不明確</td>
+    </tr>
+    <tr>
+      <td><strong>學生</strong></td>
+      <td>遊戲化豐富（帝國/徽章/連勝）、每日任務、2,900+ 題</td>
+      <td>免費內容太多（帝國全免費 → 無升級動力）</td>
+    </tr>
+    <tr>
+      <td><strong>營運</strong></td>
+      <td>試用→到期自動化完整、訂閱狀態機健全、分析框架就緒</td>
+      <td>收入 = 0（mock 付款）、無訂閱 DB、無 email 系統</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ====== CONCLUSION ====== -->
+<div class="conclusion">
+  <strong>一句話結論：</strong>內容品質和學生體驗已經到位（85-88 分），但付費基礎設施幾乎是零——家長「想付錢卻付不了」是最大的商業瓶頸。<br>
+  <strong>優先行動：</strong>串接真實金流 → 建立帳號系統 → 把帝國模式從免費轉為試用制，就能打通整個商業閉環。
+</div>
+
+<div class="footer">
+  RAGWEB AI Math Web — 自動生成報告 &copy; 2026 | 17 模組 &middot; 5,720 題 &middot; 0 品質問題
+</div>
+
+</body>
+</html>
