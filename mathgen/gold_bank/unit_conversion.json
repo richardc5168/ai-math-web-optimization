@@ -1,0 +1,112 @@
+[
+  {
+    "id": "uc_gold_001",
+    "grade": 5,
+    "topic": "unit_conversion",
+    "difficulty": "easy",
+    "problem_text": "3 公里等於多少公尺？",
+    "parameters": {"value": "3", "from_unit": "公里", "to_unit": "公尺", "factor": 1000, "direction": "forward"},
+    "correct_answer": "3000",
+    "unit": "公尺",
+    "steps": [
+      "1 公里 = 1000 公尺",
+      "3 × 1000 = 3000",
+      "答案：3000 公尺"
+    ],
+    "hint_ladder": {
+      "level_1": "想想 1 公里等於多少公尺？",
+      "level_2": "知道換算關係後，用乘法",
+      "level_3": "3 乘以換算倍數",
+      "level_4": "驗算：反過來想，3000 公尺是否等於 3 公里？"
+    },
+    "validation_rules": {"answer_type": "integer"}
+  },
+  {
+    "id": "uc_gold_002",
+    "grade": 5,
+    "topic": "unit_conversion",
+    "difficulty": "easy",
+    "problem_text": "5000 公尺等於多少公里？",
+    "parameters": {"value": "5000", "from_unit": "公尺", "to_unit": "公里", "factor": 1000, "direction": "reverse"},
+    "correct_answer": "5",
+    "unit": "公里",
+    "steps": [
+      "1 公里 = 1000 公尺",
+      "5000 ÷ 1000 = 5",
+      "答案：5 公里"
+    ],
+    "hint_ladder": {
+      "level_1": "從小單位換成大單位要用什麼運算？",
+      "level_2": "知道 1 公里 = 1000 公尺的關係",
+      "level_3": "用除法：5000 除以 1000",
+      "level_4": "驗算：5 公里 = 5000 公尺，正確"
+    },
+    "validation_rules": {"answer_type": "integer"}
+  },
+  {
+    "id": "uc_gold_003",
+    "grade": 5,
+    "topic": "unit_conversion",
+    "difficulty": "medium",
+    "problem_text": "2.5 公尺等於多少公分？",
+    "parameters": {"value": "2.5", "from_unit": "公尺", "to_unit": "公分", "factor": 100, "direction": "forward"},
+    "correct_answer": "250",
+    "unit": "公分",
+    "steps": [
+      "1 公尺 = 100 公分",
+      "2.5 × 100 = 250",
+      "答案：250 公分"
+    ],
+    "hint_ladder": {
+      "level_1": "公尺和公分的換算倍數是多少？",
+      "level_2": "大單位換小單位用乘法",
+      "level_3": "2.5 乘以 100",
+      "level_4": "驗算：250 ÷ 100 = 2.5，正確"
+    },
+    "validation_rules": {"answer_type": "integer"}
+  },
+  {
+    "id": "uc_gold_004",
+    "grade": 5,
+    "topic": "unit_conversion",
+    "difficulty": "easy",
+    "problem_text": "4 公斤等於多少公克？",
+    "parameters": {"value": "4", "from_unit": "公斤", "to_unit": "公克", "factor": 1000, "direction": "forward"},
+    "correct_answer": "4000",
+    "unit": "公克",
+    "steps": [
+      "1 公斤 = 1000 公克",
+      "4 × 1000 = 4000",
+      "答案：4000 公克"
+    ],
+    "hint_ladder": {
+      "level_1": "1 公斤等於多少公克？",
+      "level_2": "換到較小單位，要用乘法",
+      "level_3": "4 乘以 1000",
+      "level_4": "驗算：4000 ÷ 1000 = 4，正確"
+    },
+    "validation_rules": {"answer_type": "integer"}
+  },
+  {
+    "id": "uc_gold_005",
+    "grade": 5,
+    "topic": "unit_conversion",
+    "difficulty": "medium",
+    "problem_text": "3.5 公升等於多少毫升？",
+    "parameters": {"value": "3.5", "from_unit": "公升", "to_unit": "毫升", "factor": 1000, "direction": "forward"},
+    "correct_answer": "3500",
+    "unit": "毫升",
+    "steps": [
+      "1 公升 = 1000 毫升",
+      "3.5 × 1000 = 3500",
+      "答案：3500 毫升"
+    ],
+    "hint_ladder": {
+      "level_1": "公升和毫升的關係是什麼？",
+      "level_2": "大單位換小單位用乘法",
+      "level_3": "3.5 乘以 1000",
+      "level_4": "驗算：3500 ÷ 1000 = 3.5，正確"
+    },
+    "validation_rules": {"answer_type": "integer"}
+  }
+]

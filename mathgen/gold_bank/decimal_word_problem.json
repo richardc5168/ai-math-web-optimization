@@ -1,0 +1,119 @@
+[
+  {
+    "id": "dwp_gold_001",
+    "grade": 5,
+    "topic": "decimal_word_problem",
+    "difficulty": "easy",
+    "problem_text": "一瓶果汁有 1.5 公升，喝掉 0.3 公升，還剩多少公升？",
+    "parameters": {"a": "1.5", "b": "0.3", "op": "subtract"},
+    "correct_answer": "1.2",
+    "unit": "公升",
+    "steps": [
+      "列式：1.5 - 0.3",
+      "對齊小數點",
+      "計算：1.5 - 0.3 = 1.2",
+      "答案：1.2 公升"
+    ],
+    "hint_ladder": {
+      "level_1": "喝掉就是要用減法",
+      "level_2": "列出算式，注意小數點要對齊",
+      "level_3": "個位：1-0=1，小數第一位：5-3=2",
+      "level_4": "驗算：答案加回去是否等於原來的量？"
+    },
+    "validation_rules": {"answer_type": "decimal", "decimal_places": 1}
+  },
+  {
+    "id": "dwp_gold_002",
+    "grade": 5,
+    "topic": "decimal_word_problem",
+    "difficulty": "easy",
+    "problem_text": "小明騎腳踏車早上騎了 2.4 公里，下午騎了 3.7 公里，請問一天總共騎了多少公里？",
+    "parameters": {"a": "2.4", "b": "3.7", "op": "add"},
+    "correct_answer": "6.1",
+    "unit": "公里",
+    "steps": [
+      "列式：2.4 + 3.7",
+      "對齊小數點",
+      "計算：2.4 + 3.7 = 6.1",
+      "答案：6.1 公里"
+    ],
+    "hint_ladder": {
+      "level_1": "兩段路程加起來就是總共的距離",
+      "level_2": "列出加法算式，小數點要對齊",
+      "level_3": "小數部分：4+7=11，進位；個位：2+3+1=6",
+      "level_4": "驗算：用總距離減去其中一段，看是否等於另一段"
+    },
+    "validation_rules": {"answer_type": "decimal", "decimal_places": 1}
+  },
+  {
+    "id": "dwp_gold_003",
+    "grade": 5,
+    "topic": "decimal_word_problem",
+    "difficulty": "medium",
+    "problem_text": "一塊布長 10.5 公尺，剪掉 4.8 公尺做衣服，還剩多少公尺？",
+    "parameters": {"a": "10.5", "b": "4.8", "op": "subtract"},
+    "correct_answer": "5.7",
+    "unit": "公尺",
+    "steps": [
+      "列式：10.5 - 4.8",
+      "對齊小數點",
+      "小數部分：5-8 不夠減，向個位借 1",
+      "計算：10.5 - 4.8 = 5.7",
+      "答案：5.7 公尺"
+    ],
+    "hint_ladder": {
+      "level_1": "剪掉就是減法，想想怎麼借位",
+      "level_2": "列出算式，注意小數點對齊",
+      "level_3": "小數部分 5-8 不夠減，需要借位",
+      "level_4": "驗算：答案加上剪掉的長度，看是否等於原來的長度"
+    },
+    "validation_rules": {"answer_type": "decimal", "decimal_places": 1}
+  },
+  {
+    "id": "dwp_gold_004",
+    "grade": 5,
+    "topic": "decimal_word_problem",
+    "difficulty": "medium",
+    "problem_text": "一枝鉛筆 25.5 元，買 3.2 打，總共要多少元？",
+    "parameters": {"a": "25.5", "b": "3.2", "op": "multiply"},
+    "correct_answer": "81.6",
+    "unit": "元",
+    "steps": [
+      "列式：25.5 × 3.2",
+      "先算整數乘法：255 × 32 = 8160",
+      "小數點位數：1 + 1 = 2 位",
+      "從右邊數 2 位加小數點：81.60 = 81.6",
+      "答案：81.6 元"
+    ],
+    "hint_ladder": {
+      "level_1": "求總價要用乘法",
+      "level_2": "先不看小數點，把它們當整數相乘",
+      "level_3": "整數乘完後，數一數原來有幾位小數，把小數點放回去",
+      "level_4": "用估算驗算：25 × 3 = 75，答案應該在 75 附近"
+    },
+    "validation_rules": {"answer_type": "decimal", "decimal_places": 1}
+  },
+  {
+    "id": "dwp_gold_005",
+    "grade": 5,
+    "topic": "decimal_word_problem",
+    "difficulty": "easy",
+    "problem_text": "水壺裡有 1.5 公升的水，又倒入 2.5 公升，現在有多少公升？",
+    "parameters": {"a": "1.5", "b": "2.5", "op": "add"},
+    "correct_answer": "4",
+    "unit": "公升",
+    "steps": [
+      "列式：1.5 + 2.5",
+      "對齊小數點",
+      "計算：1.5 + 2.5 = 4.0 = 4",
+      "答案：4 公升"
+    ],
+    "hint_ladder": {
+      "level_1": "倒入就是加法",
+      "level_2": "列出加法算式，小數點對齊",
+      "level_3": "小數部分：5+5=10，進位 1；個位：1+2+1=4",
+      "level_4": "驗算：4 - 2.5 = 1.5，正確"
+    },
+    "validation_rules": {"answer_type": "decimal", "decimal_places": 0}
+  }
+]

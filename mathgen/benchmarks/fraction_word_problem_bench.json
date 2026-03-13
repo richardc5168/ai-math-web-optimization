@@ -1,0 +1,82 @@
+[
+  {
+    "input": {"a_num": 3, "a_den": 4, "b_num": 1, "b_den": 4, "template_index": 0},
+    "expected_answer": "1/2",
+    "expected_unit": "公斤",
+    "expected_step_contains": ["3/4", "1/4"],
+    "hint_must_not_contain_answer": true,
+    "note": "同分母減法，需要約分"
+  },
+  {
+    "input": {"a_num": 2, "a_den": 3, "b_num": 1, "b_den": 6, "template_index": 1},
+    "expected_answer": "5/6",
+    "expected_unit": "公升",
+    "expected_step_contains": ["LCD", "6"],
+    "hint_must_not_contain_answer": true,
+    "note": "異分母加法"
+  },
+  {
+    "input": {"a_num": 5, "a_den": 6, "b_num": 1, "b_den": 3, "template_index": 2},
+    "expected_answer": "1/2",
+    "expected_unit": "公尺",
+    "expected_step_contains": ["5/6", "1/3"],
+    "hint_must_not_contain_answer": true,
+    "note": "異分母減法，需要約分"
+  },
+  {
+    "input": {"a_num": 1, "a_den": 2, "b_num": 1, "b_den": 2, "template_index": 3},
+    "expected_answer": "1",
+    "expected_unit": "公里",
+    "expected_step_contains": ["1/2"],
+    "hint_must_not_contain_answer": true,
+    "note": "同分母加法，結果為整數"
+  },
+  {
+    "input": {"a_num": 7, "a_den": 8, "b_num": 3, "b_den": 8, "template_index": 4},
+    "expected_answer": "1/2",
+    "expected_unit": "公升",
+    "expected_step_contains": ["7/8", "3/8"],
+    "hint_must_not_contain_answer": true,
+    "note": "同分母減法，約分 4/8=1/2"
+  },
+  {
+    "input": {"a_num": 3, "a_den": 5, "b_num": 1, "b_den": 4, "template_index": 1},
+    "expected_answer": "17/20",
+    "expected_unit": "公升",
+    "expected_step_contains": ["LCD", "20"],
+    "hint_must_not_contain_answer": true,
+    "note": "異分母加法，LCD=20"
+  },
+  {
+    "input": {"a_num": 4, "a_den": 6, "b_num": 1, "b_den": 6, "template_index": 0},
+    "expected_answer": "1/2",
+    "expected_unit": "公斤",
+    "expected_step_contains": ["4/6", "1/6"],
+    "hint_must_not_contain_answer": true,
+    "note": "同分母減法，先約分再算"
+  },
+  {
+    "input": {"a_num": 1, "a_den": 3, "b_num": 1, "b_den": 4, "template_index": 3},
+    "expected_answer": "7/12",
+    "expected_unit": "公里",
+    "expected_step_contains": ["LCD", "12"],
+    "hint_must_not_contain_answer": true,
+    "note": "異分母加法，LCD=12"
+  },
+  {
+    "input": {"a_num": 5, "a_den": 8, "b_num": 1, "b_den": 4, "template_index": 2},
+    "expected_answer": "3/8",
+    "expected_unit": "公尺",
+    "expected_step_contains": ["5/8"],
+    "hint_must_not_contain_answer": true,
+    "note": "異分母減法"
+  },
+  {
+    "input": {"a_num": 7, "a_den": 6, "b_num": 5, "b_den": 6, "template_index": 4},
+    "expected_answer": "1/3",
+    "expected_unit": "公升",
+    "expected_step_contains": ["7/6", "5/6"],
+    "hint_must_not_contain_answer": true,
+    "note": "同分母減法，約分 2/6=1/3"
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "id": "fwp_gold_001",
+    "grade": 5,
+    "topic": "fraction_word_problem",
+    "difficulty": "easy",
+    "problem_text": "小明有 1/2 公斤的蘋果，又買了 1/4 公斤，請問總共有多少公斤的蘋果？",
+    "parameters": {"a_num": 1, "a_den": 2, "b_num": 1, "b_den": 4, "op": "add"},
+    "correct_answer": "3/4",
+    "unit": "公斤",
+    "steps": [
+      "找出兩個分數：1/2 和 1/4",
+      "找最小公分母 LCD = 4",
+      "通分：1/2 = 2/4",
+      "相加：2/4 + 1/4 = 3/4",
+      "答案：3/4 公斤"
+    ],
+    "hint_ladder": {
+      "level_1": "想想看，要把兩個分數加在一起，第一步該做什麼？",
+      "level_2": "需要先通分，找出 2 和 4 的最小公分母",
+      "level_3": "通分後是 2/4 + 1/4，分子相加，分母不變",
+      "level_4": "算完之後，檢查答案是否已經是最簡分數"
+    },
+    "validation_rules": {"answer_type": "fraction", "must_simplify": true}
+  },
+  {
+    "id": "fwp_gold_002",
+    "grade": 5,
+    "topic": "fraction_word_problem",
+    "difficulty": "medium",
+    "problem_text": "小華有 5/6 公升的牛奶，喝掉 1/3 公升，還剩多少公升？",
+    "parameters": {"a_num": 5, "a_den": 6, "b_num": 1, "b_den": 3, "op": "subtract"},
+    "correct_answer": "1/2",
+    "unit": "公升",
+    "steps": [
+      "找出兩個分數：5/6 和 1/3",
+      "找最小公分母 LCD = 6",
+      "通分：1/3 = 2/6",
+      "相減：5/6 - 2/6 = 3/6",
+      "約分：3/6 = 1/2",
+      "答案：1/2 公升"
+    ],
+    "hint_ladder": {
+      "level_1": "這是一個分數減法題，要把喝掉的部分減掉",
+      "level_2": "先找 6 和 3 的最小公分母，然後通分",
+      "level_3": "通分後相減，記得最後要約分",
+      "level_4": "驗算：把答案加回去看看是否等於原來的量"
+    },
+    "validation_rules": {"answer_type": "fraction", "must_simplify": true}
+  },
+  {
+    "id": "fwp_gold_003",
+    "grade": 5,
+    "topic": "fraction_word_problem",
+    "difficulty": "easy",
+    "problem_text": "一條繩子長 3/4 公尺，剪掉 1/4 公尺，還剩多少公尺？",
+    "parameters": {"a_num": 3, "a_den": 4, "b_num": 1, "b_den": 4, "op": "subtract"},
+    "correct_answer": "1/2",
+    "unit": "公尺",
+    "steps": [
+      "找出兩個分數：3/4 和 1/4",
+      "分母相同，直接相減",
+      "3/4 - 1/4 = 2/4",
+      "約分：2/4 = 1/2",
+      "答案：1/2 公尺"
+    ],
+    "hint_ladder": {
+      "level_1": "分母相同的分數可以直接相減",
+      "level_2": "分子相減：3 - 1，分母不變",
+      "level_3": "算出來的分數看看能不能約分",
+      "level_4": "驗算：答案加上剪掉的部分，是否等於原來的長度？"
+    },
+    "validation_rules": {"answer_type": "fraction", "must_simplify": true}
+  },
+  {
+    "id": "fwp_gold_004",
+    "grade": 5,
+    "topic": "fraction_word_problem",
+    "difficulty": "hard",
+    "problem_text": "小美早上跑了 2/3 公里，下午跑了 3/4 公里，請問一天總共跑了多少公里？",
+    "parameters": {"a_num": 2, "a_den": 3, "b_num": 3, "b_den": 4, "op": "add"},
+    "correct_answer": "17/12",
+    "unit": "公里",
+    "steps": [
+      "找出兩個分數：2/3 和 3/4",
+      "找最小公分母 LCD = 12",
+      "通分：2/3 = 8/12，3/4 = 9/12",
+      "相加：8/12 + 9/12 = 17/12",
+      "答案：17/12 公里（即 1 又 5/12 公里）"
+    ],
+    "hint_ladder": {
+      "level_1": "兩段路程加在一起，想想怎麼處理不同分母的分數",
+      "level_2": "找 3 和 4 的最小公分母",
+      "level_3": "通分後分子相加，注意結果可能是假分數",
+      "level_4": "驗算：結果換成帶分數看看是否合理"
+    },
+    "validation_rules": {"answer_type": "fraction", "must_simplify": true}
+  },
+  {
+    "id": "fwp_gold_005",
+    "grade": 5,
+    "topic": "fraction_word_problem",
+    "difficulty": "medium",
+    "problem_text": "水壺裡有 7/8 公升的水，倒出 3/8 公升來喝，還剩多少公升？",
+    "parameters": {"a_num": 7, "a_den": 8, "b_num": 3, "b_den": 8, "op": "subtract"},
+    "correct_answer": "1/2",
+    "unit": "公升",
+    "steps": [
+      "找出兩個分數：7/8 和 3/8",
+      "分母相同，直接相減",
+      "7/8 - 3/8 = 4/8",
+      "約分：4/8 = 1/2",
+      "答案：1/2 公升"
+    ],
+    "hint_ladder": {
+      "level_1": "倒出去就是減法，分母相同可以怎麼做？",
+      "level_2": "分子相減：7 - 3，分母 8 不變",
+      "level_3": "得到的分數要檢查能不能約分",
+      "level_4": "驗算：答案加上倒出的量，是否等於原來的量？"
+    },
+    "validation_rules": {"answer_type": "fraction", "must_simplify": true}
+  }
+]
