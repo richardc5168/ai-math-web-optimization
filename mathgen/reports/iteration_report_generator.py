@@ -47,6 +47,24 @@ def generate_iteration_report(benchmark_results, changes_description='',
         t_rate = t_pass / t_total if t_total > 0 else 0
         lines.append(f'| {topic} | {t_pass} | {t_total} | {t_rate:.1%} |')
 
+    # Coverage stats
+    pattern_stats = benchmark_results.get('pattern_stats', {})
+    risk_stats = benchmark_results.get('risk_stats', {})
+    if pattern_stats:
+        lines.append('')
+        lines.append('## Benchmark 覆蓋分布')
+        lines.append('### pattern_type')
+        lines.append('| 類型 | 數量 |')
+        lines.append('|------|------|')
+        for k in sorted(pattern_stats):
+            lines.append(f'| {k} | {pattern_stats[k]} |')
+        lines.append('')
+        lines.append('### risk_level')
+        lines.append('| 等級 | 數量 |')
+        lines.append('|------|------|')
+        for k in sorted(risk_stats):
+            lines.append(f'| {k} | {risk_stats[k]} |')
+
     lines.append('')
     lines.append('## 新發現錯誤類型')
     if new_errors:

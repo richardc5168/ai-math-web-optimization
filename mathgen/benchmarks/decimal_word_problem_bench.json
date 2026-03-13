@@ -1,82 +1,539 @@
 [
   {
-    "input": {"a": "3.5", "b": "1.2", "template_index": 0},
+    "input": {
+      "a": "3.5",
+      "b": "1.2",
+      "template_index": 0
+    },
     "expected_answer": "2.3",
     "expected_unit": "公升",
-    "expected_step_contains": ["3.5", "1.2"],
+    "expected_step_contains": [
+      "3.5",
+      "1.2"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數減法"
+    "note": "小數減法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: basic decimal subtraction"
   },
   {
-    "input": {"a": "2.4", "b": "3.7", "template_index": 1},
+    "input": {
+      "a": "2.4",
+      "b": "3.7",
+      "template_index": 1
+    },
     "expected_answer": "6.1",
     "expected_unit": "公里",
-    "expected_step_contains": ["2.4", "3.7"],
+    "expected_step_contains": [
+      "2.4",
+      "3.7"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數加法"
+    "note": "小數加法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: basic decimal addition"
   },
   {
-    "input": {"a": "10.5", "b": "4.8", "template_index": 2},
+    "input": {
+      "a": "10.5",
+      "b": "4.8",
+      "template_index": 2
+    },
     "expected_answer": "5.7",
     "expected_unit": "公尺",
-    "expected_step_contains": ["10.5", "4.8"],
+    "expected_step_contains": [
+      "10.5",
+      "4.8"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數減法"
+    "note": "小數減法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: decimal subtraction with two-digit integer part"
   },
   {
-    "input": {"a": "25.5", "b": "3.2", "template_index": 3},
+    "input": {
+      "a": "25.5",
+      "b": "3.2",
+      "template_index": 3
+    },
     "expected_answer": "81.6",
     "expected_unit": "元",
-    "expected_step_contains": ["25.5", "3.2"],
+    "expected_step_contains": [
+      "25.5",
+      "3.2"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數乘法"
+    "note": "小數乘法",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "initial: decimal multiplication"
   },
   {
-    "input": {"a": "1.5", "b": "2.5", "template_index": 4},
+    "input": {
+      "a": "1.5",
+      "b": "2.5",
+      "template_index": 4
+    },
     "expected_answer": "4",
     "expected_unit": "公升",
-    "expected_step_contains": ["1.5", "2.5"],
+    "expected_step_contains": [
+      "1.5",
+      "2.5"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數加法，結果為整數"
+    "note": "小數加法，結果為整數",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: decimal addition resulting in integer"
   },
   {
-    "input": {"a": "8.0", "b": "3.5", "template_index": 0},
+    "input": {
+      "a": "8.0",
+      "b": "3.5",
+      "template_index": 0
+    },
     "expected_answer": "4.5",
     "expected_unit": "公升",
-    "expected_step_contains": ["8.0", "3.5"],
+    "expected_step_contains": [
+      "8.0",
+      "3.5"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數減法，整數減小數"
+    "note": "小數減法，整數減小數",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: whole number minus decimal"
   },
   {
-    "input": {"a": "0.7", "b": "0.3", "template_index": 1},
+    "input": {
+      "a": "0.7",
+      "b": "0.3",
+      "template_index": 1
+    },
     "expected_answer": "1",
     "expected_unit": "公里",
-    "expected_step_contains": ["0.7", "0.3"],
+    "expected_step_contains": [
+      "0.7",
+      "0.3"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數加法"
+    "note": "小數加法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: small decimal addition resulting in integer"
   },
   {
-    "input": {"a": "12.5", "b": "2.0", "template_index": 3},
+    "input": {
+      "a": "12.5",
+      "b": "2.0",
+      "template_index": 3
+    },
     "expected_answer": "25",
     "expected_unit": "元",
-    "expected_step_contains": ["12.5", "2.0"],
+    "expected_step_contains": [
+      "12.5",
+      "2.0"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數乘法，結果為整數"
+    "note": "小數乘法，結果為整數",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "initial: decimal multiply resulting in integer"
   },
   {
-    "input": {"a": "6.3", "b": "2.1", "template_index": 2},
+    "input": {
+      "a": "6.3",
+      "b": "2.1",
+      "template_index": 2
+    },
     "expected_answer": "4.2",
     "expected_unit": "公尺",
-    "expected_step_contains": ["6.3", "2.1"],
+    "expected_step_contains": [
+      "6.3",
+      "2.1"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數減法"
+    "note": "小數減法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: standard decimal subtraction"
   },
   {
-    "input": {"a": "5.5", "b": "4.5", "template_index": 4},
+    "input": {
+      "a": "5.5",
+      "b": "4.5",
+      "template_index": 4
+    },
     "expected_answer": "10",
     "expected_unit": "公升",
-    "expected_step_contains": ["5.5", "4.5"],
+    "expected_step_contains": [
+      "5.5",
+      "4.5"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小數加法，結果為整數"
+    "note": "小數加法，結果為整數",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: decimal addition to integer"
+  },
+  {
+    "input": {
+      "a": "4.2",
+      "b": "3.3",
+      "template_index": 1
+    },
+    "expected_answer": "7.5",
+    "expected_unit": "公里",
+    "expected_step_contains": [
+      "4.2",
+      "3.3"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "標準加法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "expand: standard decimal addition"
+  },
+  {
+    "input": {
+      "a": "9.8",
+      "b": "5.3",
+      "template_index": 2
+    },
+    "expected_answer": "4.5",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "9.8",
+      "5.3"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "標準減法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "expand: standard decimal subtraction"
+  },
+  {
+    "input": {
+      "a": "7.5",
+      "b": "2.4",
+      "template_index": 3
+    },
+    "expected_answer": "18",
+    "expected_unit": "元",
+    "expected_step_contains": [
+      "7.5",
+      "2.4"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "乘法結果為整數",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "expand: multiply resulting in integer"
+  },
+  {
+    "input": {
+      "a": "1.8",
+      "b": "2.7",
+      "template_index": 4
+    },
+    "expected_answer": "4.5",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "1.8",
+      "2.7"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "加法",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "expand: decimal addition with template 4"
+  },
+  {
+    "input": {
+      "a": "10.0",
+      "b": "10.0",
+      "template_index": 0
+    },
+    "expected_answer": "0",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "10.0"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "相同數相減，結果為零",
+    "pattern_type": "edge",
+    "risk_level": "high",
+    "source_reason": "expand: result=0, tests zero handling"
+  },
+  {
+    "input": {
+      "a": "0.1",
+      "b": "0.1",
+      "template_index": 1
+    },
+    "expected_answer": "0.2",
+    "expected_unit": "公里",
+    "expected_step_contains": [
+      "0.1"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "極小值加法",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "expand: very small decimals near minimum"
+  },
+  {
+    "input": {
+      "a": "0.3",
+      "b": "0.7",
+      "template_index": 3
+    },
+    "expected_answer": "0.21",
+    "expected_unit": "元",
+    "expected_step_contains": [
+      "0.3",
+      "0.7"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "兩個小於1的小數相乘",
+    "pattern_type": "edge",
+    "risk_level": "high",
+    "source_reason": "expand: multiply two sub-1 decimals, result has 2 decimal places"
+  },
+  {
+    "input": {
+      "a": "99.9",
+      "b": "0.1",
+      "template_index": 2
+    },
+    "expected_answer": "99.8",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "99.9",
+      "0.1"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "極大減極小",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "expand: large minus small at boundary values"
+  },
+  {
+    "input": {
+      "a": "0.1",
+      "b": "99.9",
+      "template_index": 4
+    },
+    "expected_answer": "100",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "0.1",
+      "99.9"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "最小加最大等於整百",
+    "pattern_type": "boundary",
+    "risk_level": "medium",
+    "source_reason": "expand: min+max = round 100"
+  },
+  {
+    "input": {
+      "a": "1.0",
+      "b": "0.1",
+      "template_index": 0
+    },
+    "expected_answer": "0.9",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "1.0",
+      "0.1"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "整數減小數需借位",
+    "pattern_type": "boundary",
+    "risk_level": "medium",
+    "source_reason": "expand: borrow across decimal point"
+  },
+  {
+    "input": {
+      "a": "30.0",
+      "b": "2.0",
+      "template_index": 3
+    },
+    "expected_answer": "60",
+    "expected_unit": "元",
+    "expected_step_contains": [
+      "30.0",
+      "2.0"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "整數乘以整數小數形式",
+    "pattern_type": "boundary",
+    "risk_level": "low",
+    "source_reason": "expand: whole-number multiply in decimal form"
+  },
+  {
+    "input": {
+      "a": "5.0",
+      "b": "4.9",
+      "template_index": 2
+    },
+    "expected_answer": "0.1",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "5.0",
+      "4.9"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "相近數相減",
+    "pattern_type": "boundary",
+    "risk_level": "medium",
+    "source_reason": "expand: near-equal subtraction, small result"
+  },
+  {
+    "input": {
+      "a": "3.3",
+      "b": "3.3",
+      "template_index": 3
+    },
+    "expected_answer": "10.89",
+    "expected_unit": "元",
+    "expected_step_contains": [
+      "3.3"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "相同值相乘",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "expand: squaring a decimal, 2-decimal-place result"
+  },
+  {
+    "input": {
+      "a": "10.1",
+      "b": "9.9",
+      "template_index": 0
+    },
+    "expected_answer": "0.2",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "10.1",
+      "9.9"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "近似值相減",
+    "pattern_type": "adversarial",
+    "risk_level": "medium",
+    "source_reason": "expand: near-equal subtraction across tens boundary"
+  },
+  {
+    "input": {
+      "a": "2.5",
+      "b": "4.0",
+      "template_index": 3
+    },
+    "expected_answer": "10",
+    "expected_unit": "元",
+    "expected_step_contains": [
+      "2.5",
+      "4.0"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "乘法結果為整十",
+    "pattern_type": "adversarial",
+    "risk_level": "medium",
+    "source_reason": "expand: multiply producing round number"
+  },
+  {
+    "input": {
+      "a": "9.9",
+      "b": "0.2",
+      "template_index": 1
+    },
+    "expected_answer": "10.1",
+    "expected_unit": "公里",
+    "expected_step_contains": [
+      "9.9",
+      "0.2"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "加法進位跨十位",
+    "pattern_type": "adversarial",
+    "risk_level": "medium",
+    "source_reason": "expand: carry across ones place"
+  },
+  {
+    "input": {
+      "a": "7.2",
+      "b": "3.5",
+      "template_index": 0
+    },
+    "expected_answer": "3.7",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "7.2",
+      "3.5"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "減法不同模板(tpl0)",
+    "pattern_type": "wording_variation",
+    "risk_level": "low",
+    "source_reason": "expand: subtraction with template 0 instead of 2"
+  },
+  {
+    "input": {
+      "a": "6.4",
+      "b": "2.8",
+      "template_index": 4
+    },
+    "expected_answer": "9.2",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "6.4",
+      "2.8"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "加法不同模板(tpl4)",
+    "pattern_type": "wording_variation",
+    "risk_level": "low",
+    "source_reason": "expand: addition with template 4"
+  },
+  {
+    "input": {
+      "a": "15.0",
+      "b": "2.5",
+      "template_index": 3
+    },
+    "expected_answer": "37.5",
+    "expected_unit": "元",
+    "expected_step_contains": [
+      "15.0",
+      "2.5"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "乘法較大值",
+    "pattern_type": "wording_variation",
+    "risk_level": "medium",
+    "source_reason": "expand: multiply with larger values"
+  },
+  {
+    "input": {
+      "a": "20.0",
+      "b": "8.3",
+      "template_index": 2
+    },
+    "expected_answer": "11.7",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "20.0",
+      "8.3"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "整數減小數",
+    "pattern_type": "wording_variation",
+    "risk_level": "low",
+    "source_reason": "expand: whole number minus decimal with template 2"
   }
 ]

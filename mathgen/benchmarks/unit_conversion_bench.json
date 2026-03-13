@@ -1,82 +1,542 @@
 [
   {
-    "input": {"value": "3", "conversion_index": 0, "direction": "forward", "template_index": 0},
+    "input": {
+      "value": "3",
+      "conversion_index": 0,
+      "direction": "forward",
+      "template_index": 0
+    },
     "expected_answer": "3000",
     "expected_unit": "公尺",
-    "expected_step_contains": ["1000"],
+    "expected_step_contains": [
+      "1000"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公里→公尺"
+    "note": "公里to公尺",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: km to m forward"
   },
   {
-    "input": {"value": "5000", "conversion_index": 0, "direction": "reverse", "template_index": 0},
+    "input": {
+      "value": "5000",
+      "conversion_index": 0,
+      "direction": "reverse",
+      "template_index": 0
+    },
     "expected_answer": "5",
     "expected_unit": "公里",
-    "expected_step_contains": ["1000"],
+    "expected_step_contains": [
+      "1000"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公尺→公里"
+    "note": "公尺to公里",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: m to km reverse"
   },
   {
-    "input": {"value": "2.5", "conversion_index": 1, "direction": "forward", "template_index": 1},
+    "input": {
+      "value": "2.5",
+      "conversion_index": 1,
+      "direction": "forward",
+      "template_index": 1
+    },
     "expected_answer": "250",
     "expected_unit": "公分",
-    "expected_step_contains": ["100"],
+    "expected_step_contains": [
+      "100"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公尺→公分，帶小數"
+    "note": "公尺to公分，帶小數",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "initial: m to cm with decimal"
   },
   {
-    "input": {"value": "4", "conversion_index": 3, "direction": "forward", "template_index": 0},
+    "input": {
+      "value": "4",
+      "conversion_index": 3,
+      "direction": "forward",
+      "template_index": 0
+    },
     "expected_answer": "4000",
     "expected_unit": "公克",
-    "expected_step_contains": ["1000"],
+    "expected_step_contains": [
+      "1000"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公斤→公克"
+    "note": "公斤to公克",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: kg to g forward"
   },
   {
-    "input": {"value": "2000", "conversion_index": 3, "direction": "reverse", "template_index": 2},
+    "input": {
+      "value": "2000",
+      "conversion_index": 3,
+      "direction": "reverse",
+      "template_index": 2
+    },
     "expected_answer": "2",
     "expected_unit": "公斤",
-    "expected_step_contains": ["1000"],
+    "expected_step_contains": [
+      "1000"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公克→公斤"
+    "note": "公克to公斤",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: g to kg reverse"
   },
   {
-    "input": {"value": "3.5", "conversion_index": 5, "direction": "forward", "template_index": 0},
+    "input": {
+      "value": "3.5",
+      "conversion_index": 5,
+      "direction": "forward",
+      "template_index": 0
+    },
     "expected_answer": "3500",
     "expected_unit": "毫升",
-    "expected_step_contains": ["1000"],
+    "expected_step_contains": [
+      "1000"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公升→毫升，帶小數"
+    "note": "公升to毫升，帶小數",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "initial: L to mL with decimal"
   },
   {
-    "input": {"value": "2", "conversion_index": 7, "direction": "forward", "template_index": 1},
+    "input": {
+      "value": "2",
+      "conversion_index": 7,
+      "direction": "forward",
+      "template_index": 1
+    },
     "expected_answer": "120",
     "expected_unit": "分鐘",
-    "expected_step_contains": ["60"],
+    "expected_step_contains": [
+      "60"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "小時→分鐘"
+    "note": "小時to分鐘",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: hr to min"
   },
   {
-    "input": {"value": "180", "conversion_index": 8, "direction": "reverse", "template_index": 0},
+    "input": {
+      "value": "180",
+      "conversion_index": 8,
+      "direction": "reverse",
+      "template_index": 0
+    },
     "expected_answer": "3",
     "expected_unit": "分鐘",
-    "expected_step_contains": ["60"],
+    "expected_step_contains": [
+      "60"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "秒→分鐘"
+    "note": "秒to分鐘",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: sec to min reverse"
   },
   {
-    "input": {"value": "15", "conversion_index": 2, "direction": "forward", "template_index": 0},
+    "input": {
+      "value": "15",
+      "conversion_index": 2,
+      "direction": "forward",
+      "template_index": 0
+    },
     "expected_answer": "150",
     "expected_unit": "公釐",
-    "expected_step_contains": ["10"],
+    "expected_step_contains": [
+      "10"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公分→公釐"
+    "note": "公分to公釐",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "initial: cm to mm"
   },
   {
-    "input": {"value": "1.5", "conversion_index": 0, "direction": "forward", "template_index": 2},
+    "input": {
+      "value": "1.5",
+      "conversion_index": 0,
+      "direction": "forward",
+      "template_index": 2
+    },
     "expected_answer": "1500",
     "expected_unit": "公尺",
-    "expected_step_contains": ["1000"],
+    "expected_step_contains": [
+      "1000"
+    ],
     "hint_must_not_contain_answer": true,
-    "note": "公里→公尺，帶小數"
+    "note": "公里to公尺，帶小數",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "initial: km to m with decimal"
+  },
+  {
+    "input": {
+      "value": "5",
+      "conversion_index": 4,
+      "direction": "forward",
+      "template_index": 0
+    },
+    "expected_answer": "5000",
+    "expected_unit": "公斤",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "公噸to公斤",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "expand: ton to kg, new conversion pair"
+  },
+  {
+    "input": {
+      "value": "2",
+      "conversion_index": 6,
+      "direction": "forward",
+      "template_index": 1
+    },
+    "expected_answer": "20000",
+    "expected_unit": "平方公分",
+    "expected_step_contains": [
+      "10000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "平方公尺to平方公分",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "expand: area conversion, large multiplier"
+  },
+  {
+    "input": {
+      "value": "350",
+      "conversion_index": 1,
+      "direction": "reverse",
+      "template_index": 0
+    },
+    "expected_answer": "3.5",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "100"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "公分to公尺",
+    "pattern_type": "normal",
+    "risk_level": "medium",
+    "source_reason": "expand: cm to m reverse with decimal result"
+  },
+  {
+    "input": {
+      "value": "5",
+      "conversion_index": 8,
+      "direction": "forward",
+      "template_index": 2
+    },
+    "expected_answer": "300",
+    "expected_unit": "秒",
+    "expected_step_contains": [
+      "60"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "分鐘to秒",
+    "pattern_type": "normal",
+    "risk_level": "low",
+    "source_reason": "expand: min to sec forward"
+  },
+  {
+    "input": {
+      "value": "0.3",
+      "conversion_index": 1,
+      "direction": "forward",
+      "template_index": 0
+    },
+    "expected_answer": "30",
+    "expected_unit": "公分",
+    "expected_step_contains": [
+      "100"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "極小值轉換 0.3公尺to30公分",
+    "pattern_type": "edge",
+    "risk_level": "high",
+    "source_reason": "expand: very small decimal input conversion"
+  },
+  {
+    "input": {
+      "value": "0.5",
+      "conversion_index": 3,
+      "direction": "forward",
+      "template_index": 1
+    },
+    "expected_answer": "500",
+    "expected_unit": "公克",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "0.5公斤to500公克",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "expand: half unit conversion"
+  },
+  {
+    "input": {
+      "value": "5",
+      "conversion_index": 2,
+      "direction": "reverse",
+      "template_index": 0
+    },
+    "expected_answer": "0.5",
+    "expected_unit": "公分",
+    "expected_step_contains": [
+      "10"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "公釐to公分，結果小於1",
+    "pattern_type": "edge",
+    "risk_level": "high",
+    "source_reason": "expand: reverse with result < 1"
+  },
+  {
+    "input": {
+      "value": "50000",
+      "conversion_index": 6,
+      "direction": "reverse",
+      "template_index": 2
+    },
+    "expected_answer": "5",
+    "expected_unit": "平方公尺",
+    "expected_step_contains": [
+      "10000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "平方公分to平方公尺",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "expand: area reverse, large input"
+  },
+  {
+    "input": {
+      "value": "2",
+      "conversion_index": 0,
+      "direction": "forward",
+      "template_index": 0
+    },
+    "expected_answer": "2000",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "整數km to m",
+    "pattern_type": "boundary",
+    "risk_level": "low",
+    "source_reason": "expand: small integer km conversion"
+  },
+  {
+    "input": {
+      "value": "500",
+      "conversion_index": 5,
+      "direction": "reverse",
+      "template_index": 0
+    },
+    "expected_answer": "0.5",
+    "expected_unit": "公升",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "毫升to公升，結果小於1",
+    "pattern_type": "boundary",
+    "risk_level": "medium",
+    "source_reason": "expand: mL to L reverse, decimal result"
+  },
+  {
+    "input": {
+      "value": "100",
+      "conversion_index": 2,
+      "direction": "forward",
+      "template_index": 1
+    },
+    "expected_answer": "1000",
+    "expected_unit": "公釐",
+    "expected_step_contains": [
+      "10"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "100公分to1000公釐",
+    "pattern_type": "boundary",
+    "risk_level": "low",
+    "source_reason": "expand: large input with small multiplier"
+  },
+  {
+    "input": {
+      "value": "3000",
+      "conversion_index": 4,
+      "direction": "reverse",
+      "template_index": 2
+    },
+    "expected_answer": "3",
+    "expected_unit": "公噸",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "公斤to公噸",
+    "pattern_type": "boundary",
+    "risk_level": "low",
+    "source_reason": "expand: kg to ton reverse"
+  },
+  {
+    "input": {
+      "value": "90",
+      "conversion_index": 7,
+      "direction": "reverse",
+      "template_index": 0
+    },
+    "expected_answer": "1.5",
+    "expected_unit": "小時",
+    "expected_step_contains": [
+      "60"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "90分鐘to1.5小時",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "expand: non-integer reverse time conversion"
+  },
+  {
+    "input": {
+      "value": "0.5",
+      "conversion_index": 6,
+      "direction": "forward",
+      "template_index": 1
+    },
+    "expected_answer": "5000",
+    "expected_unit": "平方公分",
+    "expected_step_contains": [
+      "10000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "0.5平方公尺to5000平方公分",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "expand: area with decimal input, large result"
+  },
+  {
+    "input": {
+      "value": "45",
+      "conversion_index": 8,
+      "direction": "reverse",
+      "template_index": 0
+    },
+    "expected_answer": "0.75",
+    "expected_unit": "分鐘",
+    "expected_step_contains": [
+      "60"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "45秒to0.75分鐘",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "expand: non-trivial reverse time, 2-decimal result"
+  },
+  {
+    "input": {
+      "value": "2500",
+      "conversion_index": 0,
+      "direction": "reverse",
+      "template_index": 0
+    },
+    "expected_answer": "2.5",
+    "expected_unit": "公里",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "非整數反向轉換",
+    "pattern_type": "adversarial",
+    "risk_level": "medium",
+    "source_reason": "expand: non-integer reverse km conversion"
+  },
+  {
+    "input": {
+      "value": "4",
+      "conversion_index": 0,
+      "direction": "forward",
+      "template_index": 1
+    },
+    "expected_answer": "4000",
+    "expected_unit": "公尺",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "不同模板(tpl1)km to m",
+    "pattern_type": "wording_variation",
+    "risk_level": "low",
+    "source_reason": "expand: same conversion with template 1"
+  },
+  {
+    "input": {
+      "value": "5000",
+      "conversion_index": 3,
+      "direction": "reverse",
+      "template_index": 1
+    },
+    "expected_answer": "5",
+    "expected_unit": "公斤",
+    "expected_step_contains": [
+      "1000"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "不同模板(tpl1)g to kg",
+    "pattern_type": "wording_variation",
+    "risk_level": "low",
+    "source_reason": "expand: g to kg with template 1"
+  },
+  {
+    "input": {
+      "value": "3",
+      "conversion_index": 7,
+      "direction": "forward",
+      "template_index": 0
+    },
+    "expected_answer": "180",
+    "expected_unit": "分鐘",
+    "expected_step_contains": [
+      "60"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "3小時to180分鐘",
+    "pattern_type": "wording_variation",
+    "risk_level": "low",
+    "source_reason": "expand: hr to min with template 0"
+  },
+  {
+    "input": {
+      "value": "5.5",
+      "conversion_index": 1,
+      "direction": "forward",
+      "template_index": 1
+    },
+    "expected_answer": "550",
+    "expected_unit": "公分",
+    "expected_step_contains": [
+      "100"
+    ],
+    "hint_must_not_contain_answer": true,
+    "note": "5.5公尺to550公分",
+    "pattern_type": "wording_variation",
+    "risk_level": "medium",
+    "source_reason": "expand: m to cm with decimal and template 1"
   }
 ]

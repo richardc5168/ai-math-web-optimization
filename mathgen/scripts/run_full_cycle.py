@@ -34,6 +34,7 @@ from mathgen.reports.iteration_report_generator import (
     generate_iteration_report,
     save_iteration_report,
 )
+from mathgen.scripts.run_benchmarks import load_benchmark
 
 LOG_DIR = os.path.join(_MATHGEN, 'logs')
 REPORTS_DIR = os.path.join(_MATHGEN, 'reports')
@@ -234,6 +235,26 @@ def main():
 
     if args.gate_only:
         sys.exit(0 if failed == 0 else 1)
+
+    # Step 2b: Coverage stats by pattern_type and risk_level
+    pattern_stats = {}
+    risk_stats = {}
+    for topic in ALL_GENERATORS:
+        cases = load_benchmark(topic)
+        if cases is None:
+            continue
+        for c in cases:
+            pt = c.get('pattern_type', 'unknown')
+            rl = c.get('risk_level', 'unknown')
+            pattern_stats[pt] = pattern_stats.get(pt, 0) + 1
+            risk_stats[rl] = risk_stats.get(rl, 0) + 1
+    results['pattern_stats'] = pattern_stats
+    results['risk_stats'] = risk_stats
+    print('\n── Coverage ──')
+    for k in sorted(pattern_stats):
+        print(f'  pattern:{k} = {pattern_stats[k]}')
+    for k in sorted(risk_stats):
+        print(f'  risk:{k} = {risk_stats[k]}')
 
     # Step 3: Regression check
     print('\n── Regression Check ──')

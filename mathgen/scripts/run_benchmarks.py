@@ -142,6 +142,28 @@ def main():
     print(f'\n--- Summary ---')
     print(f'Total: {all_pass} passed, {all_fail} failed')
 
+    # Pattern type & risk level coverage
+    pattern_stats = {}
+    risk_stats = {}
+    for topic in topics:
+        if topic not in ALL_GENERATORS:
+            continue
+        cases = load_benchmark(topic)
+        if cases is None:
+            continue
+        for c in cases:
+            pt = c.get('pattern_type', 'unknown')
+            rl = c.get('risk_level', 'unknown')
+            pattern_stats[pt] = pattern_stats.get(pt, 0) + 1
+            risk_stats[rl] = risk_stats.get(rl, 0) + 1
+    if pattern_stats:
+        print(f'\n--- Coverage by pattern_type ---')
+        for k in sorted(pattern_stats):
+            print(f'  {k}: {pattern_stats[k]}')
+        print(f'\n--- Coverage by risk_level ---')
+        for k in sorted(risk_stats):
+            print(f'  {k}: {risk_stats[k]}')
+
     # Write failures to log
     if all_failures:
         os.makedirs(LOG_DIR, exist_ok=True)
