@@ -56,6 +56,34 @@
     return v;
   }
 
+  function gcdInt(a, b) {
+    a = Math.abs(Number(a) || 0);
+    b = Math.abs(Number(b) || 0);
+    while (b !== 0) {
+      const t = a % b;
+      a = b;
+      b = t;
+    }
+    return a || 1;
+  }
+
+  function isFractionAnswerSimplified(text) {
+    const s = normalizeText(text);
+    let m = s.match(/^\s*(-?\d+)\s+(\d+)\s*\/\s*(\d+)\s*$/);
+    if (m) {
+      const num = parseInt(m[2], 10);
+      const den = parseInt(m[3], 10);
+      return Number.isFinite(num) && Number.isFinite(den) && den > 0 && gcdInt(num, den) === 1;
+    }
+    m = s.match(/^\s*(-?\d+)\s*\/\s*(\d+)\s*$/);
+    if (m) {
+      const num = Math.abs(parseInt(m[1], 10));
+      const den = Math.abs(parseInt(m[2], 10));
+      return Number.isFinite(num) && Number.isFinite(den) && den > 1 && gcdInt(num, den) === 1;
+    }
+    return /^\s*-?\d+\s*$/.test(s);
+  }
+
   function toValue(questionObj, text) {
     const unit = String((questionObj && questionObj.answer_unit) || "number");
     if (unit === "text") return normalizeText(text);
@@ -91,6 +119,10 @@
       return "unit_error";
     }
 
+    if (unit === "fraction" && typeof expected === "number" && typeof actual === "number" && nearlyEqual(actual, expected) && !isFractionAnswerSimplified(raw)) {
+      return "fraction_not_reduced";
+    }
+
     if (typeof expected === "number" && typeof actual === "number") {
       if (expected !== 0 && nearlyEqual(actual, -expected)) return "sign_error";
       const absDiff = Math.abs(actual - expected);
@@ -106,6 +138,7 @@
   function errorDetailByType(errorType, questionObj, studentAnswerRaw) {
     const q = String((questionObj && questionObj.question) || "");
     if (errorType === "unit_error") return "你可能把單位直接寫在答案裡，或單位還沒先統一。先把單位換成同一種，再計算。";
+    if (errorType === "fraction_not_reduced") return "你的數值方向是對的，但分數還沒有約成最簡。請找分子分母的最大公因數後，再重新送出。";
     if (errorType === "sign_error") return "你可能在正負號上出錯了。請回頭檢查每一步的加減號。";
     if (errorType === "rounding_error") return "你的答案很接近，可能是小數位或四捨五入位置錯了。";
     if (errorType === "concept_error") {
@@ -125,6 +158,9 @@
     if (errorType === "unit_error") {
       hint2 = "先把所有數字換成同一單位，再寫算式。";
       hint3 = "最後答案要寫成題目要求的單位。";
+    } else if (errorType === "fraction_not_reduced") {
+      hint2 = "找分子分母的最大公因數，分子分母同時除。";
+      hint3 = "確認答案已不能再同時被 2、3、5…整除，再重新送出。";
     } else if (errorType === "sign_error") {
       hint2 = "每一步都把正負號抄完整，特別是減號前後。";
       hint3 = "用反算檢查一次（把結果代回去看是否合理）。";
