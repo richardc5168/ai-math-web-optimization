@@ -898,6 +898,12 @@
     els.remedialHints.textContent = '';
   }
 
+  function focusAnswerForRetry(){
+    if (!els.answer) return;
+    els.answer.focus();
+    if (typeof els.answer.select === 'function') els.answer.select();
+  }
+
   function showWrongGate(diagnosis, studentAnswerRaw){
     const q = state.q || {};
     state.phase = 'REMEDIAL_HINTS';
@@ -984,7 +990,7 @@
   }
 
   function commitAttempt(isCorrect, reason, studentAnswer){
-    if (!state.q || state.attemptLogged) return;
+    if (!state.q) return;
     const tsEnd = Date.now();
     const shown = Array.from(state.hintShownLevels).filter(n => n > 0).sort((a,b)=>a-b);
     const totalHintMs = state.hintStartAt ? Math.max(0, tsEnd - state.hintStartAt) : 0;
@@ -1013,7 +1019,6 @@
       },
     };
     window.AIMathAttemptTelemetry?.appendAttempt?.(getUid(), evt, { maxAttempts: 5000 });
-    state.attemptLogged = true;
   }
 
   function loadStore(){
@@ -1151,7 +1156,7 @@
       setBanner('warn', '請先完成「我理解了」再出下一題。');
       return;
     }
-    if (state.q && !state.attemptLogged){
+    if (state.q && Number(state.attemptsCount || 0) === 0){
       commitAttempt(false, 'skip', els.answer.value);
     }
     const q = pickQuestion();
@@ -1260,6 +1265,55 @@
     return parseRawNumber(q.answer);
   }
 
+  function parseFractionShape(text){
+    const s = normalizeText(text);
+
+    let m = s.match(/^\s*(-?\d+)\s+(\d+)\s*\/\s*(\d+)\s*$/);
+    if (m){
+      const whole = parseInt(m[1], 10);
+      const num = parseInt(m[2], 10);
+      const den = parseInt(m[3], 10);
+      if (!Number.isFinite(whole) || !Number.isFinite(num) || !Number.isFinite(den) || den === 0) return null;
+      return { kind: 'mixed', isSimplified: gcdInt(num, den) === 1 };
+    }
+
+    m = s.match(/^\s*(-?\d+)\s*\/\s*(\d+)\s*$/);
+    if (m){
+      const num = Math.abs(parseInt(m[1], 10));
+      const den = Math.abs(parseInt(m[2], 10));
+      if (!Number.isFinite(num) || !Number.isFinite(den) || den === 0) return null;
+      return { kind: 'fraction', isSimplified: den !== 1 && gcdInt(num, den) === 1 };
+    }
+
+    m = s.match(/^\s*(-?\d+)\s*$/);
+    if (m){
+      return { kind: 'integer', isSimplified: true };
+    }
+
+    return null;
+  }
+
+  function getFractionAnswerIssue(q, raw, userValue, expectedValue){
+    if (String((q && q.answer_unit) || 'number') !== 'fraction') return null;
+    if (!nearlyEqual(userValue, expectedValue)) return null;
+    const shape = parseFractionShape(raw);
+    if (!shape || shape.isSimplified) return null;
+    return {
+      error_type: 'fraction_not_reduced',
+      error_detail: '數值算對了，但答案還沒有約成最簡分數。請先約分，再重新送出。',
+      remediation_hints: [
+        '先找分子和分母的最大公因數。',
+        '把分子分母同時除以最大公因數。',
+        '確認結果已不能再同時被 2、3、5…整除。',
+      ],
+      remediation_steps: [
+        { step: 1, title: '找最大公因數', action: '先找分子和分母共同最大的因數。' },
+        { step: 2, title: '同時約分', action: '分子分母同時除以最大公因數。' },
+        { step: 3, title: '再次檢查', action: '確認答案已是最簡分數，再重新送出。' },
+      ],
+    };
+  }
+
   function nearlyEqual(a,b){
     if (typeof a === 'number' && typeof b === 'number'){
       return Math.abs(a-b) <= 1e-9;
@@ -1312,18 +1366,16 @@
 
   function check(){
     if (!state.q){ setBanner('bad','請先出題。'); return; }
-    if (state.ackRequired && !state.ackDone){
-      setBanner('warn', '請先完成「我理解了」再繼續。');
-      return;
-    }
 
     const raw = els.answer.value;
     let ok = false;
     let errMsg = '';
+    let diagnosisOverride = null;
     try {
       const user = parseAnswerForQuestion(state.q, raw);
       const exp = expectedAnswerValue(state.q);
-      ok = nearlyEqual(user, exp);
+      diagnosisOverride = getFractionAnswerIssue(state.q, raw, user, exp);
+      ok = nearlyEqual(user, exp) && !diagnosisOverride;
     } catch (e) {
       ok = false;
       errMsg = String(e && e.message || e);
@@ -1343,7 +1395,7 @@
       return;
     }
 
-    const diagnosis = (typeof window.diagnoseWrongAnswer === 'function')
+    const diagnosis = diagnosisOverride || ((typeof window.diagnoseWrongAnswer === 'function')
       ? window.diagnoseWrongAnswer(state.q, raw)
       : {
           error_type: 'other',
@@ -1354,7 +1406,7 @@
             '算完檢查答案大小和單位是否合理。',
           ],
           remediation_steps: [],
-        };
+        });
 
     state.phase = 'WRONG_DIAGNOSIS';
     state.ackRequired = true;
@@ -1363,7 +1415,8 @@
     showWrongGate(diagnosis, raw);
     recordAttempt(false, errMsg, raw, diagnosis);
     commitAttempt(false, errMsg ? 'error' : 'wrong', raw);
-    setBanner('bad', '做錯沒關係！請看診斷，按 Enter 或點「我理解了」再繼續。');
+    setBanner('bad', '做錯沒關係！可直接修改答案再按送出；若已理解，也可按「我理解了」跳下一題。');
+    focusAnswerForRetry();
   }
 
   function nextStepHint(){
@@ -1667,6 +1720,11 @@
     window.addEventListener('keydown', (ev)=>{
       const inInput = ev.target && (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'SELECT');
       if (ev.key === 'Enter'){
+        if (document.activeElement === els.answer || document.activeElement === els.btnCheck){
+          check();
+          ev.preventDefault();
+          return;
+        }
         if (state.ackRequired && !state.ackDone){
           acknowledgeWrong('enter');
           ev.preventDefault();
@@ -1678,7 +1736,6 @@
           ev.preventDefault();
           return;
         }
-        if (document.activeElement === els.answer) check();
         return;
       }
       /* Block shortcut keys while typing in input fields */
