@@ -22,6 +22,7 @@ from mathgen.question_templates import ALL_GENERATORS
 from mathgen.validators.schema_validator import validate_question_schema
 from mathgen.validators.hint_validator import validate_hint_ladder
 from mathgen.validators.answer_verifier import verify_answer
+from mathgen.validators.wording_validator import validate_wording_consistency
 from mathgen.scripts.run_benchmarks import load_benchmark
 
 
@@ -257,6 +258,10 @@ def run_mutation_test(topic: str, case_index: int, case: dict) -> List[Dict]:
                           f'got={vr.actual}')
         errors.extend(vr.errors)
 
+        # Wording consistency check
+        wv_valid, wv_errs = validate_wording_consistency(q)
+        errors.extend(wv_errs)
+
         # Answer leak check
         answer = q.get('correct_answer', '')
         if answer and len(answer) > 1:
@@ -306,9 +311,6 @@ def _quality_checks(topic: str, q: dict, params: dict) -> List[str]:
     if topic == 'average_word_problem':
         values = params.get('values', [])
         tpl_idx = params.get('template_index', 0)
-        # Template 0 says "三次考試" but values might not have 3 items
-        if tpl_idx == 0 and len(values) != 3:
-            errors.append('quality:template_value_count_mismatch')
         # All same values = trivial question
         if values and len(set(values)) == 1:
             errors.append('quality:all_same_values_trivial')

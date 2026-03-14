@@ -5,7 +5,7 @@ from .base import BaseGenerator
 
 _TEMPLATES = [
     {
-        'text': '{name}三次考試的分數分別是 {vals}，請問平均分數是多少分？',
+        'text': '{name} {n} 次考試的分數分別是 {vals}，請問平均分數是多少分？',
         'unit': '分',
         'context': 'exam',
     },

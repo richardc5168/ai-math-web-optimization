@@ -20,6 +20,7 @@ from mathgen.question_templates import ALL_GENERATORS
 from mathgen.validators.schema_validator import validate_question_schema
 from mathgen.validators.hint_validator import validate_hint_ladder
 from mathgen.validators.answer_verifier import verify_answer
+from mathgen.validators.wording_validator import validate_wording_consistency
 from mathgen.error_taxonomy import classify_error
 
 
@@ -69,6 +70,10 @@ def run_topic(topic, generator_cls, cases):
         if not vr.match:
             errs.append(f'verifier_mismatch:expected={vr.expected},got={vr.actual}')
         errs.extend(vr.errors)
+
+        # Wording consistency
+        wv_valid, wv_errs = validate_wording_consistency(q)
+        errs.extend(wv_errs)
 
         # Answer correctness
         if 'expected_answer' in case:
