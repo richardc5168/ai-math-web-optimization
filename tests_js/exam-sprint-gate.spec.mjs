@@ -4,8 +4,16 @@ import { pathToFileURL } from 'node:url';
 
 const pagePath = pathToFileURL(path.resolve('docs/exam-sprint/index.html')).href;
 
-test('wrong answer enters diagnosis gate and Enter acknowledges', async ({ page }) => {
+async function gotoCleanExamSprint(page) {
+  await page.addInitScript(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
   await page.goto(pagePath);
+}
+
+test('wrong answer enters diagnosis gate and acknowledgement unlocks next', async ({ page }) => {
+  await gotoCleanExamSprint(page);
 
   await page.getByTestId('next').click();
   await page.locator('#answer').fill('999999');
@@ -15,7 +23,7 @@ test('wrong answer enters diagnosis gate and Enter acknowledges', async ({ page 
   await expect(page.getByTestId('remedial-hints')).toBeVisible();
   await expect(page.getByTestId('next')).toBeDisabled();
 
-  await page.keyboard.press('Enter');
+  await page.getByTestId('acknowledge').click();
   await expect(page.getByTestId('next')).toBeEnabled();
 
   const wrongSaved = await page.evaluate(() => {
@@ -24,20 +32,20 @@ test('wrong answer enters diagnosis gate and Enter acknowledges', async ({ page 
     const obj = JSON.parse(raw);
     const attempts = Array.isArray(obj?.attempts) ? obj.attempts : [];
     const last = attempts[attempts.length - 1];
-    return Boolean(last && last.is_correct === false && last.error_type && last.ack_time && last.ack_method === 'enter');
+    return Boolean(last && last.is_correct === false && last.error_type && last.ack_time && last.ack_method === 'button');
   });
   expect(wrongSaved).toBeTruthy();
 });
 
 test('correct answer enables next without gate', async ({ page }) => {
-  await page.goto(pagePath);
+  await gotoCleanExamSprint(page);
 
   await page.getByTestId('next').click();
 
   const answer = await page.evaluate(() => {
-    const text = document.getElementById('qText')?.textContent || '';
+    const text = (document.getElementById('qText')?.textContent || '').trim();
     const bank = Array.isArray(window.EXAM_SPRINT_BANK) ? window.EXAM_SPRINT_BANK : [];
-    const q = bank.find((it) => String(it.question || '') === String(text));
+    const q = bank.find((it) => String(it.question || '').trim() === text);
     return q ? String(q.answer) : '';
   });
 

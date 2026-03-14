@@ -6,24 +6,24 @@
 
 | Metric | Value |
 |--------|-------|
-| Total cases | 120 |
-| Sampled for review | 8 (6.7%) |
-| Skipped (trusted) | 112 (93.3%) |
-| Theoretical human-time saved | 93% |
+| Total cases | 160 |
+| Sampled for review | 10 (6.2%) |
+| Skipped (trusted) | 150 (93.8%) |
+| Theoretical human-time saved | 94% |
 
 ## Risk Distribution
 
 | Risk Level | Count | % |
 |-----------|-------|---|
-| low | 104 | 86.7% |
-| medium | 16 | 13.3% |
+| low | 134 | 83.8% |
+| medium | 26 | 16.2% |
 | high | 0 | 0.0% |
 
 ## Per-Topic Breakdown
 
 | Topic | Total | Low | Med | High | Sampled | Skip |
 |-------|-------|-----|-----|------|---------|------|
-| fraction_word_problem | 30 | 23 | 7 | 0 | 3 | 27 |
-| decimal_word_problem | 30 | 30 | 0 | 0 | 3 | 27 |
-| average_word_problem | 30 | 29 | 1 | 0 | 0 | 30 |
-| unit_conversion | 30 | 22 | 8 | 0 | 2 | 28 |
+| fraction_word_problem | 40 | 33 | 7 | 0 | 2 | 38 |
+| decimal_word_problem | 40 | 34 | 6 | 0 | 5 | 35 |
+| average_word_problem | 40 | 39 | 1 | 0 | 0 | 40 |
+| unit_conversion | 40 | 28 | 12 | 0 | 3 | 37 |

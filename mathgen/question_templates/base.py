@@ -1,5 +1,6 @@
 """Base class for all question generators."""
-import uuid
+import hashlib
+import json
 from abc import ABC, abstractmethod
 from math import gcd
 
@@ -22,9 +23,28 @@ class BaseGenerator(ABC):
         """
 
     def make_id(self, suffix=''):
-        short = uuid.uuid4().hex[:8]
         prefix = self.TOPIC[:3] if self.TOPIC else 'gen'
-        return f'{prefix}_{short}' if not suffix else f'{prefix}_{suffix}'
+        return f'{prefix}_{suffix}' if suffix else f'{prefix}_manual'
+
+    def make_stable_id(self, *, topic, difficulty, problem_text, parameters,
+                       correct_answer, unit, steps, hint_ladder,
+                       validation_rules, grade):
+        prefix = topic[:3] if topic else (self.TOPIC[:3] if self.TOPIC else 'gen')
+        payload = {
+            'grade': grade,
+            'topic': topic,
+            'difficulty': difficulty,
+            'problem_text': problem_text,
+            'parameters': parameters,
+            'correct_answer': correct_answer,
+            'unit': unit,
+            'steps': steps,
+            'hint_ladder': hint_ladder,
+            'validation_rules': validation_rules,
+        }
+        encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
+        short = hashlib.sha1(encoded.encode('utf-8')).hexdigest()[:8]
+        return f'{prefix}_{short}'
 
     # ---- fraction helpers ----
     @staticmethod
@@ -129,9 +149,21 @@ class BaseGenerator(ABC):
                        correct_answer, unit, steps, hint_ladder,
                        validation_rules, qid=None, grade=None):
         """Build a question dict conforming to the schema."""
+        resolved_grade = grade or self.GRADE
         return {
-            'id': qid or self.make_id(),
-            'grade': grade or self.GRADE,
+            'id': qid or self.make_stable_id(
+                topic=topic,
+                difficulty=difficulty,
+                problem_text=problem_text,
+                parameters=parameters,
+                correct_answer=correct_answer,
+                unit=unit,
+                steps=steps,
+                hint_ladder=hint_ladder,
+                validation_rules=validation_rules,
+                grade=resolved_grade,
+            ),
+            'grade': resolved_grade,
             'topic': topic,
             'difficulty': difficulty,
             'problem_text': problem_text,

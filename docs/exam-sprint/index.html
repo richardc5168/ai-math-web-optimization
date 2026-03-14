@@ -934,6 +934,7 @@
     }
     els.remedialHints.textContent = remedial.join('\n');
     els.wrongGate.style.display = 'block';
+    els.btnAcknowledge.focus();
   }
 
   function acknowledgeWrong(method){
@@ -1705,6 +1706,16 @@
     els.btnNew.addEventListener('click', newQuestion);
     els.btnReset.addEventListener('click', resetUI);
     els.btnCheck.addEventListener('click', check);
+    els.answer.addEventListener('keydown', (ev)=>{
+      if (ev.key !== 'Enter') return;
+      if (state.ackRequired && !state.ackDone){
+        acknowledgeWrong('enter');
+        ev.preventDefault();
+        return;
+      }
+      check();
+      ev.preventDefault();
+    });
     els.btnHint1.addEventListener('click', ()=>showHint(1));
     els.btnHint2.addEventListener('click', ()=>showHint(2));
     els.btnHint3.addEventListener('click', ()=>showHint(3));
@@ -1720,13 +1731,13 @@
     window.addEventListener('keydown', (ev)=>{
       const inInput = ev.target && (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'SELECT');
       if (ev.key === 'Enter'){
-        if (document.activeElement === els.answer || document.activeElement === els.btnCheck){
-          check();
+        if (state.ackRequired && !state.ackDone){
+          acknowledgeWrong('enter');
           ev.preventDefault();
           return;
         }
-        if (state.ackRequired && !state.ackDone){
-          acknowledgeWrong('enter');
+        if (document.activeElement === els.answer || document.activeElement === els.btnCheck){
+          check();
           ev.preventDefault();
           return;
         }

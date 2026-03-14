@@ -90,6 +90,116 @@
     "risk_level": "low",
     "source_reason": "initial: health context average"
   },
+    {
+      "input": {"values": [100, 0, 100], "name": "小明", "template_index": 4},
+      "expected_answer": "66.7",
+      "expected_unit": "分",
+      "expected_step_contains": ["200", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "極端平均，邊界：最大與最小值組合",
+      "pattern_type": "boundary",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: maximal/minimal value edge"
+    },
+    {
+      "input": {"values": [50, 50, 50], "name": "小華", "template_index": 4},
+      "expected_answer": "50",
+      "expected_unit": "分",
+      "expected_step_contains": ["150", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，adversarial：所有值相同，平均即原值",
+      "pattern_type": "adversarial",
+      "risk_level": "high",
+      "source_reason": "error_taxonomy: adversarial all-same values"
+    },
+    {
+      "input": {"values": [100, 50, 0], "name": "小美", "template_index": 5},
+      "expected_answer": "50",
+      "expected_unit": "分",
+      "expected_step_contains": ["150", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，邊界：最大與最小值組合",
+      "pattern_type": "boundary",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: maximal/minimal value edge"
+    },
+    {
+      "input": {"values": [99, 1, 50], "name": "小強", "template_index": 6},
+      "expected_answer": "50",
+      "expected_unit": "分",
+      "expected_step_contains": ["150", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，edge：極端值與中間值組合",
+      "pattern_type": "edge",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: edge case with extreme and median values"
+    },
+    {
+      "input": {"values": [100, 100, 100], "name": "小明", "template_index": 7},
+      "expected_answer": "100",
+      "expected_unit": "分",
+      "expected_step_contains": ["300", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，adversarial：所有值相同，平均即原值",
+      "pattern_type": "adversarial",
+      "risk_level": "high",
+      "source_reason": "error_taxonomy: adversarial all-same values"
+    },
+    {
+      "input": {"values": [0, 0, 100], "name": "小華", "template_index": 8},
+      "expected_answer": "33.3",
+      "expected_unit": "分",
+      "expected_step_contains": ["100", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，邊界：兩個最小值與一個最大值",
+      "pattern_type": "boundary",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: minimal/minimal/maximal value edge"
+    },
+    {
+      "input": {"values": [100, 0, 0], "name": "小美", "template_index": 9},
+      "expected_answer": "33.3",
+      "expected_unit": "分",
+      "expected_step_contains": ["100", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，邊界：一個最大值與兩個最小值",
+      "pattern_type": "boundary",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: maximal/minimal/minimal value edge"
+    },
+    {
+      "input": {"values": [100, 50, 50], "name": "小強", "template_index": 10},
+      "expected_answer": "66.7",
+      "expected_unit": "分",
+      "expected_step_contains": ["200", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，edge：兩個相同值與一個極端值",
+      "pattern_type": "edge",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: edge case with two same and one extreme value"
+    },
+    {
+      "input": {"values": [100, 50, 100], "name": "小明", "template_index": 11},
+      "expected_answer": "83.3",
+      "expected_unit": "分",
+      "expected_step_contains": ["250", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，wording variation：敘述換句",
+      "pattern_type": "wording_variation",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: wording variation"
+    },
+    {
+      "input": {"values": [50, 100, 50], "name": "小華", "template_index": 12},
+      "expected_answer": "66.7",
+      "expected_unit": "分",
+      "expected_step_contains": ["200", "3"],
+      "hint_must_not_contain_answer": true,
+      "note": "平均，wording variation：敘述換句",
+      "pattern_type": "wording_variation",
+      "risk_level": "medium",
+      "source_reason": "coverage_gap: wording variation"
+    },
   {
     "input": {
       "values": [

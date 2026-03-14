@@ -30,6 +30,46 @@ _TEMPLATES = [
         'text': '水桶裡有 {a} 公升的水，用掉 {b} 公升，還剩多少公升？',
         'unit': '公升',
     },
+    {
+        'pattern': 'add',
+        'text': '一條彩帶長 {a} 公尺，又接上 {b} 公尺，現在共有多少公尺？',
+        'unit': '公尺',
+    },
+    {
+        'pattern': 'add',
+        'text': '量杯裡有 {a} 公升的水，再倒入 {b} 公升，總共有多少公升？',
+        'unit': '公升',
+    },
+    {
+        'pattern': 'add',
+        'text': '桶子裡原本有 {a} 公升，又加入 {b} 公升，一共有多少公升？',
+        'unit': '公升',
+    },
+    {
+        'pattern': 'add',
+        'text': '木條長 {a} 公尺，再接上 {b} 公尺後，總長是多少公尺？',
+        'unit': '公尺',
+    },
+    {
+        'pattern': 'add',
+        'text': '兩段繩子分別長 {a} 公尺和 {b} 公尺，合起來是多少公尺？',
+        'unit': '公尺',
+    },
+    {
+        'pattern': 'add',
+        'text': '水壺中有 {a} 公升，再裝入 {b} 公升後，共有多少公升？',
+        'unit': '公升',
+    },
+    {
+        'pattern': 'add',
+        'text': '容器甲有 {a} 公升，容器乙有 {b} 公升，合計是多少公升？',
+        'unit': '公升',
+    },
+    {
+        'pattern': 'add',
+        'text': '量桶裡先有 {a} 公升的水，又加入 {b} 公升後，共有多少公升？',
+        'unit': '公升',
+    },
 ]
 
 
@@ -99,7 +139,7 @@ class FractionWordProblemGenerator(BaseGenerator):
         hint_ladder = {
             'level_1': f'這題是分數的{op_word}法，想想看要怎麼處理分母不同的分數？',
             'level_2': f'先通分，把分母統一為 {lcd}，再{op_word}分子。',
-            'level_3': f'通分後：{a_lcd}/{lcd} {op_sign} {b_lcd}/{lcd}，計算分子的{op_word}法。',
+            'level_3': f'通分後，分母相同時只要處理分子的{op_word}法，再看看結果能不能約分。',
             'level_4': '算完後，檢查分數是否可以約分，再代回原題驗算看看。',
         }
 

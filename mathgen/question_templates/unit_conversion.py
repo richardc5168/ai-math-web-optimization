@@ -90,8 +90,8 @@ class UnitConversionGenerator(BaseGenerator):
 
         hint_ladder = {
             'level_1': f'想想看 {conv[0]} 和 {conv[1]} 之間的換算關係是什麼？',
-            'level_2': f'1 {conv[0]} = {multiplier} {conv[1]}，這題要{"乘" if direction == "forward" else "除"}以 {multiplier}。',
-            'level_3': f'列式：{op_desc}，仔細計算。',
+            'level_2': f'先判斷是把較大的單位換成較小的單位，還是反過來，再決定要放大或縮小數值。',
+            'level_3': '先寫出換算關係，再依照方向列式計算，最後檢查單位是否寫對。',
             'level_4': f'算完後，反過來換算回去檢查是否正確。',
         }
 

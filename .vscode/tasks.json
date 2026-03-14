@@ -1,0 +1,383 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "verify_all",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/verify_all.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "export_dist",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"scripts/windows/export_ai_math_web_pages.ps1"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify_all",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/verify_all.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git status (no pager)",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"-c",
+				"core.pager=cat",
+				"status",
+				"--porcelain=v1",
+				"-b"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "publish empire victory fix",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Set-Location \"C:\\Users\\Richard\\Documents\\RAGWEB\"; git add docs/interactive-g5-empire/index.html dist_ai_math_web_pages/docs/interactive-g5-empire/index.html; git commit -m \"interactive-g5-empire: full-territory victory celebration\"; git push origin main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git add victory files",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"add",
+				"docs/interactive-g5-empire/index.html",
+				"dist_ai_math_web_pages/docs/interactive-g5-empire/index.html"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git commit victory fix",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"interactive-g5-empire: full-territory victory celebration"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git push main",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"origin",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify docs/dist mirror",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/verify_all.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify after badge size change",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/verify_all.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit bigger conquest badge",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-am",
+				"interactive-g5-empire: bigger conquest badge in banner"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "push bigger badge",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"origin",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify bigger badge responsive",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"scripts/verify_all.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit and push bigger badge v2",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Set-Location \"C:\\Users\\Richard\\Documents\\RAGWEB\"; git add docs/interactive-g5-empire/index.html dist_ai_math_web_pages/docs/interactive-g5-empire/index.html; git commit -m \"interactive-g5-empire: make conquest badge bigger\"; git push origin main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git add badge v2",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"add",
+				"docs/interactive-g5-empire/index.html",
+				"dist_ai_math_web_pages/docs/interactive-g5-empire/index.html"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git commit badge v2",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"interactive-g5-empire: make conquest badge bigger"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git push badge v2",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"origin",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "copy empire module to life-pack1",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Set-Location \"C:\\Users\\Richard\\Documents\\RAGWEB\"; if (!(Test-Path .\\docs\\interactive-g5-life-pack1-empire)) { Copy-Item -Recurse -Force .\\docs\\interactive-g5-empire .\\docs\\interactive-g5-life-pack1-empire }; if (!(Test-Path .\\dist_ai_math_web_pages\\docs\\interactive-g5-life-pack1-empire)) { Copy-Item -Recurse -Force .\\dist_ai_math_web_pages\\docs\\interactive-g5-empire .\\dist_ai_math_web_pages\\docs\\interactive-g5-life-pack1-empire }; \"OK\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "publish dashboard report link",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Set-Location \"C:\\Users\\Richard\\Documents\\RAGWEB\"; git add docs/index.html dist_ai_math_web_pages/docs/index.html; git commit -m \"docs: add parent report link to main dashboard\"; git push origin main"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "validate elementary banks",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"tools/validate_all_elementary_banks.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "cross validate remote",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/cross_validate_remote.cjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git changed names",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"-c",
+				"core.pager=cat",
+				"diff",
+				"--name-only"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git log latest",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"-c",
+				"core.pager=cat",
+				"log",
+				"--oneline",
+				"-6"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "list poller processes",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Get-CimInstance Win32_Process -Filter \"name='node.exe'\" | Where-Object { $_.CommandLine -match 'poll_hourly_commands\\.cjs' } | Select-Object ProcessId, CommandLine | Format-List"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check head ops mail",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"show",
+				"HEAD:ops/hourly_commands.json"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "validate elementary gate",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"tools/validate_all_elementary_banks.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "cross validate gate",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"tools/cross_validate_remote.cjs"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "git log auto latest",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"-c",
+				"core.pager=cat",
+				"log",
+				"--oneline",
+				"-12"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "validate_all",
+			"type": "shell",
+			"command": "C:/Users/Richard/Documents/RAGWEB/.venv/Scripts/python.exe",
+			"args": [
+				"tools/validate_all_elementary_banks.py"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "baseline_verify",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"scripts/run_10h_local.ps1",
+				"-Mode",
+				"baseline",
+				"-NewRun"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "full_verify",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"scripts/run_10h_local.ps1",
+				"-Mode",
+				"full"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run_10h",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"scripts/run_10h_local.ps1",
+				"-Mode",
+				"run",
+				"-NewRun",
+				"-Hours",
+				"10",
+				"-IntervalMinutes",
+				"20",
+				"-FullVerifyCadence",
+				"4"
+			],
+			"isBackground": true,
+			"group": "none"
+		},
+		{
+			"label": "tail_logs",
+			"type": "shell",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"scripts/run_10h_local.ps1",
+				"-Mode",
+				"tail"
+			],
+			"isBackground": true,
+			"group": "none"
+		}
+	]
+}

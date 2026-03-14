@@ -2,4 +2,4 @@
 
 ## Status: ✅ No failures to cluster
 
-All 120 benchmark cases pass. No action needed.
+All 160 benchmark cases pass. No action needed.

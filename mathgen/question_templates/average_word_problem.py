@@ -24,6 +24,51 @@ _TEMPLATES = [
         'unit': '毫升',
         'context': 'health',
     },
+    {
+        'text': '{name}這幾次測驗的成績是 {vals} 分，平均成績是多少分？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}的考試分數分別是 {vals}，求平均幾分？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}共考了 {n} 次，成績依序是 {vals} 分，平均是多少分？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}在 {n} 次小考中得到 {vals} 分，平均每次幾分？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}這些分數 {vals} 的平均值是多少分？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}最近 {n} 次考試拿到 {vals} 分，平均分數是多少？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}的成績記錄為 {vals} 分，請算出平均分數。',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}每次測驗分別得了 {vals} 分，平均是多少分？',
+        'unit': '分',
+        'context': 'exam',
+    },
+    {
+        'text': '{name}共有 {n} 個成績：{vals} 分，平均值是多少分？',
+        'unit': '分',
+        'context': 'exam',
+    },
 ]
 
 _NAMES = ['小明', '小華', '小美', '小強', '小芳']

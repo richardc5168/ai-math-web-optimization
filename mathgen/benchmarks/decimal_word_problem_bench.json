@@ -36,6 +36,116 @@
     "source_reason": "initial: basic decimal addition"
   },
   {
+    "input": {"a": "0.01", "b": "0.99", "template_index": 4},
+    "expected_answer": "1",
+    "expected_unit": "公升",
+    "expected_step_contains": ["0.01", "0.99"],
+    "hint_must_not_contain_answer": true,
+    "note": "極端小數加法，邊界：最小值組合",
+    "pattern_type": "boundary",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: minimal decimal edge"
+  },
+  {
+    "input": {"a": "9.99", "b": "0.01", "template_index": 5},
+    "expected_answer": "10",
+    "expected_unit": "公升",
+    "expected_step_contains": ["9.99", "0.01"],
+    "hint_must_not_contain_answer": true,
+    "note": "極端小數加法，邊界：最大值組合",
+    "pattern_type": "boundary",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: maximal decimal edge"
+  },
+  {
+    "input": {"a": "0.5", "b": "0.5", "template_index": 6},
+    "expected_answer": "1",
+    "expected_unit": "公升",
+    "expected_step_contains": ["0.5", "0.5"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，adversarial：分數總和為整數",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "error_taxonomy: adversarial whole number simplification"
+  },
+  {
+    "input": {"a": "1.23", "b": "3.21", "template_index": 7},
+    "expected_answer": "4.44",
+    "expected_unit": "公升",
+    "expected_step_contains": ["1.23", "3.21"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，edge：兩數位數不同",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: edge case with different digit counts"
+  },
+  {
+    "input": {"a": "0.99", "b": "0.01", "template_index": 8},
+    "expected_answer": "1",
+    "expected_unit": "公升",
+    "expected_step_contains": ["0.99", "0.01"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，adversarial：分數總和為整數",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "error_taxonomy: adversarial whole number simplification"
+  },
+  {
+    "input": {"a": "2.5", "b": "2.5", "template_index": 9},
+    "expected_answer": "5",
+    "expected_unit": "公升",
+    "expected_step_contains": ["2.5", "2.5"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，edge：分數總和為整數",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: edge case near whole number"
+  },
+  {
+    "input": {"a": "1.1", "b": "2.2", "template_index": 10},
+    "expected_answer": "3.3",
+    "expected_unit": "公升",
+    "expected_step_contains": ["1.1", "2.2"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，wording variation：敘述換句",
+    "pattern_type": "wording_variation",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: wording variation"
+  },
+  {
+    "input": {"a": "0.25", "b": "0.75", "template_index": 11},
+    "expected_answer": "1",
+    "expected_unit": "公升",
+    "expected_step_contains": ["0.25", "0.75"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，adversarial：分數總和為整數",
+    "pattern_type": "adversarial",
+    "risk_level": "high",
+    "source_reason": "error_taxonomy: adversarial whole number simplification"
+  },
+  {
+    "input": {"a": "0.33", "b": "0.67", "template_index": 12},
+    "expected_answer": "1",
+    "expected_unit": "公升",
+    "expected_step_contains": ["0.33", "0.67"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，edge：分數總和為整數",
+    "pattern_type": "edge",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: edge case near whole number"
+  },
+  {
+    "input": {"a": "1.5", "b": "1.5", "template_index": 13},
+    "expected_answer": "3",
+    "expected_unit": "公升",
+    "expected_step_contains": ["1.5", "1.5"],
+    "hint_must_not_contain_answer": true,
+    "note": "小數加法，wording variation：敘述換句",
+    "pattern_type": "wording_variation",
+    "risk_level": "medium",
+    "source_reason": "coverage_gap: wording variation"
+  },
+  {
     "input": {
       "a": "10.5",
       "b": "4.8",

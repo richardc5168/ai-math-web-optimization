@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "artifact_root": "artifacts/run_10h",
+  "run_id_file": "artifacts/run_10h/current_run.txt",
+  "single_change_category": true,
+  "full_gate_before_commit": true,
+  "stability_tests": [
+    "python -m pytest tests/unit/test_mathgen_stability_contract.py -q"
+  ],
+  "quick_gate": [
+    "python tools/validate_all_elementary_banks.py",
+    "python scripts/verify_all.py",
+    "python mathgen/scripts/run_full_cycle.py --gate-only",
+    "python -m pytest tests/unit/test_mathgen_stability_contract.py -q"
+  ],
+  "full_gate": [
+    "npm run verify:all",
+    "python tools/validate_all_elementary_banks.py",
+    "python scripts/verify_all.py",
+    "python mathgen/scripts/run_full_cycle.py --changes \"run_10h full verify\"",
+    "python -m pytest tests/unit/test_mathgen_stability_contract.py -q"
+  ],
+  "fraction_contract": {
+    "must_be_simplest": true,
+    "forbid_over_one_denominator": true,
+    "normalized_negative_sign": true
+  },
+  "summary_contract": {
+    "language": "zh-TW",
+    "sections": [
+      "弱點",
+      "證據",
+      "下一步行動"
+    ]
+  },
+  "rollback": {
+    "checkpoint_prefix": "rollback/run_10h-before",
+    "runner_owned_paths": [
+      "artifacts/run_10h/"
+    ]
+  }
+}
