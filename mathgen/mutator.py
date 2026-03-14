@@ -443,6 +443,11 @@ def _quality_checks(topic: str, q: dict, params: dict) -> List[str]:
                 errors.append('quality:conversion_answer_too_large')
         except (ValueError, TypeError):
             pass
+        # Too many decimal places — grade 5 shouldn't need >2
+        if '.' in answer:
+            dec_part = answer.split('.')[-1].rstrip('0')
+            if len(dec_part) > 2:
+                errors.append('quality:too_many_answer_decimal_places')
 
     elif topic == 'fraction_word_problem':
         a_num = params.get('a_num', 1)
