@@ -33,6 +33,12 @@ function Get-NodeExe {
     return 'node'
 }
 
+function Get-GitChangedFiles {
+    $output = git -c core.pager=cat diff --name-only
+    if ($LASTEXITCODE -ne 0) { return @() }
+    return @($output | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+}
+
 function ConvertTo-PrettyJson([object]$InputObject) {
     return $InputObject | ConvertTo-Json -Depth 100
 }
@@ -314,6 +320,80 @@ function Update-IssueQueue {
     return $result
 }
 
+function Finalize-RecipeOutcome {
+    param(
+        [Parameter(Mandatory = $true)]$Context,
+        [Parameter(Mandatory = $true)][string]$VerifyMode,
+        [Parameter(Mandatory = $true)][System.Collections.IEnumerable]$Results
+    )
+
+    $pythonExe = Get-PythonExe
+    $gatePass = (@($Results | Where-Object { -not $_.pass }).Count -eq 0)
+    $changedFiles = @(Get-GitChangedFiles)
+    $arguments = @(
+        'tools/manage_recipe_execution.py',
+        'finalize',
+        '--artifact-root',
+        'artifacts/run_10h',
+        '--mathgen-logs',
+        'mathgen/logs',
+        '--run-id',
+        $Context.RunId,
+        '--verify-mode',
+        $VerifyMode,
+        '--gate-pass',
+        $(if ($gatePass) { 'true' } else { 'false' })
+    )
+    foreach ($path in $changedFiles) {
+        $arguments += @('--changed-file', $path)
+    }
+    return Invoke-LoggedCommand -Context $Context -Category 'recipe_outcome' -Name 'finalize_recipe_outcome' -Stem ($VerifyMode + '_recipe_finalize') -Command $pythonExe -Arguments $arguments
+}
+
+function Start-ActiveRecipe {
+    param(
+        [Parameter(Mandatory = $true)]$Context,
+        [Parameter(Mandatory = $true)][string]$VerifyMode
+    )
+
+    $pythonExe = Get-PythonExe
+    $selectResult = Invoke-LoggedCommand -Context $Context -Category 'recipe_selection' -Name 'select_active_recipe' -Stem ($VerifyMode + '_recipe_select') -Command $pythonExe -Arguments @(
+        'tools/manage_recipe_execution.py',
+        'select',
+        '--artifact-root',
+        'artifacts/run_10h',
+        '--mathgen-logs',
+        'mathgen/logs',
+        '--run-id',
+        $Context.RunId
+    )
+    if (-not $selectResult.pass) {
+        throw 'Active recipe selection failed.'
+    }
+
+    $activeRecipePath = Join-Path $ArtifactRoot 'active_recipe.json'
+    if (-not (Test-Path $activeRecipePath)) {
+        return $selectResult
+    }
+    $recipe = [System.IO.File]::ReadAllText($activeRecipePath, [System.Text.UTF8Encoding]::new($false)) | ConvertFrom-Json
+    if ($recipe.status -ne 'selected') {
+        return $selectResult
+    }
+    if (-not $recipe.selection_changed) {
+        return $selectResult
+    }
+
+    foreach ($commandSpec in @($recipe.preflight_commands)) {
+        $arguments = @()
+        foreach ($arg in @($commandSpec.arguments)) {
+            $arguments += [string]$arg
+        }
+        $stem = ($VerifyMode + '_recipe_preflight_' + $commandSpec.program.Replace(':', '_').Replace('.', '_').Replace('\\', '_').Replace('/', '_'))
+        [void](Invoke-LoggedCommand -Context $Context -Category 'recipe_preflight' -Name ('recipe_preflight:' + $recipe.strategy_key) -Stem $stem -Command ([string]$commandSpec.program) -Arguments $arguments)
+    }
+    return $selectResult
+}
+
 function Get-JunitFailureCount([string]$Path) {
     if (-not (Test-Path $Path)) { return 1 }
     [xml]$xml = Get-Content $Path -Raw
@@ -390,6 +470,11 @@ function Write-FinalSummary {
 
     $success = (@($Results | Where-Object { -not $_.pass }).Count -eq 0)
     $isFullVerify = ($VerifyMode -eq 'full')
+    $activeRecipePath = Join-Path $ArtifactRoot 'active_recipe.json'
+    $activeRecipe = $null
+    if (Test-Path $activeRecipePath) {
+        $activeRecipe = [System.IO.File]::ReadAllText($activeRecipePath, [System.Text.UTF8Encoding]::new($false)) | ConvertFrom-Json
+    }
     $lines = @()
     $lines += '# 10h Run Summary'
     $lines += ''
@@ -427,6 +512,17 @@ function Write-FinalSummary {
         }
     }
     $lines += ''
+    $lines += '## Active Recipe'
+    if ($activeRecipe -and $activeRecipe.issue_id) {
+        $lines += "- target: $($activeRecipe.issue_id)"
+        $lines += "- strategy: $($activeRecipe.strategy_key)"
+        $lines += "- status: $($activeRecipe.status)"
+        $lines += "- reason: $($activeRecipe.decision_reason)"
+    }
+    else {
+        $lines += '- No active recipe selected.'
+    }
+    $lines += ''
     $lines += '## Stability Checklist'
     if ($isFullVerify -and $success) {
         $lines += "- [x] Full gate passed. Evidence: $($Results[-1].stdout)"
@@ -459,7 +555,9 @@ function Run-BaselineVerify {
     $junitPath = Join-Path $Context.LogsDir 'baseline_stability_contract.junit.xml'
     $results += Invoke-LoggedCommand -Context $Context -Category 'framework_setup' -Name 'stability_contract' -Stem 'baseline_stability_contract' -Command $pythonExe -Arguments @('-m', 'pytest', 'tests/unit/test_mathgen_stability_contract.py', '-q', "--junitxml=$junitPath")
     $fractionViolations = if (Test-Path $junitPath) { Get-JunitFailureCount $junitPath } else { 1 }
+    [void](Finalize-RecipeOutcome -Context $Context -VerifyMode 'baseline' -Results $results)
     [void](Update-IssueQueue -Context $Context -VerifyMode 'baseline')
+    [void](Start-ActiveRecipe -Context $Context -VerifyMode 'baseline')
     Update-Metrics -Context $Context -VerifyMode 'baseline' -Results $results -FractionViolations $fractionViolations
     Write-FinalSummary -Context $Context -VerifyMode 'baseline' -Results $results -FractionViolations $fractionViolations
     return $results
@@ -477,7 +575,9 @@ function Run-FullVerify {
     $junitPath = Join-Path $Context.LogsDir 'full_stability_contract.junit.xml'
     $results += Invoke-LoggedCommand -Context $Context -Category 'framework_setup' -Name 'stability_contract' -Stem 'full_stability_contract' -Command $pythonExe -Arguments @('-m', 'pytest', 'tests/unit/test_mathgen_stability_contract.py', '-q', "--junitxml=$junitPath")
     $fractionViolations = if (Test-Path $junitPath) { Get-JunitFailureCount $junitPath } else { 1 }
+    [void](Finalize-RecipeOutcome -Context $Context -VerifyMode 'full' -Results $results)
     [void](Update-IssueQueue -Context $Context -VerifyMode 'full')
+    [void](Start-ActiveRecipe -Context $Context -VerifyMode 'full')
     Update-Metrics -Context $Context -VerifyMode 'full' -Results $results -FractionViolations $fractionViolations
     Write-FinalSummary -Context $Context -VerifyMode 'full' -Results $results -FractionViolations $fractionViolations
     return $results

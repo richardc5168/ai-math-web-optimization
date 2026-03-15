@@ -1,8 +1,15 @@
 import argparse
+from copy import deepcopy
 import json
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+
+if __package__ in {None, ''}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from tools.fix_recipe_registry import get_fix_recipe, registry_to_markdown, registry_to_payload, resolve_recipe_category
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +56,8 @@ TEST_GAP_SUGGESTIONS = {
     'answer_format_drift': 'Add explicit answer-format regression tests generated from verifier policy, not hand-written notation.',
     'report_truthfulness': 'Add a runner summary/report assertion that validates mode-specific wording and generated counts.',
 }
+
+SIDE_EFFECT_MARKERS = ('regression', 'side effect', 'pass rate dropped', 'dropped from', 'broke', 'broke downstream')
 
 
 def _read_json(path: Path, fallback=None):
@@ -102,6 +111,219 @@ def _dedupe(values):
     return ordered
 
 
+def _read_strategy_outcomes(artifact_root: Path):
+    return _read_jsonl(artifact_root / 'strategy_outcomes.jsonl')
+
+
+def _normalize_text(value: str):
+    return ' '.join((value or '').lower().replace('_', ' ').replace('-', ' ').split())
+
+
+def _category_matches(category: str, codes, description: str = ''):
+    resolved = resolve_recipe_category(category)
+    normalized_codes = {resolve_recipe_category(code) for code in (codes or []) if code}
+    if resolved in normalized_codes or category in (codes or []):
+        return True
+    haystack = _normalize_text(description)
+    return _normalize_text(category) in haystack or _normalize_text(resolved) in haystack
+
+
+def _history_strategy_text(entry):
+    return entry.get('strategy') or entry.get('description', '')
+
+
+def _match_strategy_key(recipe, text: str):
+    normalized = _normalize_text(text)
+    best_key = ''
+    best_score = 0
+    for strategy in recipe.get('strategy_catalog', []):
+        key_tokens = _normalize_text(strategy['key'])
+        score = 0
+        if key_tokens and key_tokens in normalized:
+            score += 3
+        for keyword in strategy.get('keywords', []):
+            if _normalize_text(keyword) in normalized:
+                score += 1
+        if score > best_score:
+            best_key = strategy['key']
+            best_score = score
+    return best_key if best_score > 0 else ''
+
+
+def _strategy_summary(recipe, strategy_key: str):
+    for strategy in recipe.get('strategy_catalog', []):
+        if strategy['key'] == strategy_key:
+            return strategy['summary']
+    return ''
+
+
+def _strategy_history(category: str, change_history, lessons, strategy_outcomes):
+    rows = []
+    for entry in strategy_outcomes:
+        if resolve_recipe_category(entry.get('error_category', '')) != resolve_recipe_category(category):
+            continue
+        rows.append(
+            {
+                'timestamp': entry.get('timestamp', ''),
+                'source': 'strategy_outcomes',
+                'entry_type': entry.get('event', ''),
+                'outcome': entry.get('outcome', 'observed'),
+                'has_side_effect': bool(entry.get('has_side_effect')),
+                'strategy_text': entry.get('strategy', '') or entry.get('strategy_key', ''),
+                'strategy_key': entry.get('strategy_key', ''),
+                'description': entry.get('reason', ''),
+                'counts_toward_blacklist': bool(entry.get('counts_toward_blacklist')),
+            }
+        )
+    for entry in change_history:
+        if not _category_matches(category, entry.get('error_codes_addressed', []) or [], entry.get('description', '')):
+            continue
+        rows.append(
+            {
+                'timestamp': entry.get('timestamp', ''),
+                'source': 'change_history',
+                'entry_type': 'change',
+                'outcome': 'successful',
+                'has_side_effect': False,
+                'strategy_text': _history_strategy_text(entry),
+                'strategy_key': '',
+                'description': entry.get('description', ''),
+                'counts_toward_blacklist': False,
+            }
+        )
+    for entry in lessons:
+        if not _category_matches(category, entry.get('error_codes', []) or [], entry.get('description', '')):
+            continue
+        entry_type = entry.get('type', '')
+        description = entry.get('description', '')
+        normalized = _normalize_text(description)
+        outcome = 'observed'
+        if entry_type == 'anti_pattern':
+            outcome = 'failed'
+        elif entry_type in {'fix_applied', 'coverage_expansion'}:
+            outcome = 'successful'
+        rows.append(
+            {
+                'timestamp': entry.get('timestamp', ''),
+                'source': 'lessons_learned',
+                'entry_type': entry_type,
+                'outcome': outcome,
+                'has_side_effect': any(marker in normalized for marker in SIDE_EFFECT_MARKERS),
+                'strategy_text': _history_strategy_text(entry),
+                'strategy_key': '',
+                'description': description,
+                'counts_toward_blacklist': (entry_type == 'anti_pattern'),
+            }
+        )
+    rows.sort(key=lambda item: _parse_ts(item['timestamp']), reverse=True)
+    return rows
+
+
+def _public_recipe_view(recipe):
+    if recipe is None:
+        return None
+    public_recipe = deepcopy(recipe)
+    for strategy in public_recipe.get('strategy_catalog', []):
+        strategy.pop('keywords', None)
+    return public_recipe
+
+
+def _anti_repeat_decision(category: str, change_history, lessons, strategy_outcomes):
+    recipe = get_fix_recipe(category)
+    if recipe is None:
+        return {
+            'decision': 'no_recipe',
+            'reason': 'No controlled fix recipe is registered for this category yet.',
+            'proposed_strategy_key': '',
+            'proposed_strategy': '',
+            'alternative_strategy_keys': [],
+            'alternative_strategies': [],
+            'recent_strategies': [],
+            'failed_strategies': [],
+            'side_effect_strategies': [],
+            'proposal_reuses_recent_strategy': False,
+        }
+
+    history = _strategy_history(category, change_history, lessons, strategy_outcomes)
+    recent_window = []
+    blacklisted_keys = []
+    side_effect_keys = []
+    for row in history:
+        matched_key = row.get('strategy_key') or _match_strategy_key(recipe, row['strategy_text'])
+        item = {
+            'timestamp': row['timestamp'],
+            'outcome': row['outcome'],
+            'entry_type': row['entry_type'],
+            'strategy_text': row['strategy_text'],
+            'matched_strategy_key': matched_key,
+            'matched_strategy': _strategy_summary(recipe, matched_key),
+        }
+        if len(recent_window) < 3:
+            recent_window.append(item)
+        if (row['outcome'] == 'failed' or row.get('counts_toward_blacklist')) and matched_key:
+            blacklisted_keys.append(matched_key)
+        if row['has_side_effect'] and matched_key:
+            side_effect_keys.append(matched_key)
+
+    blacklisted_keys = _dedupe(blacklisted_keys)
+    side_effect_keys = _dedupe(side_effect_keys)
+
+    proposed_key = ''
+    for strategy_key in recipe.get('recommended_strategy_order', []):
+        if strategy_key not in blacklisted_keys and strategy_key not in side_effect_keys:
+            proposed_key = strategy_key
+            break
+
+    alternatives = [
+        strategy_key
+        for strategy_key in recipe.get('recommended_strategy_order', [])
+        if strategy_key != proposed_key and strategy_key not in blacklisted_keys and strategy_key not in side_effect_keys
+    ]
+    proposal_reuses_recent = any(item['matched_strategy_key'] == proposed_key and proposed_key for item in recent_window)
+
+    if proposed_key:
+        reason = 'Using the highest-priority recipe strategy that is not blacklisted by recent failures or side effects.'
+        if proposal_reuses_recent:
+            reason = 'Reusing a recent non-blacklisted strategy because it remains the safest known controlled recipe.'
+        decision = 'allow'
+    else:
+        reason = 'All registered strategies for this category are currently blacklisted or marked with side effects. Choose a new strategy before editing.'
+        decision = 'blocked'
+
+    return {
+        'decision': decision,
+        'reason': reason,
+        'proposed_strategy_key': proposed_key,
+        'proposed_strategy': _strategy_summary(recipe, proposed_key),
+        'alternative_strategy_keys': alternatives,
+        'alternative_strategies': [_strategy_summary(recipe, key) for key in alternatives],
+        'recent_strategies': recent_window,
+        'failed_strategies': [
+            {
+                'matched_strategy_key': item['matched_strategy_key'],
+                'strategy_key': item['matched_strategy_key'],
+                'strategy': item['matched_strategy'],
+                'strategy_text': item['strategy_text'],
+                'timestamp': item['timestamp'],
+            }
+            for item in recent_window
+            if item['matched_strategy_key'] in blacklisted_keys
+        ],
+        'side_effect_strategies': [
+            {
+                'matched_strategy_key': item['matched_strategy_key'],
+                'strategy_key': item['matched_strategy_key'],
+                'strategy': item['matched_strategy'],
+                'strategy_text': item['strategy_text'],
+                'timestamp': item['timestamp'],
+            }
+            for item in recent_window
+            if item['matched_strategy_key'] in side_effect_keys
+        ],
+        'proposal_reuses_recent_strategy': proposal_reuses_recent,
+    }
+
+
 def infer_command_name(command_text: str = '', root_cause: str = ''):
     combined = f'{root_cause} {command_text}'.lower()
     for needle, name in COMMAND_NAME_PATTERNS:
@@ -120,24 +342,32 @@ def _extract_topic(case_id: str):
     return case_id.split('[', 1)[0]
 
 
-def _last_matching_strategy(category: str, change_history, lessons, strategy_kind: str):
+def _last_matching_strategy(category: str, change_history, lessons, strategy_outcomes, strategy_kind: str):
     candidates = []
+    for entry in strategy_outcomes:
+        if resolve_recipe_category(entry.get('error_category', '')) != resolve_recipe_category(category):
+            continue
+        outcome = entry.get('outcome', '')
+        if strategy_kind == 'successful' and outcome == 'successful':
+            candidates.append((entry.get('timestamp', ''), entry.get('strategy', '') or entry.get('strategy_key', '')))
+        if strategy_kind == 'failed' and outcome == 'failed':
+            candidates.append((entry.get('timestamp', ''), entry.get('strategy', '') or entry.get('strategy_key', '')))
     if strategy_kind == 'successful':
         for entry in change_history:
             error_codes = entry.get('error_codes_addressed', []) or []
             description = entry.get('description', '')
-            if category in error_codes or category in description:
-                candidates.append((entry.get('timestamp', ''), description))
+            if _category_matches(category, error_codes, description):
+                candidates.append((entry.get('timestamp', ''), entry.get('strategy', description)))
     for entry in lessons:
         error_codes = entry.get('error_codes', []) or []
         description = entry.get('description', '')
         entry_type = entry.get('type', '')
-        if category not in error_codes and category not in description:
+        if not _category_matches(category, error_codes, description):
             continue
         if strategy_kind == 'failed' and entry_type == 'anti_pattern':
-            candidates.append((entry.get('timestamp', ''), description))
+            candidates.append((entry.get('timestamp', ''), entry.get('strategy', description)))
         if strategy_kind == 'successful' and entry_type in {'fix_applied', 'pattern_discovered', 'coverage_expansion'}:
-            candidates.append((entry.get('timestamp', ''), description))
+            candidates.append((entry.get('timestamp', ''), entry.get('strategy', description)))
     if not candidates:
         return ''
     candidates.sort(key=lambda item: _parse_ts(item[0]), reverse=True)
@@ -157,6 +387,7 @@ def build_issue_queue(*, artifact_root: Path, mathgen_logs: Path, run_id: str = 
     benchmark_failures = _read_jsonl(mathgen_logs / 'benchmark_failures.jsonl')
     change_history = _read_jsonl(mathgen_logs / 'change_history.jsonl')
     lessons = _read_jsonl(mathgen_logs / 'lessons_learned.jsonl')
+    strategy_outcomes = _read_strategy_outcomes(artifact_root)
     baseline = _read_json(mathgen_logs / 'last_pass_rate.json', {}) or {}
 
     latest_command_events = {}
@@ -267,11 +498,13 @@ def build_issue_queue(*, artifact_root: Path, mathgen_logs: Path, run_id: str = 
     for (category, topic), group in benchmark_groups.items():
         occurrence_count = len(group['cases'])
         run_count = len(group['runs'])
-        successful_strategy = _last_matching_strategy(category, change_history, lessons, 'successful')
-        failed_strategy = _last_matching_strategy(category, change_history, lessons, 'failed')
+        successful_strategy = _last_matching_strategy(category, change_history, lessons, strategy_outcomes, 'successful')
+        failed_strategy = _last_matching_strategy(category, change_history, lessons, strategy_outcomes, 'failed')
         risk_score = WATCHLIST_RISK.get(category, 55) + min(occurrence_count * 3, 18) + min(run_count * 4, 12)
         if not successful_strategy:
             risk_score += 6
+        anti_repeat = _anti_repeat_decision(category, change_history, lessons, strategy_outcomes)
+        recipe = get_fix_recipe(category)
         watchlist.append(
             {
                 'issue_id': f'benchmark:{category}:{topic}',
@@ -296,6 +529,8 @@ def build_issue_queue(*, artifact_root: Path, mathgen_logs: Path, run_id: str = 
                 'last_failed_strategy': failed_strategy,
                 'last_successful_strategy': successful_strategy,
                 'evidence': _dedupe(group['raw_errors'] + group['notes'])[:5],
+                'fix_recipe': _public_recipe_view(recipe),
+                'anti_repeat': anti_repeat,
             }
         )
 
@@ -304,18 +539,25 @@ def build_issue_queue(*, artifact_root: Path, mathgen_logs: Path, run_id: str = 
     recently_resolved.sort(key=lambda item: _parse_ts(item['last_seen_at']), reverse=True)
 
     next_best_targets = current_open_issues[:5] if current_open_issues else watchlist[:5]
+    actionable_targets = [
+        item for item in next_best_targets if item.get('anti_repeat', {}).get('decision') in {'allow', 'review_required'}
+    ]
     return {
         'generated_at': datetime.now(timezone.utc).isoformat(),
         'active_run_id': run_id,
         'baseline': baseline,
+        'fix_recipe_registry_version': registry_to_payload()['registry_version'],
         'summary': {
             'current_open_count': len(current_open_issues),
             'watchlist_count': len(watchlist),
             'resolved_recent_count': len(recently_resolved),
             'top_target': next_best_targets[0]['issue_id'] if next_best_targets else None,
+            'top_target_decision': next_best_targets[0].get('anti_repeat', {}).get('decision') if next_best_targets else None,
+            'top_actionable_target': actionable_targets[0]['issue_id'] if actionable_targets else None,
         },
         'current_open_issues': current_open_issues,
         'next_best_targets': next_best_targets,
+        'next_best_actionable_targets': actionable_targets[:5],
         'watchlist': watchlist,
         'recently_resolved': recently_resolved[:10],
     }
@@ -329,6 +571,9 @@ def queue_to_markdown(queue):
         f"- active_run_id: {queue.get('active_run_id', '')}",
         f"- current_open_count: {queue.get('summary', {}).get('current_open_count', 0)}",
         f"- watchlist_count: {queue.get('summary', {}).get('watchlist_count', 0)}",
+        f"- top_target: {queue.get('summary', {}).get('top_target', '')}",
+        f"- top_target_decision: {queue.get('summary', {}).get('top_target_decision', '')}",
+        f"- top_actionable_target: {queue.get('summary', {}).get('top_actionable_target', '')}",
         '',
         '## Current Open Issues',
     ]
@@ -345,8 +590,19 @@ def queue_to_markdown(queue):
     if targets:
         for item in targets:
             scope = item['affected_scope'].get('topics', []) or item['affected_scope'].get('commands', [])
+            anti_repeat = item.get('anti_repeat', {})
             lines.append(
-                f"- {item['issue_id']} | source={item['source_type']} | risk={item['risk_score']} | scope={','.join(scope)}"
+                f"- {item['issue_id']} | source={item['source_type']} | risk={item['risk_score']} | scope={','.join(scope)} | decision={anti_repeat.get('decision', 'n/a')} | strategy={anti_repeat.get('proposed_strategy_key', '')}"
+            )
+    else:
+        lines.append('- none')
+    lines += ['', '## Next Best Actionable Targets']
+    actionable = queue.get('next_best_actionable_targets', [])
+    if actionable:
+        for item in actionable:
+            anti_repeat = item.get('anti_repeat', {})
+            lines.append(
+                f"- {item['issue_id']} | decision={anti_repeat.get('decision', '')} | strategy={anti_repeat.get('proposed_strategy_key', '')} | reason={anti_repeat.get('reason', '')}"
             )
     else:
         lines.append('- none')
@@ -371,13 +627,19 @@ def main():
     mathgen_logs = Path(args.mathgen_logs)
     queue = build_issue_queue(artifact_root=artifact_root, mathgen_logs=mathgen_logs, run_id=args.run_id)
     markdown = queue_to_markdown(queue)
+    registry_payload = registry_to_payload()
+    registry_markdown = registry_to_markdown()
 
     _write_json(artifact_root / 'issue_queue.json', queue)
     _write_text(artifact_root / 'issue_queue.md', markdown)
+    _write_json(artifact_root / 'fix_recipe_registry.json', registry_payload)
+    _write_text(artifact_root / 'fix_recipe_registry.md', registry_markdown)
     if args.run_id:
         run_root = artifact_root / args.run_id
         _write_json(run_root / 'issue_queue.json', queue)
         _write_text(run_root / 'issue_queue.md', markdown)
+        _write_json(run_root / 'fix_recipe_registry.json', registry_payload)
+        _write_text(run_root / 'fix_recipe_registry.md', registry_markdown)
 
     print(json.dumps(queue['summary'], ensure_ascii=False, indent=2))
 

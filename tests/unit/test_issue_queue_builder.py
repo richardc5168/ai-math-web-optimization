@@ -174,3 +174,199 @@ def test_issue_queue_builds_watchlist_from_benchmark_failure_history(tmp_path):
     assert 'hint-level assertions' in top_target['suggested_test_gap']
     assert 'Fixed hint leak template strategy' in top_target['last_successful_strategy']
     assert 'Old leak patch repeated the answer in hints.' in top_target['last_failed_strategy']
+    assert top_target['fix_recipe']['category'] == 'hint_leaks_answer'
+    assert top_target['anti_repeat']['decision'] == 'allow'
+    assert top_target['anti_repeat']['proposed_strategy_key'] == 'validator_first'
+
+
+def test_issue_queue_attaches_controlled_fix_recipe_for_top_target(tmp_path):
+    artifact_root = tmp_path / 'artifacts' / 'run_10h'
+    logs_root = tmp_path / 'mathgen' / 'logs'
+
+    _write_json(
+        logs_root / 'last_pass_rate.json',
+        {
+            'timestamp': '2026-03-15T00:00:00+00:00',
+            'total': 160,
+            'passed': 160,
+            'by_topic': {'decimal_word_problem': {'total': 40, 'passed': 40, 'failed': 0}},
+        },
+    )
+    _write_jsonl(artifact_root / 'revision_history.jsonl', [])
+    _write_jsonl(artifact_root / 'error_memory.jsonl', [])
+    _write_jsonl(
+        logs_root / 'benchmark_failures.jsonl',
+        [
+            {
+                'timestamp': '2026-03-14T10:00:00+00:00',
+                'failures': [
+                    {
+                        'case': 'decimal_word_problem[3]',
+                        'errors': ['wrong_numeric_answer:expected 2.5 got 2.50'],
+                        'classified': ['wrong_numeric_answer'],
+                        'note': 'verifier mismatch',
+                    }
+                ],
+            }
+        ],
+    )
+    _write_jsonl(
+        logs_root / 'change_history.jsonl',
+        [
+            {
+                'timestamp': '2026-03-14T12:00:00+00:00',
+                'description': 'Aligned expected answers with verifier policy for decimal formatting',
+                'error_codes_addressed': ['wrong_numeric_answer'],
+            }
+        ],
+    )
+    _write_jsonl(logs_root / 'lessons_learned.jsonl', [])
+
+    queue = build_issue_queue(artifact_root=artifact_root, mathgen_logs=logs_root, run_id='20260315-recipe')
+
+    top_target = queue['next_best_targets'][0]
+    recipe = top_target['fix_recipe']
+    anti_repeat = top_target['anti_repeat']
+
+    assert recipe['category'] == 'wrong_numeric_answer'
+    assert 'mandatory_pre_test' in recipe
+    assert 'mandatory_post_test' in recipe
+    assert 'forbidden_shortcuts' in recipe
+    assert anti_repeat['decision'] == 'allow'
+    assert anti_repeat['proposed_strategy_key'] == 'verifier_policy_first'
+    assert queue['summary']['top_actionable_target'] == top_target['issue_id']
+
+
+def test_issue_queue_blocks_blacklisted_recipe_strategy_and_requires_alternative(tmp_path):
+    artifact_root = tmp_path / 'artifacts' / 'run_10h'
+    logs_root = tmp_path / 'mathgen' / 'logs'
+
+    _write_json(
+        logs_root / 'last_pass_rate.json',
+        {
+            'timestamp': '2026-03-15T00:00:00+00:00',
+            'total': 160,
+            'passed': 160,
+            'by_topic': {'fraction_word_problem': {'total': 40, 'passed': 40, 'failed': 0}},
+        },
+    )
+    _write_jsonl(artifact_root / 'revision_history.jsonl', [])
+    _write_jsonl(artifact_root / 'error_memory.jsonl', [])
+    _write_jsonl(
+        logs_root / 'benchmark_failures.jsonl',
+        [
+            {
+                'timestamp': '2026-03-14T10:00:00+00:00',
+                'failures': [
+                    {
+                        'case': 'fraction_word_problem[8]',
+                        'errors': ['hint_leaks_answer:level_3'],
+                        'classified': ['hint_leaks_answer'],
+                        'note': 'fraction leak',
+                    }
+                ],
+            }
+        ],
+    )
+    _write_jsonl(logs_root / 'change_history.jsonl', [])
+    _write_jsonl(
+        logs_root / 'lessons_learned.jsonl',
+        [
+            {
+                'timestamp': '2026-03-15T00:00:00+00:00',
+                'type': 'anti_pattern',
+                'strategy': 'Add or tighten hint validator coverage before touching template text.',
+                'description': 'Validator-first attempt caused a regression and repeated the answer in hints.',
+                'error_codes': ['hint_leaks_answer'],
+            },
+            {
+                'timestamp': '2026-03-15T00:05:00+00:00',
+                'type': 'anti_pattern',
+                'strategy': 'Replace answer-bearing hint lines with intermediate-step scaffolding.',
+                'description': 'Intermediate scaffold patch caused a side effect and broke downstream hints.',
+                'error_codes': ['hint_leaks_answer'],
+            },
+            {
+                'timestamp': '2026-03-15T00:10:00+00:00',
+                'type': 'anti_pattern',
+                'strategy': 'Derive level 3 hints from operands or sub-results, never from the final answer text.',
+                'description': 'Operand-derived rewrite caused regression: pass rate dropped from 160/160 to 150/160.',
+                'error_codes': ['hint_leaks_answer'],
+            },
+        ],
+    )
+
+    queue = build_issue_queue(artifact_root=artifact_root, mathgen_logs=logs_root, run_id='20260315-blocked')
+
+    top_target = queue['next_best_targets'][0]
+    anti_repeat = top_target['anti_repeat']
+
+    assert top_target['fix_recipe']['category'] == 'hint_leaks_answer'
+    assert anti_repeat['decision'] == 'blocked'
+    assert anti_repeat['proposed_strategy_key'] == ''
+    assert anti_repeat['alternative_strategy_keys'] == []
+    assert len(anti_repeat['recent_strategies']) == 3
+    assert {item['matched_strategy_key'] for item in anti_repeat['recent_strategies']} == {
+        'validator_first',
+        'intermediate_scaffold',
+        'derive_from_operands',
+    }
+
+
+def test_issue_queue_uses_strategy_outcomes_to_avoid_manual_repeat_logging(tmp_path):
+    artifact_root = tmp_path / 'artifacts' / 'run_10h'
+    logs_root = tmp_path / 'mathgen' / 'logs'
+
+    _write_json(
+        logs_root / 'last_pass_rate.json',
+        {
+            'timestamp': '2026-03-15T00:00:00+00:00',
+            'total': 160,
+            'passed': 160,
+            'by_topic': {'fraction_word_problem': {'total': 40, 'passed': 40, 'failed': 0}},
+        },
+    )
+    _write_jsonl(artifact_root / 'revision_history.jsonl', [])
+    _write_jsonl(artifact_root / 'error_memory.jsonl', [])
+    _write_jsonl(
+        artifact_root / 'strategy_outcomes.jsonl',
+        [
+            {
+                'timestamp': '2026-03-15T01:00:00+00:00',
+                'issue_id': 'benchmark:hint_leaks_answer:fraction_word_problem',
+                'error_category': 'hint_leaks_answer',
+                'strategy_key': 'validator_first',
+                'strategy': 'Add or tighten hint validator coverage before touching template text.',
+                'event': 'validated_failure',
+                'outcome': 'failed',
+                'has_side_effect': True,
+                'counts_toward_blacklist': True,
+                'reason': 'Gate failed after validator-first patch.',
+            }
+        ],
+    )
+    _write_jsonl(
+        logs_root / 'benchmark_failures.jsonl',
+        [
+            {
+                'timestamp': '2026-03-15T00:30:00+00:00',
+                'failures': [
+                    {
+                        'case': 'fraction_word_problem[12]',
+                        'errors': ['hint_leaks_answer:level_3'],
+                        'classified': ['hint_leaks_answer'],
+                        'note': 'still leaking',
+                    }
+                ],
+            }
+        ],
+    )
+    _write_jsonl(logs_root / 'change_history.jsonl', [])
+    _write_jsonl(logs_root / 'lessons_learned.jsonl', [])
+
+    queue = build_issue_queue(artifact_root=artifact_root, mathgen_logs=logs_root, run_id='20260315-outcomes')
+
+    top_target = queue['next_best_targets'][0]
+    assert top_target['anti_repeat']['decision'] == 'allow'
+    assert top_target['anti_repeat']['proposed_strategy_key'] == 'intermediate_scaffold'
+    assert 'validator_first' in {item['matched_strategy_key'] for item in top_target['anti_repeat']['failed_strategies']}
