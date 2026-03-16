@@ -1,6 +1,6 @@
 # Latest Iteration Report
 
-## Session Summary (Iterations 12–20)
+## Session Summary (Iterations 12–24)
 
 ### Iteration 12 (commit `43b4417ba`)
 - Expanded TOPIC_LINK_MAP with 4 new entries: commercial-pack1-fraction-sprint, national-bank, midterm, grand-slam
@@ -61,6 +61,12 @@
 - Added 3 remediation regression tests: priority targeting weakest topic, action text presence, stable links for known topics
 - Test count 51 → **54 pass**
 
+### Iteration 24 (commit `54b031ff1`)
+- **Critical UX fix**: Practice summary UI update was gated behind cloud write success — if cloud auth unavailable, `renderPracticeSummary()` never fired despite local telemetry being written
+- Moved `r.practice.events.push()` + `renderPracticeSummary()` before cloud auth check in `persistPractice()`
+- Cloud write is now "bonus persistence" — UI always updates immediately
+- +1 regression test → **55 pass**
+
 ### Current Shared Engine Inventory (11 modules)
 1. `weakness_engine.js` — `AIMathWeaknessEngine`
 2. `recommendation_engine.js` — `AIMathRecommendationEngine` (TOPIC_LINK_MAP: 17 entries)
@@ -75,7 +81,7 @@
 11. `aggregate.js` — `AIMathReportAggregate` (not yet connected to parent-report)
 
 ### Test Coverage
-- **54 regression tests** across 11 test files, all passing
+- **55 regression tests** across 11 test files, all passing
 - `validate_all_elementary_banks.py` → 7157 PASS, 0 FAIL
 - `verify_all.py` → 4/4 OK (135 files mirrored)
 
