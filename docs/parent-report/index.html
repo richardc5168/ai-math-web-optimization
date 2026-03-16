@@ -273,6 +273,7 @@
 <script src="../shared/report/report_data_builder.js"></script>
 <script src="../shared/report/practice_from_wrong_engine.js"></script>
 <script src="../shared/report/parent_copy_engine.js"></script>
+<script src="../shared/report/wow_engine.js"></script>
 <script>
 (function(){
   'use strict';
@@ -693,32 +694,45 @@
       `<div class="box"><div class="label">${esc(k.label)}</div><div class="value">${esc(k.value)}</div></div>`
     ).join('');
 
-    /* ─── Week-over-Week comparison ─── */
+    /* ─── Week-over-Week comparison (delegates to shared wow_engine) ─── */
     (function renderWoW(){
       var wowEl = document.getElementById('wowContent');
       if (!wowEl) return;
-      // Use attempt telemetry for prev week data; current week is r
-      var uid = d.name;
-      var prevTotal = 0, prevCorrect = 0, prevAvgMs = 0;
-      if (uid && window.AIMathAttemptTelemetry){
+
+      var prevAttempts = [];
+      if (window.AIMathWoWEngine) {
+        prevAttempts = window.AIMathWoWEngine.getPrevWeekAttempts(d.name);
+      } else if (d.name && window.AIMathAttemptTelemetry) {
         var now = Date.now();
         var DAY = 86400000;
-        var prevAttempts = window.AIMathAttemptTelemetry.listAttempts(uid, { sinceMs: now - 14 * DAY });
-        var cutoff7 = now - 7 * DAY;
-        var prev = prevAttempts.filter(function(a){ return a.ts_end < cutoff7; });
-        prevTotal = prev.length;
-        prevCorrect = prev.filter(function(a){ return a.is_correct; }).length;
-        var prevSumMs = 0;
-        prev.forEach(function(a){ if(a.ts_end && a.ts_start) prevSumMs += (a.ts_end - a.ts_start); });
-        prevAvgMs = prevTotal > 0 ? Math.round(prevSumMs / prevTotal) : 0;
+        var all14 = window.AIMathAttemptTelemetry.listAttempts(d.name, { sinceMs: now - 14 * DAY });
+        prevAttempts = all14.filter(function(a){ return a && Number(a.ts_end) < now - 7 * DAY; });
       }
 
-      var curTotal = r.total || 0;
-      var curCorrect = r.correct || 0;
-      var curAcc = curTotal > 0 ? Math.round(curCorrect / curTotal * 100) : 0;
-      var prevAcc = prevTotal > 0 ? Math.round(prevCorrect / prevTotal * 100) : 0;
+      var wow;
+      if (window.AIMathWoWEngine) {
+        wow = window.AIMathWoWEngine.computeWoW({
+          currentTotal: r.total || 0,
+          currentCorrect: r.correct || 0,
+          prevAttempts: prevAttempts
+        });
+      } else {
+        var prevTotal = prevAttempts.length;
+        var prevCorrect = prevAttempts.filter(function(a){ return a && a.is_correct; }).length;
+        var curAcc = (r.total||0) > 0 ? Math.round((r.correct||0) / (r.total||0) * 100) : 0;
+        var prevAcc = prevTotal > 0 ? Math.round(prevCorrect / prevTotal * 100) : 0;
+        wow = {
+          rows: [
+            { label:'作答題數', cur: r.total||0, prev: prevTotal, suffix:'題' },
+            { label:'正確率', cur: curAcc, prev: prevAcc, suffix:'%' },
+            { label:'答對題數', cur: r.correct||0, prev: prevCorrect, suffix:'題' }
+          ],
+          hasPrev: prevTotal > 0
+        };
+      }
 
       function delta(cur, prev, suffix){
+        if (window.AIMathWoWEngine) return window.AIMathWoWEngine.formatDelta(cur, prev, suffix);
         if (!prev) return '<span style="color:#8b949e">— 上週無資料</span>';
         var diff = cur - prev;
         var arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
@@ -726,21 +740,15 @@
         return '<span style="color:'+color+';font-weight:700">'+arrow+' '+(diff>0?'+':'')+diff+suffix+'</span>';
       }
 
-      var rows = [
-        { label:'作答題數', cur: curTotal, prev: prevTotal, suffix:'題' },
-        { label:'正確率', cur: curAcc, prev: prevAcc, suffix:'%' },
-        { label:'答對題數', cur: curCorrect, prev: prevCorrect, suffix:'題' }
-      ];
-
       var html = '<div class="kpi" style="margin-top:8px">';
-      rows.forEach(function(row){
+      wow.rows.forEach(function(row){
         html += '<div class="box"><div class="label">' + esc(row.label) + '</div>'
           + '<div class="value">' + row.cur + row.suffix + '</div>'
           + '<div class="small">' + delta(row.cur, row.prev, row.suffix) + '</div></div>';
       });
       html += '</div>';
 
-      if (!prevTotal){
+      if (!wow.hasPrev){
         html += '<div class="small" style="color:#8b949e;margin-top:6px">⏳ 上週尚無練習紀錄，持續使用後即可顯示趨勢。</div>';
       }
       wowEl.innerHTML = html;
