@@ -1,6 +1,6 @@
 # Latest Iteration Report
 
-## Session Summary (Iterations 12–27)
+## Session Summary (Iterations 12–28)
 
 ### Iteration 12 (commit `43b4417ba`)
 - Expanded TOPIC_LINK_MAP with 4 new entries: commercial-pack1-fraction-sprint, national-bank, midterm, grand-slam
@@ -84,6 +84,12 @@
 - Practice events now have `completed: true|false` field
 - Practice summary shows `提前結束 N 次` when early exits exist
 - +1 regression test → **66 pass**
+
+### Iteration 28 (commit `48f3b718d`)
+- **Critical UX fix**: Decimal answers (0.5, 1.25) now equivalent to fractions (1/2, 5/4) using integer arithmetic
+- Extended `parseFrac()` to convert decimals to integer fractions (0.5→5/10, no IEEE 754)
+- `fractionsEqual('0.5', '1/2')` now returns `true` — unblocks decimal practice modules
+- Extended test assertions with decimal↔fraction, decimal↔whole, decimal↔mixed → **66 pass**
 
 ### Current Shared Engine Inventory (11 modules)
 1. `weakness_engine.js` — `AIMathWeaknessEngine`
