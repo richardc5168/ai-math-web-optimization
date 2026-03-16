@@ -39,16 +39,13 @@ test('practice summary aggregates retry results in 7-day window', () => {
   assert.equal(practice.summary.accuracy, 75);
 });
 
-test('practice answer checker accepts equivalent unsimplified fractions and mixed numbers', () => {
-  // Replicate the inline fractionsEqual logic from parent-report/index.html
+test('practice answer checker accepts fractions, mixed numbers, decimals, and whole numbers', () => {
   const src = fs.readFileSync(path.resolve('docs/parent-report/index.html'), 'utf8');
-  // Verify fractionsEqual function exists
   assert.ok(src.includes('function fractionsEqual'), 'fractionsEqual helper must exist');
   assert.ok(src.includes('function parseFrac'), 'parseFrac helper must exist');
-  // Verify checkNow uses fractionsEqual fallback
   assert.ok(src.includes('fractionsEqual(user, corr)'), 'checkNow must call fractionsEqual');
 
-  // Unit-test the extracted logic (mirrors current parseFrac with mixed number support)
+  // Unit-test extracted logic (mirrors current parseFrac with all format support)
   function parseFrac(s){
     var str = String(s||'').trim();
     var mm = str.match(/^(-?\d+)\s+(\d+)\/(\d+)$/);
@@ -67,6 +64,16 @@ test('practice answer checker accepts equivalent unsimplified fractions and mixe
       var d = parseInt(m[2], 10);
       return d > 0 ? { n: n, d: d } : null;
     }
+    var dm = str.match(/^(-?\d+)\.(\d+)$/);
+    if (dm){
+      var intPart = parseInt(dm[1], 10);
+      var decStr = dm[2];
+      var decVal = parseInt(decStr, 10);
+      var pow = 1;
+      for (var di = 0; di < decStr.length; di++) pow *= 10;
+      var dsign = intPart < 0 ? -1 : 1;
+      return { n: dsign * (Math.abs(intPart) * pow + decVal), d: pow };
+    }
     var wi = str.match(/^(-?\d+)$/);
     if (wi) return { n: parseInt(wi[1], 10), d: 1 };
     return null;
@@ -81,18 +88,27 @@ test('practice answer checker accepts equivalent unsimplified fractions and mixe
   assert.ok(fractionsEqual('2/4', '1/2'), '2/4 == 1/2');
   assert.ok(fractionsEqual('3/9', '1/3'), '3/9 == 1/3');
   assert.ok(fractionsEqual('6/8', '3/4'), '6/8 == 3/4');
-  // Non-equivalent
   assert.ok(!fractionsEqual('2/3', '3/4'), '2/3 != 3/4');
-  // Mixed number support
+  // Mixed numbers
   assert.ok(fractionsEqual('1 1/2', '3/2'), '1 1/2 == 3/2');
   assert.ok(fractionsEqual('2 1/4', '9/4'), '2 1/4 == 9/4');
   assert.ok(!fractionsEqual('1 1/2', '1/2'), '1 1/2 != 1/2');
-  // Whole number support
+  // Whole numbers
   assert.ok(fractionsEqual('3', '6/2'), '3 == 6/2');
   assert.ok(fractionsEqual('2', '4/2'), '2 == 4/2');
   assert.ok(!fractionsEqual('3', '5/2'), '3 != 5/2');
   // Mixed vs mixed
   assert.ok(fractionsEqual('1 2/4', '1 1/2'), '1 2/4 == 1 1/2');
+  // Decimal ↔ fraction equivalence (integer arithmetic, no IEEE 754)
+  assert.ok(fractionsEqual('0.5', '1/2'), '0.5 == 1/2');
+  assert.ok(fractionsEqual('0.25', '1/4'), '0.25 == 1/4');
+  assert.ok(fractionsEqual('1.5', '3/2'), '1.5 == 3/2');
+  assert.ok(fractionsEqual('0.75', '3/4'), '0.75 == 3/4');
+  assert.ok(!fractionsEqual('0.3', '1/4'), '0.3 != 1/4');
+  // Decimal ↔ whole
+  assert.ok(fractionsEqual('2.0', '2'), '2.0 == 2');
+  // Decimal ↔ mixed
+  assert.ok(fractionsEqual('1.5', '1 1/2'), '1.5 == 1 1/2');
 });
 
 test('single-mode practice persists each answered question individually', () => {

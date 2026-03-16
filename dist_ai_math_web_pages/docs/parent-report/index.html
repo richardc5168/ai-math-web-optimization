@@ -1099,6 +1099,17 @@
             var d = parseInt(m[2], 10);
             return d > 0 ? { n: n, d: d } : null;
           }
+          /* Decimal: "0.5" → 5/10, "1.25" → 125/100 (integer arithmetic, no IEEE 754) */
+          var dm = str.match(/^(-?\d+)\.(\d+)$/);
+          if (dm){
+            var intPart = parseInt(dm[1], 10);
+            var decStr = dm[2];
+            var decVal = parseInt(decStr, 10);
+            var pow = 1;
+            for (var di = 0; di < decStr.length; di++) pow *= 10;
+            var dsign = intPart < 0 ? -1 : 1;
+            return { n: dsign * (Math.abs(intPart) * pow + decVal), d: pow };
+          }
           /* Whole number: "3" → 3/1 */
           var wi = str.match(/^(-?\d+)$/);
           if (wi) return { n: parseInt(wi[1], 10), d: 1 };
@@ -1125,7 +1136,7 @@
             ${progress}
             <div style="margin-top:8px">${esc(current.q)}</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-              <input id="practiceAnswer" placeholder="輸入答案（如 3/4 或 1 1/2）" style="max-width:280px" />
+              <input id="practiceAnswer" placeholder="輸入答案（如 3/4、1 1/2 或 0.5）" style="max-width:280px" />
               <button id="practiceCheck" type="button">${actionLabel}</button>
               <button id="practiceNext" type="button">${nextLabel}</button>
               ${finishBtn}
