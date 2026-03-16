@@ -1043,6 +1043,14 @@
             } catch(e) { /* silent — telemetry should not block */ }
           }
 
+          /* Always update in-page practice data regardless of cloud write */
+          if (!r.practice) r.practice = { events: [] };
+          if (!Array.isArray(r.practice.events)) r.practice.events = [];
+          var practiceEv = { ts: Date.now(), score: score, total: total, topic: String(w.t || ''), kind: String(w.k || ''), mode: quizMode ? 'quiz3' : 'single' };
+          r.practice.events.push(practiceEv);
+          if (r.practice.events.length > 80) r.practice.events = r.practice.events.slice(-80);
+          renderPracticeSummary();
+
           if (!window.AIMathStudentAuth || !window.AIMathStudentAuth.recordPracticeResult) return;
           var ev = {
             score: score,
@@ -1052,12 +1060,7 @@
             mode: quizMode ? 'quiz3' : 'single'
           };
           window.AIMathStudentAuth.recordPracticeResult(d.name || '', ev).then(function(ok){
-            if (!ok) return;
-            if (!r.practice) r.practice = { events: [] };
-            if (!Array.isArray(r.practice.events)) r.practice.events = [];
-            r.practice.events.push({ ts: Date.now(), score: score, total: total, topic: ev.topic, kind: ev.kind, mode: ev.mode });
-            if (r.practice.events.length > 80) r.practice.events = r.practice.events.slice(-80);
-            renderPracticeSummary();
+            /* cloud write is bonus persistence — UI already updated above */
           });
         }
 

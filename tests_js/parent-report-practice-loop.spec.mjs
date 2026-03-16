@@ -95,3 +95,15 @@ test('persistPractice writes to local attempt telemetry', () => {
   const cloudIdx = persistBlock.indexOf('AIMathStudentAuth.recordPracticeResult');
   assert.ok(telIdx < cloudIdx, 'local telemetry write must come before cloud write');
 });
+
+test('persistPractice updates UI regardless of cloud write availability', () => {
+  const src = fs.readFileSync(path.resolve('docs/parent-report/index.html'), 'utf8');
+  const persistBlock = src.slice(src.indexOf('function persistPractice'));
+  // renderPracticeSummary must be called BEFORE the cloud write check
+  const summaryIdx = persistBlock.indexOf('renderPracticeSummary()');
+  const cloudCheckIdx = persistBlock.indexOf('if (!window.AIMathStudentAuth');
+  assert.ok(summaryIdx < cloudCheckIdx, 'renderPracticeSummary must run before cloud auth check so UI updates even without cloud');
+  // r.practice.events push must also be before cloud check
+  const pushIdx = persistBlock.indexOf('r.practice.events.push');
+  assert.ok(pushIdx < cloudCheckIdx, 'practice event push must happen before cloud auth check');
+});
