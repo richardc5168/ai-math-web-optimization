@@ -98,3 +98,10 @@ test('remedial cards get reason and action text from weakness engine', () => {
   const highH3 = weakEngine.describeWeaknessReason({ w: 1, h2: 0, h3: 2, n: 5 });
   assert.ok(highH3.includes('提示'), `high h3 should mention 提示`);
 });
+
+test('wrong list items include deep-link to practice module', () => {
+  const src = fs.readFileSync(path.resolve('docs/parent-report/index.html'), 'utf8');
+  // The wrong list template should include a deep-link using getTopicLink
+  assert.ok(src.includes('getTopicLink(w.t)'), 'wrong list should use getTopicLink for deep-link');
+  assert.ok(src.includes('去練習模組'), 'wrong list should have "go to practice module" link text');
+});
