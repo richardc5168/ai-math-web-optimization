@@ -1,6 +1,6 @@
 # Latest Iteration Report
 
-## Session Summary (Iterations 12–24)
+## Session Summary (Iterations 12–25)
 
 ### Iteration 12 (commit `43b4417ba`)
 - Expanded TOPIC_LINK_MAP with 4 new entries: commercial-pack1-fraction-sprint, national-bank, midterm, grand-slam
@@ -67,6 +67,13 @@
 - Cloud write is now "bonus persistence" — UI always updates immediately
 - +1 regression test → **55 pass**
 
+### Iteration 25 (commit `a28e0fe73`)
+- **Feature**: Connected `aggregate.js` ABCD quadrant analysis to parent-report dashboard
+- Added `<script src="aggregate.js">` and new "學習象限分析" card in 進階分析 group
+- Stacked horizontal bar showing A=獨立答對 / B=提示答對 / C=提示仍錯 / D=無提示答錯 rates from local telemetry (7 days)
+- Shows `recommend(stats)` tips below the bar
+- +10 regression tests → **65 pass**
+
 ### Current Shared Engine Inventory (11 modules)
 1. `weakness_engine.js` — `AIMathWeaknessEngine`
 2. `recommendation_engine.js` — `AIMathRecommendationEngine` (TOPIC_LINK_MAP: 17 entries)
@@ -78,10 +85,10 @@
 8. `progress_trend_engine.js` — `AIMathProgressTrendEngine`
 9. `practice_summary_engine.js` — `AIMathPracticeSummaryEngine`
 10. `parent_advice_engine.js` — `AIMathParentAdviceEngine`
-11. `aggregate.js` — `AIMathReportAggregate` (not yet connected to parent-report)
+11. `aggregate.js` — `AIMathReportAggregate` (**connected**: quadrant analysis card in parent-report)
 
 ### Test Coverage
-- **55 regression tests** across 11 test files, all passing
+- **65 regression tests** across 12 test files, all passing
 - `validate_all_elementary_banks.py` → 7157 PASS, 0 FAIL
 - `verify_all.py` → 4/4 OK (135 files mirrored)
 
@@ -90,7 +97,7 @@
 - Domain logic extraction is complete
 
 ### Residual Risks
-1. `aggregate.js` not connected to parent-report (quadrant classification unused)
+1. ~`aggregate.js` not connected~ — **DONE** (iter 25)
 2. Mixed number format (1 1/2) not supported in practice answer checker
 3. Expand/collapse state not persisted across page reloads
 4. Practice events use `unit_id='parent-report-practice'` — separate from real quiz unit_ids in aggregate
