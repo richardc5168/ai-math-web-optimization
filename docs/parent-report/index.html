@@ -71,6 +71,13 @@
     .progress-trend-card .trend-week{color:var(--muted);font-size:12px;min-width:60px}
     .progress-trend-card .trend-bar{height:8px;border-radius:4px;transition:width .4s}
     .progress-trend-card .trend-val{font-size:12px;font-weight:700;min-width:40px;text-align:right}
+    details.rpt-group{margin-top:16px}
+    details.rpt-group>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;font-weight:800;font-size:14px;color:var(--text);user-select:none}
+    details.rpt-group>summary::-webkit-details-marker{display:none}
+    details.rpt-group>summary::before{content:'▶';font-size:10px;transition:transform .2s;color:var(--muted)}
+    details.rpt-group[open]>summary::before{transform:rotate(90deg)}
+    details.rpt-group>summary:hover{background:rgba(88,166,255,.06)}
+    details.rpt-group>summary .group-count{margin-left:auto;font-size:11px;font-weight:400;color:var(--muted)}
   </style>
   <link rel="canonical" href="./">
 </head>
@@ -126,13 +133,18 @@
     </div>
 
     <!-- 24h snapshot -->
+    <details class="rpt-group">
+      <summary>⏱️ 最近 24 小時 <span class="group-count">1 卡片</span></summary>
     <div id="h24Section" class="card" style="border-color:var(--accent)">
       <div style="font-weight:800">⏱️ 最近 24 小時</div>
       <div class="kpi" id="h24Kpi"></div>
       <div id="h24Modules" style="margin-top:10px"></div>
       <div id="h24Empty" class="banner muted" style="display:none;margin-top:8px">最近 24 小時沒有作答紀錄</div>
     </div>
+    </details>
 
+    <details class="rpt-group" open>
+      <summary>🧭 快速摘要 <span class="group-count">本週重點 + AI 建議</span></summary>
     <div class="card" style="border-color:var(--warn)" id="weeklyFocusCard">
       <div style="font-weight:800">🧭 本週重點摘要</div>
       <div class="small">先看四個最重要的訊號，家長可以快速判斷這週是進步、停滯，還是需要補救。</div>
@@ -153,8 +165,11 @@
         <a href="../pricing/" id="reportUpgradeLink" style="display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700">查看完整方案</a>
       </div>
     </div>
+    </details>
 
     <!-- KPI -->
+    <details class="rpt-group">
+      <summary>📈 7 天總覽 <span class="group-count">KPI + 週對比 + 題型分布</span></summary>
     <div class="card">
       <div style="font-weight:800">📈 最近 <span class="rptDaysInline">7</span> 天總覽</div>
     </div>
@@ -173,8 +188,11 @@
       <div class="small">按模組/主題分類，顯示各題型的作答量與正確率</div>
       <div id="moduleBreakdown"></div>
     </div>
+    </details>
 
     <!-- hint distribution -->
+    <details class="rpt-group">
+      <summary>🔍 學習行為分析 <span class="group-count">提示 + 每日 + 弱點</span></summary>
     <div class="card">
       <div style="font-weight:800">提示使用分布</div>
       <div class="small">Level 0 = 不看提示就答對，Level 3 = 需要完整步驟提示</div>
@@ -195,8 +213,11 @@
       <div class="small">依錯題次數與提示依賴度整理，讓家長看出孩子這週最常卡住哪裡</div>
       <div id="weakTable"></div>
     </div>
+    </details>
 
     <!-- V2: Weekly Progress Trend (paid-only with blurred preview) -->
+    <details class="rpt-group">
+      <summary>🎯 進階分析 <span class="group-count">趨勢 + 雷達 + 補救</span></summary>
     <div class="card progress-trend-card" style="border-color:var(--accent)" id="progressTrendCard">
       <div style="font-weight:800">📈 四週正確率趨勢</div>
       <div class="small">追蹤每週正確率變化，看見孩子的進步軌跡</div>
@@ -219,8 +240,11 @@
       <div id="remedialList"></div>
       <div id="remedialGate" class="hidden"></div>
     </div>
+    </details>
 
     <!-- recent wrong -->
+    <details class="rpt-group" open>
+      <summary>📝 錯題與練習 <span class="group-count">錯題 + 分析 + 再練</span></summary>
     <div class="card">
       <div style="font-weight:800">最近錯題（最新 5 筆）</div>
       <div class="small">依作答時間由新到舊，顯示時間、學生答案、正解與錯誤原因</div>
@@ -245,8 +269,11 @@
       <div id="practiceSummary" class="banner muted" style="margin-top:8px">尚無再練紀錄。</div>
       <div id="practiceByKind" style="margin-top:8px"></div>
     </div>
+    </details>
 
     <!-- advice -->
+    <details class="rpt-group" open>
+      <summary>📋 建議與匯出</summary>
     <div class="card" style="border-color:var(--warn)">
       <div style="font-weight:800">📋 家長建議</div>
       <div id="adviceBox" class="banner muted"></div>
@@ -260,6 +287,7 @@
       </div>
       <div id="copyMsg" style="color:#2ea043;font-size:13px;margin-top:8px;display:none">✅ 已複製到剪貼簿</div>
     </div>
+    </details>
   </div>
 </div>
 
