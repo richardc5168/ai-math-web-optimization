@@ -2,6 +2,7 @@
   'use strict';
 
   var TOPIC_LINK_MAP = {
+    'commercial-pack1-fraction-sprint': '../commercial-pack1-fraction-sprint/',
     'fraction-word': '../fraction-word-g5/',
     'fraction-g5': '../fraction-g5/',
     'fraction': '../fraction-g5/',
@@ -14,7 +15,10 @@
     'life': '../life-applications-g5/',
     'empire': '../interactive-g5-empire/',
     'core': '../interactive-g56-core-foundation/',
-    'task': '../task-center/'
+    'task': '../task-center/',
+    'national-bank': '../interactive-g5-national-bank/',
+    'midterm': '../interactive-g5-midterm1/',
+    'grand-slam': '../g5-grand-slam/'
   };
 
   function toNumber(value, fallback){

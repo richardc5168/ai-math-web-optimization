@@ -33,7 +33,11 @@ test('getTopicLink resolves known weakness topics to practice modules', () => {
     ['ratio-percent-g5', '../ratio-percent-g5/'],
     ['life-applications-g5', '../life-applications-g5/'],
     ['interactive-g5-empire', '../interactive-g5-empire/'],
-    ['interactive-g56-core-foundation', '../interactive-g56-core-foundation/']
+    ['interactive-g56-core-foundation', '../interactive-g56-core-foundation/'],
+    ['commercial-pack1-fraction-sprint', '../commercial-pack1-fraction-sprint/'],
+    ['interactive-g5-national-bank', '../interactive-g5-national-bank/'],
+    ['interactive-g5-midterm1', '../interactive-g5-midterm1/'],
+    ['g5-grand-slam', '../g5-grand-slam/']
   ];
 
   cases.forEach(([topic, expected]) => {
