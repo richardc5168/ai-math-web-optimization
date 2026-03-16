@@ -274,6 +274,7 @@
 <script src="../shared/report/practice_from_wrong_engine.js"></script>
 <script src="../shared/report/parent_copy_engine.js"></script>
 <script src="../shared/report/wow_engine.js"></script>
+<script src="../shared/report/radar_engine.js"></script>
 <script>
 (function(){
   'use strict';
@@ -1089,52 +1090,57 @@
       renderPracticeSummary();
     }
 
-    /* ─── V2: Concept Radar Chart ─── */
+    /* ─── V2: Concept Radar Chart (delegates to shared radar_engine) ─── */
     (function renderRadar(){
       var radarEl = document.getElementById('radarChart');
       var legendEl = document.getElementById('radarLegend');
       var gateEl = document.getElementById('radarGate');
       if (!radarEl) return;
 
-      // Map modules to 5 concepts
-      var concepts = {
-        '分數': {score:0, total:0, modules:['fraction-g5','fraction-word-g5','commercial-pack1-fraction-sprint','mixed-multiply']},
-        '小數': {score:0, total:0, modules:['interactive-decimal-g5','decimal-unit4']},
-        '百分率': {score:0, total:0, modules:['ratio-percent-g5']},
-        '體積': {score:0, total:0, modules:['volume-g5']},
-        '生活應用': {score:0, total:0, modules:['life-applications-g5']}
-      };
-
-      var mods = r.modules || [];
-      mods.forEach(function(m){
-        var mName = String(m.m||'').toLowerCase();
-        Object.keys(concepts).forEach(function(cName){
-          concepts[cName].modules.forEach(function(mid){
-            if (mName.indexOf(mid) >= 0 || mid.indexOf(mName) >= 0){
-              concepts[cName].total += (m.n||0);
-              concepts[cName].score += (m.ok||0);
-            }
+      var conceptScores;
+      if (window.AIMathRadarEngine) {
+        conceptScores = window.AIMathRadarEngine.computeConceptScores(r.modules || []);
+      } else {
+        // Fallback inline mapping
+        var concepts = {
+          '分數': {score:0, total:0, modules:['fraction-g5','fraction-word-g5','commercial-pack1-fraction-sprint','mixed-multiply']},
+          '小數': {score:0, total:0, modules:['interactive-decimal-g5','decimal-unit4']},
+          '百分率': {score:0, total:0, modules:['ratio-percent-g5']},
+          '體積': {score:0, total:0, modules:['volume-g5']},
+          '生活應用': {score:0, total:0, modules:['life-applications-g5']}
+        };
+        var mods = r.modules || [];
+        mods.forEach(function(m){
+          var mName = String(m.m||'').toLowerCase();
+          Object.keys(concepts).forEach(function(cName){
+            concepts[cName].modules.forEach(function(mid){
+              if (mName.indexOf(mid) >= 0 || mid.indexOf(mName) >= 0){
+                concepts[cName].total += (m.n||0);
+                concepts[cName].score += (m.ok||0);
+              }
+            });
           });
         });
-      });
+        conceptScores = Object.keys(concepts).map(function(k){
+          var c = concepts[k];
+          return { name: k, score: c.score, total: c.total, pct: c.total ? Math.round(c.score / c.total * 100) : 0 };
+        });
+      }
 
       // Build SVG radar
-      var keys = Object.keys(concepts);
+      var keys = conceptScores.map(function(c){ return c.name; });
+      var values = conceptScores.map(function(c){ return c.pct; });
       var n = keys.length;
       var cx = 120, cy = 120, R = 90;
       var angles = keys.map(function(_,i){ return -Math.PI/2 + (2*Math.PI*i/n); });
       function polar(a, r){ return [cx + r*Math.cos(a), cy + r*Math.sin(a)]; }
 
       var svg = '<svg width="240" height="260" viewBox="0 0 240 260">';
-      // Grid rings
       [0.25,0.5,0.75,1].forEach(function(f){
         var pts = angles.map(function(a){ var p=polar(a,R*f); return p[0]+','+p[1]; }).join(' ');
         svg += '<polygon points="'+pts+'" fill="none" stroke="#30363d" stroke-width="1"/>';
       });
-      // Axis lines
       angles.forEach(function(a){ var p=polar(a,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="#30363d" stroke-width="1"/>'; });
-      // Data polygon
-      var values = keys.map(function(k){ var c=concepts[k]; return c.total ? Math.round(c.score/c.total*100) : 0; });
       var dataPts = values.map(function(v,i){ var p=polar(angles[i], R*v/100); return p[0]+','+p[1]; }).join(' ');
       svg += '<polygon points="'+dataPts+'" fill="rgba(88,166,255,0.25)" stroke="#58a6ff" stroke-width="2"/>';
       // Labels
@@ -1151,8 +1157,9 @@
       var legendHtml = '<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center">';
       keys.forEach(function(k,i){
         var v = values[i];
+        var cs = conceptScores[i];
         var cls = v >= 70 ? 'ok' : v >= 50 ? 'warn' : 'bad';
-        legendHtml += '<span class="pill '+cls+'">'+k+' '+v+'%（'+concepts[k].score+'/'+concepts[k].total+'）</span>';
+        legendHtml += '<span class="pill '+cls+'">'+k+' '+v+'%（'+cs.score+'/'+cs.total+'）</span>';
       });
       legendHtml += '</div>';
       legendEl.innerHTML = legendHtml;
