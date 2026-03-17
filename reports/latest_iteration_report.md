@@ -1,6 +1,6 @@
 # Latest Iteration Report
 
-## Session Summary (Iterations 12–30)
+## Session Summary (Iterations 12–31)
 
 ### Iteration 12 (commit `43b4417ba`)
 - Expanded TOPIC_LINK_MAP with 4 new entries: commercial-pack1-fraction-sprint, national-bank, midterm, grand-slam
@@ -96,10 +96,15 @@
 - Added explicit explanation + deterministic practice generation for average, money, discount/percent, ratio, decimal, speed, area/perimeter, time, and multi-step families
 - Added 3 regression tests covering family-level explanation coverage, targeted practice generation, and integer-answer safety → **69 pass**
 
-### Iteration 30 (commit `working-tree`)
+### Iteration 30 (commit `43ceac553`)
 - **Commercial remediation coverage fix**: expanded `practice_from_wrong_engine.js` for the remaining commercial and life-bank families still falling through to generic remediation
 - Added explicit explanation + deterministic fallback practice for commercial-pack1 fraction-sprint, decimal-unit4 operations, life-applications-g5, interactive-g5-empire `unit_convert`, and interactive-g5-life-pack1-empire conversion/add-sub kinds
 - Added 2 bank-backed regression tests that load real `bank.js` payloads and verify these families resolve to non-generic explanations and usable fallback practice → **71 pass**
+
+### Iteration 31 (commit `working-tree`)
+- **Full bank audit gate**: expanded remediation coverage for the remaining uncovered kind families and added a repo-wide `bank.js` audit spec
+- Added reusable explanation + fallback practice branches for fraction arithmetic basics, fraction comparison, unit conversions, composite volume, line-chart reading, angle geometry, number theory, place value, symmetry, starter algebra, large-number comparison, and division sufficiency across `exam-sprint`, `fraction-g5`, `g5-grand-slam`, `volume-g5`, `interactive-g5-midterm1`, and `interactive-g5-national-bank`
+- Added `tests_js/parent-report-bank-audit.spec.mjs`, which scans every current `docs/*/bank.js` file, handles both executable wrappers and literal-array assignment variants, and fails on generic remediation fallthrough or unusable fallback practice → **73 pass**
 
 ### Current Shared Engine Inventory (11 modules)
 1. `weakness_engine.js` — `AIMathWeaknessEngine`
@@ -115,7 +120,7 @@
 11. `aggregate.js` — `AIMathReportAggregate` (**connected**: quadrant analysis card in parent-report)
 
 ### Test Coverage
-- **71 regression tests** across 12 test files, all passing
+- **73 regression tests** across 13 test files, all passing
 - `validate_all_elementary_banks.py` → 7157 PASS, 0 FAIL
 - `verify_all.py` → 4/4 OK (135 files mirrored)
 
@@ -128,11 +133,11 @@
 2. ~Mixed number format~ — **DONE** (iter 26)
 3. Expand/collapse state not persisted across page reloads
 4. Practice events use `unit_id='parent-report-practice'` — separate from real quiz unit_ids in aggregate
-5. Remediation coverage is still rule-based; future new or renamed `kind` values can still fall through until mapped or audited automatically
+5. Remediation coverage is now audited across all current `bank.js` modules, but the rule logic is still handwritten and must grow when new kind families are added
 
 ### Next Iteration Priorities
 1. ~Connect aggregate.js~ — **DONE** (iter 25)
 2. ~Mixed number support~ — **DONE** (iter 26)
 3. ~Practice early-exit tracking~ — **DONE** (iter 27)
-4. Add a source-level coverage audit that scans all current `bank.js` files against remediation mappings
+4. Push and remote-validate the new full-bank remediation gate
 5. Externalize kind→advice mappings to JSON for maintainability
