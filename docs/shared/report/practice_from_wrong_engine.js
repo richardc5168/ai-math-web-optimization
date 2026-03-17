@@ -93,6 +93,69 @@
         tutor: '先畫圖標示量，再做 3 題對照練習。'
       };
     }
+    if (kind === 'u1_average' || kind === 'general' || kind.indexOf('average') >= 0 || kind === 'shopping_two_step' || kind === 'table_stats') {
+      return {
+        cause: '平均數題目容易把「總和」和「個數」搞混，或漏加某一項。',
+        concept: '平均 = 總和 ÷ 個數。先確認有幾個數，再加總，最後除。',
+        tutor: '先列出所有數字核對，再做 3 題類似平均題。'
+      };
+    }
+    if (kind === 'u3_money' || kind === 'make_change' || kind === 'buy_many' || mod.indexOf('money') >= 0) {
+      return {
+        cause: '金錢應用題常在找零或單價×數量時算錯。',
+        concept: '先列出每項花費，加總後再用總金額去減。',
+        tutor: '先用表格整理花費，再做 3 題換數字的找零題。'
+      };
+    }
+    if (kind === 'u4_discount_percent' || kind === 'discount' || kind.indexOf('percent') >= 0) {
+      return {
+        cause: '百分比或折扣題容易把「打幾折」和「減多少%」搞混。',
+        concept: '打 8 折 = 原價 × 0.8 = 原價 × 80%。先把折數換成百分比再計算。',
+        tutor: '先口述折扣意義，再做 3 題不同折扣的對照練習。'
+      };
+    }
+    if (kind === 'u5_ratio_proportion' || kind.indexOf('ratio') >= 0) {
+      return {
+        cause: '比例題容易把前項、後項搞反，或約比時漏掉步驟。',
+        concept: '比 = 前項：後項。化簡比要兩邊同除以最大公因數。',
+        tutor: '先圈出前項和後項，再做 3 題類似比例題。'
+      };
+    }
+    if (kind === 'u6_unit_decimal' || kind.indexOf('decimal') >= 0 || mod.indexOf('decimal') >= 0) {
+      return {
+        cause: '小數題常在小數點對位或單位換算時出錯。',
+        concept: '小數加減要對齊小數點；乘法先忽略小數點算，再數總共幾位小數。',
+        tutor: '先在草稿紙對齊小數點，再做 3 題只改數字的練習。'
+      };
+    }
+    if (kind === 'u7_speed' || kind === 'displacement' || kind.indexOf('speed') >= 0) {
+      return {
+        cause: '速率題常把距離、時間、速率三量的關係搞混。',
+        concept: '速率 = 距離 ÷ 時間。先確定已知哪兩個量，再求第三個。',
+        tutor: '先畫速率三角形，再做 3 題求不同量的對照練習。'
+      };
+    }
+    if (kind === 'u8_area_perimeter' || kind.indexOf('area') >= 0 || kind.indexOf('perimeter') >= 0) {
+      return {
+        cause: '面積和周長公式容易搞混，或忘了不同形狀有不同公式。',
+        concept: '長方形面積 = 長 × 寬，周長 = (長 + 寬) × 2。先確認求面積還是周長。',
+        tutor: '先在圖上標出各邊長，再做 3 題同類型練習。'
+      };
+    }
+    if (kind === 'u9_time_trip' || kind.indexOf('time') >= 0 || kind.indexOf('trip') >= 0) {
+      return {
+        cause: '時間題常在進位（60分=1時）或跨午、跨日時算錯。',
+        concept: '先統一單位（全換分鐘或全換小時），再做加減。',
+        tutor: '先在時間軸上標出起點和終點，再做 3 題類似時間題。'
+      };
+    }
+    if (kind === 'u10_multi_step' || kind === 'multi_step') {
+      return {
+        cause: '多步驟題容易在中間步驟算錯或漏掉一步。',
+        concept: '先把大問題拆成小步驟，每步只做一件事，做完再串起來。',
+        tutor: '先把每一步的算式寫出來，核對後再合併，最後做 2 題類似題。'
+      };
+    }
     if (errType.indexOf('careless') >= 0 || errType.indexOf('粗心') >= 0) {
       return {
         cause: '概念大致正確，但計算或抄寫時出現小錯。',
@@ -216,6 +279,114 @@
         q: '長方體長 ' + volumeL + ' 公分、寬 ' + volumeW + ' 公分、高 ' + volumeH + ' 公分，體積是多少立方公分？',
         answer: String(volumeL * volumeW * volumeH),
         hint: '先找長、寬、高，再代入體積公式。'
+      };
+    }
+
+    if (kind === 'u1_average' || kind === 'general' || kind.indexOf('average') >= 0 || kind === 'shopping_two_step' || kind === 'table_stats') {
+      var avgCount = randInt(3, 5);
+      var avgVal = randInt(15, 50);
+      var avgTotal = avgVal * avgCount;
+      return {
+        q: avgTotal + ' 顆糖果平均分給 ' + avgCount + ' 個人，每人分到幾顆？',
+        answer: String(avgVal),
+        hint: '平均 = 總數 ÷ 人數 = ' + avgTotal + ' ÷ ' + avgCount + '。'
+      };
+    }
+
+    if (kind === 'u3_money' || kind === 'make_change' || kind === 'buy_many' || mod.indexOf('money') >= 0) {
+      var priceA = randInt(15, 80);
+      var priceB = randInt(10, 60);
+      var paid = priceA + priceB + randInt(5, 50);
+      var change = paid - priceA - priceB;
+      return {
+        q: '小明買了 ' + priceA + ' 元和 ' + priceB + ' 元的東西，付了 ' + paid + ' 元，找零多少元？',
+        answer: String(change),
+        hint: '找零 = 付的錢 - 花掉的錢 = ' + paid + ' - ' + priceA + ' - ' + priceB + '。'
+      };
+    }
+
+    if (kind === 'u4_discount_percent' || kind === 'discount' || kind.indexOf('percent') >= 0) {
+      var discounts = [7, 8, 9];
+      var discIdx = randInt(0, 2);
+      var discVal = discounts[discIdx];
+      var origPrice = randInt(2, 20) * 10;
+      var salePrice = origPrice * discVal / 10;
+      return {
+        q: '商品原價 ' + origPrice + ' 元，打 ' + discVal + ' 折，售價多少元？',
+        answer: String(salePrice),
+        hint: '打 ' + discVal + ' 折 = 原價 × ' + discVal + '/10 = ' + origPrice + ' × ' + discVal + ' ÷ 10。'
+      };
+    }
+
+    if (kind === 'u5_ratio_proportion' || kind.indexOf('ratio') >= 0) {
+      var ratioA = randInt(2, 6);
+      var ratioB = randInt(2, 6);
+      var multiplier = randInt(2, 8);
+      var valA = ratioA * multiplier;
+      var valB = ratioB * multiplier;
+      return {
+        q: '甲和乙的比是 ' + ratioA + '：' + ratioB + '，甲有 ' + valA + ' 個，乙有幾個？',
+        answer: String(valB),
+        hint: '甲 = ' + ratioA + ' 份，1 份 = ' + valA + ' ÷ ' + ratioA + ' = ' + multiplier + '，乙 = ' + ratioB + ' × ' + multiplier + '。'
+      };
+    }
+
+    if (kind === 'u6_unit_decimal' || kind.indexOf('decimal') >= 0 || mod.indexOf('decimal') >= 0) {
+      var dWA = randInt(1, 9);
+      var dDA = randInt(1, 9);
+      var dWB = randInt(1, 9);
+      var dDB = randInt(1, 9);
+      var tenths = (dWA * 10 + dDA) + (dWB * 10 + dDB);
+      var dAnsW = Math.floor(tenths / 10);
+      var dAnsD = tenths % 10;
+      var dAns = dAnsD === 0 ? String(dAnsW) : dAnsW + '.' + dAnsD;
+      return {
+        q: '計算：' + dWA + '.' + dDA + ' + ' + dWB + '.' + dDB + ' = ?',
+        answer: dAns,
+        hint: '先對齊小數點：' + dWA + '.' + dDA + ' + ' + dWB + '.' + dDB + '，再從小數位加起。'
+      };
+    }
+
+    if (kind === 'u7_speed' || kind === 'displacement' || kind.indexOf('speed') >= 0) {
+      var speedTime = randInt(2, 6);
+      var speedRate = randInt(30, 80);
+      var dist = speedRate * speedTime;
+      return {
+        q: '小明走了 ' + dist + ' 公尺，花了 ' + speedTime + ' 分鐘，每分鐘走幾公尺？',
+        answer: String(speedRate),
+        hint: '速率 = 距離 ÷ 時間 = ' + dist + ' ÷ ' + speedTime + '。'
+      };
+    }
+
+    if (kind === 'u8_area_perimeter' || kind.indexOf('area') >= 0 || kind.indexOf('perimeter') >= 0) {
+      var areaL = randInt(3, 15);
+      var areaW = randInt(2, 10);
+      return {
+        q: '長方形長 ' + areaL + ' 公分、寬 ' + areaW + ' 公分，面積是多少平方公分？',
+        answer: String(areaL * areaW),
+        hint: '長方形面積 = 長 × 寬 = ' + areaL + ' × ' + areaW + '。'
+      };
+    }
+
+    if (kind === 'u9_time_trip' || kind.indexOf('time') >= 0 || kind.indexOf('trip') >= 0) {
+      var tHours = randInt(1, 5);
+      var tMins = randInt(10, 50);
+      var totalMins = tHours * 60 + tMins;
+      return {
+        q: '小華花了 ' + tHours + ' 小時 ' + tMins + ' 分鐘做作業，共花了幾分鐘？',
+        answer: String(totalMins),
+        hint: tHours + ' 小時 = ' + (tHours * 60) + ' 分鐘，再加 ' + tMins + ' 分鐘。'
+      };
+    }
+
+    if (kind === 'u10_multi_step' || kind === 'multi_step') {
+      var boxCount = randInt(3, 8);
+      var perBox = randInt(5, 15);
+      var eaten = randInt(1, boxCount * perBox - 1);
+      return {
+        q: '每盒有 ' + perBox + ' 個餅乾，買了 ' + boxCount + ' 盒，吃掉 ' + eaten + ' 個，還剩幾個？',
+        answer: String(boxCount * perBox - eaten),
+        hint: '先算總數 = ' + perBox + ' × ' + boxCount + ' = ' + (boxCount * perBox) + '，再減掉 ' + eaten + '。'
       };
     }
 

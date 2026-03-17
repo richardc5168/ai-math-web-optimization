@@ -157,3 +157,76 @@ test('persistPractice updates UI regardless of cloud write availability', () => 
   const pushIdx = persistBlock.indexOf('r.practice.events.push');
   assert.ok(pushIdx < cloudCheckIdx, 'practice event push must happen before cloud auth check');
 });
+
+test('explainWrongDetail covers all bank question families', () => {
+  const E = windowObj.AIMathPracticeFromWrongEngine.explainWrongDetail;
+  const families = [
+    { w: { k: 'u1_average' }, label: 'average' },
+    { w: { k: 'u3_money' },   label: 'money' },
+    { w: { k: 'u4_discount_percent' }, label: 'percent' },
+    { w: { k: 'u5_ratio_proportion' }, label: 'ratio' },
+    { w: { k: 'u6_unit_decimal' },     label: 'decimal' },
+    { w: { k: 'u7_speed' },            label: 'speed' },
+    { w: { k: 'u8_area_perimeter' },   label: 'area/perimeter' },
+    { w: { k: 'u9_time_trip' },        label: 'time' },
+    { w: { k: 'u10_multi_step' },      label: 'multi-step' },
+  ];
+  const generic = E({}).cause;
+  families.forEach(({ w, label }) => {
+    const detail = E(w);
+    assert.ok(detail.cause, label + ': has cause');
+    assert.ok(detail.concept, label + ': has concept');
+    assert.ok(detail.tutor, label + ': has tutor');
+    assert.notEqual(detail.cause, generic, label + ': must NOT fall through to generic');
+  });
+});
+
+test('buildPracticeFromWrong generates targeted practice for all bank families', () => {
+  const B = windowObj.AIMathPracticeFromWrongEngine.buildPracticeFromWrong;
+  const families = [
+    { w: { k: 'u1_average' },          label: 'average' },
+    { w: { k: 'u3_money' },            label: 'money' },
+    { w: { k: 'u4_discount_percent' }, label: 'percent' },
+    { w: { k: 'u5_ratio_proportion' }, label: 'ratio' },
+    { w: { k: 'u6_unit_decimal' },     label: 'decimal' },
+    { w: { k: 'u7_speed' },            label: 'speed' },
+    { w: { k: 'u8_area_perimeter' },   label: 'area' },
+    { w: { k: 'u9_time_trip' },        label: 'time' },
+    { w: { k: 'u10_multi_step' },      label: 'multi-step' },
+  ];
+  families.forEach(({ w, label }) => {
+    const p = B(w, { mode: 'single', sequence: 0 });
+    assert.ok(p.q, label + ': has question text');
+    assert.ok(p.answer, label + ': has answer');
+    assert.ok(p.hint, label + ': has hint');
+    // Answer must NOT be NaN or empty
+    assert.ok(p.answer !== 'NaN', label + ': answer must not be NaN');
+    // Hint must not contain the raw answer (no trivial leak)
+    // Relaxed: hints like "= 120 ÷ 3" may contain the answer number incidentally
+  });
+});
+
+test('new practice generators produce integer answers via integer arithmetic', () => {
+  const B = windowObj.AIMathPracticeFromWrongEngine.buildPracticeFromWrong;
+  // Run multiple seeds — discount, ratio, speed, area, time, multi-step all must be integer
+  const intKinds = [
+    { k: 'u4_discount_percent' },
+    { k: 'u5_ratio_proportion' },
+    { k: 'u7_speed' },
+    { k: 'u8_area_perimeter' },
+    { k: 'u9_time_trip' },
+    { k: 'u10_multi_step' },
+    { k: 'u1_average' },
+    { k: 'u3_money' },
+  ];
+  intKinds.forEach(w => {
+    for (let seq = 0; seq < 5; seq++) {
+      const p = B(w, { mode: 'single', sequence: seq });
+      const num = Number(p.answer);
+      assert.ok(!isNaN(num), w.k + ' seq=' + seq + ': answer must be a number');
+      if (w.k !== 'u6_unit_decimal') {
+        assert.ok(Number.isInteger(num), w.k + ' seq=' + seq + ': answer must be integer, got ' + p.answer);
+      }
+    }
+  });
+});
