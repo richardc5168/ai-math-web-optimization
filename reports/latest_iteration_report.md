@@ -652,3 +652,28 @@
 4. No password recovery flow
 5. Remote cross-validation not yet run (not deployed)
 6. Student selector does not persist selection across page reloads (session-scoped, by design)
+
+### Iteration 51 — Remove Gist Read Fallback (2026-03-19)
+
+**Scope**: `remove-gist-fallback` | **Status**: ✅ Passed
+
+**Objective**: Remove all remaining Gist infrastructure (GIST_ID, GIST_API, Gist fetch fallback) from `student_auth.js`. The backend-owned path has been the primary path since iter 37 and was hardened through iter 50. The Gist read fallback is now legacy dead code referencing external GitHub infrastructure.
+
+**Changes**:
+- Removed `GIST_ID` and `GIST_API` constants
+- Removed Gist fetch fallback block from `lookupStudentReport()` (backend-only now)
+- Removed 3 dead Gist-only helpers: `collectAliasEntries`, `getStoredAttempts`, `getPracticeEventsFromData`
+- Removed dead `warnMissingCloudToken` function and `_cloudAuthWarned` flag
+- Updated stale JSDoc/comments referencing Gist
+- Replaced 2 Gist safety tests with 1 comprehensive Gist-removal verification test
+
+**Files**: `docs/shared/student_auth.js`, `dist_ai_math_web_pages/docs/shared/student_auth.js`, `tests_js/parent-report-cloud-sync-security.spec.mjs`
+
+**Validation**: 39 backend ✅ | 19 JS security ✅ | 107 JS total ✅ | verify_all 4/4 OK | 0 bank issues
+
+**Residual Risks**:
+1. No log rotation or external log aggregation
+2. No alerting threshold
+3. OpenAI key in git history (manual action)
+4. No password recovery flow
+5. Remote cross-validation not yet run (not deployed)

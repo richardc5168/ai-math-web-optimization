@@ -120,5 +120,29 @@
     "manual_review_required": false,
     "last_evaluated_ts": "2026-03-19T18:00:00+08:00",
     "next_action": "none — completed"
+  },
+  {
+    "task_id": "T51",
+    "title": "Remove Gist read fallback from student_auth.js",
+    "category": "security_cleanup",
+    "source": "iteration_40_residual_risk_1",
+    "priority_band": "P3",
+    "priority_score": 6,
+    "risk_level": "low",
+    "status": "done",
+    "selected_reason": "Highest-scoring automatable candidate after all P0-P2 tasks completed. Gist read fallback was legacy dead code referencing external GitHub infrastructure.",
+    "blockers": [],
+    "acceptance_criteria": [
+      "GIST_ID and GIST_API constants removed",
+      "Gist fetch fallback removed from lookupStudentReport",
+      "No api.github.com/gists references in any frontend file",
+      "All existing tests pass"
+    ],
+    "required_checks": ["JS security tests", "all JS tests", "verify_all"],
+    "files_likely_involved": ["docs/shared/student_auth.js", "dist mirror", "tests_js/parent-report-cloud-sync-security.spec.mjs"],
+    "auto_merge_allowed": true,
+    "manual_review_required": false,
+    "last_evaluated_ts": "2026-03-19T20:00:00+08:00",
+    "next_action": "none — completed"
   }
 ]
