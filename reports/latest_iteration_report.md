@@ -533,7 +533,7 @@
 
 **Residual Risks**:
 1. No student selector — uses `default_student` only
-2. No rate limiting on `/v1/app/auth/login` endpoint
+2. ~~No rate limiting on `/v1/app/auth/login` endpoint~~ → **Fixed in iteration 47**
 3. OpenAI key in git history
 4. No password recovery flow
 5. Remote cross-validation not yet run
@@ -544,24 +544,24 @@
 
 **Scope**: `login-endpoint-rate-limiting` | **Status**: ✅ Passed
 
-**Objective**: Add rate limiting to `POST /v1/app/auth/login` to prevent credential brute-force attacks. Reuses existing `_check_rate_limit()` DB-backed sliding window from iterations 44–45.
+**Objective**: Add per-IP rate limiting to `/v1/app/auth/login` to prevent brute-force credential guessing. Reuse existing `_check_rate_limit` infrastructure.
 
 **Changes**:
-- Added `_RATE_LIMIT_LOGIN = 5` (5 attempts/IP/minute — stricter than bootstrap=10 since login is brute-force surface)
-- Added `Request` parameter to `app_auth_login()` for client IP extraction
-- Rate limit check fires BEFORE credential validation — no info leak on 429
-- 429 response body contains only generic "Too many login attempts" — no credentials
-- +3 backend tests (29 total): rate limit triggers 429, rate limit blocks before credential check (429 not 401), normal login under limit succeeds
-- Updated JS source-level test to verify `_RATE_LIMIT_LOGIN` and `_check_rate_limit` in login endpoint
+- Added `_RATE_LIMIT_LOGIN = 5` (stricter than bootstrap 10, exchange 20)
+- Added `Request` parameter to `app_auth_login()` for client IP
+- Rate limit fires BEFORE credential validation (prevents timing-based username enumeration)
+- 429 response is generic ("Too many login attempts") — no credential details leaked
+- +3 backend tests (29 total): rate limit enforcement, ordering proof (429 not 401), no-leak proof
+- Updated JS source-level test: added `_RATE_LIMIT_LOGIN` assertion + source ordering check
 
 **Files**: `server.py`, `tests/test_report_snapshot_endpoints.py`, `tests_js/parent-report-cloud-sync-security.spec.mjs`
 
-**Validation**: 19 JS security ✅ | 29 backend ✅ | verify_all 4/4 OK
+**Validation**: 29 backend ✅ | 19 JS security ✅ | verify_all 4/4 OK (138 files mirrored)
 
 **Residual Risks**:
-1. IP-based only — bypassed by distributed attackers or proxies
-2. No account-level lockout (only IP-based)
-3. No failed-attempt logging/alerting
-4. No student selector UI
-5. OpenAI key in git history
+1. No account-level login lockout (only IP-based rate limiting)
+2. No failed-attempt logging/alerting
+3. No student selector UI
+4. OpenAI key in git history (manual action)
+5. No password recovery flow
 6. Remote cross-validation not yet run

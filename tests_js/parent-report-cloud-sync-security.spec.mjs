@@ -274,13 +274,25 @@ test('bootstrap/exchange endpoints enforce deny-by-default (source-level)', () =
   assert.ok(exBlock.includes('ensure_subscription_active'), 'exchange must re-validate subscription');
 });
 
-test('bootstrap/exchange endpoints have rate limiting and token cap (source-level)', () => {
+test('bootstrap/exchange/login endpoints have rate limiting and token cap (source-level)', () => {
   const serverSrc = fs.readFileSync(path.resolve('server.py'), 'utf8');
 
   /* Rate limiter infrastructure must exist */
   assert.ok(serverSrc.includes('_check_rate_limit'), 'server must have _check_rate_limit function');
   assert.ok(serverSrc.includes('_RATE_LIMIT_BOOTSTRAP'), 'server must define bootstrap rate limit');
   assert.ok(serverSrc.includes('_RATE_LIMIT_EXCHANGE'), 'server must define exchange rate limit');
+  assert.ok(serverSrc.includes('_RATE_LIMIT_LOGIN'), 'server must define login rate limit');
+
+  /* Login endpoint must check rate limit before credential validation */
+  const loginStart = serverSrc.indexOf('@app.post("/v1/app/auth/login"');
+  assert.ok(loginStart > 0, 'login endpoint must exist');
+  const loginBlock = serverSrc.slice(loginStart, loginStart + 1500);
+  assert.ok(loginBlock.includes('_check_rate_limit'), 'login must call rate limiter');
+  assert.ok(loginBlock.includes('429'), 'login must return 429 on rate limit');
+  /* Rate limit must appear before credential check (username lookup) */
+  const rlPos = loginBlock.indexOf('_check_rate_limit');
+  const credPos = loginBlock.indexOf('WHERE au.username');
+  assert.ok(rlPos < credPos, 'login rate limit must fire BEFORE credential lookup');
 
   /* Bootstrap endpoint must check rate limit and token cap */
   const bsStart = serverSrc.indexOf('@app.post("/v1/app/auth/bootstrap"');
@@ -294,13 +306,6 @@ test('bootstrap/exchange endpoints have rate limiting and token cap (source-leve
   const exBlock = serverSrc.slice(exStart, exStart + 1200);
   assert.ok(exBlock.includes('_check_rate_limit'), 'exchange must call rate limiter');
   assert.ok(exBlock.includes('429'), 'exchange must return 429 on rate limit');
-
-  /* Login endpoint must check rate limit */
-  assert.ok(serverSrc.includes('_RATE_LIMIT_LOGIN'), 'server must define login rate limit constant');
-  const loginStart = serverSrc.indexOf('@app.post("/v1/app/auth/login"');
-  const loginBlock = serverSrc.slice(loginStart, loginStart + 600);
-  assert.ok(loginBlock.includes('_check_rate_limit'), 'login must call rate limiter');
-  assert.ok(loginBlock.includes('429'), 'login must return 429 on rate limit');
 });
 
 test('subscription syncFromBackend is session-scoped (not localStorage)', () => {

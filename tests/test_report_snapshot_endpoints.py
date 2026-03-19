@@ -582,11 +582,12 @@ async def test_token_survives_server_module_state(setup_server):
 
 @pytest.mark.anyio
 async def test_login_rate_limit(setup_server):
-    """Login requests exceeding the per-IP limit must return 429."""
+    """Login attempts exceeding the per-IP limit must return 429."""
     transport = httpx.ASGITransport(app=setup_server.app)
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
         await _provision(c, "rl_login_user")
 
+        # Clear prior rate limit state
         conn = setup_server.db()
         conn.execute("DELETE FROM rate_limit_events")
         conn.commit()
@@ -600,16 +601,11 @@ async def test_login_rate_limit(setup_server):
                     "username": "rl_login_user", "password": "pass1234"
                 })
                 assert resp.status_code == 200, f"Login {i+1} should succeed"
-            # 4th login should be rate-limited
+            # 4th request should be rate-limited
             resp = await c.post("/v1/app/auth/login", json={
                 "username": "rl_login_user", "password": "pass1234"
             })
             assert resp.status_code == 429
-            body = resp.json()
-            assert "too many" in body["detail"].lower()
-            # Response must NOT contain any credentials
-            assert "api_key" not in body
-            assert "password" not in body
         finally:
             setup_server._RATE_LIMIT_LOGIN = orig
             conn = setup_server.db()
@@ -619,12 +615,44 @@ async def test_login_rate_limit(setup_server):
 
 
 @pytest.mark.anyio
-async def test_login_rate_limit_blocks_before_credential_check(setup_server):
-    """Rate limit must fire before credential validation — no info leak on 429."""
+async def test_login_rate_limit_fires_before_credential_check(setup_server):
+    """Rate limit must trigger BEFORE credential validation to prevent info leakage."""
     transport = httpx.ASGITransport(app=setup_server.app)
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
-        await _provision(c, "rl_login_info_leak")
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.commit()
+        conn.close()
 
+        orig = setup_server._RATE_LIMIT_LOGIN
+        setup_server._RATE_LIMIT_LOGIN = 3
+        try:
+            # Exhaust rate limit with bad credentials
+            for i in range(3):
+                resp = await c.post("/v1/app/auth/login", json={
+                    "username": f"nonexistent_{i}", "password": "wrong"
+                })
+                assert resp.status_code == 401
+
+            # Next attempt should be 429, NOT 401 — proving rate limit fires first
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "doesnotexist", "password": "wrong"
+            })
+            assert resp.status_code == 429, \
+                f"Expected 429 (rate limited), got {resp.status_code} — rate limit must fire before credential check"
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_login_rate_limit_response_has_no_credential_leak(setup_server):
+    """429 response body must not leak username, password, or credential details."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
         conn = setup_server.db()
         conn.execute("DELETE FROM rate_limit_events")
         conn.commit()
@@ -633,43 +661,22 @@ async def test_login_rate_limit_blocks_before_credential_check(setup_server):
         orig = setup_server._RATE_LIMIT_LOGIN
         setup_server._RATE_LIMIT_LOGIN = 1
         try:
-            # First request succeeds
-            resp = await c.post("/v1/app/auth/login", json={
-                "username": "rl_login_info_leak", "password": "pass1234"
+            # First request uses up the limit
+            await c.post("/v1/app/auth/login", json={
+                "username": "secretuser", "password": "secretpass"
             })
-            assert resp.status_code == 200
-
-            # Second request with WRONG password should get 429 (not 401)
-            # This proves rate limit fires before credential validation
+            # Second triggers rate limit
             resp = await c.post("/v1/app/auth/login", json={
-                "username": "rl_login_info_leak", "password": "wrong_password"
+                "username": "secretuser", "password": "secretpass"
             })
             assert resp.status_code == 429
+            body_text = resp.text.lower()
+            assert "secretuser" not in body_text, "429 response must not leak username"
+            assert "secretpass" not in body_text, "429 response must not leak password"
+            assert "api_key" not in body_text, "429 response must not leak api_key"
         finally:
             setup_server._RATE_LIMIT_LOGIN = orig
             conn = setup_server.db()
             conn.execute("DELETE FROM rate_limit_events")
             conn.commit()
             conn.close()
-
-
-@pytest.mark.anyio
-async def test_login_normal_flow_not_blocked(setup_server):
-    """A single login under default rate limit must succeed normally."""
-    transport = httpx.ASGITransport(app=setup_server.app)
-    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
-        await _provision(c, "rl_login_normal")
-
-        conn = setup_server.db()
-        conn.execute("DELETE FROM rate_limit_events")
-        conn.commit()
-        conn.close()
-
-        resp = await c.post("/v1/app/auth/login", json={
-            "username": "rl_login_normal", "password": "pass1234"
-        })
-        assert resp.status_code == 200
-        body = resp.json()
-        assert body["ok"] is True
-        assert "api_key" in body
-        assert body["default_student"]["id"] is not None

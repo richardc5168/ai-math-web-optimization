@@ -256,7 +256,7 @@ _MAX_OUTSTANDING_TOKENS_PER_ACCOUNT = 5
 
 # ─── Rate limiting constants ───
 _RATE_LIMIT_WINDOW_S = 60  # 1-minute window
-_RATE_LIMIT_LOGIN = 5       # max 5 login attempts per IP per minute
+_RATE_LIMIT_LOGIN = 5        # max 5 login attempts per IP per minute
 _RATE_LIMIT_BOOTSTRAP = 10  # max 10 bootstrap requests per IP per minute
 _RATE_LIMIT_EXCHANGE = 20   # max 20 exchange requests per IP per minute
 
@@ -1279,6 +1279,7 @@ def app_auth_login(payload: AppAuthLoginRequest, request: Request):
     client_ip = request.client.host if request.client else "unknown"
     if not _check_rate_limit(f"login:{client_ip}", _RATE_LIMIT_LOGIN):
         raise HTTPException(status_code=429, detail="Too many login attempts")
+
     username = payload.username.strip().lower()
     conn = db()
     row = conn.execute(
