@@ -1,0 +1,675 @@
+"""Tests for subscription-gated report snapshot endpoints.
+
+Covers:
+  - POST /v1/app/report_snapshots  (write)
+  - POST /v1/app/report_snapshots/latest  (read)
+  - Auth: missing API key → 401/422
+  - Auth: invalid API key → 401
+  - Auth: inactive subscription → 402
+  - Ownership: wrong student_id → 404
+  - Happy path: write + read roundtrip
+"""
+import importlib
+import os
+
+import httpx
+import pytest
+
+
+@pytest.fixture
+def setup_server(tmp_path):
+    """Set up a fresh server with a provisioned account."""
+    db_path = tmp_path / "snapshots_test.db"
+    os.environ["DB_PATH"] = str(db_path)
+    os.environ["APP_PROVISION_ADMIN_TOKEN"] = "test-admin-token"
+
+    import server
+    importlib.reload(server)
+    return server
+
+
+ADMIN_HEADERS = {"X-Admin-Token": "test-admin-token"}
+
+
+async def _provision(client, username="testuser"):
+    resp = await client.post("/v1/app/auth/provision", json={
+        "username": username,
+        "password": "pass1234",
+    }, headers=ADMIN_HEADERS)
+    assert resp.status_code == 200, f"Provision failed: {resp.text}"
+    body = resp.json()
+    return body["api_key"], body["default_student_id"]
+
+
+@pytest.mark.anyio
+async def test_snapshot_missing_api_key(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        resp = await c.post("/v1/app/report_snapshots", json={
+            "student_id": 1,
+            "report_payload": {"test": True}
+        })
+        assert resp.status_code in (401, 422), f"Expected 401 or 422, got {resp.status_code}"
+
+
+@pytest.mark.anyio
+async def test_snapshot_invalid_api_key(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        resp = await c.post(
+            "/v1/app/report_snapshots",
+            json={"student_id": 1, "report_payload": {"test": True}},
+            headers={"X-API-Key": "invalid-key-999"},
+        )
+        assert resp.status_code == 401
+
+
+@pytest.mark.anyio
+async def test_snapshot_inactive_subscription(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "testuser_inactive")
+
+        # Deactivate subscription
+        conn = setup_server.db()
+        conn.execute("UPDATE subscriptions SET status = 'inactive'")
+        conn.commit()
+        conn.close()
+
+        resp = await c.post(
+            "/v1/app/report_snapshots",
+            json={"student_id": student_id, "report_payload": {"test": True}},
+            headers={"X-API-Key": api_key},
+        )
+        assert resp.status_code == 402
+
+
+@pytest.mark.anyio
+async def test_snapshot_wrong_student_ownership(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, _ = await _provision(c, "testuser_owner")
+
+        resp = await c.post(
+            "/v1/app/report_snapshots",
+            json={"student_id": 99999, "report_payload": {"test": True}},
+            headers={"X-API-Key": api_key},
+        )
+        assert resp.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_snapshot_write_and_read_happy_path(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "testuser_happy")
+
+        report_payload = {
+            "v": 1,
+            "name": "TestStudent",
+            "ts": 1700000000000,
+            "days": 7,
+            "d": {"total": 10, "correct": 8, "accuracy": 80},
+        }
+
+        write_resp = await c.post(
+            "/v1/app/report_snapshots",
+            json={"student_id": student_id, "report_payload": report_payload, "source": "test"},
+            headers={"X-API-Key": api_key},
+        )
+        assert write_resp.status_code == 200
+        assert write_resp.json()["ok"] is True
+
+        read_resp = await c.post(
+            "/v1/app/report_snapshots/latest",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        assert read_resp.status_code == 200
+        body = read_resp.json()
+        assert body["ok"] is True
+        assert body["snapshot"]["student_id"] == student_id
+        assert body["snapshot"]["report_payload"]["d"]["accuracy"] == 80
+        assert body["snapshot"]["source"] == "test"
+
+
+@pytest.mark.anyio
+async def test_snapshot_read_no_snapshot(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "testuser_nosnapshot")
+
+        read_resp = await c.post(
+            "/v1/app/report_snapshots/latest",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        assert read_resp.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_snapshot_upsert_overwrites(setup_server):
+    """Second write for same student/account should update, not insert."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "testuser_upsert")
+        headers = {"X-API-Key": api_key}
+
+        await c.post("/v1/app/report_snapshots", json={
+            "student_id": student_id,
+            "report_payload": {"version": 1},
+        }, headers=headers)
+
+        await c.post("/v1/app/report_snapshots", json={
+            "student_id": student_id,
+            "report_payload": {"version": 2},
+        }, headers=headers)
+
+        read = await c.post("/v1/app/report_snapshots/latest", json={
+            "student_id": student_id,
+        }, headers=headers)
+        assert read.json()["snapshot"]["report_payload"]["version"] == 2
+
+
+# ========= Practice Events Endpoint Tests =========
+
+@pytest.mark.anyio
+async def test_practice_event_missing_api_key(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        resp = await c.post("/v1/app/practice_events", json={
+            "student_id": 1,
+            "event": {"score": 8, "total": 10, "topic": "fraction"}
+        })
+        assert resp.status_code in (401, 422)
+
+
+@pytest.mark.anyio
+async def test_practice_event_inactive_subscription(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "pe_inactive")
+        conn = setup_server.db()
+        conn.execute("UPDATE subscriptions SET status = 'inactive' WHERE account_id = (SELECT id FROM accounts WHERE api_key = ?)", (api_key,))
+        conn.commit()
+        conn.close()
+
+        resp = await c.post("/v1/app/practice_events", json={
+            "student_id": student_id,
+            "event": {"score": 5, "total": 10}
+        }, headers={"X-API-Key": api_key})
+        assert resp.status_code == 402
+
+
+@pytest.mark.anyio
+async def test_practice_event_wrong_student(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, _ = await _provision(c, "pe_owner")
+        resp = await c.post("/v1/app/practice_events", json={
+            "student_id": 99999,
+            "event": {"score": 5, "total": 10}
+        }, headers={"X-API-Key": api_key})
+        assert resp.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_practice_event_happy_path_creates_snapshot(setup_server):
+    """Practice event on a student with no existing snapshot should create one."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "pe_happy_new")
+        headers = {"X-API-Key": api_key}
+
+        resp = await c.post("/v1/app/practice_events", json={
+            "student_id": student_id,
+            "event": {"score": 8, "total": 10, "topic": "fraction", "kind": "add"}
+        }, headers=headers)
+        assert resp.status_code == 200
+        assert resp.json()["ok"] is True
+
+        # Verify event was stored in snapshot
+        read = await c.post("/v1/app/report_snapshots/latest", json={
+            "student_id": student_id,
+        }, headers=headers)
+        assert read.status_code == 200
+        payload = read.json()["snapshot"]["report_payload"]
+        events = payload["d"]["practice"]["events"]
+        assert len(events) == 1
+        assert events[0]["score"] == 8
+        assert events[0]["topic"] == "fraction"
+
+
+@pytest.mark.anyio
+async def test_practice_event_appends_to_existing_snapshot(setup_server):
+    """Practice event on a student with existing snapshot should append."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "pe_happy_existing")
+        headers = {"X-API-Key": api_key}
+
+        # Write an initial snapshot
+        await c.post("/v1/app/report_snapshots", json={
+            "student_id": student_id,
+            "report_payload": {"v": 1, "d": {"total": 10}},
+        }, headers=headers)
+
+        # Append a practice event
+        resp = await c.post("/v1/app/practice_events", json={
+            "student_id": student_id,
+            "event": {"score": 7, "total": 10, "topic": "decimal"}
+        }, headers=headers)
+        assert resp.status_code == 200
+
+        # Verify event was appended and original payload preserved
+        read = await c.post("/v1/app/report_snapshots/latest", json={
+            "student_id": student_id,
+        }, headers=headers)
+        payload = read.json()["snapshot"]["report_payload"]
+        assert payload["v"] == 1
+        assert payload["d"]["total"] == 10
+        events = payload["d"]["practice"]["events"]
+        assert len(events) == 1
+        assert events[0]["topic"] == "decimal"
+
+
+# ========= Bootstrap / Exchange Token Tests =========
+
+@pytest.mark.anyio
+async def test_bootstrap_missing_api_key(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        resp = await c.post("/v1/app/auth/bootstrap", json={"student_id": 1})
+        assert resp.status_code in (401, 422)
+
+
+@pytest.mark.anyio
+async def test_bootstrap_invalid_api_key(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": 1},
+            headers={"X-API-Key": "invalid-key-999"},
+        )
+        assert resp.status_code == 401
+
+
+@pytest.mark.anyio
+async def test_bootstrap_inactive_subscription(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "bs_inactive")
+        conn = setup_server.db()
+        conn.execute(
+            "UPDATE subscriptions SET status = 'inactive' WHERE account_id = "
+            "(SELECT id FROM accounts WHERE api_key = ?)", (api_key,)
+        )
+        conn.commit()
+        conn.close()
+
+        resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        assert resp.status_code == 402
+
+
+@pytest.mark.anyio
+async def test_bootstrap_wrong_student(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, _ = await _provision(c, "bs_owner")
+        resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": 99999},
+            headers={"X-API-Key": api_key},
+        )
+        assert resp.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_bootstrap_happy_path(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "bs_happy")
+        resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["ok"] is True
+        assert len(body["bootstrap_token"]) >= 10
+
+
+@pytest.mark.anyio
+async def test_exchange_invalid_token(setup_server):
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        resp = await c.post(
+            "/v1/app/auth/exchange",
+            json={"bootstrap_token": "nonexistent-token-value"},
+        )
+        assert resp.status_code == 401
+
+
+@pytest.mark.anyio
+async def test_exchange_replayed_token(setup_server):
+    """Token must be single-use: second exchange attempt must fail."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "ex_replay")
+        bs_resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        token = bs_resp.json()["bootstrap_token"]
+
+        # First exchange — should succeed
+        first = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": token})
+        assert first.status_code == 200
+
+        # Second exchange — same token — must fail (single-use)
+        second = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": token})
+        assert second.status_code == 401
+
+
+@pytest.mark.anyio
+async def test_exchange_expired_token(setup_server):
+    """Expired tokens must be rejected."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "ex_expired")
+        bs_resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        token = bs_resp.json()["bootstrap_token"]
+
+        # Artificially expire the token via DB
+        conn = setup_server.db()
+        token_hash = setup_server._hash_token(token)
+        conn.execute(
+            "UPDATE bootstrap_tokens SET expires_at = '2020-01-01T00:00:00' WHERE token_hash = ?",
+            (token_hash,),
+        )
+        conn.commit()
+        conn.close()
+
+        resp = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": token})
+        assert resp.status_code == 401
+
+
+@pytest.mark.anyio
+async def test_exchange_happy_path(setup_server):
+    """Full bootstrap → exchange roundtrip must return credentials."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "ex_happy")
+        bs_resp = await c.post(
+            "/v1/app/auth/bootstrap",
+            json={"student_id": student_id},
+            headers={"X-API-Key": api_key},
+        )
+        token = bs_resp.json()["bootstrap_token"]
+
+        resp = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": token})
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["ok"] is True
+        assert body["api_key"] == api_key
+        assert body["student_id"] == student_id
+        assert body["subscription"]["status"] == "active"
+
+
+# ========= Rate Limiting & Token Cap Tests =========
+
+@pytest.mark.anyio
+async def test_bootstrap_rate_limit(setup_server):
+    """Bootstrap requests exceeding the per-IP limit must return 429."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "rl_bootstrap")
+        headers = {"X-API-Key": api_key}
+
+        # Clear any prior rate limit / token state in DB
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM bootstrap_tokens")
+        conn.commit()
+        conn.close()
+        # Temporarily lower the limit for testing
+        orig = setup_server._RATE_LIMIT_BOOTSTRAP
+        setup_server._RATE_LIMIT_BOOTSTRAP = 3
+        try:
+            for i in range(3):
+                resp = await c.post("/v1/app/auth/bootstrap", json={"student_id": student_id}, headers=headers)
+                assert resp.status_code == 200, f"Request {i+1} should succeed"
+            # 4th request should be rate-limited
+            resp = await c.post("/v1/app/auth/bootstrap", json={"student_id": student_id}, headers=headers)
+            assert resp.status_code == 429
+        finally:
+            setup_server._RATE_LIMIT_BOOTSTRAP = orig
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.execute("DELETE FROM bootstrap_tokens")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_exchange_rate_limit(setup_server):
+    """Exchange requests exceeding the per-IP limit must return 429."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        # Clear any prior rate limit state in DB
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.commit()
+        conn.close()
+        orig = setup_server._RATE_LIMIT_EXCHANGE
+        setup_server._RATE_LIMIT_EXCHANGE = 3
+        try:
+            for i in range(3):
+                resp = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": f"nonexistent-token-{i:04d}"})
+                # These fail with 401 (invalid token) but still count against rate limit
+                assert resp.status_code == 401
+            # 4th request should be rate-limited before token check
+            resp = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": "nonexistent-token-0003"})
+            assert resp.status_code == 429
+        finally:
+            setup_server._RATE_LIMIT_EXCHANGE = orig
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_bootstrap_per_account_token_cap(setup_server):
+    """Outstanding tokens per account must be capped."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "cap_account")
+        headers = {"X-API-Key": api_key}
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM bootstrap_tokens")
+        conn.commit()
+        conn.close()
+        orig_cap = setup_server._MAX_OUTSTANDING_TOKENS_PER_ACCOUNT
+        setup_server._MAX_OUTSTANDING_TOKENS_PER_ACCOUNT = 2
+        try:
+            # Create 2 tokens (at cap)
+            for i in range(2):
+                resp = await c.post("/v1/app/auth/bootstrap", json={"student_id": student_id}, headers=headers)
+                assert resp.status_code == 200
+            # 3rd token should be refused (cap hit)
+            resp = await c.post("/v1/app/auth/bootstrap", json={"student_id": student_id}, headers=headers)
+            assert resp.status_code == 429
+            assert "outstanding" in resp.json()["detail"].lower()
+        finally:
+            setup_server._MAX_OUTSTANDING_TOKENS_PER_ACCOUNT = orig_cap
+            conn = setup_server.db()
+            conn.execute("DELETE FROM bootstrap_tokens")
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_rate_limit_does_not_block_normal_flow(setup_server):
+    """Normal single bootstrap+exchange flow must succeed under default limits."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM bootstrap_tokens")
+        conn.commit()
+        conn.close()
+        api_key, student_id = await _provision(c, "rl_normal")
+
+        # Bootstrap
+        bs = await c.post("/v1/app/auth/bootstrap", json={"student_id": student_id}, headers={"X-API-Key": api_key})
+        assert bs.status_code == 200
+        token = bs.json()["bootstrap_token"]
+
+        # Exchange
+        ex = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": token})
+        assert ex.status_code == 200
+        assert ex.json()["api_key"] == api_key
+
+
+@pytest.mark.anyio
+async def test_token_survives_server_module_state(setup_server):
+    """Token is stored in DB, not just in-memory. Verify DB-backed persistence."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        api_key, student_id = await _provision(c, "db_persist")
+        bs = await c.post("/v1/app/auth/bootstrap", json={"student_id": student_id}, headers={"X-API-Key": api_key})
+        token = bs.json()["bootstrap_token"]
+
+        # Verify the token exists in the DB
+        conn = setup_server.db()
+        token_hash = setup_server._hash_token(token)
+        row = conn.execute(
+            "SELECT * FROM bootstrap_tokens WHERE token_hash = ?", (token_hash,)
+        ).fetchone()
+        conn.close()
+        assert row is not None, "Token must be persisted in DB"
+        assert row["consumed_at"] is None, "Token must not be consumed yet"
+
+        # Exchange should still work
+        ex = await c.post("/v1/app/auth/exchange", json={"bootstrap_token": token})
+        assert ex.status_code == 200
+
+        # Verify consumed_at is now set
+        conn = setup_server.db()
+        row = conn.execute(
+            "SELECT * FROM bootstrap_tokens WHERE token_hash = ?", (token_hash,)
+        ).fetchone()
+        conn.close()
+        assert row["consumed_at"] is not None, "Token must be marked consumed in DB"
+
+
+# ========= Login Rate Limiting Tests =========
+
+@pytest.mark.anyio
+async def test_login_rate_limit(setup_server):
+    """Login requests exceeding the per-IP limit must return 429."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "rl_login_user")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.commit()
+        conn.close()
+
+        orig = setup_server._RATE_LIMIT_LOGIN
+        setup_server._RATE_LIMIT_LOGIN = 3
+        try:
+            for i in range(3):
+                resp = await c.post("/v1/app/auth/login", json={
+                    "username": "rl_login_user", "password": "pass1234"
+                })
+                assert resp.status_code == 200, f"Login {i+1} should succeed"
+            # 4th login should be rate-limited
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "rl_login_user", "password": "pass1234"
+            })
+            assert resp.status_code == 429
+            body = resp.json()
+            assert "too many" in body["detail"].lower()
+            # Response must NOT contain any credentials
+            assert "api_key" not in body
+            assert "password" not in body
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_login_rate_limit_blocks_before_credential_check(setup_server):
+    """Rate limit must fire before credential validation — no info leak on 429."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "rl_login_info_leak")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.commit()
+        conn.close()
+
+        orig = setup_server._RATE_LIMIT_LOGIN
+        setup_server._RATE_LIMIT_LOGIN = 1
+        try:
+            # First request succeeds
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "rl_login_info_leak", "password": "pass1234"
+            })
+            assert resp.status_code == 200
+
+            # Second request with WRONG password should get 429 (not 401)
+            # This proves rate limit fires before credential validation
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "rl_login_info_leak", "password": "wrong_password"
+            })
+            assert resp.status_code == 429
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_login_normal_flow_not_blocked(setup_server):
+    """A single login under default rate limit must succeed normally."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "rl_login_normal")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.commit()
+        conn.close()
+
+        resp = await c.post("/v1/app/auth/login", json={
+            "username": "rl_login_normal", "password": "pass1234"
+        })
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["ok"] is True
+        assert "api_key" in body
+        assert body["default_student"]["id"] is not None

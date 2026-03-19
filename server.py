@@ -227,6 +227,134 @@ class AppAuthProvisionRequest(BaseModel):
     seats: int = Field(default=1, ge=1, le=200)
 
 
+class ReportSnapshotWriteRequest(BaseModel):
+    student_id: int
+    report_payload: Dict[str, Any]
+    source: str = Field(default="frontend", max_length=40)
+
+
+class ReportSnapshotReadRequest(BaseModel):
+    student_id: int
+
+
+class PracticeEventWriteRequest(BaseModel):
+    student_id: int
+    event: Dict[str, Any]
+
+
+class BootstrapRequest(BaseModel):
+    student_id: int
+
+
+class ExchangeRequest(BaseModel):
+    bootstrap_token: str = Field(..., min_length=10)
+
+
+# ─── Bootstrap token lifecycle constants ───
+_BOOTSTRAP_TOKEN_TTL_S = 300  # 5 minutes
+_MAX_OUTSTANDING_TOKENS_PER_ACCOUNT = 5
+
+# ─── Rate limiting constants ───
+_RATE_LIMIT_WINDOW_S = 60  # 1-minute window
+_RATE_LIMIT_LOGIN = 5       # max 5 login attempts per IP per minute
+_RATE_LIMIT_BOOTSTRAP = 10  # max 10 bootstrap requests per IP per minute
+_RATE_LIMIT_EXCHANGE = 20   # max 20 exchange requests per IP per minute
+
+
+def _hash_token(raw_token: str) -> str:
+    """SHA-256 hash of a bootstrap token. DB stores hash, never raw token."""
+    return hashlib.sha256(raw_token.encode()).hexdigest()
+
+
+def _check_rate_limit(key: str, max_requests: int) -> bool:
+    """Return True if request is allowed, False if rate-limited.
+    Uses a DB-backed sliding window of timestamps."""
+    conn = db()
+    now = datetime.now().timestamp()
+    window_start = now - _RATE_LIMIT_WINDOW_S
+    # Prune old entries
+    conn.execute("DELETE FROM rate_limit_events WHERE ts < ?", (window_start,))
+    row = conn.execute(
+        "SELECT COUNT(*) AS c FROM rate_limit_events WHERE key = ? AND ts >= ?",
+        (key, window_start),
+    ).fetchone()
+    count = int(row["c"]) if row else 0
+    if count >= max_requests:
+        conn.commit()
+        conn.close()
+        return False
+    conn.execute(
+        "INSERT INTO rate_limit_events (key, ts) VALUES (?, ?)",
+        (key, now),
+    )
+    conn.commit()
+    conn.close()
+    return True
+
+
+def _store_bootstrap_token(raw_token: str, api_key: str, account_id: int, student_id: int):
+    """Persist a bootstrap token record in the DB."""
+    conn = db()
+    now_iso = datetime.now().isoformat()
+    expires_iso = (datetime.now() + timedelta(seconds=_BOOTSTRAP_TOKEN_TTL_S)).isoformat()
+    conn.execute(
+        "INSERT INTO bootstrap_tokens (token_hash, account_id, student_id, api_key, created_at, expires_at) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (_hash_token(raw_token), account_id, student_id, api_key, now_iso, expires_iso),
+    )
+    conn.commit()
+    conn.close()
+
+
+def _consume_bootstrap_token(raw_token: str) -> Optional[Dict[str, Any]]:
+    """Consume a bootstrap token (single-use). Returns token data or None."""
+    conn = db()
+    token_hash = _hash_token(raw_token)
+    now_iso = datetime.now().isoformat()
+    row = conn.execute(
+        "SELECT * FROM bootstrap_tokens WHERE token_hash = ? AND consumed_at IS NULL AND expires_at > ?",
+        (token_hash, now_iso),
+    ).fetchone()
+    if not row:
+        conn.close()
+        return None
+    # Mark consumed (single-use)
+    conn.execute(
+        "UPDATE bootstrap_tokens SET consumed_at = ? WHERE id = ?",
+        (now_iso, row["id"]),
+    )
+    conn.commit()
+    conn.close()
+    return {
+        "api_key": row["api_key"],
+        "account_id": int(row["account_id"]),
+        "student_id": int(row["student_id"]),
+        "created_at": row["created_at"],
+        "expires_at": row["expires_at"],
+    }
+
+
+def _count_outstanding_tokens(account_id: int) -> int:
+    """Count unconsumed, unexpired tokens for an account."""
+    conn = db()
+    now_iso = datetime.now().isoformat()
+    row = conn.execute(
+        "SELECT COUNT(*) AS c FROM bootstrap_tokens WHERE account_id = ? AND consumed_at IS NULL AND expires_at > ?",
+        (account_id, now_iso),
+    ).fetchone()
+    conn.close()
+    return int(row["c"]) if row else 0
+
+
+def _cleanup_expired_tokens_db():
+    """Remove expired bootstrap tokens from DB to prevent unbounded growth."""
+    conn = db()
+    cutoff = (datetime.now() - timedelta(seconds=_BOOTSTRAP_TOKEN_TTL_S * 2)).isoformat()
+    conn.execute("DELETE FROM bootstrap_tokens WHERE expires_at < ?", (cutoff,))
+    conn.commit()
+    conn.close()
+
+
 def _with_random_seed(seed: Optional[int]):
     """Context manager-like helper without importing contextlib (keep server.py simple)."""
 
@@ -596,6 +724,20 @@ def init_db():
     )
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS report_snapshots (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        account_id INTEGER NOT NULL,
+        student_id INTEGER NOT NULL,
+        report_payload_json TEXT NOT NULL DEFAULT '{}',
+        source TEXT NOT NULL DEFAULT 'frontend',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY(account_id) REFERENCES accounts(id),
+        FOREIGN KEY(student_id) REFERENCES students(id)
+    )
+    """)
+
     # Adaptive mastery (per-student per-concept)
     cur.execute("""
     CREATE TABLE IF NOT EXISTS student_concepts (
@@ -620,6 +762,33 @@ def init_db():
         FOREIGN KEY(student_id) REFERENCES students(id)
     )
     """)
+
+    # ─── Bootstrap token durable store ───
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS bootstrap_tokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token_hash TEXT NOT NULL,
+        account_id INTEGER NOT NULL,
+        student_id INTEGER NOT NULL,
+        api_key TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        expires_at TEXT NOT NULL,
+        consumed_at TEXT,
+        FOREIGN KEY(account_id) REFERENCES accounts(id)
+    )
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_bt_hash ON bootstrap_tokens(token_hash)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_bt_account ON bootstrap_tokens(account_id, consumed_at, expires_at)")
+
+    # ─── Rate limiting durable store ───
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS rate_limit_events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key TEXT NOT NULL,
+        ts REAL NOT NULL
+    )
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_rle_key_ts ON rate_limit_events(key, ts)")
 
     # ---- schema migration (non-breaking) ----
     def ensure_column(table: str, col: str, col_type: str):
@@ -1106,7 +1275,10 @@ def app_auth_provision(
 
 
 @app.post("/v1/app/auth/login", summary="Login app user with purchased username/password")
-def app_auth_login(payload: AppAuthLoginRequest):
+def app_auth_login(payload: AppAuthLoginRequest, request: Request):
+    client_ip = request.client.host if request.client else "unknown"
+    if not _check_rate_limit(f"login:{client_ip}", _RATE_LIMIT_LOGIN):
+        raise HTTPException(status_code=429, detail="Too many login attempts")
     username = payload.username.strip().lower()
     conn = db()
     row = conn.execute(
@@ -1175,6 +1347,62 @@ def app_auth_whoami(x_api_key: str = Header(..., alias="X-API-Key")):
         "account_id": int(acc["id"]),
         "account_name": acc["name"],
         "students": int((st_count["c"] if st_count else 0) or 0),
+    }
+
+
+@app.post("/v1/app/auth/bootstrap", summary="Create short-lived bootstrap token for parent-report handoff")
+def app_auth_bootstrap(
+    payload: BootstrapRequest,
+    request: Request,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+):
+    """APP calls this server-side with X-API-Key + student_id.
+    Returns a short-lived, single-use bootstrap_token that can be passed
+    via URL to parent-report. The token is NOT a long-lived credential."""
+    client_ip = request.client.host if request.client else "unknown"
+    if not _check_rate_limit(f"bootstrap:{client_ip}", _RATE_LIMIT_BOOTSTRAP):
+        raise HTTPException(status_code=429, detail="Too many bootstrap requests")
+
+    acc = get_account_by_api_key(x_api_key)
+    account_id = int(acc["id"])
+    ensure_subscription_active(account_id)
+    conn = db()
+    _verify_student_ownership(conn, account_id, payload.student_id)
+    conn.close()
+
+    _cleanup_expired_tokens_db()
+
+    # Per-account outstanding token cap (DB-backed)
+    outstanding = _count_outstanding_tokens(account_id)
+    if outstanding >= _MAX_OUTSTANDING_TOKENS_PER_ACCOUNT:
+        raise HTTPException(status_code=429, detail="Too many outstanding bootstrap tokens")
+
+    token = secrets.token_urlsafe(32)
+    _store_bootstrap_token(token, acc["api_key"], account_id, payload.student_id)
+    return {"ok": True, "bootstrap_token": token}
+
+
+@app.post("/v1/app/auth/exchange", summary="Exchange bootstrap token for session credentials")
+def app_auth_exchange(payload: ExchangeRequest, request: Request):
+    """Frontend calls this with a bootstrap_token received via URL.
+    Validates and consumes the token (single-use), then returns
+    the real credentials + subscription context via POST body only."""
+    client_ip = request.client.host if request.client else "unknown"
+    if not _check_rate_limit(f"exchange:{client_ip}", _RATE_LIMIT_EXCHANGE):
+        raise HTTPException(status_code=429, detail="Too many exchange requests")
+
+    entry = _consume_bootstrap_token(payload.bootstrap_token)
+    if not entry:
+        raise HTTPException(status_code=401, detail="Invalid or expired bootstrap token")
+
+    # Re-validate subscription is still active
+    ensure_subscription_active(entry["account_id"])
+
+    return {
+        "ok": True,
+        "api_key": entry["api_key"],
+        "student_id": entry["student_id"],
+        "subscription": {"status": "active"},
     }
 
 
@@ -2909,6 +3137,135 @@ def parent_report_registry_upsert(req: ParentReportUpsertRequest):
             )
         conn.commit()
         return {"ok": True, "cloud_ts": now_ms}
+    finally:
+        conn.close()
+
+
+# ========= Subscription-gated report snapshot endpoints =========
+
+def _verify_student_ownership(conn: sqlite3.Connection, account_id: int, student_id: int):
+    """Verify that the student belongs to this account. Raises 404 if not."""
+    row = conn.execute(
+        "SELECT id FROM students WHERE id = ? AND account_id = ?",
+        (student_id, account_id),
+    ).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Student not found or not owned by this account")
+
+
+@app.post("/v1/app/report_snapshots")
+def create_report_snapshot(
+    req: ReportSnapshotWriteRequest,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+):
+    acc = get_account_by_api_key(x_api_key)
+    ensure_subscription_active(acc["id"])
+    conn = db()
+    try:
+        _verify_student_ownership(conn, acc["id"], req.student_id)
+        now = now_iso()
+        payload = json.dumps(req.report_payload, ensure_ascii=False)
+        source = str(req.source or "frontend")[:40]
+        # Upsert: one snapshot per student per account
+        existing = conn.execute(
+            "SELECT id FROM report_snapshots WHERE account_id = ? AND student_id = ?",
+            (acc["id"], req.student_id),
+        ).fetchone()
+        if existing:
+            conn.execute(
+                "UPDATE report_snapshots SET report_payload_json = ?, source = ?, updated_at = ? WHERE id = ?",
+                (payload, source, now, existing["id"]),
+            )
+        else:
+            conn.execute(
+                "INSERT INTO report_snapshots (account_id, student_id, report_payload_json, source, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+                (acc["id"], req.student_id, payload, source, now, now),
+            )
+        conn.commit()
+        return {"ok": True, "updated_at": now}
+    finally:
+        conn.close()
+
+
+@app.post("/v1/app/report_snapshots/latest")
+def get_latest_report_snapshot(
+    req: ReportSnapshotReadRequest,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+):
+    acc = get_account_by_api_key(x_api_key)
+    ensure_subscription_active(acc["id"])
+    conn = db()
+    try:
+        _verify_student_ownership(conn, acc["id"], req.student_id)
+        row = conn.execute(
+            "SELECT * FROM report_snapshots WHERE account_id = ? AND student_id = ? ORDER BY updated_at DESC LIMIT 1",
+            (acc["id"], req.student_id),
+        ).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="No snapshot found for this student")
+        payload = {}
+        try:
+            payload = json.loads(row["report_payload_json"])
+        except (json.JSONDecodeError, TypeError):
+            pass
+        return {
+            "ok": True,
+            "snapshot": {
+                "student_id": row["student_id"],
+                "report_payload": payload,
+                "source": row["source"],
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            },
+        }
+    finally:
+        conn.close()
+
+
+@app.post("/v1/app/practice_events")
+def create_practice_event(
+    req: PracticeEventWriteRequest,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+):
+    acc = get_account_by_api_key(x_api_key)
+    ensure_subscription_active(acc["id"])
+    conn = db()
+    try:
+        _verify_student_ownership(conn, acc["id"], req.student_id)
+        event = _sanitize_practice_event(req.event)
+        now = now_iso()
+        # Append to the student's report snapshot practice events
+        existing = conn.execute(
+            "SELECT id, report_payload_json FROM report_snapshots WHERE account_id = ? AND student_id = ?",
+            (acc["id"], req.student_id),
+        ).fetchone()
+        if existing:
+            payload = {}
+            try:
+                payload = json.loads(existing["report_payload_json"])
+            except (json.JSONDecodeError, TypeError):
+                pass
+            if not isinstance(payload, dict):
+                payload = {}
+            d = payload.setdefault("d", {})
+            practice = d.setdefault("practice", {})
+            events = practice.setdefault("events", [])
+            if not isinstance(events, list):
+                events = []
+                practice["events"] = events
+            events.append(event)
+            conn.execute(
+                "UPDATE report_snapshots SET report_payload_json = ?, updated_at = ? WHERE id = ?",
+                (json.dumps(payload, ensure_ascii=False), now, existing["id"]),
+            )
+        else:
+            payload = {"d": {"practice": {"events": [event]}}}
+            conn.execute(
+                "INSERT INTO report_snapshots (account_id, student_id, report_payload_json, source, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+                (acc["id"], req.student_id, json.dumps(payload, ensure_ascii=False), "practice_event", now, now),
+            )
+        conn.commit()
+        return {"ok": True, "updated_at": now}
     finally:
         conn.close()
 
