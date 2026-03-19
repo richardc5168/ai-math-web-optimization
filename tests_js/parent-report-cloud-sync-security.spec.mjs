@@ -294,6 +294,15 @@ test('bootstrap/exchange/login endpoints have rate limiting and token cap (sourc
   const credPos = loginBlock.indexOf('WHERE au.username');
   assert.ok(rlPos < credPos, 'login rate limit must fire BEFORE credential lookup');
 
+  /* Account-level lockout must exist and fire before credential validation */
+  assert.ok(serverSrc.includes('_LOGIN_LOCKOUT_THRESHOLD'), 'server must define lockout threshold');
+  assert.ok(serverSrc.includes('_LOGIN_LOCKOUT_DURATION_S'), 'server must define lockout duration');
+  assert.ok(serverSrc.includes('login_failures'), 'server must have login_failures table');
+  assert.ok(loginBlock.includes('_is_account_locked'), 'login must check account lockout');
+  assert.ok(loginBlock.includes('423'), 'login must return 423 on lockout');
+  const lockoutPos = loginBlock.indexOf('_is_account_locked');
+  assert.ok(lockoutPos < credPos, 'account lockout must fire BEFORE credential lookup');
+
   /* Bootstrap endpoint must check rate limit and token cap */
   const bsStart = serverSrc.indexOf('@app.post("/v1/app/auth/bootstrap"');
   const bsBlock = serverSrc.slice(bsStart, bsStart + 1500);

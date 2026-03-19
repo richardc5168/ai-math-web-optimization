@@ -260,6 +260,10 @@ _RATE_LIMIT_LOGIN = 5        # max 5 login attempts per IP per minute
 _RATE_LIMIT_BOOTSTRAP = 10  # max 10 bootstrap requests per IP per minute
 _RATE_LIMIT_EXCHANGE = 20   # max 20 exchange requests per IP per minute
 
+# ─── Account-level login lockout ───
+_LOGIN_LOCKOUT_THRESHOLD = 5    # lock after 5 consecutive failed attempts
+_LOGIN_LOCKOUT_DURATION_S = 300  # 5-minute lockout window
+
 
 def _hash_token(raw_token: str) -> str:
     """SHA-256 hash of a bootstrap token. DB stores hash, never raw token."""
@@ -290,6 +294,40 @@ def _check_rate_limit(key: str, max_requests: int) -> bool:
     conn.commit()
     conn.close()
     return True
+
+
+def _is_account_locked(username: str) -> bool:
+    """Check if a username is locked due to too many recent failed login attempts."""
+    conn = db()
+    cutoff = datetime.now().timestamp() - _LOGIN_LOCKOUT_DURATION_S
+    row = conn.execute(
+        "SELECT COUNT(*) AS c FROM login_failures WHERE username = ? AND ts >= ?",
+        (username, cutoff),
+    ).fetchone()
+    conn.close()
+    return (int(row["c"]) if row else 0) >= _LOGIN_LOCKOUT_THRESHOLD
+
+
+def _record_login_failure(username: str, client_ip: str):
+    """Record a failed login attempt for account-level lockout tracking."""
+    conn = db()
+    conn.execute(
+        "INSERT INTO login_failures (username, client_ip, ts) VALUES (?, ?, ?)",
+        (username, client_ip, datetime.now().timestamp()),
+    )
+    # Prune old entries (older than 2x lockout window)
+    cutoff = datetime.now().timestamp() - (_LOGIN_LOCKOUT_DURATION_S * 2)
+    conn.execute("DELETE FROM login_failures WHERE ts < ?", (cutoff,))
+    conn.commit()
+    conn.close()
+
+
+def _clear_login_failures(username: str):
+    """Clear failed login records on successful authentication."""
+    conn = db()
+    conn.execute("DELETE FROM login_failures WHERE username = ?", (username,))
+    conn.commit()
+    conn.close()
 
 
 def _store_bootstrap_token(raw_token: str, api_key: str, account_id: int, student_id: int):
@@ -790,6 +828,17 @@ def init_db():
     """)
     cur.execute("CREATE INDEX IF NOT EXISTS idx_rle_key_ts ON rate_limit_events(key, ts)")
 
+    # ─── Login failure tracking for account-level lockout ───
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS login_failures (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        client_ip TEXT NOT NULL,
+        ts REAL NOT NULL
+    )
+    """)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_lf_username_ts ON login_failures(username, ts)")
+
     # ---- schema migration (non-breaking) ----
     def ensure_column(table: str, col: str, col_type: str):
         cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()}
@@ -1281,6 +1330,11 @@ def app_auth_login(payload: AppAuthLoginRequest, request: Request):
         raise HTTPException(status_code=429, detail="Too many login attempts")
 
     username = payload.username.strip().lower()
+
+    # Account-level lockout check (fires before credential validation)
+    if _is_account_locked(username):
+        raise HTTPException(status_code=423, detail="Account temporarily locked due to too many failed attempts")
+
     conn = db()
     row = conn.execute(
         """
@@ -1294,12 +1348,14 @@ def app_auth_login(payload: AppAuthLoginRequest, request: Request):
 
     if not row:
         conn.close()
+        _record_login_failure(username, client_ip)
         raise HTTPException(status_code=401, detail="Invalid username or password")
     if int(row["active"] or 0) != 1:
         conn.close()
         raise HTTPException(status_code=403, detail="User is inactive")
     if not _pwd_ok(payload.password, str(row["password_salt"] or ""), str(row["password_hash"] or "")):
         conn.close()
+        _record_login_failure(username, client_ip)
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
     sub = conn.execute(
@@ -1315,6 +1371,9 @@ def app_auth_login(payload: AppAuthLoginRequest, request: Request):
         (int(row["account_id"]),),
     ).fetchone()
     conn.close()
+
+    # Successful login — clear any prior failure records
+    _clear_login_failures(username)
 
     return {
         "ok": True,

@@ -680,3 +680,231 @@ async def test_login_rate_limit_response_has_no_credential_leak(setup_server):
             conn.execute("DELETE FROM rate_limit_events")
             conn.commit()
             conn.close()
+
+
+# ── Account-level login lockout tests ──────────────────────────────────
+
+@pytest.mark.anyio
+async def test_login_lockout_after_n_failures(setup_server):
+    """After N failed login attempts for the same username, account is locked (423)."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "lockout_user")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM login_failures")
+        conn.commit()
+        conn.close()
+
+        orig_rl = setup_server._RATE_LIMIT_LOGIN
+        orig_threshold = setup_server._LOGIN_LOCKOUT_THRESHOLD
+        setup_server._RATE_LIMIT_LOGIN = 100  # disable IP rate limit for this test
+        setup_server._LOGIN_LOCKOUT_THRESHOLD = 3
+        try:
+            # 3 bad password attempts
+            for i in range(3):
+                resp = await c.post("/v1/app/auth/login", json={
+                    "username": "lockout_user", "password": "wrong"
+                })
+                assert resp.status_code == 401, f"Attempt {i+1} should be 401"
+
+            # 4th attempt — even with CORRECT password — should be locked out
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_user", "password": "pass1234"
+            })
+            assert resp.status_code == 423, \
+                f"Expected 423 (locked), got {resp.status_code}"
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig_rl
+            setup_server._LOGIN_LOCKOUT_THRESHOLD = orig_threshold
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.execute("DELETE FROM login_failures")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_login_lockout_expires(setup_server):
+    """Lockout should expire after the lockout duration passes."""
+    import time as _time
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "lockout_expire")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM login_failures")
+        conn.commit()
+        conn.close()
+
+        orig_rl = setup_server._RATE_LIMIT_LOGIN
+        orig_threshold = setup_server._LOGIN_LOCKOUT_THRESHOLD
+        orig_duration = setup_server._LOGIN_LOCKOUT_DURATION_S
+        setup_server._RATE_LIMIT_LOGIN = 100
+        setup_server._LOGIN_LOCKOUT_THRESHOLD = 2
+        setup_server._LOGIN_LOCKOUT_DURATION_S = 1  # 1-second lockout for testing
+        try:
+            # 2 bad attempts to trigger lockout
+            for i in range(2):
+                await c.post("/v1/app/auth/login", json={
+                    "username": "lockout_expire", "password": "wrong"
+                })
+
+            # Should be locked
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_expire", "password": "pass1234"
+            })
+            assert resp.status_code == 423
+
+            # Wait for lockout to expire
+            _time.sleep(1.2)
+
+            # Should work again
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_expire", "password": "pass1234"
+            })
+            assert resp.status_code == 200, \
+                f"Expected 200 after lockout expired, got {resp.status_code}"
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig_rl
+            setup_server._LOGIN_LOCKOUT_THRESHOLD = orig_threshold
+            setup_server._LOGIN_LOCKOUT_DURATION_S = orig_duration
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.execute("DELETE FROM login_failures")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_successful_login_clears_failures(setup_server):
+    """A successful login must clear the failure count for that account."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "lockout_clear")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM login_failures")
+        conn.commit()
+        conn.close()
+
+        orig_rl = setup_server._RATE_LIMIT_LOGIN
+        orig_threshold = setup_server._LOGIN_LOCKOUT_THRESHOLD
+        setup_server._RATE_LIMIT_LOGIN = 100
+        setup_server._LOGIN_LOCKOUT_THRESHOLD = 5
+        try:
+            # 4 bad attempts (under threshold of 5)
+            for i in range(4):
+                await c.post("/v1/app/auth/login", json={
+                    "username": "lockout_clear", "password": "wrong"
+                })
+
+            # Successful login should clear failures
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_clear", "password": "pass1234"
+            })
+            assert resp.status_code == 200
+
+            # Verify failures were cleared
+            conn = setup_server.db()
+            row = conn.execute(
+                "SELECT COUNT(*) AS c FROM login_failures WHERE username = 'lockout_clear'"
+            ).fetchone()
+            conn.close()
+            assert int(row["c"]) == 0, "Successful login must clear failure records"
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig_rl
+            setup_server._LOGIN_LOCKOUT_THRESHOLD = orig_threshold
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.execute("DELETE FROM login_failures")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_login_lockout_no_cross_account_impact(setup_server):
+    """Locking out user A must not affect user B."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "lockout_a")
+        await _provision(c, "lockout_b")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM login_failures")
+        conn.commit()
+        conn.close()
+
+        orig_rl = setup_server._RATE_LIMIT_LOGIN
+        orig_threshold = setup_server._LOGIN_LOCKOUT_THRESHOLD
+        setup_server._RATE_LIMIT_LOGIN = 100
+        setup_server._LOGIN_LOCKOUT_THRESHOLD = 2
+        try:
+            # Lock out user A
+            for i in range(2):
+                await c.post("/v1/app/auth/login", json={
+                    "username": "lockout_a", "password": "wrong"
+                })
+            resp_a = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_a", "password": "pass1234"
+            })
+            assert resp_a.status_code == 423, "User A should be locked"
+
+            # User B should still work
+            resp_b = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_b", "password": "pass1234"
+            })
+            assert resp_b.status_code == 200, \
+                f"User B should not be affected, got {resp_b.status_code}"
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig_rl
+            setup_server._LOGIN_LOCKOUT_THRESHOLD = orig_threshold
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.execute("DELETE FROM login_failures")
+            conn.commit()
+            conn.close()
+
+
+@pytest.mark.anyio
+async def test_login_lockout_response_no_credential_leak(setup_server):
+    """423 lockout response must not expose username, password, or api_key."""
+    transport = httpx.ASGITransport(app=setup_server.app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as c:
+        await _provision(c, "lockout_leak_check")
+
+        conn = setup_server.db()
+        conn.execute("DELETE FROM rate_limit_events")
+        conn.execute("DELETE FROM login_failures")
+        conn.commit()
+        conn.close()
+
+        orig_rl = setup_server._RATE_LIMIT_LOGIN
+        orig_threshold = setup_server._LOGIN_LOCKOUT_THRESHOLD
+        setup_server._RATE_LIMIT_LOGIN = 100
+        setup_server._LOGIN_LOCKOUT_THRESHOLD = 2
+        try:
+            for i in range(2):
+                await c.post("/v1/app/auth/login", json={
+                    "username": "lockout_leak_check", "password": "wrong"
+                })
+            resp = await c.post("/v1/app/auth/login", json={
+                "username": "lockout_leak_check", "password": "secretpass123"
+            })
+            assert resp.status_code == 423
+            body = resp.text.lower()
+            assert "lockout_leak_check" not in body, "423 must not leak username"
+            assert "secretpass123" not in body, "423 must not leak password"
+            assert "api_key" not in body, "423 must not leak api_key"
+        finally:
+            setup_server._RATE_LIMIT_LOGIN = orig_rl
+            setup_server._LOGIN_LOCKOUT_THRESHOLD = orig_threshold
+            conn = setup_server.db()
+            conn.execute("DELETE FROM rate_limit_events")
+            conn.execute("DELETE FROM login_failures")
+            conn.commit()
+            conn.close()

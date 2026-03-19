@@ -559,9 +559,38 @@
 **Validation**: 29 backend ✅ | 19 JS security ✅ | verify_all 4/4 OK (138 files mirrored)
 
 **Residual Risks**:
-1. No account-level login lockout (only IP-based rate limiting)
+1. ~~No account-level login lockout (only IP-based rate limiting)~~ → **Fixed in iteration 48**
 2. No failed-attempt logging/alerting
 3. No student selector UI
 4. OpenAI key in git history (manual action)
 5. No password recovery flow
 6. Remote cross-validation not yet run
+
+### Iteration 48 — Account-Level Login Lockout (2026-03-19)
+
+**Scope**: `account-level-login-lockout` | **Status**: ✅ Passed
+
+**Objective**: Add account-level login lockout to complement per-IP rate limiting. After 5 failed login attempts for the same username within 5 minutes, temporarily lock that account regardless of source IP.
+
+**Changes**:
+- Added `_LOGIN_LOCKOUT_THRESHOLD = 5` and `_LOGIN_LOCKOUT_DURATION_S = 300` constants
+- Added `login_failures` SQLite table (username, client_ip, ts) with index in `init_db()`
+- Added 3 helper functions: `_is_account_locked()`, `_record_login_failure()`, `_clear_login_failures()`
+- Modified login flow: IP rate limit (429) → account lockout (423) → credential validation (401/403) → success + clear failures
+- Both invalid-username and wrong-password 401s now record failures
+- Successful login clears all failure records for that username
+- Old failure records auto-pruned (2× lockout window)
+- +5 backend tests (34 total): lockout enforcement, expiry, clear-on-success, no cross-account impact, no credential leak
+- Updated JS source-level test: +6 assertions for lockout infrastructure and ordering
+
+**Files**: `server.py`, `tests/test_report_snapshot_endpoints.py`, `tests_js/parent-report-cloud-sync-security.spec.mjs`
+
+**Validation**: 34 backend ✅ | 19 JS security ✅ | verify_all 4/4 OK (138 files mirrored)
+
+**Residual Risks**:
+1. No CAPTCHA or progressive delay for persistent attackers
+2. No admin notification on lockout events
+3. No failed-attempt logging/alerting dashboard
+4. No student selector UI
+5. OpenAI key in git history (manual action)
+6. No password recovery flow
