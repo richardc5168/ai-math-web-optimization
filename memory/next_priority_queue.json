@@ -170,5 +170,31 @@
     "manual_review_required": false,
     "last_evaluated_ts": "2026-03-19T21:00:00+08:00",
     "next_action": "none — completed"
+  },
+  {
+    "task_id": "T53",
+    "title": "Password recovery flow design (admin-assisted MVP + email scale-up)",
+    "category": "security_auth",
+    "source": "iteration_52_residual_risk_5",
+    "priority_band": "P3",
+    "priority_score": 5,
+    "risk_level": "high",
+    "status": "manual_review_required",
+    "selected_reason": "Highest-scoring remaining candidate (security 3, parent trust 3, impl risk 0 for design-only). Parents who forget passwords currently have no recovery path — commercial blocker at scale.",
+    "blockers": ["requires human approval before implementation"],
+    "acceptance_criteria": [
+      "Architecture analysis of current auth system documented",
+      "At least 3 design options evaluated with pros/cons",
+      "Recommended approach identified with impacted files",
+      "Security considerations documented",
+      "Validation plan for eventual implementation documented",
+      "Task marked manual_review_required — no code changes"
+    ],
+    "required_checks": ["governance writeback only — no code changes"],
+    "files_likely_involved": ["server.py (future)", "tests/test_report_snapshot_endpoints.py (future)"],
+    "auto_merge_allowed": false,
+    "manual_review_required": true,
+    "last_evaluated_ts": "2026-03-20T10:00:00+08:00",
+    "next_action": "human reviews design in iteration 53 report section and approves Option A (admin-assisted MVP) for implementation"
   }
 ]

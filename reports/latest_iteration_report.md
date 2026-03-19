@@ -705,5 +705,157 @@
 2. Alert thresholds are hardcoded (10/50) — not configurable without code change
 3. No log rotation or external log aggregation
 4. OpenAI key in git history (manual action)
-5. No password recovery flow
-6. Remote cross-validation not yet run (not deployed)
+5. ~~No password recovery flow~~ → **Design produced in iteration 53** (manual review required)
+6. ~~Remote cross-validation not yet run (not deployed)~~ → **PASSED** (17/17 on 2026-03-20)
+
+---
+
+### Iteration 53 — Password Recovery Flow Design (2026-03-20)
+
+**Scope**: `password-recovery-design` | **Status**: ⏸️ High-risk — design only, manual review required
+
+**Objective**: Produce a complete design for a password recovery flow for paid parent accounts. This is a HIGH-RISK task per governance Section 9 (authentication architecture change). Implementation is NOT included — only analysis, design, impacted files, risks, and validation plan.
+
+**Task Category**: `security_auth` (high-risk)
+
+#### Current Auth Architecture Summary
+
+- **DB schema**: `app_users` table with `username`, `password_hash` (SHA-256), `password_salt` (32-char hex token), `account_id` FK, `active` flag
+- **Password hashing**: `hashlib.sha256(f"{salt}:{password}")` — simple salted hash (NOT bcrypt/argon2)
+- **Login flow**: IP rate limit (429) → account lockout (423) → credential validation (401/403) → subscription check (402) → success (clear failures, log)
+- **Provisioning**: Admin-only `POST /v1/app/auth/provision` with X-Admin-Token
+- **No email field**: `app_users` and `accounts` tables have NO email column
+- **Parent-report PIN**: Separate from login password; stored in `parent_report_registry` as SHA-256 hash; 4-6 digit numeric
+
+#### Design Options Evaluated
+
+**Option A: Admin-Assisted Reset (Recommended for MVP)**
+
+Flow:
+1. Parent contacts admin (LINE/email/support channel out-of-band)
+2. Admin verifies identity (account name, student name, etc.)
+3. Admin calls `POST /v1/app/admin/reset-password` with X-Admin-Token + username
+4. Endpoint generates a temporary password, updates `password_hash`/`password_salt`, returns the temporary password to admin
+5. Admin communicates temporary password to parent out-of-band
+6. Parent logs in with temporary password (forced change on first login is optional future work)
+
+Pros:
+- Zero new infrastructure (no email service, no email field)
+- Reuses existing admin-token auth pattern
+- Simple, bounded implementation (1 new endpoint)
+- Matches current provisioning pattern (admin-gated)
+
+Cons:
+- Manual process, doesn't scale
+- No self-service for parents
+- Depends on admin availability
+
+**Option B: Email-Based Self-Service Reset**
+
+Flow:
+1. Add `email` column to `app_users` table
+2. `POST /v1/app/auth/request-reset` with username or email
+3. Generate reset token (random, single-use, 15-min TTL), store in `password_reset_tokens` table
+4. Send email with reset link containing token
+5. `POST /v1/app/auth/confirm-reset` with token + new password
+6. Validate token, update password, invalidate token
+
+Pros:
+- Self-service, scales infinitely
+- Industry standard
+- Good parent UX
+
+Cons:
+- Requires email service integration (SendGrid/Mailgun/SMTP)
+- Requires adding email to account schema
+- Email deliverability issues (spam folders, etc.)
+- More complex implementation
+- Email becomes a sensitive field (privacy)
+
+**Option C: PIN-Verified Reset**
+
+Flow:
+1. `POST /v1/app/auth/reset-via-pin` with username + parent-report PIN + new password
+2. Server matches username → account → student → report registry PIN hash
+3. If PIN matches, update password
+
+Pros:
+- No external infrastructure
+- Self-service
+- Leverages existing PIN infrastructure
+
+Cons:
+- PIN is weak (4-6 digits) — susceptible to brute force even with rate limiting
+- PIN is per-student, not per-account — multi-student accounts may have different PINs
+- Conflates two separate credentials (login password ≠ report access PIN)
+- If PIN is compromised, attacker gets account takeover + report access
+
+**Recommendation**: Option A (admin-assisted) for MVP, with Option B as the commercial-scale follow-up.
+
+#### Impacted Files (Option A — MVP)
+
+| File | Change |
+|------|--------|
+| `server.py` | Add `POST /v1/app/admin/reset-password` endpoint with admin-token auth |
+| `tests/test_report_snapshot_endpoints.py` | +3-4 tests: missing token, unknown user, happy path, password usable after reset |
+| `tests_js/parent-report-cloud-sync-security.spec.mjs` | +1-2 source-level assertions: endpoint exists, admin token required |
+
+No frontend changes needed. No schema migration. No external service dependency.
+
+#### Impacted Files (Option B — Future Scale)
+
+| File | Change |
+|------|--------|
+| `server.py` | Schema migration: add `email` to `app_users`, add `password_reset_tokens` table. Two new endpoints. |
+| `server.py` | Email sending function (external service integration) |
+| `docs/parent-report/index.html` | Add "forgot password" link to login UI |
+| `dist_ai_math_web_pages/...` | Mirror |
+| Multiple test files | Extensive new tests |
+
+#### Security Considerations
+
+1. **Rate limiting**: Reset endpoint must be rate-limited (reuse existing `_check_rate_limit`). For Option A, admin-token gate is sufficient. For Option B, rate-limit on reset requests per email/username.
+2. **No password leak**: Reset response must NOT return the old password. For Option A, return the NEW temporary password only to admin.
+3. **Token TTL**: Reset tokens (Option B) must be short-lived (15 min) and single-use.
+4. **Lockout clearing**: After successful password reset, clear login_failures for that username.
+5. **Audit logging**: Log all reset events via `_auth_logger` (WARNING level with username, admin identity, timestamp).
+6. **Password strength**: Consider minimum password length enforcement beyond current 4-char minimum for the new password.
+
+#### DB Schema Impact
+
+Option A: **None** — uses existing `app_users.password_hash` and `password_salt` columns.
+
+Option B: Two new schema changes:
+```sql
+ALTER TABLE app_users ADD COLUMN email TEXT;
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token_hash TEXT NOT NULL,
+    account_id INTEGER NOT NULL,
+    created_at TEXT NOT NULL,
+    expires_at TEXT NOT NULL,
+    consumed_at TEXT,
+    FOREIGN KEY(account_id) REFERENCES accounts(id)
+);
+```
+
+#### Validation Plan (for eventual implementation)
+
+1. Backend tests: missing admin token → 401, unknown username → 404, happy path → 200 with new password, login with new password succeeds, login with old password fails, login_failures cleared after reset
+2. JS source-level: endpoint exists, admin token required, lockout clearing
+3. verify_all: 4/4 OK
+4. Manual: admin can reset password and parent can log in with new password
+
+#### Risk Assessment
+
+- Option A implementation risk: **LOW** (1 new endpoint, reuses existing patterns)
+- Option A scope creep risk: **LOW** (very bounded)
+- Option A dependency risk: **NONE** (no external services)
+- Option B implementation risk: **MEDIUM** (schema migration, email integration)
+- Option B scope creep risk: **HIGH** (email deliverability, UI changes, privacy considerations)
+
+#### Decision
+
+**This iteration stops here.** Per governance Section 9, this is a high-risk task (authentication architecture change). The design is documented. Implementation requires human approval.
+
+**Recommended action**: Human reviews this design and approves Option A (admin-assisted MVP) for implementation in a future iteration. Once approved, the implementation can be auto-executed as a low-risk bounded change.
