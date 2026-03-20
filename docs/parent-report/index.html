@@ -67,6 +67,13 @@
     .gated-blur>.blur-overlay .lock-icon{font-size:36px;margin-bottom:8px}
     .gated-blur>.blur-overlay .lock-text{font-size:14px;font-weight:700;color:#fff;text-align:center;max-width:280px}
     .gated-blur>.blur-overlay .lock-btn{margin-top:12px;display:inline-block;background:linear-gradient(135deg,#8957e5,#a371f7);color:#fff;padding:10px 22px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px}
+    .gated-blur>.blur-overlay .preview-hint{margin-top:8px;font-size:12px;color:rgba(255,255,255,.75);text-align:center;max-width:260px;line-height:1.5}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spinner-icon{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    .step-indicator{display:inline-flex;gap:6px;align-items:center;margin-bottom:4px}
+    .step-indicator .step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
+    .step-indicator .step-dot.active{background:var(--accent)}
+    .step-indicator .step-dot.done{background:var(--ok)}
     .progress-trend-card .trend-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06)}
     .progress-trend-card .trend-week{color:var(--muted);font-size:12px;min-width:60px}
     .progress-trend-card .trend-bar{height:8px;border-radius:4px;transition:width .4s}
@@ -384,7 +391,12 @@
   var pinErrEl = document.getElementById('pinError');
   function showStatus(html, cls){
     statusEl.className = 'banner ' + (cls || 'muted');
-    statusEl.innerHTML = html;
+    if (cls === 'loading'){
+      statusEl.innerHTML = '<span class="spinner-icon"></span>' + html;
+      statusEl.className = 'banner ok';
+    } else {
+      statusEl.innerHTML = html;
+    }
     statusEl.style.display = 'block';
   }
   function hideStatus(){ statusEl.style.display = 'none'; }
@@ -517,14 +529,19 @@
     });
 
     function setPaidMsg(text, cls){
-      msgEl.textContent = text;
+      if (cls === 'loading'){
+        msgEl.innerHTML = '<span class="spinner-icon"></span>' + esc(text);
+        msgEl.style.color = 'var(--muted)';
+      } else {
+        msgEl.textContent = text;
+        msgEl.style.color = cls === 'ok' ? 'var(--ok)' : cls === 'bad' ? 'var(--bad)' : 'var(--muted)';
+      }
       msgEl.style.display = 'block';
-      msgEl.style.color = cls === 'ok' ? 'var(--ok)' : cls === 'bad' ? 'var(--bad)' : 'var(--muted)';
     }
 
     /* Proceed with bootstrap+exchange for given student */
     function proceedWithStudent(loginApiKey, studentId, adapter, apiBase){
-      setPaidMsg('正在建立安全連線…', 'muted');
+      setPaidMsg('正在建立安全連線…', 'loading');
 
       /* Step 2: POST /v1/app/auth/bootstrap → {bootstrap_token} */
       fetch(apiBase + '/v1/app/auth/bootstrap', {
@@ -566,7 +583,7 @@
           document.getElementById('paidPassword').value = '';
           if (selectorWrap) selectorWrap.style.display = 'none';
 
-          setPaidMsg('登入成功！正在載入報告…', 'ok');
+          setPaidMsg('登入成功！正在載入報告…', 'loading');
           showStatus('🔐 付費帳號已連接，報告將使用安全雲端通道。', 'ok');
 
           /* Auto-load report for the student if adapter can read */
@@ -610,7 +627,7 @@
         return;
       }
 
-      setPaidMsg('登入中…', 'muted');
+      setPaidMsg('登入驗證中…', 'loading');
       btnLogin.disabled = true;
       if (selectorWrap) selectorWrap.style.display = 'none';
 
@@ -826,7 +843,7 @@
 
     if (MODE === 'url' || MODE === 'cloud'){
       if (data && data.pin && pin !== data.pin){
-        showPinErr('密碼錯誤，請重試');
+        showPinErr('密碼不正確。請輸入設定學習時建立的 4~6 位數字家長密碼。');
         return;
       }
       showDashboard(data);
@@ -834,7 +851,7 @@
     }
 
     /* ─── name+PIN mode ─── */
-    if (!pin){ showPinErr('請輸入家長密碼'); return; }
+    if (!pin){ showPinErr('請輸入家長密碼（4~6 位數字）'); return; }
 
     /* 1. Try local data first (same device, fast) */
     var hasLocal = window.AIMathStudentAuth && window.AIMathStudentAuth.isLoggedIn();
@@ -843,7 +860,7 @@
       var localName = ls ? ls.name.trim() : '';
       if (!name || localName === name){
         if (!window.AIMathStudentAuth.verifyPin(pin)){
-          showPinErr('密碼錯誤，請重試');
+          showPinErr('密碼不正確。請輸入設定學習時建立的 4~6 位數字家長密碼。');
           return;
         }
         data = window.AIMathStudentAuth.collectReportData(7);
@@ -868,7 +885,7 @@
       return;
     }
 
-    showStatus('☁️ 正在查詢「' + esc(name) + '」的雲端報告…', 'ok');
+    showStatus('正在查詢「' + esc(name) + '」的雲端報告…', 'loading');
     document.getElementById('btnUnlock').disabled = true;
 
     var adapter2 = window.AIMathReportSyncAdapter;
@@ -878,13 +895,13 @@
     readFn2(name, pin)
       .then(function(entry){
         if (entry && entry.error === 'invalid_pin'){
-          showPinErr('密碼錯誤，請重試');
+          showPinErr('密碼不正確。請輸入設定學習時建立的 4~6 位數字家長密碼。');
           hideStatus();
           document.getElementById('btnUnlock').disabled = false;
           return;
         }
         if (!entry || !entry.data || !entry.data.d){
-          showStatus('⚠️ 找不到「' + esc(name) + '」的報告。請確認暱稱與孩子登入時完全一致，且孩子已做過題目。', 'muted');
+          showStatus('⚠️ 找不到「' + esc(name) + '」的報告。<br><span style="font-size:12px;color:var(--muted)">請確認：① 暱稱與孩子登入時完全一致（含大小寫）<br>② 孩子已完成 5 題以上<br>③ 孩子的裝置有網路連線（數據會自動同步）</span>', 'muted');
           document.getElementById('btnUnlock').disabled = false;
           return;
         }
@@ -896,7 +913,7 @@
         showDashboard(data);
       })
       .catch(function(){
-        showStatus('⚠️ 無法連接雲端，請檢查網路後再試。', 'muted');
+        showStatus('⚠️ 無法連接雲端。<br><span style="font-size:12px;color:var(--muted)">請確認網路連線正常，或稍後再試。若持續發生，可嘗試重新整理頁面。</span>', 'muted');
         document.getElementById('btnUnlock').disabled = false;
       });
   }
@@ -1665,7 +1682,10 @@
           legendEl.classList.add('blur-content');
           var overlay = document.createElement('div');
           overlay.className = 'blur-overlay';
-          overlay.innerHTML = '<div class="lock-icon">🔒</div><div class="lock-text">升級即可解鎖概念雷達圖<br>精準掌握五大領域強弱</div><a href="../pricing/" class="lock-btn" onclick="if(window.AIMathAnalytics)AIMathAnalytics.track(\'upgrade_click\',{from:\'radar_blur\'})">立即解鎖</a>';
+          var previewHints = [];
+          keys.forEach(function(k,i){ if(values[i] < 60) previewHints.push(k + ' ' + values[i] + '%'); });
+          var previewText = previewHints.length ? '<div class="preview-hint">⚡ 發現較弱領域：' + previewHints.slice(0,2).join('、') + '</div>' : '';
+          overlay.innerHTML = '<div class="lock-icon">🔒</div><div class="lock-text">升級即可解鎖概念雷達圖<br>精準掌握五大領域強弱</div>' + previewText + '<a href="../pricing/" class="lock-btn" onclick="if(window.AIMathAnalytics)AIMathAnalytics.track(\'upgrade_click\',{from:\'radar_blur\'})">立即解鎖</a>';
           card.appendChild(overlay);
         }
       }
@@ -1729,7 +1749,16 @@
         contentEl.classList.add('blur-content');
         var overlay = document.createElement('div');
         overlay.className = 'blur-overlay';
-        overlay.innerHTML = '<div class="lock-icon">📈</div><div class="lock-text">升級即可追蹤每週進步趨勢<br>看見孩子的成長軌跡</div><a href="../pricing/" class="lock-btn" onclick="if(window.AIMathAnalytics)AIMathAnalytics.track(\'upgrade_click\',{from:\'trend_blur\'})">立即解鎖</a>';
+        var trendPreview = '';
+        if (hasData && weeks.length >= 2){
+          var latest = weeks[weeks.length - 1];
+          var prev = weeks[weeks.length - 2];
+          if (latest.total > 0 && prev.total > 0){
+            var diff = latest.rate - prev.rate;
+            trendPreview = '<div class="preview-hint">📊 本週正確率 ' + latest.rate + '%' + (diff > 0 ? '（↑' + diff + '%）' : diff < 0 ? '（↓' + Math.abs(diff) + '%）' : '') + '</div>';
+          }
+        }
+        overlay.innerHTML = '<div class="lock-icon">📈</div><div class="lock-text">升級即可追蹤每週進步趨勢<br>看見孩子的成長軌跡</div>' + trendPreview + '<a href="../pricing/" class="lock-btn" onclick="if(window.AIMathAnalytics)AIMathAnalytics.track(\'upgrade_click\',{from:\'trend_blur\'})">立即解鎖</a>';
         cardEl.appendChild(overlay);
       }
     })();

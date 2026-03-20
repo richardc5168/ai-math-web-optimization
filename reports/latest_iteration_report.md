@@ -1116,3 +1116,49 @@ Neither is an actual SVG builder CALL in a fracAdd rendering path. The actual fr
 - Configure Stripe test keys and run end-to-end payment flow
 - Parent report UX: improve paid login visibility, add loading states
 - Star-pack: add "Try First 10 Free" unlock for habit formation
+
+---
+
+## Iteration 60 — Parent Report UX: Loading, Errors, Preview Insights
+
+**Date**: 2025-07-17
+**Scope**: `docs/parent-report/index.html` (mirrored to dist)
+**Goal**: Improve parent report trust & conversion by addressing 3 friction points: no loading feedback, vague errors, zero value preview behind blur overlays.
+
+### Changes
+
+#### 1. Loading Spinners (CSS + JS)
+- Added `@keyframes spin` animation + `.spinner-icon` class (border-based animated spinner)
+- Added `.step-indicator` class for step dot indicators
+- Enhanced `showStatus(html, cls)` — when `cls === 'loading'`, auto-prepends `<span class="spinner-icon"></span>`
+- Enhanced `setPaidMsg(text, cls)` — same spinner injection for `cls === 'loading'`
+- Cloud lookup status: changed from plain text `'☁️ 正在查詢…'` with `cls='ok'` → spinner with `cls='loading'`
+- Paid login flow: all 3 steps now use `cls='loading'` with animated spinner (驗證中 → 建立連線 → 載入報告)
+
+#### 2. Better Error Messages (5 locations)
+- **PIN errors** (3 locations: local verify, cloud verify, cloud invalid_pin): Changed from generic `'密碼錯誤，請重試'` to specific `'密碼不正確。請輸入設定學習時建立的 4~6 位數字家長密碼。'`
+- **Cloud not-found**: Expanded from one-liner to 3-step troubleshooting checklist (暱稱一致 / 已完成5題 / 裝置有網路)
+- **Network error**: Added retry suggestion + page refresh guidance
+
+#### 3. Preview Insights Behind Blur Overlays (2 locations)
+- Added `.preview-hint` CSS class (positioned at bottom of blur overlay, semi-transparent background)
+- **Radar chart blur**: Extracts weak concepts (values < 60%) from computed data, shows `⚡ 發現較弱領域：小數 45%、比例 38%`
+- **Trend chart blur**: Shows this-week accuracy rate + delta vs last week `📊 本週正確率 72%（↑8%）`
+
+### Affected Files
+- `docs/parent-report/index.html` — 14 edit points (CSS, JS functions, error messages, blur overlays)
+- `dist_ai_math_web_pages/docs/parent-report/index.html` — synced copy
+
+### Validation
+- `verify_all.py`: 4/4 OK (docs/dist mirror 138 files, endpoints healthy, bank scan OK, pytest 11/11)
+- Manual review: spinners animate correctly, error messages display proper Chinese copy, preview insights extract from existing chart data arrays
+
+### Residual Risks
+1. Preview insight text is computed from local data arrays — if arrays differ from actual chart renders, text may not match visuals
+2. Spinner animation depends on CSS `@keyframes` — older browsers without animation support see no spinner (graceful degradation: text still shows)
+3. Preview insights reveal partial data behind blur — verify this drives conversions rather than satisfying curiosity (A/B test recommended)
+
+### Next Iteration Priorities
+- Star-pack: "Try First 10 Free" unlock for habit formation
+- A/B test partial preview vs full blur on conversion rate
+- Configure Stripe test keys and run end-to-end payment flow
