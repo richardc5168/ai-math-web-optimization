@@ -1,18 +1,18 @@
 name: Issue Command Poller
 
 # ───────────────────────────────────────────────────────────
-# Cloud-based poller for agent-command Issues.
-# Triggers:
-#   1. When an Issue is opened/edited/labeled → immediate
-#   2. Every 5 minutes (cron) → catch anything missed
-#   3. Manual dispatch → for testing
+# POLICY: No schedule polling. Issue-command mechanism is
+# triggered by real issue events (opened/edited/labeled) or
+# manual workflow_dispatch. High-frequency cron has been
+# removed to stop wasting GitHub Actions minutes.
+#
+# If you need to manually catch missed commands, use
+# workflow_dispatch from VS Code chat or GitHub web UI.
 # ───────────────────────────────────────────────────────────
 
 on:
   issues:
     types: [opened, edited, labeled]
-  schedule:
-    - cron: '*/5 * * * *'          # every 5 minutes
   workflow_dispatch:
 
 permissions:
@@ -74,6 +74,7 @@ jobs:
         run: |
           node tools/poll_github_issue_commands.cjs \
             --once \
+            --repo "${{ github.repository }}" \
             --max-runs 10 \
             --allowed-author richardc5168
 

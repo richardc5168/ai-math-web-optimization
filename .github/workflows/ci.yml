@@ -1,5 +1,11 @@
 name: Verify All + Scorecard
 
+# ───────────────────────────────────────────────────────────
+# POLICY: Event-driven only (push/PR/dispatch). Daily schedule
+# removed — push to main already triggers CI, and manual
+# dispatch covers ad-hoc needs.
+# ───────────────────────────────────────────────────────────
+
 on:
   pull_request:
     branches: [main]
@@ -14,8 +20,6 @@ on:
       - "scripts/**"
   push:
     branches: [main]
-  schedule:
-    - cron: '0 18 * * *'
   workflow_dispatch:
 
 permissions:

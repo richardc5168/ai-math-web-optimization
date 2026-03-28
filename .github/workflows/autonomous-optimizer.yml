@@ -1,13 +1,13 @@
 name: Autonomous Optimizer (Cloud)
 
 # ── Triggers ──────────────────────────────────────────────
-# 1. Scheduled: every 4 hours
-# 2. On push to ops/agent_tasks.json (edit from GitHub web UI → immediate trigger)
-# 3. Manual dispatch with configurable hours
-# 4. After other workflows complete successfully
+# POLICY: No automatic schedule or chained workflow_run.
+# This is a heavy workflow (up to 6h). Trigger only via:
+#   1. Manual dispatch (VS Code chat / GitHub web UI / gh CLI)
+#   2. Push to ops/agent_tasks.json (intentional edit)
+# Automatic 4h cron and workflow_run chains have been removed
+# to stop wasting GitHub Actions minutes.
 on:
-  schedule:
-    - cron: '15 */4 * * *'          # every 4h at :15
   push:
     branches: [main]
     paths:
@@ -22,9 +22,6 @@ on:
         description: 'Dry run (no commits)'
         type: boolean
         default: false
-  workflow_run:
-    workflows: ["Verify All + Scorecard", "Nightly Hint Autotune PR"]
-    types: [completed]
 
 permissions:
   contents: write
@@ -35,10 +32,6 @@ concurrency:
 
 jobs:
   optimize:
-    # Skip workflow_run triggers if the triggering workflow failed
-    if: |
-      github.event_name != 'workflow_run' ||
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 360             # 6h hard limit
 

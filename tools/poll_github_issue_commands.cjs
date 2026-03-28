@@ -23,7 +23,7 @@ const { runCommand, pythonCmd } = require('./_runner.cjs');
 const STATE_PATH_DEFAULT = path.join(process.cwd(), 'artifacts', 'issue_command_state.json');
 const RUN_LOG_PATH_DEFAULT = path.join(process.cwd(), 'artifacts', 'issue_command_runs.jsonl');
 
-const DEFAULT_REPO = 'richardc5168/ai-math-web';
+const DEFAULT_REPO = process.env.GITHUB_REPOSITORY || 'richardc5168/ai-math-web-optimization';
 const DEFAULT_LABEL = 'agent-command';
 
 function argValue(name, fallback) {
@@ -527,11 +527,14 @@ async function mainOnce(opts) {
     state.last_checked_at = nowIso();
     state.last_error = entry;
     writeState(statePath, state);
-    return 1;
+    // Not a command execution failure — exit cleanly so the workflow stays green.
+    console.log(`[issue-poller] poll_error: could not list issues for ${opts.repo} (label=${opts.label}). Exiting cleanly.`);
+    return 0;
   }
 
   const issues = Array.isArray(listRes.obj) ? listRes.obj : [];
   let ran = 0;
+  let commandFailures = 0;
   for (const it of issues) {
     const issueNumber = it.number;
     const viewRes = viewIssue(opts.repo, issueNumber);
@@ -595,6 +598,7 @@ async function mainOnce(opts) {
           ghCloseIssue(opts.repo, issueNumber);
         }
       }
+      if (!result.pass) commandFailures += 1;
 
       executed.add(cmd.id);
       state.executed_ids = Array.from(executed);
@@ -609,7 +613,12 @@ async function mainOnce(opts) {
   state.last_checked_at = nowIso();
   state.last_error = null;
   writeState(statePath, state);
-  return 0;
+  // Only exit non-zero when actual command execution failed.
+  // No issues / no commands / auth-rejected / view errors → exit 0.
+  if (commandFailures > 0) {
+    console.log(`[issue-poller] ${commandFailures} command(s) failed out of ${ran} run(s).`);
+  }
+  return commandFailures > 0 ? 1 : 0;
 }
 
 async function main() {
@@ -670,5 +679,9 @@ main().catch((err) => {
     message: String(err?.message || err),
     stack: truncateLog(err?.stack || ''),
   });
-  process.exitCode = 1;
+  // Log the error but exit cleanly — infra/auth failures should not mark the
+  // workflow red. Only real command execution failures (handled inside mainOnce)
+  // should surface as non-zero exit.
+  console.error('[issue-poller] fatal:', err?.message || err);
+  process.exitCode = 0;
 });

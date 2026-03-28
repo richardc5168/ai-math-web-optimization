@@ -1,8 +1,13 @@
 name: Nightly Hint Autotune PR
 
+# ───────────────────────────────────────────────────────────
+# POLICY: No automatic nightly schedule. Trigger manually via
+# workflow_dispatch from VS Code chat or GitHub web UI when
+# you want to run hint autotune. Removes daily cron to stop
+# wasting GitHub Actions minutes.
+# ───────────────────────────────────────────────────────────
+
 on:
-  schedule:
-    - cron: '30 18 * * *'
   workflow_dispatch:
 
 permissions:
