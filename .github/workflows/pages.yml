@@ -1,8 +1,10 @@
 name: Deploy GitHub Pages
 
+# DISABLED 2026-03-28: push trigger suspended to stop
+# wasting GitHub Actions minutes. Original triggers:
+#   push: branches ["main"]
+# Re-enable when needed.
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:

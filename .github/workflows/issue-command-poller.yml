@@ -10,9 +10,11 @@ name: Issue Command Poller
 # workflow_dispatch from VS Code chat or GitHub web UI.
 # ───────────────────────────────────────────────────────────
 
+# DISABLED 2026-03-28: All auto-triggers suspended to stop
+# wasting GitHub Actions minutes. Original triggers:
+#   issues: [opened, edited, labeled]
+# Re-enable when needed.
 on:
-  issues:
-    types: [opened, edited, labeled]
   workflow_dispatch:
 
 permissions:
@@ -20,8 +22,8 @@ permissions:
   issues: write                     # post comments + close issues
 
 concurrency:
-  group: issue-command-poller
-  cancel-in-progress: false         # don't cancel in-flight commands
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   poll-and-execute:

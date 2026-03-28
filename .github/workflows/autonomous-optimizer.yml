@@ -7,11 +7,11 @@ name: Autonomous Optimizer (Cloud)
 #   2. Push to ops/agent_tasks.json (intentional edit)
 # Automatic 4h cron and workflow_run chains have been removed
 # to stop wasting GitHub Actions minutes.
+# DISABLED 2026-03-28: All auto-triggers suspended to stop
+# wasting GitHub Actions minutes. Original triggers:
+#   push: branches [main] paths ['ops/agent_tasks.json']
+# Re-enable when needed.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'ops/agent_tasks.json'      # edit task queue → trigger run
   workflow_dispatch:
     inputs:
       hours:
@@ -27,8 +27,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: autonomous-optimizer
-  cancel-in-progress: false          # let running optimization finish
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   optimize:
